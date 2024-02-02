@@ -1,0 +1,638 @@
+TODO:
+
+SEE ALL THE 'TODO' (AND 'MATCH') COMMENTS IN THE CODE!
+
+next-feature-short-list, in no order:
+* ha ha check all the bugs and todo's... bad stuff. see all the code notes below. :-(
+  [this is not any enforced ordering]
+* should really be using proper 2d (3x3) matricies for everything, duh. :-(
+  but i am not going to fix that ever.
+THESE ARE NOT IN ORDER because i keep changing my mind :-\
+
+DO THESE NOW/NEXT:
++ hud proximity warning makers.
++ add some livestock.
+!!!+ enemies should shoot when shot.
++ people/livestock should not be too close to the base, duh.
++ enemy shots already can intersect people, so make people killable.
+* a better way to do the bloody screen state machine.
+* pause feature.
+-1) the entire simulation step is crap: has too many things that *do* get modified,
+   and yet too many thing that do not, and it is unclear which is what when.
+   a concrete example is the acc gets set to zero as soon as the phys step is called.
+0) one of the worstest things about all this is that each simulation step / frame does
+   makes a copy of the game db using _.cloneDeep() and then mutates that new one.
+   which empirically ends up meaning that you can't really use regular js "this.field"
+   containment, because the "this.field" will be pointing to an old one, not a new one.
+   yeah i don't understand why, how, the nuances, and it all sucks. it is easy to be
+   confused about what really is/not allowed/supposed to be im/mutable.
+   no i don't plan to really fix that, just beware.
+0.5) duh, all geom should really be done via a 2d 3x3 transform matrix.
+0.7) the whole DBID vs. PreDbid vs. passing dbids... inconsistent nightmare.
+0.9) full shields should perhaps always let you ram into 1 ship w/out dying,
+   bouncing off of them or somethiing? feels odd to die on crashing into them
+   if you have shields at all?
+1) enemy bullets passing through the player sometimes somehow, world-wrap issue?
+1.1) enemies shouldn't be overlapping the ground ever.
+2) enemy ai of any kind at all!
+2.2) automagic loading of images and animations based on naming.
+   the combinatoric explosion of art assets and then the code
+   to set up the animations using them is really quite painful.
+   there's so far at least: facing X health X thrusting.
+   ***+++>>> the animation support sucks, really need to better support eg layers
+   and different times for those layers to make things like thrusting look good.
+2.3) bigger enemies that actually "turn" and only shoot forward should also
+   be able to spew out smart bombs and/or smaller brill, otherwise it is too
+   easy to just shoot them from behind.
+3) 3 stages of enemy types per level (brill, mega brill, hyper mega brill).
+3.1) with the level loading page showing them.
+4) sound.
+5) beware too many things are being jsonized, but i did start using spriteJSON().
+6) all the hacked in constants that aren't in K or L config. :-(
+7) ACTUALLY UNIQUE LEVELS.
+7.1) the "logic" for when a level is won is buggy from what i've heard.
+8) there's several things (like hud score position) that are fixed and could be in the db
+  instead of being recalculated on every step.
+9) geometry math in here is somewhat broken, in particular rects are [closed,closed] but
+  probably should be [closed,open) so that e.g. a size of 1 doesn't draw 2 pixels.
+10) game loop is pretty bad wrt sim time and wall time, and so fps is all wrong if not fixed at 30 apparently.
+12) allow overload with gems?
+13) resource loading: statically assert paths exist, make loading less boilerplate HELL.
+14) a better architecture for sensing & using things like "was i just shot" cf. enemy ai?
+15) have accessors for db.shared.items.* rather than the levels reaching all the way in directly.
+16) all the drawing api's are a horrible mess. things like: images that aren't full sprites;
+    z-order of things; Drawing type e.g. rects first to clear; things called 'bg', etc. ad nauseam.
+17) the client-server communications, fps, dt, back and forth is probably just weird badness really.
+18) people must not be right next to the base to begin with.
+19) pull the score rendering out so that the levels all internally start their score at 0.
+20) i can't make up my mind about how to name 'constructors' *_mk() add_*().
+21) the heights of things is a mess, like trying to have the ships not overlap the base.
+22) loading enemies into sprites is a huge baroque boutique nightmare.
+23) player should also warpin.
+24) the different kinds of db's are quickly very confusing cf. debug mode crashing menu screens.
+25) player shots should have a visual rect vs. a collision rect.
+26) the implementation of the world wrapping is buggy and should be something more
+    fundamentally built into some kind of vector & rect types, cf. player zone calculation.
+27) the code is a rats' nest of relations and calls and twistly little passages, all different :-(
+999) everything else...
+* funny how 'scale's are sometimes scalars, sometimes vectors.
+* glitch weapons.
+* wish it were easier to e.g. debug draw all acc, vel vectors.
+* it is bad weird gameplay that the enemies can pass through each other unharmed.
+* player should have to be going slow to pick up people.
+* really annoying to be editing raw code, want a more integrated with spreadsheet realtime ux.
+  !!! IT IS ALL ABOUT 'COMPARED TO WHAT' and things change when e.g. world size changes !!!
+* scaling images through code/html5-canvas is not pretty, try to keep things 1:1 and resize elsehow.
+* !!! killing me !!! :-( horribly inconsistent ways of making & adding things to the game db.
+* animation is just a mess of things accumulated. i am distrustful / haven't found an anim
+  library that i actually like so i've been hand-rolling thus far.
+* the "ignores" vs. "on_cmask"/"in_cmask" stuff is confusing to me (!) when i look at them together,
+  because they don't use the same enum.
+  i can't get rid of type flags because i use it for isntanceof.
+  but i wonder if at least the "ignores" could use cmask instead of tflag?
+* similarly, "facing" is sometimes 1 bit, sometimes several bits together.
+* player shots should use rectangle bounding boxes instead of ellipses?
+* maybe ellipse-ellipse test should always scale up, not down? (which would have less fp error?)
+* enemy generator still overlaps them stupidly. :-(
+* collision detection code is sorta all over the place too spread out & hard coded? cf. knowing about world wrapping.
+* please, convert to using ES Map<K,V> with JSON.stringify() or .toJSON() hopefully.
+* enemies have to know to not be running into each other! (and not spawn on top of each other.)
+* actual waves of enemies.
+* scoring/hud. radar. shield status. visual and audio low shield warnings.
+* i feel like you should get one free shield bounce off an enemy because it helps the player
+  understand that shields are there. it is annoying when you are trying to get position around
+  a bigger enemy and you end up dying by crashing shields into each other.
+  on the other hand it gets recursivley confusing if then you die the 2nd time you run into them.
+  maybe overall crashing shields together shouldn't have any damage result, it should just bounce.
+* remove the use of bitmasks and just have arrays of values to test because it is way easier to grok in the debugger.
+* beaming up/down need better fx ux.
+* (also because hud?) make the player's position @ 10K be like the middle of the screen, not the top.
+* 10k should not be brick wall altitude, but should exponentially dampen/spring rise.
+* probably using way too many calls to _.cloneDeep().
+* need to have a gamma adjustment option.
+* the font is not good.
+* mutant-izing support.
+* i wish the shots were more like defender/stargate laser/plasma, than like bullets.
+* change all "!!" to a safer test. (i wish typescript had a way to restrict
+  all use of "!!" to only really boolean variables, then it would be safe.)
+* fat arrows are not the same as member functions, so decide if things like *Spec{}'s should not use =>.
+* probably the better design fix is to not update any values on the fly
+  but instead generate modification events which go into a collection which
+  is only all applied at the very end of the simulation step.
+* didn't have z-ordering because the items are in hashmaps. :-( vs. those in arrays, like drawing.
+* rect's often (at least in window.ts) need their midpoint, maybe just keep them in the rect all the time?
+* i want read-only db type wrappers because we don't want hidden lingering pointers to db's.
+* i want to rewrite stuff so that the db.shared.items can step themselves.
+* the marhsalling to json is a bit of an untyped hack. ideally maybe everything would override toJSON().
+* DebugGraphics can't easily draw screen-space rects, only game-world-space rects.
+* there's still a lot of arbitrary konstants to clean up, eg in enemy_mediumB.
+* decide how rectangle edges really work, closed or open?
+* i'd like to remove all coordinate code from the client so that
+  it really just draws in screen space - as dumb as possible. on
+  the other hand, it is also 'easier' in the server to not have
+  to map all the (x,y)'s over before json'ing. on the other-other hand, it would
+  be nice for the client not to have to know anything about screen vs. game db/mode for drawing.
+* i am inconsistent about boolean related functions, variable names cf. "wrap" vs. "is_filled".
+* variations on this pattern appear too often, fix it dry:
+                const bounds = db.shared.world.bounds0;
+                G.v2d_add_mut(sprite.acc, delta_acc);
+                G.v2d_add_mut(sprite.acc, Ph.drag(sprite));
+                Ph.p2d_step_mut(sprite, db.local.frame_dt);
+                G.rect_wrapH_boundV_mut(sprite, bounds);
+
+%%%%%%%%%%
+
+=== BUGS:
+
+* all the bugs implied below in the CODING etc. sections.
+* i bet that i am inconsistent about rectangle edge < vs. >= tests.
+* !!! the physics is all hard coded hacky #'s based on the current dt,
+  so if that changes then everything is immeidately imbalanced i bet !!!
+* if you set client debug drawing to start off as true, the server
+  doesn't seem to understand that fact and doesn't send the debug graphics?!
+* javascript is a horrible language & runtime, and typescript cannot save it.
+  i bet there are several bad things i am doing in this code, and that
+  there are evil leaks and other such lovecraftian horribleness.
+* frankly the viewport implementation still sucks, does weird things.
+
+=== CODING todo: SO MUCH WRONG
+
+* !!! since we clone the entire 'db' on every frame, there are bugs
+  that happen if you try to use a this.field rather than doing a lookup
+  in the db with the dbid for the item. it is really confusing and hard to debug
+  so good luck with that.
+
+* property fields in javascript, as in many languages, is a broken leaky abstraction
+  if you ask me. i have been explicitly trying to avoid getters for things that need
+  to ever go to the client, because afaik getters don't automatically json serialize.
+  (in some places i was also /relying/ on that, but then decided it was too arbitrary
+  hidden confusing so am trying to instead have explicit get_foo() functions.)
+  also, it gets confusing when something should be a function vs. a field.
+  (in my own personal programming language that i some
+  day pay smart people to make, there won't be any public fields, nor getters,
+  only explicit functions.)
+
+* (i wanted Random to be passed in the hopes that long term things could
+  be deterministically replayable, but actually doing that requires a lot
+  more subtlety than just using the same instance passed in everywhere,
+  so i am going to try to stop doing that?)
+
+* i was suckered in by the lie of how nice it would be to use
+  interfaces instead of clases in typescript. yeah, so everything sucks now.
+
++ want to be able to get a typed thing because i want type checking.
+  - nominal vs. structural typing issues.
+  - interface vs. class vs. enum field issues.
+  - it is bad that i have to specify which collection to add a new sprite to,
+    the types of things should make that automagically happen.
+  - same thing for doing a lookup.
+  *** there is no nominal typing, nor robust typeof/instanceof w/out manual work
+  in typescript, at least with interfaces!!!!!!!!!! SUCKS!!!!!!!!!!
+
+* should guarantee / assert / test that step() is never called if the thing is not alive().
+
++ collision detection is already broken wrt simulation step size & bullet speeds.
+  so i made the player bullets slower. and it got worse. go figure.
++ want to have cross product of things in collision detection.
+- where should the code live?
+- general bucket collisions can be done w/ simple minimal type.
+- (N x M) specific collisions can be done ???
+  - multimethods?
+  - big table of NxM -> function?
+  - should NxM == MxN?
+  - M.on_collide(N) && N.on_collide(M)?
+- we assume that the only kinds of collisions are ellipse-ellipse?
+  - otherwise the buckets have to get more flexible about shape NxM possibilities.
+- we (maybe?) want to quick/outright reject/ignore some bucket collisions.
+- what are all the "types"?
+  - ENUMS vs. CLASS/INTERFACE EXPLOSION.
+  - having enums inside quickly makes code suck w/out pattern matching?
+  - individual enums are (generally? ts?) not part of the static typing system.
+
++ want maybe to be more functional programming / ecs / data driven / componentized.
+  i have no real grokking of that stuff yet tho.
+
++ want to figure out people lifecycle (ground, beamed up, beamed down, rescued).
+
+*** really need ways to query the database fast enough and flexibly enough to be able
+  to make game decisions, like "is the level won?" or "how can this enemy avoid overlapping
+  other enemies when moving?"
+
+* the whole C.CMask layer stuff is really hard for me to feel like it ever feels solid
+  because it is sorta all arbitrary and because it is not always clear how to e.g.
+  derive values for shots from values for ships.
+
+* ugh. if there can be different shield strengths then how do we show that?
+  mini meters on things?
+  different shield shapes, per Sprite.Scale?
+  not really different colors, at least not alone, of course.  
+
+* the approach of having a DB that contains (almost) everything and then
+  cloning it on each step in the hopes of avoiding some kinds of mutation errors,
+  turns out to not work so well if one isn't careful about some things... like
+  i have wrestled with. 
+  MAINLY: "this" can be an /old/ copy of something if it is inside a closure like
+  a fat arrow, so you get 'weird' bugs that are hard to track down because there
+  is no easy way to console.log() object identity for comparison purposes.
+
+* try to keep things in (left, right) order not (right, left) for consistency.
+
+* the whole startup lifecycle of the game DB is hard and i haven't done it well,
+  so things like even just passing the instance of Random around is hard at startup. :-(
+
+* using the db is easy to do wrong because often there are nested db variables,
+  so you might (well i have anyway) use the wrong one. be careful to use
+  the innermost when unless you really can't/shouldn't.
+  * it also means you have to pass the newest db nigh everywhere which is
+    a little bit of a pain in the neck, and can easily lead to bugs.
+  * it also means you can't just take e.g. 'now', you have to take the full db.
+  * there's a chicken-egg problem i am still always confusing myself over
+    with the lifecycle of the db cf. DBSharedCore vs. DBItems & add_sprite_dict_id_mk().
+
+* the attempt to have a db gets weird because i am used to / want to have
+  some things be the owners, which conflicts with having them in the db
+  and having a single owner (cf. base's teleport pad).
+  but if you split up the ownership so that
+  the db owns everything and those things use 'dbid's to reference each
+  other, you end up with a lot of optional/undefined things which sucks
+  a lot in the code, especially w/out a good swiftian if_let et. al.
+  * at the end of the day, i want a 'real' db! i want to have queries!
+  i want to have flexibility! but i also want it to not be slow...
+
+* it sorta gets quickly confusing to me to know the right abstractions, interfaces
+  for having things in the db and be part of the world. there's the db and sprite
+  interfaces but then things like animations aren't sprites per se, instead are
+  generally part of sprites - but then things like the teleport pad, do those
+  have to be sprites?
+  + i wish i at least had a better way of having an animation work automagically on a sprite
+  rather than writing that code ever over again. some kind of delegate pattern?
+
+* even if i could use instanceof, i'd still need to be able to
+  distinguish shields ie base vs. player vs. enemy, for things
+  like beam-up vs. beam-down. AND there's no perfect OO place for
+  the beam-* functions, and they are really just animations. so
+  sticking with the type flags.
+
+* i failed to cleanly split the model from the view, and that is
+  turning up with respect to counting the # of people to decide
+  if the level has been won or lost. 
+  there's the basic thing that it shouldn't be won until they
+  are beamed down, but additionally there's the nice-to-have
+  aspect of freezing everything except for the last beam downs
+  and /then/ winning after that.
+  * in order to make it easy for now, i cheesed up the beaming
+    implementation, it isn't ideal in terms of code or how
+    it actually looks on-screen. but good enough for now.
+  * we do have to show the beaming animation, even if the people
+    at that point are not something interactable; they can't be
+    killed during beaming let's say. so we need animation sprites
+    for the beaming, but we don't need full people for them - they
+    can just be fx. however we still need to know how many are
+    on the ground (count them in the db), how many are being carried
+    (the player ship counts them), how many are rescued but they
+    have to be counted as rescued after their beaming animation is finished.
+    a) on the ground, in the db.
+    b) no longer a player in the db, but a count in the player's ship, and an fx animation.
+       they are counted as beamed up immediately.
+    c) player shield touches the base shield, start the beam down fx. don't change
+       the player ship passenger count, until the animation finishes.
+    d) then update the level's rescued count.
+    hard to know if that is actually BETTER/CLEANER/EASIER than keeping
+    them as real people objects in various states of rescue?
+
+* i also failed to keep creation vs. adding to the db separate (which is
+  probably kind of hard to do w/out making the code really bloated/wordy)
+  which means i have to figure out what to do for things like beaming
+  down multiple people to the base in a sequence.
+  * could have a teleport pad that deals with it all, but the ship
+  wouldn't show anything so then it would be a different kind of pad,
+  maybe that's not too bad overall actually.
+  * else i have to have some logic spread out dealing with it in something
+  else like player+people+base+db.
+
+!!! i really want to be able to share library code between server & client.
+    effing javascript module hell!!!
+
++ i kinda hate that i apparently can't use "?" for optionals everywhere syntactically (vs. eg swift, kotlin, etc.).
+
++ beware the arrow of time. everything in here assumes time is monotonically increasing.
+
++ even with DB and 'K'onfig, there are too many arbitrarily hard-coded
+  things throughout other parts of the code, AND all the relations among
+  the values and the graphics are arbitrary and require re-sleuthing to
+  figure out whenever i want to change anything :-( [idea fu]
+
++ should probably use explicit 'namespace' more often when there are singleton variables.
++++ also really weird how i've ended up with a big mish-mash of:
+    interfaces vs. classes vs. modules vs. namespaces vs. closures vs. omfg.
+
+? anim vs. animator vs. animation.ts vs...
+
++ !!! too many (more than 0) circular references among files :-( :-( :-( dangerous.
+
++ there's a lot of repeated (but sometimes slightly differnt) code. :-(
+
++ make and use a Range type?
+
++ it is pretty wonky that shields are not automatically created by the ships themselves?!
+
++ "pause" mode might just be pushing the whole db onto a stack
+  and making a new db to replace it unil the pause mode exits.
+  similar for main menus etc.
+
++++ i have failed in all my various attempts to reduce boilerplate.
+  it looks like at this point, after all the things i tried, i probably
+  have to go back to just using constructor arguments with visibility
+  modifiers (like scala), but i do not have the motivation to do
+  that right now :-( !!! 
+  // go back to using constructors :-( <<<<<<<<<<<<<!!!!!!!
+
+* i know, i fail to be consistent about lots of things like "hash" vs. "dict".
+
+* (we have no) mass? for stepping the physics?
+* step() is currently done in different places for different things,
+  but maybe ideally somehow the physics step itself would happen
+  in one place for all sprites, and their own code would only
+  update the acc field?
+
+* fugly: db.shared.items.xs[x.dbid] = x;
+
+* i have no idea what the units are for 'dt'.
+  + ok i am trying to make it all msec?!
+  + wish todo: make a branded 'msec' number type and use it to be safe.
+
+* code cleanup: 'db' arguments should always be first for some consistency.
+* switch statements should all have default: U.unreachable().
+
+* too many things are incompatible with JSON.stringify.
+  getters; Maps; ts enums; ...
+* getters are evil, especially because a lot of the time in this
+  system you need to pass in the current db, so in the long run
+  i want to get away from getters entirely and require functions,
+  even if they take no arguments.
+* too many things suck when all you have is structural typing.
+
++ was trying to have a DAO struct style of initializing objects, but
+  this whole FieldsOnly attempt didn't really work out very well ux-wise.
+  * also see things like ShieldSpec & ShieldPrivate for possible ideas.
+  * the problem is that (a) it isn't always only fields required in a spec.
+    and (b) sometimes not all the fields are really required.
+    and (c) sometimes different non public fields are needed internally.
+  !!! i realize now that the *Spec interfaces should not be in sprite.ts
+      at all, they should be in each implementation file i.e. shield.ts.
+  !!! i had dreams of trying to keep the "public" interfaces in sprite.ts
+      from getting too bloated and from exposing too much publicly,
+      so in some places i made seperate XPrivate interfaces too,
+      but then that is getting tiring so with Person i said screw it.
+
+* tf_ignores and hp_ignores seemed to be a good idea at the time,
+  but uh i can't really get that feeling back too easily.
+
+???!!! which version of the db really is best to use in all cases?
+  e.g. shot on shield collision, trying to avoid bug where the
+  shot hp goes to zero before the shield registers the hit.
+  also, things like: on_collide((last_s as unknown) as Collidable);
+  could be removed if the sprite knew its own previous step.
+
++ i want to figure out how to be clear about what 
+  - gets mutated in place vs. should be immutable.
+  - needs to have fields reset somewhere/somehow.
+  - vs. is a fresh clone at the start of the step.
++ (also, unify *() and *_mut() by making the immutable
+  versions call the mutable ones, so less code duplication.)
++ short term: server restarts if the client restarts.
+  long term: server waits until client reconnects.
++ more animated fx reactions e.g. shots hitting shields.
++ basic enemy movement & firing back.
++ levels.
++ score.
++ dead, end.
++ main menu, pause.
++ sound. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
++ sprite sheet support.
++ performance? Map vs. Object for hashes e.g. through JSON?
+  - dunno how slow Object.keys(hashmap).length() is.
++ somehow convert to ADT/union typing of the various sprites & use pattern matching?
+  - because get_sprite() with casting is really ugly.
+
++ instead of ending up having to do my own GC (e.g. shields vs. wrapped sprite),
+  try to use something like https://stackoverflow.com/questions/23117470/passing-an-object-with-circular-references-from-server-to-client-side-javascript/58810202#58810202
+  so that json de/serialization doens't make me crazy.
+
++ note that i am finding that typescript is full of little but deep lies.
+  or at least confusing ux. for example, interfaces don't play out well
+  e.g. with 'this-types' afaict. another example, type aliases cannot
+  be used as map keys. etc.
+  + i want to have HeadlessSprite.last(db:DB.DB):this; but that doesn't work afaict.
+
++ != null vs. != undefined h8!!!!!!!!!!!!!!!!!!! so much h8.
+  + https://github.com/Microsoft/TypeScript/wiki/Coding-guidelines
+  
++ sorta confusing bad style when you have a closure that takes an argument
+  that most often already exists in the scope, because then you have to decide
+  which of the 2 variables (which are likely the same in that case) to use.
+
++ ALL hard coded values (e.g. ball weapon) should really at least
+  come from konfig.ts
++ and/also be passed in via constructors.
+
+i am manually avoiding circular references that would otherwise be FINE were
+it not for EFFING JSON.stringify(). i don't want to (yet) possibly take a
+performance hit by using some other json library or manually filtering out
+circular refs. unfortunately that means things like Shield <-> ShieldAnimation
+ends up having sort dorky code.
+
+apparently i cannot make up my mind if i am doing oo or structs+fp.
+although the approach of doing only interfaces gets ugly in some cases
+because the syntax sucks and you end up having to do an anonymous in-place
+class just so you can have 'this'.
++++ and there are too many different ways that i do/allow for common/variability
+of things that are similar. the shot collision stuff is e.g. barf.
+
+yes a lot of the naming sucks. plus ca meme. i can't even decide between camelCaseNames and fugly_c_naming.
+
+wish i could get DB0 structural type inferred and exported automagically for client use?
+
+structural vs. nominal typing cf. rect vs. ellipse.
+
+THE ONLY SUPPORTED COLLISIONS ARE ELLIPSES mainly because it is a pain to have more than one collider type.
+
+*** multimethods / overloading / generic functions, i cannot do a 
+concise collision detection with more than one type of bounding area
+in any clean way with typescript or javascript or etc!
+
+*** collision.ts could perhaps be improved by having 2 different kinds of collision detected,
+one that is a real "collision" and another that is a non-colliding "touch". this would
+be useful in e.g. the case of the player ship picking up people.
+  - is it better for the shield to not have to have an 'tf_ignores' field?
+
+*** the eternal debate of cached/denormalized vs. normalized db data.
+also leads to a more functional, entity-component approach? but i don't
+grok that enough yet.
+
+*** get freaking imports to work and be shared across client and server
+(have it working ok for server-node.)
+require vs. import?!
+oh my fing god i also don't grok why i did debug.ts with namespace.
+
+figure out how to do parameter type annotation for arguments that are functions.
+
+annoying how to refer to other things in the same db setup. :-(
+
+figure out how to do resources/ids between client & server.
+want to support client dynamically preloading resources.
+
+can we alias/remove/infer things like mk_v2d()?
+
+type DBID = number & { readonly __ttag: unique symbol };
+doesn't always work out well, if you need it as a regular number later.
+
+make sure to have a consistent convention for 2d array access (x,y) vs. (y,x).
+
+add x_clone() geom functions.
+
+* interface with optional field does not pass that onto a class
+implementing the interface, i guess you have to manually add it
+to the class, which is fubar broken. so i am pushing towards
+only anonymous literal object instances.
+
+* no clear good best ideal way to do nominal typing / branding.
+especially i dare say if you want easy json.
+
+* fyi ES Map's do not support json.
+
+=== SPRITE GENERATION / GRAPHICS:
+
+* the ground sprites are now too tall and mostly waste
+  ever since i removed the seas. if they come back then
+  ok, else maybe clip and save the tiles.
+
+* support easy sprite mirroring instead of having to manually
+  create and use the mirrored images. assuming html5 canvas isn't
+  inefficient at doing the mirroring.
+
+would be nice to have (invisible) hotspots in the graphics for things like:
+where to position people on the ground;
+what are the weapon hardpoints on the ships (and what kind).
+
+!    ***!!! -> would generally be better to save things as .xcf files with layers
+!    and then at server startup convert those to pngs which can be offered
+!    up to the client. <- !!!***
+
+clean up the images, some are unused.
+
+for now i'll hack in black damange circles, but we really want there
+to be different scrolling backgrounds and to see through to them
+so we'll have to have ways to generate "damaged sprite" sheets.
+
+*** i really want the damaged areas to (a) have glowing edges
+and (b) be emitting sparks.
+
+=== CUSTOM ENEMY BEHAVIOR:
+
+need to support unique behaviour for different enemies. would like
+it to somehow be a plugin type thing? eval()?
+
+=== PERFORMANCE:
+
+currently json de/serializing the whole world every time we round-trip.
+maybe have to do something more network-efficient, ya think?
+
+=== WEAPONS:
+
+use layers with hot pixels to mark hardpoints?
+
+=== TOOLS:
+
+things to automate making clean sprites; hardpoint layers.
+
+=== ASSETS / PIPELINE:
+
+should support a scaling value in the code maybe, rather than
+the current hard coding of values across many files.
+
+better abstraction than hard coded path fragments for resource ids.
+
+=== RESOLUTIONS:
+
+currently very hard coded everywhere as pixels.
+want it to be done in some virtual world units and scalable?
+might want to have mipmaps too in that case.
+etc.
+
+----------
+---------- random dump of notes below...
+----------
+
+// there's like literally no good way i can ever see
+// of how to handle collision code because there are
+// too many variables involved, it is very multi-dimensional.
+//
+// i feel like:
+// (a) i want each thing to handle its own reaction.
+// just because that feels more intuitive, per e.g. Unity.
+// but
+// (b) i want to be able to customize the hits,
+// which means each thing has some policy of what
+// it does to the other thing.
+// so
+// they would pass each other their policy against
+// the kind of the other, and then when given such
+// a policy react / update themselves based on it.
+// 
+// so to speak.
+// but that just pushes the question out to, where
+// do the policies live? how do we know which ones
+// are currently in effect, for any given type/instance?
+// i guess the policy can live on the instance...
+const pve:any = p.get_collision_policy(Tag.Enemy);
+const evp:any = e.get_collision_policy(Tag.Player);
+p.collide(e, evp);
+e.collide(p, pve);
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+https://stackoverflow.com/a/37682352
+is maybe closer but no cigar for real 'OO',
+so look at "tie" down below and try to build that up?
+
+function assert_type<T>(el: T) {
+   return el;
+ }
+
+function tie<T>(fn:(o:any)=>void): T {
+    const o = { stamp: Date.now() };
+    fn(o);
+    const t:T = <T><unknown>o;
+    assert_type<T>(t);
+    return t;
+}
+
+interface I1 {
+  sayer: () => string;
+}
+const t:I1 = tie(
+  (o:any) => {
+    o.sayer = () => `born on ${o.stamp}`;
+  }
+);
+
+console.log([
+  t.sayer()
+])
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+=== thinking aloud: wrapped collision detection.
+
+situation: 2 ellipses. they are at the edges of the world;
+one is at the rhs, one is at the lhs. so their origins lt
+don't overlap, although the full rects do wrt "%". how
+do i get them into the same "space"? i need to +/- one of
+them the full width of the bounds. but which direction?
+want to move the "src" and not the "dsts". you can't do that
+because each dst might be on a different side. so either
+you wrap each dst and test against src, or you have 3 src's
++/0/- and compare each dst against all 3. if you move each
+dst then you have to test which side so you can choose sign.
+so far it is mostly 1-on-1, which means it would be cheaper
+to wrap each dst individually.
