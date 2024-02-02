@@ -24,7 +24,7 @@ interface GamePrivate extends Game {
     stepper: Gs.Stepper;
 }
 
-type LevelMk = (score: number, high_score: Hs.HighScore) => Lis.LevelInScreens;
+type LevelMk = (level_index: number, score: number, high_score: Hs.HighScore) => Lis.LevelInScreens;
 const level_mks: LevelMk[] = [
     (level_index: number, score: number, high_score: Hs.HighScore) => L1.level_mk(level_index, score, high_score),
     (level_index: number, score: number, high_score: Hs.HighScore) => L2.level_mk(level_index, score, high_score),
