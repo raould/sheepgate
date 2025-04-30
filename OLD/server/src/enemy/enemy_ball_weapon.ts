@@ -133,24 +133,24 @@ function calculate_at_vel(db: GDB.GameDB, src: S.Fighter, dst: G.Rect, spec: Ene
 }
 
 // by convention we return (left, right).
-export function scale_specs(scale: S.Scale, swivels: boolean): [EnemyWeaponSpec, EnemyWeaponSpec] {
+export function scale_specs(rank: S.Rank, swivels: boolean): [EnemyWeaponSpec, EnemyWeaponSpec] {
     return [
-        scale_spec(scale, F.Facing.left, swivels),
-        scale_spec(scale, F.Facing.right, swivels)
+        scale_spec(rank, F.Facing.left, swivels),
+        scale_spec(rank, F.Facing.right, swivels)
     ];
 }
 
-export function scale_spec(scale: S.Scale, directions: F.Facing, swivels: boolean): EnemyWeaponSpec {
-    switch (scale) {
-        case S.Scale.small:
+export function scale_spec(rank: S.Rank, directions: F.Facing, swivels: boolean): EnemyWeaponSpec {
+    switch (rank) {
+        case S.Rank.small:
             return enemy_small_spec(directions, swivels);
-        case S.Scale.mega:
+        case S.Rank.mega:
             return enemy_mega_spec(directions, swivels);
-        case S.Scale.hypermega:
+        case S.Rank.hypermega:
             return enemy_hypermega_spec(directions, swivels);
-        case S.Scale.player:
-            // todo: argues for splitting enemy vs. player scales, duh.
-            D.assert_fail("scale_spec(): only supports enemy scales.");
+        case S.Rank.player:
+            // todo: argues for splitting enemy vs. player ranks, duh.
+            D.assert_fail("scale_spec(): only supports enemy ranks.");
             // satisfy the compiler by returning something.
             return enemy_small_spec(directions, swivels);
     }

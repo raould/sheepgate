@@ -75,7 +75,7 @@ export interface WarpinSpec {
     duration_msec: number;
     rect: G.Rect;
     resource_id: string;
-    scale: S.Scale;
+    rank: S.Rank;
     on_end: GDB.Callback;
 }
 
@@ -106,7 +106,7 @@ export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
         // than the final sprite but that's not supported
         // (it would probably have to be 2 z-ordrered sprites).
         ...spec.rect,
-        scale: spec.scale,
+        rank: spec.rank,
         acc: G.v2d_mk_0(),
         vel: G.v2d_mk_0(),
         alpha: 1,

@@ -20,7 +20,7 @@ import * as D from '../debug';
 export interface EnemySpec {
     lt?: G.V2D,
     anim: A.AnimatorDimensions,
-    scale: S.Scale,
+    rank: S.Rank,
     hp_init: number,
     damage: number,
     weapons: S.Arsenal,
@@ -40,7 +40,7 @@ export function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec
             duration_msec: K.WARPIN_TOTAL_MSEC,
             rect: rect,
             resource_id: db.uncloned.images.lookup(resource_id),
-            scale: spec.scale,
+            rank: spec.rank,
             on_end: (db: GDB.GameDB) => {
                 const images = db.uncloned.images;
                 const sprite: U.O<EnemyPrivate> = GDB.add_sprite_dict_id_mut(
@@ -77,8 +77,8 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
                 flight_pattern: spec.flight_pattern,
                 vel: G.v2d_mk_0(),
                 acc: G.v2d_mk_0(),
-                scale: spec.scale,
-                mass: S.scale2mass(spec.scale),
+                rank: spec.rank,
+                mass: S.rank2mass(spec.rank),
                 type_flags: Tf.TF.enemyShip,
                 weapons: spec.weapons,
                 z_back_to_front_ids: spec.anim.z_back_to_front_ids(db, F.DefaultFacing, false, 1),

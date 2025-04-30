@@ -192,14 +192,14 @@ function on_death_fx(db: GDB.GameDB, shield: ShieldPrivate, fighter: S.Fighter) 
                 comment: `explosionA-${dbid}`,
                 ...r,
                 type_flags: type_flags,
-                scale: fighter.scale,
+                rank: fighter.rank,
                 vel: G.v2d_mk_0(),
                 acc: G.v2d_mk_0(),
                 alpha: 1,
             })
         }
     );
-    if (fighter.scale >= S.Scale.hypermega || fighter.scale == S.Scale.player) {
+    if (fighter.rank >= S.Rank.hypermega || fighter.rank == S.Rank.player) {
         GDB.add_dict_id_mut(
             db.shared.items.particles,
             (dbid: GDB.DBID) => new Pr.ParticleEllipseGenerator(
@@ -224,7 +224,7 @@ function on_death_fx(db: GDB.GameDB, shield: ShieldPrivate, fighter: S.Fighter) 
                     comment: `explosionB-${dbid}`,
                     ...r,
                     type_flags: type_flags,
-                    scale: fighter.scale,
+                    rank: fighter.rank,
                     vel: G.v2d_mk_0(),
                     acc: G.v2d_mk_0(),
                     alpha: 1,

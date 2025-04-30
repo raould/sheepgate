@@ -65,16 +65,16 @@ function add_generator(
         );
 }
 
-function count_scale(db: GDB.GameDB, scale: S.Scale): number {
-    const alive = Object.values(db.shared.items.enemies).filter(e => e.scale == scale).length;
-    const warping = Object.values(db.shared.items.warpin).filter(e => e.scale == scale).length;
+function count_rank(db: GDB.GameDB, rank: S.Rank): number {
+    const alive = Object.values(db.shared.items.enemies).filter(e => e.rank == rank).length;
+    const warping = Object.values(db.shared.items.warpin).filter(e => e.rank == rank).length;
     return alive + warping;
 }
 
 function should_generate_small(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
     const running = spec.generations > state.small.generated;
     if (running) {
-        const room = spec.max_alive > count_scale(db, S.Scale.small);
+        const room = spec.max_alive > count_rank(db, S.Rank.small);
         return room;
     }
     return false;
@@ -83,9 +83,9 @@ function should_generate_small(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: 
 function should_generate_mega(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
     const running = spec.generations > state.mega.generated;
     if (running) {
-        const room = spec.max_alive > count_scale(db, S.Scale.mega);
+        const room = spec.max_alive > count_rank(db, S.Rank.mega);
         const small_done = state.small.generated >= state.small.generations;
-        const small_withered = Math.max(1, Math.floor(state.small.generations / 2)) >= count_scale(db, S.Scale.small);
+        const small_withered = Math.max(1, Math.floor(state.small.generations / 2)) >= count_rank(db, S.Rank.small);
         return room && small_done && small_withered;
     }
     return false;
@@ -94,11 +94,11 @@ function should_generate_mega(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: E
 function should_generate_hypermega(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
     const running = spec.generations > state.hypermega.generated;
     if (running) {
-        const room = spec.max_alive > count_scale(db, S.Scale.hypermega);
+        const room = spec.max_alive > count_rank(db, S.Rank.hypermega);
         const small_done = state.small.generated >= state.small.generations;
-        const small_dead = 0 == count_scale(db, S.Scale.small);
+        const small_dead = 0 == count_rank(db, S.Rank.small);
         const mega_done = state.mega.generated >= state.mega.generations;
-        const mega_dead = 0 == count_scale(db, S.Scale.mega);
+        const mega_dead = 0 == count_rank(db, S.Rank.mega);
         return room && small_done && small_dead && mega_done && mega_dead;
     }
     return false;

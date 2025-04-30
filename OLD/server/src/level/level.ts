@@ -476,7 +476,7 @@ export abstract class AbstractLevel implements Level {
         // todo: this should ideally fade as the explosion fades,
         // which means the explosion needs to expose some timing,
         // or the explosions needs to be the ones to apply the shake?
-        if (Object.values(next.shared.items.explosions).some(e => e.scale >= S.Scale.hypermega)) {
+        if (Object.values(next.shared.items.explosions).some(e => e.rank >= S.Rank.hypermega)) {
             next.shared.screen_shake = G.v2d_random_inxy(Rnd.singleton, K.GAMEPORT_SHAKE, K.GAMEPORT_SHAKE);
         }
         else {

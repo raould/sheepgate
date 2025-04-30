@@ -39,7 +39,7 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
         vel: G.v2d_mk_0(),
         acc: G.v2d_mk_0(),
         alpha: 1,
-        scale: S.Scale.player,
+        rank: S.Rank.player,
         ship_anim: ship_anim_mk(db),
         flame_anim: flame_anim_mk(db),
         type_flags: Tf.TF.playerShip,
