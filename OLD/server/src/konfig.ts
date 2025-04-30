@@ -162,7 +162,7 @@ export const GAMEPORT_PLAYER_ZONE_STEP_X = 10;
 // feeling of how y works, but haven't figured out how to get it back for x
 // and keep the zone stuff at the same time.
 export const GAMEPORT_PLAYER_ZONE_SCALE_Y = 0.2;
-export const GAMEPORT_SHAKE = 3; // K
+export const GAMEPORT_SHAKE = 4; // K
 
 export const OFF_SCREEN = G.v2d_mk_nn(-Number.MAX_SAFE_INTEGER);
 

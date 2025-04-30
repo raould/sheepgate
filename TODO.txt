@@ -11,7 +11,6 @@ THESE ARE NOT IN ORDER because i keep changing my mind :-\
 
 * increase fps.
   * crap, if the fps >= 40 then the sizzlers freeze wth?
-* explosions should be sized like each ship.
 * maybe things should move slower e.g. player ship?
 * maybe player ship should be more in the middle?
 * see 0.9 below.
