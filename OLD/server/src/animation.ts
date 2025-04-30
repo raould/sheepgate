@@ -103,7 +103,7 @@ export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
         dbid: dbid,
         comment: `warpin-${dbid}`,
         // todo: i REALLY wish the warpin was like 1.25 or 1.5x bigger
-        // than the final sprite but that's not supported
+        // than the final sprite but that's not supported atm
         // (it would probably have to be 2 z-ordrered sprites).
         ...spec.rect,
         rank: spec.rank,

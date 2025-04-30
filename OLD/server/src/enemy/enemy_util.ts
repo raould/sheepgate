@@ -12,24 +12,48 @@ export function can_shoot_in_bounds(db: GDB.GameDB, enemy: S.Enemy): boolean {
     );
 }
 
-export function safe_lt(db: GDB.GameDB, size: G.V2D, rnd: Rnd.Random): G.V2D {
-    // todo: this doesn't actaually work right: things do sometimes still overlap, wtf.
-    let lt = G.v2d_random_inxy(rnd, db.shared.world.bounds0.x, size.y);
-    let buffered_scale = G.v2d_scale(K.SHIELD_SCALE, 1.2);
+export function safe_lt(db: GDB.GameDB, size: G.V2D, rnd: Rnd.Random, lt: G.V2D | undefined): G.V2D {
+    const slt = safe_lt_vs_enemy(db, size, rnd, lt);
+    safe_lt_vs_player(db, size, rnd, slt);
+    return slt;
+}
+
+export function safe_lt_vs_player(db: GDB.GameDB, size: G.V2D, rnd: Rnd.Random, lt: G.V2D) {
+    const p = GDB.get_player(db);
+    console.log("+", G.v2d_toS(lt), !!p, G.rect_toS(p));
+    if (!!p) {
+        let rect = G.rect_mk(lt, size);
+	let padded_scale = G.v2d_scale(K.SHIELD_SCALE, 1.2);
+        let padded = G.rect_scale_mid_v2d(p, padded_scale);
+	let hit = G.rects_are_overlapping_wrapH(rect, p, db.shared.world.bounds0);
+	console.log(hit, G.rect_toS(padded), G.v2d_toS(lt));
+        if (hit) {
+            // move horizontally to avoid the hit.
+	    lt.x += p.size.x * 5;
+	}
+    }
+    console.log("-", G.v2d_toS(lt));
+}
+
+// avoid overlapping with existing enemies.
+// todo: this doesn't actaually work right: things do sometimes still overlap, wtf!!!!!!!!!!!!!!!
+export function safe_lt_vs_enemy(db: GDB.GameDB, size: G.V2D, rnd: Rnd.Random, lt: G.V2D | undefined): G.V2D {
+    let slt = lt ?? G.v2d_random_inxy(rnd, db.shared.world.bounds0.x, size.y);
+    let padded_scale = G.v2d_scale(K.SHIELD_SCALE, 1.2);
     let hit: U.O<G.Rect>;
     let loop_max = 10;
     do {
-        let r = G.rect_mk(lt, size);
+        let r = G.rect_mk(slt, size);
         hit = Object.values(db.shared.items.enemies).find(e => {
-            let buffered = G.rect_scale_mid_v2d(e, buffered_scale);
-            let are = G.rects_are_overlapping_wrapH(r, buffered, db.shared.world.bounds0);
-            return are ? buffered : undefined;
+            let padded = G.rect_scale_mid_v2d(e, padded_scale);
+            let are = G.rects_are_overlapping_wrapH(r, padded, db.shared.world.bounds0);
+            return are ? padded : undefined;
         });
         if (hit != null) {
             // move horizontally to avoid the hit.
-            lt = G.v2d_add(lt, G.v2d_x0(hit.size));
+            slt = G.v2d_add(slt, G.v2d_x0(hit.size));
         }
         --loop_max;
     } while (hit != null && loop_max > 0);
-    return lt;
+    return slt;
 }

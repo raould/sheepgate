@@ -6,7 +6,7 @@ import * as U from '../../util/util';
 import * as F from '../../facing';
 import * as Ebw from '../../enemy/enemy_ball_weapon';
 import * as Fp from '../../enemy/flight_patterns';
-import * as E from '../../enemy/enemy_mk';
+import * as Emk from '../../enemy/enemy_mk';
 import * as K from '../../konfig';
 
 // match: sprite animation.
@@ -21,19 +21,26 @@ export function warpin_mk(db: GDB.GameDB): U.O<S.Sprite> {
         'wr': Ebw.weapon_mk(ewsr),
     };
     const flight_pattern = new Fp.DecendAndGoStraight(db, SIZE, 0.0005);
-    return E.warpin_mk(
+    const spec: Emk.EnemySpec = {
+        anim: anim,
+        rank: S.Rank.small,
+        hp_init: K.ENEMY_SMALL_HP,
+        damage: K.ENEMY_SMALL_DAMAGE,
+        weapons: weapons,
+        flight_pattern: flight_pattern,
+        gem_count: K.ENEMY_SMALL_GEM_COUNT
+    };
+    // todo: remove this testing hack...
+    const p = GDB.get_player(db);
+    if (!!p) {
+	spec.lt = p.lt;
+    }
+    // ...todo: remove this testing hack.
+    return Emk.warpin_mk(
         db,
         SIZE,
     	WARPIN_RESOURCE_ID,
-        {
-            anim: anim,
-            rank: S.Rank.small,
-            hp_init: K.ENEMY_SMALL_HP,
-            damage: K.ENEMY_SMALL_DAMAGE,
-            weapons: weapons,
-            flight_pattern: flight_pattern,
-            gem_count: K.ENEMY_SMALL_GEM_COUNT
-        }
+	spec,
     );
 }
 

@@ -4,6 +4,8 @@ import { RGBA } from './color';
 import * as GDB from './game_db';
 import * as _ from 'lodash';
 
+const DEBUG_GRAPHICS_FRAME_LIFETIME = 1000;
+
 // arbitrary colors to use, already alpha'd fwiw.
 export const DEBUG_COLOR_RED = RGBA.RED.setAlpha01(0.4);
 export const DEBUG_COLOR_GREEN = RGBA.GREEN.setAlpha01(0.4);
@@ -21,7 +23,9 @@ export namespace DebugGraphics {
         return [permanent, frame];
     }
 
-    // they only last 1 frame.
+    // they only last some number of frames.
+    // the fade-out is arbitrary and you can/should
+    // hack it on the fly for your testing use cases.
     export function get_frame(): Dr.Drawing {
         return frame;
     }

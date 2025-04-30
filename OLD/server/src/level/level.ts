@@ -355,7 +355,7 @@ export abstract class AbstractLevel implements Level {
         // time, fps. supports single stepping debug mode.
         next.shared.tick = next.local.prev_db.shared.tick + 1;
 
-        // only update the statistics once per second
+        // smooth updates of statistics over once per second
         // because otherwise things were going nutty.
         const now = Date.now();
         const wall_clock_dt = now - next.local.fps_marker.msec;
