@@ -173,31 +173,19 @@ export function precision(n: number, p: number): number {
 
 type LNOTNIL<T,R> = (t:T)=>R
 type LNIL<R> = (()=>R);
+
 export function if_let<T,R>(ot:O<T>, nonnil:LNOTNIL<T,R>): O<R> {
     if (ot != null) {
         return nonnil(ot!);
     }
     return undefined;
 }
+
 export function if_let_safe<T,R>(ot:O<T>, nonnil:LNOTNIL<T,R>, nil:LNIL<R>): R {
     if (ot != null) {
         return nonnil(ot!);
     }
     return nil();
-}
-
-// todo: i know the name is stupid but i hate that js/ts don't let
-// me use characters in names e.g. '!' instead of '2' here, and i don't
-// want to make the name longer, and i don't want to think of another
-// term so eff it for now.
-// if_let2 prevents 'undefined'.
-export function if_let2<T,R>(ot:O<T>, nonnil:LNOTNIL<T,R>, nil:LNIL<R>): R {
-    if (ot != null) {
-        return nonnil(ot!);
-    }
-    else {
-        return nil();
-    }
 }
 
 // if_let"s" as in plural. all the os's have to be non-nil for it to call nonnil().

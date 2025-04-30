@@ -9,14 +9,22 @@ next-feature-short-list, in no order:
   but i am not going to fix that ever.
 THESE ARE NOT IN ORDER because i keep changing my mind :-\
 
+* increase fps.
+* give health bonus for each person saved.
+* explosions should be sized like each ship.
+* maybe things should move slower e.g. player ship?
+* maybe player ship should be more in the middle?
+* see 0.9 below.
+* see 7.1 below; have a watchdog at least?
+
 DO THESE NOW/NEXT:
 + hud proximity warning makers.
 + add some livestock.
 !!!+ enemies should shoot when shot.
 + people/livestock should not be too close to the base, duh.
-+ enemy shots already can intersect people, so make people killable.
++ enemy shots already can intersect people, so make people killable?
 * a better way to do the bloody screen state machine.
-* pause feature.
+* pause feature. :-\
 -1) the entire simulation step is crap: has too many things that *do* get modified,
    and yet too many thing that do not, and it is unclear which is what when.
    a concrete example is the acc gets set to zero as soon as the phys step is called.

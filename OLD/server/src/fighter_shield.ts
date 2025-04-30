@@ -40,6 +40,10 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
     GDB.add_sprite_dict_id_mut(
         shields,
         (dbid): S.Shield<S.Fighter> => {
+	    const fighter = GDB.get_fighter(db, spec.fighter.dbid);
+	    if (fighter != undefined) {
+		fighter.shield_id = dbid;
+	    }
             const s: ShieldPrivate = {
                 dbid: dbid,
                 get_wrapped(db: GDB.GameDB): U.O<S.Fighter> {

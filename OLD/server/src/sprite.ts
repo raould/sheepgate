@@ -157,6 +157,7 @@ export interface Enemy extends Fighter {
 // Shielded should not be a full CollidableSprite, but
 // does get informed when thier shield collides.
 export interface Shielded {
+    shield_id?: GDB.DBID;
     set_lifecycle(lifecycle: GDB.Lifecycle): void;
     on_collide(db: GDB.GameDB, dst: CollidableSprite): void;
 }

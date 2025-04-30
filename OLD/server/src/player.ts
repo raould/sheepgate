@@ -166,6 +166,14 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
                                                 thiz.beaming_ids.delete(pid);
                                                 db.shared.rescued_count++;
                                                 db.local.scoring.on_event(Sc.Event.rescue);
+						if (this.shield_id != undefined) {
+						    U.if_let(
+							GDB.get_shield(db, this.shield_id),
+							player_shield => {
+							    player_shield.hp = K.PLAYER_HP;
+							}
+						    );
+						}
                                             }
                                         );
                                     }
@@ -308,7 +316,7 @@ export function add_shield(db: GDB.GameDB, player: S.Player) {
             if (U.has_bits_eq(c.type_flags, Tf.TF.gem)) {
                 thiz.hp = Math.min(thiz.hp_init, thiz.hp + K.GEM_HP_BONUS);
                 db.shared.items.sfx.push(K.GEM_COLLECT_SFX);
-				db.local.scoring.on_event(Sc.Event.gem_pickup);
+		db.local.scoring.on_event(Sc.Event.gem_pickup);
             }
             // note: the player has an extra hard-coded ability to crash through enemies somewhat.
             if (U.has_bits_eq(c.type_flags, Tf.TF.enemyShield)) {
