@@ -25,7 +25,8 @@ let contextAudio: any;
 let cx2d: any;
 let sounds: any = {};
 let images: any = {};
-let last_render_time = { msec: Date.now() };
+let last_render_msec = 0;
+let last_fps = { tick: 0, msec: 0 };
 let tick = 0;
 let game_fps = 0;
 let window_fps = 0;
@@ -36,7 +37,8 @@ const BG_COLOR: string = "#111133";
 const DEBUG_IMG_BOX_COLOR: string = "rgba(255,0,0,0.5)";
 const client_id = Date.now()
 // todo: game breaks when the fps is set to anything other than 30.
-const TARGET_FPS = 39;
+// also requestAnimationFrame() never gives me more than 30 fps anyway?
+const TARGET_FPS = 30;
 const MSEC_PER_FRAME = 1000 / TARGET_FPS;
 log("client_id", client_id);
 
@@ -207,12 +209,19 @@ function rand_mk(seed: number) {
 
 function nextFrame(/*using global server_db*/) {
     const now = Date.now();
-    // todo: window animation actual fps.
-    // target render fps.
-    const rdt = now - last_render_time.msec;
-    if (rdt >= MSEC_PER_FRAME) {
-        game_fps = 0;
-        last_render_time.msec = now;
+    const fps_dt = now - last_fps.msec;
+    if (fps_dt >= 1000) {
+	const ticks = tick - last_fps.tick;
+	game_fps = ticks * 1000 / fps_dt;
+	last_fps.msec = now;
+	last_fps.tick = tick;
+    }
+    // requestAnimationFrame() is running at 30fps for me
+    // so don't wait a whole nother round if we're close,
+    // hence this heuristic of scaling the threshold by 0.9.
+    if (now - last_render_msec >= MSEC_PER_FRAME*0.9) {
+        last_render_msec = now;
+	tick++;
         render(server_db);
     } 
     window.requestAnimationFrame(nextFrame);
@@ -456,8 +465,7 @@ function renderDebug(gdb: any) {
         cx2d.fillText(`sim fps ${F2D(gdb.fps)}`, 300, 50);
 	// todo: this needs some kind of smoothing, it is often unreadable.
         cx2d.fillText(`client fps ${F2D(game_fps)}`, 300, 70);
-        cx2d.fillText(`client fps ${game_fps >= TARGET_FPS} ${F2D(Math.abs(game_fps-TARGET_FPS))}`, 300, 90);
-	cx2d.fillText(`window fps ${window_fps}`, 300, 120);
+        cx2d.fillText(`client fps ${TARGET_FPS} ${game_fps >= TARGET_FPS} ${F2D(Math.abs(game_fps-TARGET_FPS))}`, 300, 90);
 
         renderLine(4, "#00FF0055", 0, 0, h5canvas.width, h5canvas.height);
         renderLine(4, "#00FF0055", 0, h5canvas.height, h5canvas.width, 0);

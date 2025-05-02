@@ -12,16 +12,29 @@ const wss = new WS.Server({ port: 6969 });
 const high_scores = Hs.high_scores_mk();
 
 // throbbing all clients' games in lock-step at K.FPS.
+const last_msec = 0;
 const t = new T.OnlyOneCallbackTimer(
-    () => ws2game.forEach((game, ws) => {
-        if (game != null) {
-            game.step();
-            ws.send(game.stringify());
-            D.debug_step_cancel();
-        }
-    }),
-    K.DT
-);
+    () => {
+	let count = 0; // debugging.
+	const pre = Date.now();
+	ws2game.forEach((game, ws) => {
+	    if (game != null) {
+		count++;
+		game.step();
+		ws.send(game.stringify());
+		D.debug_step_cancel();
+	    }
+	});
+
+	// debugging.
+	const post = Date.now();
+	const dt = post-pre;
+	if (dt > K.DT) {
+	    console.error(count, U.F2D(dt), ">", K.DT);
+	}
+    },
+    K.DT / 10);
+
 t.start();
 
 wss.on('connection', (ws) => {

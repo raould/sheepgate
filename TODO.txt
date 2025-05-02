@@ -62,7 +62,7 @@ DO THESE NOW/NEXT:
    easy to just shoot them from behind.
 3) 3 stages of enemy types per level (brill, mega brill, hyper mega brill).
 3.1) with the level loading page showing them.
-4) sound.
+4) sound, bugs, platform issues, etc.
 5) beware too many things are being jsonized, but i did start using spriteJSON().
 6) all the hacked in constants that aren't in K or L config. :-(
 7) ACTUALLY UNIQUE LEVELS.
@@ -91,9 +91,9 @@ DO THESE NOW/NEXT:
     fundamentally built into some kind of vector & rect types, cf. player zone calculation.
 27) the code is a rats' nest of relations and calls and twistly little passages, all different :-(
 
-999) everything else...
+999) everything else..., especially code...
 * funny how 'scale's are sometimes scalars, sometimes vectors.
-* glitch weapons.
+* glitch weapons. (?)
 * wish it were easier to e.g. debug draw all acc, vel vectors.
 * it is bad weird gameplay that the enemies can pass through each other unharmed.
 * player should have to be going slow to pick up people.

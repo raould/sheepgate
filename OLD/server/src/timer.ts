@@ -9,9 +9,11 @@ let next_id: number = 0;
 // in and of itself guarantee the old instances are garbage collected.
 export class OnlyOneCallbackTimer {
     id: number;
+    last_msec: number;
 
     constructor(private readonly loop: Callback, private readonly timeout: number) {
         this.id = ++next_id;
+	this.last_msec = 0;
         D.log("new OnlyOneCallbackTimer", this.id);
     }
 
@@ -23,8 +25,13 @@ export class OnlyOneCallbackTimer {
         setTimeout(
             () => {
                 if (this.id == next_id) {
-                    this.loop();
-                    this.run();
+		    const now = Date.now();
+		    const dt = now - this.last_msec;
+		    if (dt > this.timeout*0.9) {
+			this.loop();
+			this.last_msec = now;
+			this.run();
+		    }
                 }
                 else {
                     D.log("exiting OnlyOneCallbackTimer", this.id);

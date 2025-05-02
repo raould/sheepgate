@@ -19,6 +19,10 @@ export function unreachable(_: unknown): never {
     throw new Error("unreachable");
 }
 
+export function F2D(n: number): number {
+    return Math.round((Number.EPSILON+n)*100)/100;
+}
+
 // your fault if the array is empty!
 export function last<T>(array: Array<T>, offset: number=0): T {
     let index = array.length - 1 - offset;
