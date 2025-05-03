@@ -33,28 +33,18 @@ const level_mks: LevelMk[] = [
 export function game_mk(high_scores: Hs.HighScores): Game {
     return new class _G implements GamePrivate {
         stepper: Gs.Stepper;
-	last_msec: number;
 
         constructor() {
             D.log("new game!");
             this.stepper = new GameInstructions();
-	    this.last_msec = 0;
         }
 
         merge_client_db(cnew: Cdb.ClientDB) {
             this.stepper.merge_client_db(cnew);
         }
 
-	step() {
-	    this.last_msec = Gs.step_dt(
-		this.last_msec,
-		K.DT,
-		this.step_fn.bind(this),
-	    );
-	}
-
         // todo: this would all be better done as a visual graph / state machine.
-        step_fn() {
+	step() {
             this.stepper.step();
             if (this.stepper instanceof GameInstructions && this.stepper.get_state() != Gs.StepperState.running) {
                 this.stepper = new GameLevels(high_scores.get_high_score());

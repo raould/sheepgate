@@ -14,7 +14,7 @@ export class OnlyOneCallbackTimer {
     constructor(private readonly loop: Callback, private readonly timeout: number) {
         this.id = ++next_id;
 	this.last_msec = 0;
-        D.log("new OnlyOneCallbackTimer", this.id);
+        D.log("new OnlyOneCallbackTimer", this.id, this.last_msec, this.timeout);
     }
 
     start() {
@@ -30,14 +30,14 @@ export class OnlyOneCallbackTimer {
 		    if (dt > this.timeout*0.9) {
 			this.loop();
 			this.last_msec = now;
-			this.run();
 		    }
+		    this.run();
                 }
                 else {
                     D.log("exiting OnlyOneCallbackTimer", this.id);
                 }
             },
-            this.timeout
+            this.timeout/2
         );
     }
 }

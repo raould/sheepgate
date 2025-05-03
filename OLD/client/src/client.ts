@@ -7,6 +7,7 @@ import { explosion_sfx_b64 } from './explosion.ogg.b64';
 import { gem_collect_sfx_b64 } from './gem_collect.ogg.b64';
 import { player_shoot_sfx_b64 } from './player_shoot.ogg.b64';
 import { Gamepads, StandardMapping } from './gamepads';
+import { FPS } from './fps';
 
 // todo: use the server types.
 let server_db: any;
@@ -26,10 +27,9 @@ let cx2d: any;
 let sounds: any = {};
 let images: any = {};
 let last_render_msec = 0;
-let last_fps = { tick: 0, msec: 0 };
-let tick = 0;
 let game_fps = 0;
-let window_fps = 0;
+let fps = new FPS((fps) => { game_fps = fps; });
+let tick = 0;
 let currentGamepad: any;
 const server_host: string = "localhost";
 const ws_endpoint: string = `ws://${server_host}:6969`;
@@ -209,13 +209,7 @@ function rand_mk(seed: number) {
 
 function nextFrame(/*using global server_db*/) {
     const now = Date.now();
-    const fps_dt = now - last_fps.msec;
-    if (fps_dt >= 1000) {
-	const ticks = tick - last_fps.tick;
-	game_fps = ticks * 1000 / fps_dt;
-	last_fps.msec = now;
-	last_fps.tick = tick;
-    }
+    fps.on_tick();
     // requestAnimationFrame() is running at 30fps for me
     // so don't wait a whole nother round if we're close,
     // hence this heuristic of scaling the threshold by 0.9.

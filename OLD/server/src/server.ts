@@ -30,16 +30,17 @@ const t = new T.OnlyOneCallbackTimer(
 	const post = Date.now();
 	const dt = post-pre;
 	if (dt > K.DT) {
-	    console.error(count, U.F2D(dt), ">", K.DT);
+	    D.error(count, U.F2D(dt), ">", K.DT);
 	}
     },
-    K.DT / 10);
+    K.DT);
 
 t.start();
 
 wss.on('connection', (ws) => {
-    ws2game.set(ws, undefined);
-    D.log(`ws connected! # remaining games: ${ws2game.size}`);
+    D.log("ws connected!");
+
+    ws2game.set(ws, undefined); // paranoia.
 
     ws.on('open', () => {
         // todo: why the heck is this never called?!
@@ -62,12 +63,13 @@ wss.on('connection', (ws) => {
                     if (g == null) {
                         g = Gm.game_mk(high_scores);
                         ws2game.set(ws, g);
+			D.log("ws game++", ws2game.size);
                     }
                     g.merge_client_db(client_db);
                 }
             }
             catch (err) {
-                console.error(err);
+                D.error(err);
             }
         }
     );
