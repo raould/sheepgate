@@ -5,11 +5,14 @@ import * as T from './timer';
 import * as D from './debug';
 import * as U from './util/util';
 import * as Hs from './high_scores';
+import * as P from './perf';
 import * as WS from 'ws';
 
 const ws2game: Map<any, U.O<Gm.Game>> = new Map();
 const wss = new WS.Server({ port: 6969 });
 const high_scores = Hs.high_scores_mk();
+
+const perf = new P.Perf(30, (n) => console.log(n));
 
 // throbbing all clients' games in lock-step at K.FPS.
 const last_msec = 0;
@@ -20,7 +23,9 @@ const t = new T.OnlyOneCallbackTimer(
 	ws2game.forEach((game, ws) => {
 	    if (game != null) {
 		count++;
+		perf.begin();
 		game.step();
+		perf.end();
 		ws.send(game.stringify());
 		D.debug_step_cancel();
 	    }
