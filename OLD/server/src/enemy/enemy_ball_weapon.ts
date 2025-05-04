@@ -135,10 +135,13 @@ function calculate_at_vel(db: GDB.GameDB, src: S.Fighter, dst: G.Rect, spec: Ene
 
 // by convention we return (left, right).
 export function scale_specs(level: number, rank: S.Rank, swivels: boolean): [EnemyWeaponSpec, EnemyWeaponSpec] {
-    return [
+    const specs:[EnemyWeaponSpec, EnemyWeaponSpec] = [
         scale_spec(level, rank, F.Facing.left, swivels),
         scale_spec(level, rank, F.Facing.right, swivels)
     ];
+    D.log("ball spec left", level, rank, specs[0]);
+    D.log("ball spec right", level, rank, specs[1]);
+    return specs;
 }
 
 export function scale_spec(level: number, rank: S.Rank, directions: F.Facing, swivels: boolean): EnemyWeaponSpec {
@@ -196,18 +199,12 @@ function enemy_small_spec(level: number, direction: F.Facing, swivels: boolean):
 		),
                 on_reload: () => { },
             },
-            shot_spec: {
-                duration_msec: Eu.level_scale_down(
-		    level,
-		    ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC * 2,
-		    ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC
-		),
-            },
-            count: Eu.level_scale_up(
+            shot_spec: ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC,
+            count: Math.ceil(Eu.level_scale_up(
 		level,
 		1,
 		ENEMY_SMALL_WEAPON_SHOT_COUNT,
-	    ),
+	    )),
         },
         shot_damage: Eu.level_scale_up(
 	    level,
