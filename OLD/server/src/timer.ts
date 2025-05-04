@@ -1,6 +1,7 @@
+import * as U from './util/util';
 import * as D from './debug';
 
-export type Callback = ()=>void;
+export type Callback = () => void;
 
 let next_id: number = 0;
 
@@ -22,12 +23,12 @@ export class OnlyOneCallbackTimer {
     }
 
     private run() {
-        setTimeout(
+	setImmediate(
             () => {
                 if (this.id == next_id) {
 		    const now = Date.now();
 		    const dt = now - this.last_msec;
-		    if (dt > this.timeout*0.9) {
+		    if (dt >= this.timeout) {
 			this.loop();
 			this.last_msec = now;
 		    }
@@ -36,8 +37,7 @@ export class OnlyOneCallbackTimer {
                 else {
                     D.log("exiting OnlyOneCallbackTimer", this.id);
                 }
-            },
-            this.timeout/2
+            }
         );
     }
 }

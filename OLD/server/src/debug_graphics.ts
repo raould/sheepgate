@@ -4,8 +4,6 @@ import { RGBA } from './color';
 import * as GDB from './game_db';
 import * as _ from 'lodash';
 
-const DEBUG_GRAPHICS_FRAME_LIFETIME = 1000;
-
 // arbitrary colors to use, already alpha'd fwiw.
 export const DEBUG_COLOR_RED = RGBA.RED.setAlpha01(0.4);
 export const DEBUG_COLOR_GREEN = RGBA.GREEN.setAlpha01(0.4);
