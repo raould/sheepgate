@@ -4,6 +4,18 @@ import * as S from '../sprite';
 import * as U from '../util/util';
 import * as Rnd from '../random';
 import * as K from '../konfig';
+import * as D from '../debug';
+
+export function level_scale_down(level: number, max: number, min: number): number {
+    D.assert(min <= max);
+    const t = U.t10(1, 10, level);
+    return min + (max-min) * t;
+}
+export function level_scale_up(level: number, min: number, max: number): number {
+    D.assert(min <= max);
+    const t = U.t01(1, 10, level);
+    return min + (max-min) * t;
+}
 
 export function can_shoot_in_bounds(db: GDB.GameDB, enemy: S.Enemy): boolean {
     return !G.rect_is_out_of_bounds(

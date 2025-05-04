@@ -1,5 +1,6 @@
 import * as D from '../debug';
 
+// todo: uh, tests?
 // todo: share this with client, probably.
 // todo: some of these utils aren't ever used, consider deleting them.
 
@@ -151,9 +152,13 @@ export function lerp(a: number, b: number, t: number): number {
     );
 }
 
-export function inv_lerp(min: number, max: number, n: number): number {
+export function t01(min: number, max: number, n: number): number {
     D.assert(min <= max);
     return clip01((n - min) / (max - min));
+}
+
+export function t10(min: number, max: number, n: number): number {
+    return 1 - t01(min, max, n);
 }
 
 export function clip01(n: number): number {

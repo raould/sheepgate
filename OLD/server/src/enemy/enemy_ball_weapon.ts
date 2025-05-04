@@ -1,3 +1,4 @@
+import * as Eu from './enemy_util';
 import * as GDB from '../game_db';
 import * as G from '../geom';
 import * as S from '../sprite';
@@ -164,7 +165,7 @@ const ENEMY_SMALL_SHOT_SIZE = K.BALL_SHOT_SIZE;
 const ENEMY_SMALL_SHOT_LIFE_MSEC = 3000; // L, W
 const ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC = 3000; // L, W
 const ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC = 125; // L, W
-const ENEMY_SMALL_WEAPON_SHOT_COUNT = 1; // L, W
+const ENEMY_SMALL_WEAPON_SHOT_COUNT = 3; // L, W
 
 const ENEMY_MEGA_SHOT_DAMAGE = K.PLAYER_HP / 40; // L, W
 const ENEMY_MEGA_SHOT_SPEED = 0.10; // L, W
@@ -172,7 +173,7 @@ const ENEMY_MEGA_SHOT_SIZE = K.BALL_SHOT_SIZE;
 const ENEMY_MEGA_SHOT_LIFE_MSEC = 3000; // L, W
 const ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC = 2000; // L, W
 const ENEMY_MEGA_WEAPON_SHOT_COOLDOWN_MSEC = 75; // L, W
-const ENEMY_MEGA_WEAPON_SHOT_COUNT = 1; // L, W
+const ENEMY_MEGA_WEAPON_SHOT_COUNT = 3; // L, W
 
 const ENEMY_HYPERMEGA_SHOT_DAMAGE = K.PLAYER_HP / 20; // L, W
 const ENEMY_HYPERMEGA_SHOT_SPEED = 0.15; // L, W
@@ -180,7 +181,7 @@ const ENEMY_HYPERMEGA_SHOT_SIZE = K.BALL_SHOT_SIZE;
 const ENEMY_HYPERMEGA_SHOT_LIFE_MSEC = 3000; // L, W
 const ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC = 2000; // L, W
 const ENEMY_HYPERMEGA_WEAPON_SHOT_COOLDOWN_MSEC = 75; // L, W
-const ENEMY_HYPERMEGA_WEAPON_SHOT_COUNT = 2; // L, W
+const ENEMY_HYPERMEGA_WEAPON_SHOT_COUNT = 4; // L, W
 
 function enemy_small_spec(level: number, direction: F.Facing, swivels: boolean): EnemyWeaponSpec {
     return {
@@ -188,15 +189,31 @@ function enemy_small_spec(level: number, direction: F.Facing, swivels: boolean):
 	swivels: swivels,
         clip_spec: {
             reload_spec: {
-                duration_msec: ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC,
+                duration_msec: Eu.level_scale_down(
+		    level,
+		    ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC * 2,
+		    ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC
+		),
                 on_reload: () => { },
             },
             shot_spec: {
-                duration_msec: ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC,
+                duration_msec: Eu.level_scale_down(
+		    level,
+		    ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC * 2,
+		    ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC
+		),
             },
-            count: ENEMY_SMALL_WEAPON_SHOT_COUNT,
+            count: Eu.level_scale_up(
+		level,
+		1,
+		ENEMY_SMALL_WEAPON_SHOT_COUNT,
+	    ),
         },
-        shot_damage: ENEMY_SMALL_SHOT_DAMAGE,
+        shot_damage: Eu.level_scale_up(
+	    level,
+	    ENEMY_SMALL_SHOT_DAMAGE,
+	    ENEMY_SMALL_SHOT_DAMAGE * 2,
+	),
         shot_speed: ENEMY_SMALL_SHOT_SPEED,
         shot_size: ENEMY_SMALL_SHOT_SIZE,
         shot_life_msec: ENEMY_SMALL_SHOT_LIFE_MSEC,

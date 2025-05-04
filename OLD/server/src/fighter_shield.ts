@@ -271,7 +271,7 @@ export class ShieldHitAnimation {
         if (shield != null && this.shield_size != null) {
             const now = db.shared.sim_now;
             const max_flare = U.clip01(shield.hp / shield.hp_init + 0.1);
-            const flare = max_flare * (1 - U.inv_lerp(this.start_msec, this.start_msec + this.duration_msec, now));
+            const flare = max_flare * U.t10(this.start_msec, this.start_msec + this.duration_msec, now);
             this.alpha = Math.max(K.SHIELD_ALPHA, flare);
         }
     }
