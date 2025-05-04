@@ -130,7 +130,7 @@ export const HUD_RIGHT_RECT = G.rect_move(
 );
 D.assert_fn(G.rect_rt(HUD_RIGHT_RECT), G.rect_rt(HUD_VISIBLE_RECT), (a,b)=>G.v2d_eq(a,b), "right");
 
-// gameport is below the hud area and has no inset (no drawn border).
+// gameport is below the hud area and has no inset; no drawn border.
 export const GAMEPORT_RECT = G.rect_mk(
     G.rect_lt(SCREEN_RECT),
     G.v2d_mk(
@@ -141,6 +141,7 @@ export const GAMEPORT_RECT = G.rect_mk(
 D.assert(G.rect_w(HUDPORT_RECT) == G.rect_w(GAMEPORT_RECT));
 D.assert(G.rect_h(SCREEN_RECT) - (G.rect_h(HUDPORT_RECT) + G.rect_h(GAMEPORT_RECT)) <= 0.01);
 
+// apparently trying to avoid having enemies shoot when too close to the sides.
 export const ENEMY_FIRING_INSET = G.v2d_mk(20, 0);
 export const ENEMY_FIRING_RECT = G.rect_inset(
     GAMEPORT_RECT,
@@ -260,7 +261,7 @@ export const PLAYER_TURBO_X_SCALE = 4;
 export const PLAYER_BEAM_MAX_VEL2 = 0.2; // K
 export const PEOPLE_SIZE = G.v2d_mk_nn(32); // K
 
-export const GEM_SIZE = G.v2d_mk_nn(16);
+export const GEM_SIZE = G.v2d_mk_nn(10);
 export const GEM_HP_BONUS = 3; // keep it smallish.
 export const ENEMY_SMALL_GEM_COUNT = 1;
 export const ENEMY_MEGA_GEM_COUNT = 2;

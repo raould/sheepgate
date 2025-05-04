@@ -2,7 +2,7 @@ import * as Sz from './sizzler_screen';
 import * as G from '../geom';
 import { RGBA, HCycle } from '../color';
 
-const INSTRUCTIONS_SIZE = 25;
+const INSTRUCTIONS_SIZE = 30;
 
 export class InstructionsScreen extends Sz.SizzlerScreen {
     constructor(private readonly instructions: string[], animated: boolean) {

@@ -84,7 +84,7 @@ class LevelWithScreen_StartScreen implements SubState {
 }
 
 class LevelWithScreen_EndScreen implements SubState {
-    static PHRASES = [
+    static WON_PHRASES = [
 	"BULLY FOR YOU!",
 	"GOOD ON YER!",
 	"TAKE THAT!",
@@ -104,7 +104,25 @@ class LevelWithScreen_EndScreen implements SubState {
 	"CURB STOMP!",
 	"VICTORY!",
 	"IT AIN'T OVER!",
-    ];	      
+    ];
+    static LOST_PHRASES = [
+	"NICE TRY!",
+	"INSERT COIN!",
+	"WAH WAH WAAH!",
+	"WELL, POOP!",
+	"SHINOLA!",
+	"SHAZBOT!",
+	"SHEEOOT!",
+	"MOVE ALONG!",
+	"WEAK SAUCE!",
+	"LAME!",
+	"EXCREMENT!",
+	"HA HA HUMANOID!",
+	"100053R!",
+	"YOU'RE DEAD, JIM!",
+	"WHIMPER!",
+	"LE GRAND MORT!",
+    ];
     static PHRASE_SIZE = 80;
 
     end_screen: Les.LevelEndScreen;
@@ -117,11 +135,13 @@ class LevelWithScreen_EndScreen implements SubState {
             `PRESS [FIRE] TO CONTINUE`,
             won ? RGBA.BLACK : LOST_COLOR
         );
-	this.phrase = [
-	    index1 == 1 ?
-		"YOU ROCK!" :
-		Rnd.singleton.next_array_item(LevelWithScreen_EndScreen.PHRASES) ?? "NICE!"
-	];
+	const wonPhrase = index1 == 1 ?
+	      "YOU ROCK!" :
+	      Rnd.singleton.next_array_item(LevelWithScreen_EndScreen.WON_PHRASES) ?? "NICE!"
+	const lostPhrase = index1 == 1 ?
+	      "TRY AGAIN!" :
+	      Rnd.singleton.next_array_item(LevelWithScreen_EndScreen.LOST_PHRASES) ?? "DAGNABBIT!"
+	this.phrase = won ? [wonPhrase] : [lostPhrase];
     }
 
     get_state(): Gs.StepperState {

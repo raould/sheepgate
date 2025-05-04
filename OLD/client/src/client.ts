@@ -65,6 +65,7 @@ enum CommandType {
     debug_step_frame = "debug_step_frame",
     debug_dump_state = "debug_dump_state",
     debug_win_level = "debug_win_level",
+    debug_lose_level = "debug_lose_level",
 }
 // todo: share this (unfortunately) with the server, esp. the "is_singular" part.
 // is_singular true means there's no auto-repeat while the key is held down.
@@ -107,6 +108,7 @@ const key2cmd: { [k: string]: CommandSpec } = {
     n:          { command: CommandType.debug_toggle_annotations, is_singular: true },
     "/":        { command: CommandType.debug_toggle_stepping, is_singular: true },
     "^":        { command: CommandType.debug_win_level, is_singular: true },
+    "&":        { command: CommandType.debug_lose_level, is_singular: true },
 };
 
 class ParticlesEllipseGenerator {
@@ -837,13 +839,12 @@ function applyDB(next_server_db: any) {
     //     log("gdb", next_server_db.game_db);
     // }
     
-    server_db = next_server_db;
-
-    // the client is mostly dumb and only
+    // the client is mostly dumb and just
     // renders things verbatim from the server db
     // without keeping any long term state on the client...
-    // but for expensive/big things it hurs too much,
+    // except for expensive/big things that hurt perf too much,
     // so make client-side-things like particle generators.
+    server_db = next_server_db;
     applyParticles(server_db.game_db);
 }
 
@@ -974,7 +975,7 @@ function loadImages() {
         loadImage(`enemies/e13/e13r_${anim}.png`)
     });
 
-    Array.from({length: 8}, (v, i) => i+1).forEach(i =>
+    Array.from({length: 5}, (v, i) => i+1).forEach(i =>
         loadImage(`gem/gem${i}.png`)
     );
 
@@ -1153,9 +1154,9 @@ function init() {
     // todo: can/should i add it on the h5canvas instead of the windows?
     window.addEventListener("keydown", onKeyDown, true);
     window.addEventListener("keyup", onKeyUp, true);
-	Gamepads.start();
-	Gamepads.addEventListener("connect", (e:any)=> gamepadHandler(e, true));
-	Gamepads.addEventListener("disconnect", (e:any)=> gamepadHandler(e, false));
+    Gamepads.start();
+    Gamepads.addEventListener("connect", (e:any)=> gamepadHandler(e, true));
+    Gamepads.addEventListener("disconnect", (e:any)=> gamepadHandler(e, false));
 
     connectWS(
         ws_endpoint,

@@ -42,7 +42,7 @@ export function gems_add(db: GDB.GameDB, around: G.V2D, count: number) {
 
 export function gem_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Gem {
     const images = db.uncloned.images;
-    const rids = images.lookup_range_n((n) => `gem/gem${n}.png`, 1, 8);
+    const rids = images.lookup_range_n((n) => `gem/gem${n}.png`, 1, 5);
     const anim: A.ResourceAnimator = A.animator_mk(
         db.shared.sim_now,
         {
@@ -64,8 +64,6 @@ export function gem_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Gem {
         damage: 0,
         type_flags: Tf.TF.gem,
         in_cmask: C.CMask.gem,
-        // todo: gems can be destroyed?
-        // todo: gems can be picked up by enemies?
         from_cmask: C.CMask.player, // note: really for player shield. todo: ugh so confusing.
         anim: anim,
         z_back_to_front_ids: anim.z_back_to_front_ids(db),

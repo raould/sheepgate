@@ -14,9 +14,9 @@ import * as D from './debug';
 import * as K from './konfig';
 
 const TOP_INSTRUCTIONS = [
-    "RETURN PEOPLE TO BASE.",
+    "RETURN HUMANS TO BASE.",
     "DEFEAT ALL ENEMIES.",
-    "------",
+    " ",
     "CONTROLS:",
     "FIRE: SPACE / Z / ENTER",
     "MOVE: {W,A,S,D} / {ARROW KEYS}",

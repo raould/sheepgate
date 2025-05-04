@@ -2,6 +2,7 @@ TODO:
 
 SEE ALL THE 'TODO' (AND 'MATCH') COMMENTS IN THE CODE!
 THESE ARE NOT IN ORDER because i keep changing my mind :-\
+and keep finding things i did that are super confusing.
 
 next-feature-short-list, in no order:
 * ha ha check all the bugs and todo's... bad stuff. see all the code notes below. :-(
@@ -25,6 +26,8 @@ DO THESE NOW/NEXT:
 + enemy shots already can intersect people, so make people killable?
 * a better way to do the bloody screen state machine.
 
+-3) good thing i am utterly consistent in naming in code.
+-3.5) the hard coding of image names and counts between server and client?!@#?!?@!?
 -2) support gamepads.
 -1.5) the client uses 'any' too much, i forget why.
       * because i never set up shared types from the server e.g. V2D etc.
@@ -92,7 +95,9 @@ DO THESE NOW/NEXT:
 27) the code is a rats' nest of relations and calls and twistly little passages, all different :-(
 
 999) everything else..., especially code...
+* the DB breakdown and all the files involved is confusing.
 * the menu / level / instructions / sizzler code is badly factored, confusing.
+  * like i'd like the level won text to rez in slower.
 * funny how 'scale's are sometimes scalars, sometimes vectors.
 * glitch weapons. (?)
 * wish it were easier to e.g. debug draw all acc, vel vectors.

@@ -22,6 +22,7 @@ export interface Random {
 
      // [min,max).
     next_float_range(min: number, max: number, non_zero?:boolean): number;
+    next_int_range(min: number, max: number, non_zero?:boolean): number;
 
     // [center-half_bound,center+half_bound).
     next_float_around(center: number, half_bound: number, non_zero?:boolean): number;
@@ -78,6 +79,10 @@ export class RandomImpl implements Random {
     next_float_range(min: number, max: number, non_zero:boolean=false): number {
         const n = min + this.next_double() * (max-min);
         return return_non_zero(n, non_zero, Math.sign(n));
+    }
+    next_int_range(min: number, max: number, non_zero:boolean=false): number {
+	const f = this.next_float_range(min, max, non_zero);
+	return Math.floor(f);
     }
     next_float_around(center: number, half_bound: number, non_zero:boolean=false): number {
         const n = this.next_float_neg1_1() * half_bound + center;

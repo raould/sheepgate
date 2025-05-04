@@ -185,6 +185,10 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    this.state = Gs.StepperState.completed;
 	    return;
 	}
+	if (!!next.local.client_db.inputs.commands[Cmd.CommandType.debug_lose_level]) {
+	    this.state = Gs.StepperState.lost;
+	    return;
+	}
 	if (this.state == Gs.StepperState.running) {
 	    // the player bought the farm?
 	    if (GDB.get_player(next) == null) {
@@ -226,6 +230,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 			G.v2d_mk(world_size.x, ground_y)
 		    ),			
 		    gameport: {
+			// todo: i wish i understood the use of world_bounds.
 			world_bounds: {
 			    // match: lt gets updated by gameport_step().
 			    lt: G.v2d_mk_0(),

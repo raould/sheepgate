@@ -27,7 +27,8 @@ export enum CommandType {
     debug_toggle_stepping = "debug_toggle_stepping",
     debug_step_frame = "debug_step_frame",
     debug_dump_state = "debug_dump_state",
-		debug_win_level = "debug_win_level",
+    debug_win_level = "debug_win_level",
+    debug_lose_level = "debug_lose_level",
 }
 
 // todo: share this (unfortunately) with the client/server, esp. the "is_singular" part.
@@ -60,4 +61,5 @@ export const key2cmd: { [k: string]: CommandSpec } = {
     n:          { command: CommandType.debug_toggle_annotations, is_singular: true },
     "/":        { command: CommandType.debug_toggle_stepping, is_singular: true },
     "^":        { command: CommandType.debug_win_level, is_singular: true },
+    "&":        { command: CommandType.debug_lose_level, is_singular: true },
 };

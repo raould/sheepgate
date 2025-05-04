@@ -124,7 +124,8 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
                 },
                 step_add_shots(db: GDB.GameDB) {
                     const return_fire = this.step_return_fire(db);
-                    if (return_fire || Eu.can_shoot_in_bounds(db, this)) {
+		    const in_bounds = Eu.can_shoot_in_bounds(db, this);
+                    if (return_fire || in_bounds) {
                         U.if_let(
                             GDB.get_player(db),
                             (p: S.Player) => {
