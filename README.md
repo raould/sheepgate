@@ -5,7 +5,7 @@ an exercise in reinventing defender with the most over-wraught high level langua
 
 try something like:
 * build client in bash shell: cd OLD/client && npm i && (npx tsc -w &)
-* build and run server in different bash shell: cd OLD/server && npm i && (nox tsc -w &) && npm run hot
+* build and run server in different bash shell: cd OLD/server && npm i && (npx tsc -w &) && npm run hot
 * browser: open OLD/client/index.html
 
 ![screenshot](./screenshot.png)
