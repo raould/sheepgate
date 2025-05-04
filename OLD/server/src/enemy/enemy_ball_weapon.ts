@@ -162,11 +162,11 @@ export function scale_spec(level: number, rank: S.Rank, directions: F.Facing, sw
 
 // todo: i wish i could use macros/reflection to just build this with SMALL, MEGA, HYPERMEGA.
 
-const ENEMY_SMALL_SHOT_DAMAGE = K.PLAYER_HP / 50; // L, W
+const ENEMY_SMALL_SHOT_DAMAGE = K.PLAYER_HP / 30; // L, W
 const ENEMY_SMALL_SHOT_SPEED = 0.10; // L, W
 const ENEMY_SMALL_SHOT_SIZE = K.BALL_SHOT_SIZE;
 const ENEMY_SMALL_SHOT_LIFE_MSEC = 3000; // L, W
-const ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC = 3000; // L, W
+const ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC = 9000; // L, W
 const ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC = 125; // L, W
 const ENEMY_SMALL_WEAPON_SHOT_COUNT = 3; // L, W
 
@@ -174,7 +174,7 @@ const ENEMY_MEGA_SHOT_DAMAGE = K.PLAYER_HP / 40; // L, W
 const ENEMY_MEGA_SHOT_SPEED = 0.10; // L, W
 const ENEMY_MEGA_SHOT_SIZE = K.BALL_SHOT_SIZE;
 const ENEMY_MEGA_SHOT_LIFE_MSEC = 3000; // L, W
-const ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC = 2000; // L, W
+const ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC = 8000; // L, W
 const ENEMY_MEGA_WEAPON_SHOT_COOLDOWN_MSEC = 75; // L, W
 const ENEMY_MEGA_WEAPON_SHOT_COUNT = 3; // L, W
 
@@ -182,7 +182,7 @@ const ENEMY_HYPERMEGA_SHOT_DAMAGE = K.PLAYER_HP / 20; // L, W
 const ENEMY_HYPERMEGA_SHOT_SPEED = 0.15; // L, W
 const ENEMY_HYPERMEGA_SHOT_SIZE = K.BALL_SHOT_SIZE;
 const ENEMY_HYPERMEGA_SHOT_LIFE_MSEC = 3000; // L, W
-const ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC = 2000; // L, W
+const ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC = 7000; // L, W
 const ENEMY_HYPERMEGA_WEAPON_SHOT_COOLDOWN_MSEC = 75; // L, W
 const ENEMY_HYPERMEGA_WEAPON_SHOT_COUNT = 4; // L, W
 
@@ -199,7 +199,9 @@ function enemy_small_spec(level: number, direction: F.Facing, swivels: boolean):
 		),
                 on_reload: () => { },
             },
-            shot_spec: ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC,
+            shot_spec: {
+		duration_msec: ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC,
+	    },
             count: Math.ceil(Eu.level_scale_up(
 		level,
 		1,
@@ -208,8 +210,8 @@ function enemy_small_spec(level: number, direction: F.Facing, swivels: boolean):
         },
         shot_damage: Eu.level_scale_up(
 	    level,
+	    ENEMY_SMALL_SHOT_DAMAGE / 2,
 	    ENEMY_SMALL_SHOT_DAMAGE,
-	    ENEMY_SMALL_SHOT_DAMAGE * 2,
 	),
         shot_speed: ENEMY_SMALL_SHOT_SPEED,
         shot_size: ENEMY_SMALL_SHOT_SIZE,
@@ -225,13 +227,21 @@ function enemy_mega_spec(level: number, direction: F.Facing, swivels: boolean): 
 	swivels: swivels,
         clip_spec: {
             reload_spec: {
-                duration_msec: ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC,
+                duration_msec: Eu.level_scale_down(
+		    level,
+                    ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC * 2,
+                    ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC
+		),
                 on_reload: () => { },
             },
             shot_spec: {
                 duration_msec: ENEMY_MEGA_WEAPON_SHOT_COOLDOWN_MSEC,
             },
-            count: ENEMY_MEGA_WEAPON_SHOT_COUNT,
+            count: Math.ceil(Eu.level_scale_up(
+		level,
+		1,
+		ENEMY_MEGA_WEAPON_SHOT_COUNT,
+	    )),
         },
         shot_damage: ENEMY_MEGA_SHOT_DAMAGE,
         shot_speed: ENEMY_MEGA_SHOT_SPEED,
@@ -248,13 +258,21 @@ function enemy_hypermega_spec(level: number, direction: F.Facing, swivels: boole
 	swivels: swivels,
         clip_spec: {
             reload_spec: {
-                duration_msec: ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC,
+                duration_msec: Eu.level_scale_down(
+		    level,
+                    ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC * 2,
+                    ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC
+		),
                 on_reload: () => { },
             },
             shot_spec: {
                 duration_msec: ENEMY_HYPERMEGA_WEAPON_SHOT_COOLDOWN_MSEC,
             },
-            count: ENEMY_HYPERMEGA_WEAPON_SHOT_COUNT,
+            count: Math.ceil(Eu.level_scale_up(
+		level,
+		1,
+		ENEMY_HYPERMEGA_WEAPON_SHOT_COUNT,
+	    )),
         },
         shot_damage: ENEMY_HYPERMEGA_SHOT_DAMAGE,
         shot_speed: ENEMY_HYPERMEGA_SHOT_SPEED,
