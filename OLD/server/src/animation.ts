@@ -80,7 +80,6 @@ export interface WarpinSpec {
 }
 
 export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
-    D.log("warpin_mk", G.rect_toS(spec.rect));
     const images = db.uncloned.images;
     const resource_ids = [
         ...images.lookup_range_a((n) => `warpin/warpin_${n}.png`, ['a','b','c','d']),

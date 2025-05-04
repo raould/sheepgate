@@ -530,17 +530,14 @@ export function rect_is_out_of_bounds(e: Rect, bounds: Rect): boolean {
     if (rect_b(e) < rect_t(bounds)) { return true; }
     return false;
 }
-export function rects_are_overlapping(a: Rect, b: Rect, d:boolean=false): boolean {
-    d && D.log(rect_toS(a), rect_toS(b));
-    if (rect_l(a) > rect_r(b)) { d && D.log("1"); return false; }
-    if (rect_l(b) > rect_r(a)) { d && D.log("2"); return false; }
-    if (rect_t(a) > rect_b(b)) { d && D.log("3"); return false; }
-    if (rect_t(b) > rect_b(a)) { d && D.log("4"); return false; }
-    d && D.log("5");
+export function rects_are_overlapping(a: Rect, b: Rect): boolean {
+    if (rect_l(a) > rect_r(b)) { return false; }
+    if (rect_l(b) > rect_r(a)) { return false; }
+    if (rect_t(a) > rect_b(b)) { return false; }
+    if (rect_t(b) > rect_b(a)) { return false; }
     return true;
 }
-export function rects_are_overlapping_wrapH(src: Rect, dst: Rect, bounds0: V2D, d:boolean=false): boolean {
-    d && D.log(rect_toS(src), rect_toS(dst), v2d_toS(bounds0));
+export function rects_are_overlapping_wrapH(src: Rect, dst: Rect, bounds0: V2D): boolean {
     const siblings = rect_siblingsH(src, v2d_2_rect(bounds0));
     return (
         rects_are_overlapping(siblings[0], dst) ||

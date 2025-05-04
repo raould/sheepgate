@@ -45,7 +45,6 @@ export function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec
     }
     const lt = Eu.safe_lt(db, size, Rnd.singleton, spec.lt);
     const rect = G.rect_mk(lt, size);
-    D.log("warpin_mk", G.rect_toS(rect));
     spec.lt = lt;
     DebugGraphics.add_rect(DebugGraphics.get_permanent(), rect);
     return A.warpin_mk(
