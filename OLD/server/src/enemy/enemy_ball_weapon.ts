@@ -133,26 +133,26 @@ function calculate_at_vel(db: GDB.GameDB, src: S.Fighter, dst: G.Rect, spec: Ene
 }
 
 // by convention we return (left, right).
-export function scale_specs(rank: S.Rank, swivels: boolean): [EnemyWeaponSpec, EnemyWeaponSpec] {
+export function scale_specs(level: number, rank: S.Rank, swivels: boolean): [EnemyWeaponSpec, EnemyWeaponSpec] {
     return [
-        scale_spec(rank, F.Facing.left, swivels),
-        scale_spec(rank, F.Facing.right, swivels)
+        scale_spec(level, rank, F.Facing.left, swivels),
+        scale_spec(level, rank, F.Facing.right, swivels)
     ];
 }
 
-export function scale_spec(rank: S.Rank, directions: F.Facing, swivels: boolean): EnemyWeaponSpec {
+export function scale_spec(level: number, rank: S.Rank, directions: F.Facing, swivels: boolean): EnemyWeaponSpec {
     switch (rank) {
     case S.Rank.small:
-        return enemy_small_spec(directions, swivels);
+        return enemy_small_spec(level, directions, swivels);
     case S.Rank.mega:
-        return enemy_mega_spec(directions, swivels);
+        return enemy_mega_spec(level, directions, swivels);
     case S.Rank.hypermega:
-        return enemy_hypermega_spec(directions, swivels);
+        return enemy_hypermega_spec(level, directions, swivels);
     case S.Rank.player:
         // todo: argues for splitting enemy vs. player ranks, duh.
         D.assert_fail("scale_spec(): only supports enemy ranks.");
         // satisfy the compiler by returning something.
-        return enemy_small_spec(directions, swivels);
+        return enemy_small_spec(level, directions, swivels);
     }
 }
 
@@ -182,7 +182,7 @@ const ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC = 2000; // L, W
 const ENEMY_HYPERMEGA_WEAPON_SHOT_COOLDOWN_MSEC = 75; // L, W
 const ENEMY_HYPERMEGA_WEAPON_SHOT_COUNT = 2; // L, W
 
-function enemy_small_spec(direction: F.Facing, swivels: boolean): EnemyWeaponSpec {
+function enemy_small_spec(level: number, direction: F.Facing, swivels: boolean): EnemyWeaponSpec {
     return {
 	direction: direction,
 	swivels: swivels,
@@ -205,7 +205,7 @@ function enemy_small_spec(direction: F.Facing, swivels: boolean): EnemyWeaponSpe
     }
 }
 
-function enemy_mega_spec(direction: F.Facing, swivels: boolean): EnemyWeaponSpec {
+function enemy_mega_spec(level: number, direction: F.Facing, swivels: boolean): EnemyWeaponSpec {
     return {
 	direction: direction,
 	swivels: swivels,
@@ -228,7 +228,7 @@ function enemy_mega_spec(direction: F.Facing, swivels: boolean): EnemyWeaponSpec
     }
 }
 
-function enemy_hypermega_spec(direction: F.Facing, swivels: boolean): EnemyWeaponSpec {
+function enemy_hypermega_spec(level: number, direction: F.Facing, swivels: boolean): EnemyWeaponSpec {
     return {
 	direction: direction,
 	swivels: swivels,

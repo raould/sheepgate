@@ -46,7 +46,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
     get_state(): Gs.StepperState { return this.state; }
     get_scoring(): Sc.Scoring { return this.db.local.scoring; }
 
-    constructor(readonly index1: number, private readonly konfig: any/*todo: type it!*/, score: number, high_score: Hs.HighScore) {
+    constructor(public readonly index1: number, private readonly konfig: any/*todo: type it!*/, score: number, high_score: Hs.HighScore) {
 	super(high_score);
 	D.log(`new level_type_a for index1 ${index1}!`);
 	this.state = Gs.StepperState.running;

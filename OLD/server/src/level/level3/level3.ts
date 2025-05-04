@@ -37,26 +37,26 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
     mega_snapshot: S.ImageSized;
     hypermega_snapshot: S.ImageSized;
 
-	constructor(readonly index1: number, konfig: any, score: number, high_score: Hs.HighScore) {
-		super(index1, konfig, score, high_score);
-		const images = this.db.uncloned.images;
-		this.small_snapshot = {
-			size: Es.SIZE,
-			resource_id: images.lookup(Es.WARPIN_RESOURCE_ID)
-		};
-		this.mega_snapshot = {
-			size: Em.SIZE,
-			resource_id: images.lookup(Em.WARPIN_RESOURCE_ID)
-		};
-		this.hypermega_snapshot = {
-			size: Ehm.SIZE,
-			resource_id: images.lookup(Ehm.WARPIN_RESOURCE_ID)
-		};
-	}
+    constructor(readonly index1: number, konfig: any, score: number, high_score: Hs.HighScore) {
+	super(index1, konfig, score, high_score);
+	const images = this.db.uncloned.images;
+	this.small_snapshot = {
+	    size: Es.SIZE,
+	    resource_id: images.lookup(Es.WARPIN_RESOURCE_ID)
+	};
+	this.mega_snapshot = {
+	    size: Em.SIZE,
+	    resource_id: images.lookup(Em.WARPIN_RESOURCE_ID)
+	};
+	this.hypermega_snapshot = {
+	    size: Ehm.SIZE,
+	    resource_id: images.lookup(Ehm.WARPIN_RESOURCE_ID)
+	};
+    }
 }
 
 export function level_mk(level_index: number, score: number, high_score: Hs.HighScore): Lis.LevelInScreens {
-	const level = new LevelImpl(level_index, LK, score, high_score);
-	const lis = new Lis.LevelInScreens(level_index, level);
-	return lis;
+    const level = new LevelImpl(level_index, LK, score, high_score);
+    const lis = new Lis.LevelInScreens(level_index, level);
+    return lis;
 }

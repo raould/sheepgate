@@ -120,26 +120,26 @@ function calculate_at_vel(db: GDB.GameDB, src: S.Fighter, dst: G.Rect, spec: Ene
 }
 
 // by convention we return (left, right).
-export function scale_specs(rank: S.Rank): [EnemyWeaponSpec, EnemyWeaponSpec] {
+export function scale_specs(level: number, rank: S.Rank): [EnemyWeaponSpec, EnemyWeaponSpec] {
     return [
-        scale_spec(rank, F.Facing.left),
-        scale_spec(rank, F.Facing.right)
+        scale_spec(level, rank, F.Facing.left),
+        scale_spec(level, rank, F.Facing.right)
     ];
 }
 
-export function scale_spec(rank: S.Rank, direction: F.Facing): EnemyWeaponSpec {
+export function scale_spec(level: number, rank: S.Rank, direction: F.Facing): EnemyWeaponSpec {
     switch (rank) {
-        case S.Rank.small:
-            return enemy_small_spec(direction);
-        case S.Rank.mega:
-            return enemy_mega_spec(direction);
-        case S.Rank.hypermega:
-            return enemy_hypermega_spec(direction);
-        case S.Rank.player:
-            // todo: argues for splitting enemy vs. player ranks, duh.
-            D.assert_fail("scale_spec(): only supports enemy ranks.");
-            // satisfy the compiler by returning something.
-            return enemy_small_spec(direction);
+    case S.Rank.small:
+        return enemy_small_spec(level, direction);
+    case S.Rank.mega:
+        return enemy_mega_spec(level, direction);
+    case S.Rank.hypermega:
+        return enemy_hypermega_spec(level, direction);
+    case S.Rank.player:
+        // todo: argues for splitting enemy vs. player ranks, duh.
+        D.assert_fail("scale_spec(): only supports enemy ranks.");
+        // satisfy the compiler by returning something.
+        return enemy_small_spec(level, direction);
     }
 }
 
@@ -169,7 +169,7 @@ const ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC = 3000; // L, W
 const ENEMY_HYPERMEGA_WEAPON_SHOT_COOLDOWN_MSEC = 300; // L, W
 const ENEMY_HYPERMEGA_WEAPON_SHOT_COUNT = 4; // L, W
 
-function enemy_small_spec(direction: F.Facing): EnemyWeaponSpec {
+function enemy_small_spec(level: number, direction: F.Facing): EnemyWeaponSpec {
     return {
         direction: direction,
         clip_spec: {
@@ -191,7 +191,7 @@ function enemy_small_spec(direction: F.Facing): EnemyWeaponSpec {
     }
 }
 
-function enemy_mega_spec(direction: F.Facing): EnemyWeaponSpec {
+function enemy_mega_spec(level: number, direction: F.Facing): EnemyWeaponSpec {
     return {
         direction: direction,
         clip_spec: {
@@ -213,7 +213,7 @@ function enemy_mega_spec(direction: F.Facing): EnemyWeaponSpec {
     }
 }
 
-function enemy_hypermega_spec(direction: F.Facing): EnemyWeaponSpec {
+function enemy_hypermega_spec(level: number, direction: F.Facing): EnemyWeaponSpec {
     return {
         direction: direction,
         clip_spec: {

@@ -54,6 +54,8 @@ DO THESE NOW/NEXT:
 1) enemy bullets passing through the player sometimes somehow, world-wrap issue?
 1.1) enemies shouldn't be overlapping the ground ever.
 2) enemy ai of any kind at all!
+2.1) the scaling of weapons has a terrible DX.
+   * they do not even scale with the level?
 2.2) automagic loading of images and animations based on naming.
    the combinatoric explosion of art assets and then the code
    to set up the animations using them is really quite painful.
