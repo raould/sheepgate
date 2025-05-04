@@ -92,6 +92,7 @@ DO THESE NOW/NEXT:
 27) the code is a rats' nest of relations and calls and twistly little passages, all different :-(
 
 999) everything else..., especially code...
+* the menu / level / instructions / sizzler code is badly factored, confusing.
 * funny how 'scale's are sometimes scalars, sometimes vectors.
 * glitch weapons. (?)
 * wish it were easier to e.g. debug draw all acc, vel vectors.
@@ -127,7 +128,7 @@ DO THESE NOW/NEXT:
 * 10k should not be brick wall altitude, but should exponentially dampen/spring rise.
 * probably using way too many calls to _.cloneDeep().
 * need to have a gamma adjustment option.
-* the font is not good.
+* the font sizing is inconsistent code.
 * mutant-izing support.
 * i wish the shots were more like defender/stargate laser/plasma, than like bullets.
 * change all "!!" to a safer test. (i wish typescript had a way to restrict

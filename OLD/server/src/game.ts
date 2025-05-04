@@ -13,6 +13,17 @@ import * as U from './util/util';
 import * as D from './debug';
 import * as K from './konfig';
 
+const TOP_INSTRUCTIONS = [
+    "RETURN PEOPLE TO BASE.",
+    "DEFEAT ALL ENEMIES.",
+    "------",
+    "CONTROLS:",
+    "FIRE: SPACE / Z / ENTER",
+    "MOVE: {W,A,S,D} / {ARROW KEYS}",
+    "BOOST: SHIFT",
+    "PAUSE: ESC",
+];
+
 export interface Game {
     merge_client_db(cnew: Cdb.ClientDB): void;
     step(): void;
@@ -73,7 +84,7 @@ class GameInstructions implements Gs.Stepper {
     stepper: Gs.Stepper;
 
     constructor(animated: boolean = true) {
-        this.stepper = new Is.InstructionsScreen(Is.TOP_INSTRUCTIONS, animated);
+        this.stepper = new Is.InstructionsScreen(TOP_INSTRUCTIONS, animated);
         // this.stepper = new Hst.HighScoreTableScreen(Hs.high_scores_mk()); // just for testing it easily.
     }
 

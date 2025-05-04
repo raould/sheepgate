@@ -210,7 +210,7 @@ export const BG_LAYER_SCALE = 2;
 // player should be not super hard to kill so
 // they have to actually try to dodge enemy bullets.
 // note/todo: odd that i set this to MAX but the player can still die when crashing into other shields?!
-export const PLAYER_HP = 20;
+export const PLAYER_HP = 40;
 
 export const BAD_COLOR = RGBA.new0255(202, 0, 32);
 export const GOOD_COLOR = RGBA.new0255(5, 133, 176);
@@ -250,8 +250,8 @@ export const DRAG_ACC = G.v2d_mk(-0.0025, -0.005); // L
 // match: if the PLAYER_DELTA_*_ACC changes then likely
 // the gameport zone code will need adjustment.
 // pixels/dt? pixels/sec? i dunno!
-export const PLAYER_DELTA_X_ACC = 0.002; // K
-export const PLAYER_DELTA_Y_VEL = 0.25; // K
+export const PLAYER_DELTA_X_ACC = 0.0015; // K
+export const PLAYER_DELTA_Y_VEL = 0.15; // K
 // todo: there's a bug that is hard to repro that
 // i think is caused by being near the world wrap boundary,
 // and using turbo, where the player breaks free of the zone & goes off screen.
