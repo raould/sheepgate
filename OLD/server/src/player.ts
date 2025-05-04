@@ -158,7 +158,7 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
                                 (dbid: GDB.DBID): S.Sprite => Po.beaming_down_anim_mk(
                                     db,
                                     dbid,
-                                    base.next_beam_down_rect(db),
+                                    base.beam_down_rect,
                                     /*on_end*/(db: GDB.GameDB) => {
                                         U.if_let(
                                             GDB.get_player(db),

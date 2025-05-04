@@ -257,8 +257,6 @@ export const PLAYER_DELTA_Y_VEL = 0.25; // K
 // and using turbo, where the player breaks free of the zone & goes off screen.
 export const PLAYER_TURBO_X_SCALE = 4;
 
-// i think i'll keep this at 1, like Dropzone.
-export const PLAYER_MAX_PEOPLE = 1; // L
 export const PLAYER_BEAM_MAX_VEL2 = 0.2; // K
 export const PEOPLE_SIZE = G.v2d_mk_nn(32); // K
 

@@ -58,6 +58,7 @@ function populate_random(db: GDB.GameDB, cluster_count: number) {
 
 function add_people_cluster(db: GDB.GameDB, g: Gr.Ground, rnd: Rnd.Random) {
     const mt = G.v2d_set_y(G.rect_mid(g), g.lt.y);
+    // [todo: do we even have lava any more?]
     // (keeping away from the edges that might have a little sea/lava.
     // todo: ideally we'd check the type of the tile and then adjust
     // for more or less room, but ha ha, whatever! we don't have

@@ -89,7 +89,7 @@ export interface CollidableSprite extends HpSprite, C.Masked, C.Ignores {
 }
 
 export interface Base extends Sprite, Shielded {
-    next_beam_down_rect(db: GDB.GameDB): G.Rect;
+    beam_down_rect: G.Rect;
 }
 
 export interface Gem extends CollidableSprite {
