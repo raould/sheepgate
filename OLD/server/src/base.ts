@@ -38,6 +38,14 @@ function base_mk(db: GDB.GameDB): U.O<S.Base> {
             G.v2d_scale_v2d(K.BASE_SIZE, G.v2d_mk(0.5, 0.3))
         );
         const rect = G.rect_mk(base_lt, K.BASE_SIZE);
+	const beam_down_center = G.v2d_add(
+	    G.rect_mid(rect),
+	    G.v2d_mk(0, K.PEOPLE_SIZE.y*0.25)
+	);
+	const beam_down_rect = G.rect_scale_mid_v2d(
+	    G.rect_mk(beam_down_center, G.v2d_mk_1()),
+	    K.PEOPLE_SIZE
+	);
         // hacky hard coded centeringish of the person in the base doorway.
         base = GDB.id_mut(
             (dbid: GDB.DBID): S.Base => {
@@ -51,10 +59,7 @@ function base_mk(db: GDB.GameDB): U.O<S.Base> {
                     alpha: 1,
                     z_back_to_front_ids: z_back_to_front_ids,
                     animator: animator,
-                    beam_down_rect: G.rect_scale_mid_v2d(
-			G.rect_mk(G.rect_mid(rect), G.v2d_mk_1()),
-			K.PEOPLE_SIZE
-		    ),
+                    beam_down_rect,
                     step(db: GDB.GameDB) {
                         this.z_back_to_front_ids = this.animator.z_back_to_front_ids(db);
                     },
