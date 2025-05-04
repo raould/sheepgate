@@ -3,6 +3,7 @@ import * as GDB from '../game_db';
 import * as S from '../sprite';
 import * as U from '../util/util';
 import * as Rnd from '../random';
+import * as D from '../debug';
 import * as K from '../konfig';
 
 export function can_shoot_in_bounds(db: GDB.GameDB, enemy: S.Enemy): boolean {
@@ -12,31 +13,38 @@ export function can_shoot_in_bounds(db: GDB.GameDB, enemy: S.Enemy): boolean {
     );
 }
 
+// todo: this doesn't actaually work right: things do sometimes still overlap, wtf!!!!!!!!!!!!!!!
 export function safe_lt(db: GDB.GameDB, size: G.V2D, rnd: Rnd.Random, lt: G.V2D | undefined): G.V2D {
+    D.log("+slt", G.v2d_toS(lt), G.v2d_toS(size));
     const slt = safe_lt_vs_enemy(db, size, rnd, lt);
+    D.log(" slt", G.v2d_toS(slt));
     safe_lt_vs_player(db, size, rnd, slt);
+    D.log("-slt", G.v2d_toS(slt));
     return slt;
 }
 
 export function safe_lt_vs_player(db: GDB.GameDB, size: G.V2D, rnd: Rnd.Random, lt: G.V2D) {
     const p = GDB.get_player(db);
-    console.log("+", G.v2d_toS(lt), !!p, G.rect_toS(p));
+    D.log("+svp", G.v2d_toS(lt), !!p, G.rect_toS(p));
     if (!!p) {
-        let rect = G.rect_mk(lt, size);
-	let padded_scale = G.v2d_scale(K.SHIELD_SCALE, 1.2);
-        let padded = G.rect_scale_mid_v2d(p, padded_scale);
-	let hit = G.rects_are_overlapping_wrapH(rect, p, db.shared.world.bounds0);
-	console.log(hit, G.rect_toS(padded), G.v2d_toS(lt));
+        const rect = G.rect_mk(lt, size);
+	const padded_scale = G.v2d_scale(K.SHIELD_SCALE, 1.2);
+        const padded = G.rect_scale_mid_v2d(p, padded_scale);
+	const hit = G.rects_are_overlapping_wrapH(rect, p, db.shared.world.bounds0, true);
+	D.log("?svp", hit, G.rect_toS(padded), G.rect_toS(p));
         if (hit) {
             // move horizontally to avoid the hit.
-	    lt.x += p.size.x * 5;
+	    lt.x = p.lt.x + p.size.x * 2;
+	    D.log("??svp", G.v2d_toS(lt), G.rect_toS(p));
+            const rect2 = G.rect_mk(lt, size);
+	    const hit2 = G.rects_are_overlapping_wrapH(rect2, p, db.shared.world.bounds0, true);
+	    D.log("?svp2", hit2, G.v2d_toS(lt), G.rect_toS(p));
 	}
     }
-    console.log("-", G.v2d_toS(lt));
+    D.log("-svp", G.v2d_toS(lt));
 }
 
 // avoid overlapping with existing enemies.
-// todo: this doesn't actaually work right: things do sometimes still overlap, wtf!!!!!!!!!!!!!!!
 export function safe_lt_vs_enemy(db: GDB.GameDB, size: G.V2D, rnd: Rnd.Random, lt: G.V2D | undefined): G.V2D {
     let slt = lt ?? G.v2d_random_inxy(rnd, db.shared.world.bounds0.x, size.y);
     let padded_scale = G.v2d_scale(K.SHIELD_SCALE, 1.2);

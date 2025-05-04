@@ -30,10 +30,10 @@ export function warpin_mk(db: GDB.GameDB): U.O<S.Sprite> {
         flight_pattern: flight_pattern,
         gem_count: K.ENEMY_SMALL_GEM_COUNT
     };
-    // todo: remove this testing hack...
+    // todo: remove this testing hack forcing collision...
     const p = GDB.get_player(db);
     if (!!p) {
-	spec.lt = p.lt;
+	spec.lt = G.v2d_clone(p.lt);
     }
     // ...todo: remove this testing hack.
     return Emk.warpin_mk(

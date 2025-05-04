@@ -16,6 +16,7 @@ import * as U from '../util/util';
 import * as Eu from './enemy_util';
 import * as K from '../konfig';
 import * as D from '../debug';
+import { RGBA } from '../color';
 import { DebugGraphics } from '../debug_graphics';
 
 export interface EnemySpec {
@@ -34,11 +35,18 @@ export interface EnemySpec {
 
 export function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec): U.O<S.Sprite> {
     if (!!spec.lt) {
-	DebugGraphics.add_rect(DebugGraphics.get_permanent(), G.rect_mk(spec.lt, size));
+	DebugGraphics.add_DrawEllipse(
+	    DebugGraphics.get_permanent(),
+	    { wrap: true,
+	      color: RGBA.YELLOW,
+	      bounds: G.rect_mk(spec.lt, size)
+	    }
+	);
     }
     const lt = Eu.safe_lt(db, size, Rnd.singleton, spec.lt);
     const rect = G.rect_mk(lt, size);
-    console.log("warpin_mk", G.rect_toS(rect));
+    D.log("warpin_mk", G.rect_toS(rect));
+    spec.lt = lt;
     DebugGraphics.add_rect(DebugGraphics.get_permanent(), rect);
     return A.warpin_mk(
         db,

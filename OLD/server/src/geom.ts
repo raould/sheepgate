@@ -1,6 +1,7 @@
 import * as Rnd from './random';
 import * as U from './util/util';
 import * as F from './facing';
+import * as D from './debug';
 import * as _ from 'lodash';
 
 // i know it is kinda dumb to be reinventing these wheels.
@@ -34,7 +35,7 @@ export function v2d_toS(v: U.O<V2D>): string {
     if (v == undefined) {
 	return "V2D(undefined)";
     }
-    return `V2D(${v.x},${v.y})`;
+    return `V2D(x:${U.F2D(v.x)},y:${U.F2D(v.y)})`;
 }
 
 export const v2d_left = v2d_mk(-1, 0);
@@ -270,7 +271,7 @@ export function p2d_toS(p: U.O<P2D>): string {
     if (p == undefined) {
 	return "P2D(undefined)";
     }
-    return `P2D(${v2d_toS(p.lt)},${v2d_toS(p.size)},${v2d_toS(p.vel)},${v2d_toS(p.acc)})`;
+    return `P2D(lt:${v2d_toS(p.lt)},sz:${v2d_toS(p.size)},v:${v2d_toS(p.vel)},a:${v2d_toS(p.acc)})`;
 }
 export function p2d_mk(r: Rect, vel: V2D, acc: V2D) {
     return {
@@ -337,7 +338,7 @@ export function rect_toS(r: U.O<Rect>): string {
     if (r == undefined) {
 	return "Rect(undefined)";
     }
-    return `Rect(${v2d_toS(r.lt)},${v2d_toS(r.size)})`;
+    return `Rect(lt:${v2d_toS(r.lt)},sz:${v2d_toS(r.size)})`;
 }
 export function rect_mk(lt: V2D, size: V2D): Rect {
     return {
@@ -529,14 +530,17 @@ export function rect_is_out_of_bounds(e: Rect, bounds: Rect): boolean {
     if (rect_b(e) < rect_t(bounds)) { return true; }
     return false;
 }
-export function rects_are_overlapping(a: Rect, b: Rect): boolean {
-    if (rect_l(a) > rect_r(b)) { return false; }
-    if (rect_l(b) > rect_r(a)) { return false; }
-    if (rect_t(a) > rect_b(b)) { return false; }
-    if (rect_t(b) > rect_b(a)) { return false; }
+export function rects_are_overlapping(a: Rect, b: Rect, d:boolean=false): boolean {
+    d && D.log(rect_toS(a), rect_toS(b));
+    if (rect_l(a) > rect_r(b)) { d && D.log("1"); return false; }
+    if (rect_l(b) > rect_r(a)) { d && D.log("2"); return false; }
+    if (rect_t(a) > rect_b(b)) { d && D.log("3"); return false; }
+    if (rect_t(b) > rect_b(a)) { d && D.log("4"); return false; }
+    d && D.log("5");
     return true;
 }
-export function rects_are_overlapping_wrapH(src: Rect, dst: Rect, bounds0: V2D): boolean {
+export function rects_are_overlapping_wrapH(src: Rect, dst: Rect, bounds0: V2D, d:boolean=false): boolean {
+    d && D.log(rect_toS(src), rect_toS(dst), v2d_toS(bounds0));
     const siblings = rect_siblingsH(src, v2d_2_rect(bounds0));
     return (
         rects_are_overlapping(siblings[0], dst) ||
