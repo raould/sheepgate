@@ -1,3 +1,4 @@
+import * as Eu from './enemy_util';
 import * as GDB from '../game_db';
 import * as G from '../geom';
 import * as S from '../sprite';
@@ -120,69 +121,81 @@ function calculate_at_vel(db: GDB.GameDB, src: S.Fighter, dst: G.Rect, spec: Ene
 }
 
 // by convention we return (left, right).
-export function scale_specs(scale: S.Scale): [EnemyWeaponSpec, EnemyWeaponSpec] {
+export function scale_specs(level: number, rank: S.Rank): [EnemyWeaponSpec, EnemyWeaponSpec] {
     return [
-        scale_spec(scale, F.Facing.left),
-        scale_spec(scale, F.Facing.right)
+        scale_spec(level, rank, F.Facing.left),
+        scale_spec(level, rank, F.Facing.right)
     ];
 }
 
-export function scale_spec(scale: S.Scale, direction: F.Facing): EnemyWeaponSpec {
-    switch (scale) {
-        case S.Scale.small:
-            return enemy_small_spec(direction);
-        case S.Scale.mega:
-            return enemy_mega_spec(direction);
-        case S.Scale.hypermega:
-            return enemy_hypermega_spec(direction);
-        case S.Scale.player:
-            // todo: argues for splitting enemy vs. player scales, duh.
-            D.assert_fail("scale_spec(): only supports enemy scales.");
-            // satisfy the compiler by returning something.
-            return enemy_small_spec(direction);
+export function scale_spec(level: number, rank: S.Rank, direction: F.Facing): EnemyWeaponSpec {
+    switch (rank) {
+    case S.Rank.small:
+        return enemy_small_spec(level, direction);
+    case S.Rank.mega:
+        return enemy_mega_spec(level, direction);
+    case S.Rank.hypermega:
+        return enemy_hypermega_spec(level, direction);
+    case S.Rank.player:
+        // todo: argues for splitting enemy vs. player ranks, duh.
+        D.assert_fail("scale_spec(): only supports enemy ranks.");
+        // satisfy the compiler by returning something.
+        return enemy_small_spec(level, direction);
     }
 }
 
 // todo: i wish i could use macros/reflection to just build this with SMALL, MEGA, HYPERMEGA.
 
-const ENEMY_SMALL_SHOT_DAMAGE = K.PLAYER_HP / 40; // L, W
+const ENEMY_SMALL_SHOT_DAMAGE = K.PLAYER_HP / 20; // L, W
 const ENEMY_SMALL_SHOT_SPEED = 0.25; // L, W
 const ENEMY_SMALL_SHOT_SIZE = K.BULLET_SHOT_SIZE;
 const ENEMY_SMALL_SHOT_LIFE_MSEC = K.BULLET_SHOT_LIFE_MSEC; // L, W
-const ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC = 3000; // L, W
+const ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC = 9000; // L, W
 const ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC = 250; // L, W
-const ENEMY_SMALL_WEAPON_SHOT_COUNT = 2; // L, W
+const ENEMY_SMALL_WEAPON_SHOT_COUNT = 4; // L, W
 
 const ENEMY_MEGA_SHOT_DAMAGE = K.PLAYER_HP / 30; // L, W
 const ENEMY_MEGA_SHOT_SPEED = 0.25; // L, W
 const ENEMY_MEGA_SHOT_SIZE = K.BULLET_SHOT_SIZE;
 const ENEMY_MEGA_SHOT_LIFE_MSEC = K.BULLET_SHOT_LIFE_MSEC; // L, W
-const ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC = 3000; // L, W
+const ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC = 8000; // L, W
 const ENEMY_MEGA_WEAPON_SHOT_COOLDOWN_MSEC = 300; // L, W
-const ENEMY_MEGA_WEAPON_SHOT_COUNT = 3; // L, W
+const ENEMY_MEGA_WEAPON_SHOT_COUNT = 5; // L, W
 
 const ENEMY_HYPERMEGA_SHOT_DAMAGE = K.PLAYER_HP / 15; // L, W
 const ENEMY_HYPERMEGA_SHOT_SPEED = 0.25; // L, W
 const ENEMY_HYPERMEGA_SHOT_SIZE = K.BULLET_SHOT_SIZE;
 const ENEMY_HYPERMEGA_SHOT_LIFE_MSEC = K.BULLET_SHOT_LIFE_MSEC; // L, W
-const ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC = 3000; // L, W
+const ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC = 7000; // L, W
 const ENEMY_HYPERMEGA_WEAPON_SHOT_COOLDOWN_MSEC = 300; // L, W
-const ENEMY_HYPERMEGA_WEAPON_SHOT_COUNT = 4; // L, W
+const ENEMY_HYPERMEGA_WEAPON_SHOT_COUNT = 6; // L, W
 
-function enemy_small_spec(direction: F.Facing): EnemyWeaponSpec {
+function enemy_small_spec(level: number, direction: F.Facing): EnemyWeaponSpec {
     return {
         direction: direction,
         clip_spec: {
             reload_spec: {
-                duration_msec: ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC,
+                duration_msec: Eu.level_scale_down(
+		    level,
+		    ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC * 2,
+		    ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC
+		),
                 on_reload: () => { },
             },
             shot_spec: {
                 duration_msec: ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC,
             },
-            count: ENEMY_SMALL_WEAPON_SHOT_COUNT,
+            count: Math.ceil(Eu.level_scale_up(
+		level,
+		1,
+		ENEMY_SMALL_WEAPON_SHOT_COUNT,
+	    )),
         },
-        shot_damage: ENEMY_SMALL_SHOT_DAMAGE,
+        shot_damage: Eu.level_scale_up(
+	    level,
+	    ENEMY_SMALL_SHOT_DAMAGE / 2,
+	    ENEMY_SMALL_SHOT_DAMAGE,
+	),
         shot_speed: ENEMY_SMALL_SHOT_SPEED,
         shot_size: ENEMY_SMALL_SHOT_SIZE,
         shot_life_msec: ENEMY_SMALL_SHOT_LIFE_MSEC,
@@ -191,18 +204,26 @@ function enemy_small_spec(direction: F.Facing): EnemyWeaponSpec {
     }
 }
 
-function enemy_mega_spec(direction: F.Facing): EnemyWeaponSpec {
+function enemy_mega_spec(level: number, direction: F.Facing): EnemyWeaponSpec {
     return {
         direction: direction,
         clip_spec: {
             reload_spec: {
-                duration_msec: ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC,
+                duration_msec: Eu.level_scale_down(
+		    level,
+                    ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC * 2,
+                    ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC
+		),
                 on_reload: () => { },
             },
             shot_spec: {
                 duration_msec: ENEMY_MEGA_WEAPON_SHOT_COOLDOWN_MSEC,
             },
-            count: ENEMY_MEGA_WEAPON_SHOT_COUNT,
+            count: Math.ceil(Eu.level_scale_up(
+		level,
+		1,
+		ENEMY_MEGA_WEAPON_SHOT_COUNT,
+	    )),
         },
         shot_damage: ENEMY_MEGA_SHOT_DAMAGE,
         shot_speed: ENEMY_MEGA_SHOT_SPEED,
@@ -213,18 +234,26 @@ function enemy_mega_spec(direction: F.Facing): EnemyWeaponSpec {
     }
 }
 
-function enemy_hypermega_spec(direction: F.Facing): EnemyWeaponSpec {
+function enemy_hypermega_spec(level: number, direction: F.Facing): EnemyWeaponSpec {
     return {
         direction: direction,
         clip_spec: {
             reload_spec: {
-                duration_msec: ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC,
+                duration_msec: Eu.level_scale_down(
+		    level,
+                    ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC * 2,
+                    ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC
+		),
                 on_reload: () => { },
             },
             shot_spec: {
                 duration_msec: ENEMY_HYPERMEGA_WEAPON_SHOT_COOLDOWN_MSEC,
             },
-            count: ENEMY_HYPERMEGA_WEAPON_SHOT_COUNT,
+            count: Math.ceil(Eu.level_scale_up(
+		level,
+		1,
+		ENEMY_HYPERMEGA_WEAPON_SHOT_COUNT,
+	    )),
         },
         shot_damage: ENEMY_HYPERMEGA_SHOT_DAMAGE,
         shot_speed: ENEMY_HYPERMEGA_SHOT_SPEED,

@@ -39,7 +39,7 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
         vel: G.v2d_mk_0(),
         acc: G.v2d_mk_0(),
         alpha: 1,
-        scale: S.Scale.player,
+        rank: S.Rank.player,
         ship_anim: ship_anim_mk(db),
         flame_anim: flame_anim_mk(db),
         type_flags: Tf.TF.playerShip,
@@ -158,7 +158,7 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
                                 (dbid: GDB.DBID): S.Sprite => Po.beaming_down_anim_mk(
                                     db,
                                     dbid,
-                                    base.next_beam_down_rect(db),
+                                    base.beam_down_rect,
                                     /*on_end*/(db: GDB.GameDB) => {
                                         U.if_let(
                                             GDB.get_player(db),
@@ -166,6 +166,14 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
                                                 thiz.beaming_ids.delete(pid);
                                                 db.shared.rescued_count++;
                                                 db.local.scoring.on_event(Sc.Event.rescue);
+						if (this.shield_id != undefined) {
+						    U.if_let(
+							GDB.get_shield(db, this.shield_id),
+							player_shield => {
+							    player_shield.hp = K.PLAYER_HP;
+							}
+						    );
+						}
                                             }
                                         );
                                     }
@@ -308,7 +316,7 @@ export function add_shield(db: GDB.GameDB, player: S.Player) {
             if (U.has_bits_eq(c.type_flags, Tf.TF.gem)) {
                 thiz.hp = Math.min(thiz.hp_init, thiz.hp + K.GEM_HP_BONUS);
                 db.shared.items.sfx.push(K.GEM_COLLECT_SFX);
-				db.local.scoring.on_event(Sc.Event.gem_pickup);
+		db.local.scoring.on_event(Sc.Event.gem_pickup);
             }
             // note: the player has an extra hard-coded ability to crash through enemies somewhat.
             if (U.has_bits_eq(c.type_flags, Tf.TF.enemyShield)) {

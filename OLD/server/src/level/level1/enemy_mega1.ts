@@ -15,7 +15,7 @@ export const WARPIN_RESOURCE_ID = "enemies/e10m/e10_m1.png";
 
 export function warpin_mk(db: GDB.GameDB): U.O<S.Sprite> {
     const anim = new A.AnimatorDimensions(anims_spec_mk(db));
-    const [ewsl, ewsr] = Ebw.scale_specs(S.Scale.mega, true);
+    const [ewsl, ewsr] = Ebw.scale_specs(db.shared.level_index1, S.Rank.mega, true);
     const weapons = {
         'wl': Ebw.weapon_mk(ewsl),
         'wr': Ebw.weapon_mk(ewsr),
@@ -27,7 +27,7 @@ export function warpin_mk(db: GDB.GameDB): U.O<S.Sprite> {
     	WARPIN_RESOURCE_ID,
         {
             anim: anim,
-            scale: S.Scale.mega,
+            rank: S.Rank.mega,
             hp_init: K.ENEMY_MEGA_HP,
             damage: K.ENEMY_MEGA_DAMAGE,
             weapons: weapons,

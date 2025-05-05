@@ -11,11 +11,21 @@ import * as Gs from './game_stepper';
 import * as Hs from './high_scores';
 import * as U from './util/util';
 import * as D from './debug';
+import * as K from './konfig';
+
+const TOP_INSTRUCTIONS = [
+    "RETURN HUMANS TO BASE.",
+    "DEFEAT ALL ENEMIES.",
+    " ",
+    "CONTROLS:",
+    "FIRE: SPACE / Z / ENTER",
+    "MOVE: {W,A,S,D} / {ARROW KEYS}",
+    "BOOST: SHIFT",
+    "PAUSE: ESC",
+];
 
 export interface Game {
     merge_client_db(cnew: Cdb.ClientDB): void;
-    // 'step' here assumes that the correct 'dt' fps time has
-    // passed, it doesn't try to check the real/world time.
     step(): void;
     stringify(): string;
 }
@@ -45,7 +55,7 @@ export function game_mk(high_scores: Hs.HighScores): Game {
         }
 
         // todo: this would all be better done as a visual graph / state machine.
-        step() {
+	step() {
             this.stepper.step();
             if (this.stepper instanceof GameInstructions && this.stepper.get_state() != Gs.StepperState.running) {
                 this.stepper = new GameLevels(high_scores.get_high_score());
@@ -74,7 +84,7 @@ class GameInstructions implements Gs.Stepper {
     stepper: Gs.Stepper;
 
     constructor(animated: boolean = true) {
-        this.stepper = new Is.InstructionsScreen(Is.TOP_INSTRUCTIONS, animated);
+        this.stepper = new Is.InstructionsScreen(TOP_INSTRUCTIONS, animated);
         // this.stepper = new Hst.HighScoreTableScreen(Hs.high_scores_mk()); // just for testing it easily.
     }
 

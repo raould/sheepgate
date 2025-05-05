@@ -12,31 +12,9 @@ import * as U from './util/util';
 import * as D from './debug';
 import { DebugGraphics } from './debug_graphics';
 
-class BeamDownPositions {
-    positions: G.Rect[];
-    index: number;
-    constructor(center: G.Rect, count: number) {
-        this.index = 0;
-        this.positions = [];
-        const w = G.rect_w(center);
-        const start = G.rect_move(center, G.v2d_mk_x0(-w * Math.floor(count/2)));
-        const step = G.v2d_mk_x0(w);
-        for (let i = 0; i < count; ++i) {
-            const p = G.rect_move(start, G.v2d_scale(step, i));
-            this.positions.push(p);
-            DebugGraphics.add_rect(DebugGraphics.get_permanent(), p);
-        }
-    }
-    next(): G.Rect {
-        const p = this.positions[this.index];
-        this.index = (this.index+1) % this.positions.length;
-        return p;
-    }
-}
-
 interface BasePrivate extends S.Base {
     animator: A.ResourceAnimator;
-    beam_down_positions: BeamDownPositions;
+    beam_down_rect: G.Rect;
 }
 
 export function base_add(db: GDB.GameDB) {
@@ -60,10 +38,14 @@ function base_mk(db: GDB.GameDB): U.O<S.Base> {
             G.v2d_scale_v2d(K.BASE_SIZE, G.v2d_mk(0.5, 0.3))
         );
         const rect = G.rect_mk(base_lt, K.BASE_SIZE);
-        const beam_down_positions = new BeamDownPositions(
-            G.rect_scale_mid_v2d(G.rect_mk(G.rect_mid(rect), G.v2d_mk_1()), K.PEOPLE_SIZE),
-            K.PLAYER_MAX_PEOPLE
-        );
+	const beam_down_center = G.v2d_add(
+	    G.rect_mid(rect),
+	    G.v2d_mk(0, K.PEOPLE_SIZE.y*0.25)
+	);
+	const beam_down_rect = G.rect_scale_mid_v2d(
+	    G.rect_mk(beam_down_center, G.v2d_mk_1()),
+	    K.PEOPLE_SIZE
+	);
         // hacky hard coded centeringish of the person in the base doorway.
         base = GDB.id_mut(
             (dbid: GDB.DBID): S.Base => {
@@ -77,10 +59,7 @@ function base_mk(db: GDB.GameDB): U.O<S.Base> {
                     alpha: 1,
                     z_back_to_front_ids: z_back_to_front_ids,
                     animator: animator,
-                    beam_down_positions: beam_down_positions,
-                    next_beam_down_rect(db: GDB.GameDB): G.Rect {
-                        return beam_down_positions.next();
-                    },
+                    beam_down_rect,
                     step(db: GDB.GameDB) {
                         this.z_back_to_front_ids = this.animator.z_back_to_front_ids(db);
                     },

@@ -121,7 +121,7 @@ export abstract class SizzlerScreen implements M.Menu {
         );
     }
 
-    step_instructions(center: G.V2D, instructions: string[], size: number) {
+    public step_instructions(center: G.V2D, instructions: string[], size: number) {
         const hcycle = HCycle.newFromHCycle(this.body_cycle);
         instructions.forEach((text: string, index: number) => {
             const v_offset = (size+5) * index;

@@ -5,28 +5,57 @@ import * as T from './timer';
 import * as D from './debug';
 import * as U from './util/util';
 import * as Hs from './high_scores';
+import * as P from './perf';
+import * as F from './fps';
 import * as WS from 'ws';
 
 const ws2game: Map<any, U.O<Gm.Game>> = new Map();
 const wss = new WS.Server({ port: 6969 });
 const high_scores = Hs.high_scores_mk();
 
+const PROFILE = false;
+const pLoop = new P.PerfDuration(K.FPS, (avg) => D.log('big loop', U.F2D(avg)));
+const pGame = new P.PerfDuration(K.FPS, (avg) => D.log('game step', U.F2D(avg)));
+const fps = new F.FPS((fps) => D.log('fps', U.F2D(fps)));
+
 // throbbing all clients' games in lock-step at K.FPS.
+const last_msec = 0;
 const t = new T.OnlyOneCallbackTimer(
-    () => ws2game.forEach((game, ws) => {
-        if (game != null) {
-            game.step();
-            ws.send(game.stringify());
-            D.debug_step_cancel();
-        }
-    }),
-    K.DT
-);
+    () => {
+	let dbg_count = 0;
+	const dbg_pre = Date.now();
+
+	if (PROFILE) { pLoop.begin(); }
+	ws2game.forEach((game, ws) => {
+	    if (game != null) {
+		dbg_count++;
+
+		if (PROFILE) { pGame.begin(); }
+		game.step();
+		if (PROFILE) { pGame.end(); }
+
+		ws.send(game.stringify());
+		D.debug_step_cancel();
+	    }
+	});
+	if (PROFILE) { pLoop.end(); }
+	if (PROFILE) { fps.on_tick(); }
+
+	// any super bad time problems?
+	const dbg_post = Date.now();
+	const dbg_dt = dbg_post - dbg_pre;
+	if (dbg_dt > K.DT) {
+	    D.error(dbg_count, U.F2D(dbg_dt), ">", K.DT);
+	}
+    },
+    K.DT);
+
 t.start();
 
 wss.on('connection', (ws) => {
-    ws2game.set(ws, undefined);
-    D.log(`ws connected! # remaining games: ${ws2game.size}`);
+    D.log("ws connected!");
+
+    ws2game.set(ws, undefined); // paranoia.
 
     ws.on('open', () => {
         // todo: why the heck is this never called?!
@@ -49,12 +78,13 @@ wss.on('connection', (ws) => {
                     if (g == null) {
                         g = Gm.game_mk(high_scores);
                         ws2game.set(ws, g);
+			D.log("ws game++", ws2game.size);
                     }
                     g.merge_client_db(client_db);
                 }
             }
             catch (err) {
-                console.error(err);
+                D.error(err);
             }
         }
     );

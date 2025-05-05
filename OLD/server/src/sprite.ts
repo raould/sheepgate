@@ -89,7 +89,7 @@ export interface CollidableSprite extends HpSprite, C.Masked, C.Ignores {
 }
 
 export interface Base extends Sprite, Shielded {
-    next_beam_down_rect(db: GDB.GameDB): G.Rect;
+    beam_down_rect: G.Rect;
 }
 
 export interface Gem extends CollidableSprite {
@@ -98,7 +98,7 @@ export interface Gem extends CollidableSprite {
 // this is a very handwavy arbitrary rating,
 // used for things like what kinds of explosions fx
 // to use, and how much to shake the screen.
-export enum Scale {
+export enum Rank {
     // note: these are an ordering and are used as such in code.
     // (todo/note: ideally this means the hp & weapon values
     // should be scaled along these lines too. sorta. maybe.)
@@ -111,28 +111,28 @@ export enum Scale {
 // sad that i am too lazy to actually thread
 // mass through all the sprites so i did this
 // crappy hack instead. todo: not this!
-export function scale2mass(scale: Scale): number {
-    switch (scale) {
-        case Scale.small: return 1;
-        case Scale.player: return 1;
-        case Scale.mega: return 3;
-        case Scale.hypermega: return 3;
-        default: U.unreachable(scale);
+export function rank2mass(rank: Rank): number {
+    switch (rank) {
+        case Rank.small: return 1;
+        case Rank.player: return 1;
+        case Rank.mega: return 3;
+        case Rank.hypermega: return 3;
+        default: U.unreachable(rank);
     }
 }
 
-export interface Scaled {
-    scale: Scale
+export interface Ranked {
+    rank: Rank
 };
 
-export interface Warpin extends Sprite, Scaled { // only fx, no hp.
+export interface Warpin extends Sprite, Ranked { // only fx, no hp.
 }
 
-export interface Explosion extends Sprite, Scaled, Tf.Flagged { // only fx, no hp.
+export interface Explosion extends Sprite, Ranked, Tf.Flagged { // only fx, no hp.
 }
 
 // fighters don't have their own hp, it is all in their shield.
-export interface Fighter extends Sprite, Scaled, Facing, Tf.Flagged, Shielded {
+export interface Fighter extends Sprite, Ranked, Facing, Tf.Flagged, Shielded {
     weapons: Arsenal;
     // todo: these should really come from magic pixels in the image resources.
     get_weapon_hardpoint(weapon_type: WeaponType, facing: F.Facing): G.V2D;
@@ -157,6 +157,7 @@ export interface Enemy extends Fighter {
 // Shielded should not be a full CollidableSprite, but
 // does get informed when thier shield collides.
 export interface Shielded {
+    shield_id?: GDB.DBID;
     set_lifecycle(lifecycle: GDB.Lifecycle): void;
     on_collide(db: GDB.GameDB, dst: CollidableSprite): void;
 }

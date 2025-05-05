@@ -1,5 +1,6 @@
 import * as D from '../debug';
 
+// todo: uh, tests?
 // todo: share this with client, probably.
 // todo: some of these utils aren't ever used, consider deleting them.
 
@@ -17,6 +18,10 @@ export type O<T> = T | undefined;
 
 export function unreachable(_: unknown): never {
     throw new Error("unreachable");
+}
+
+export function F2D(n: number): number {
+    return Math.round((Number.EPSILON+n)*100)/100;
 }
 
 // your fault if the array is empty!
@@ -147,9 +152,13 @@ export function lerp(a: number, b: number, t: number): number {
     );
 }
 
-export function inv_lerp(min: number, max: number, n: number): number {
+export function t01(min: number, max: number, n: number): number {
     D.assert(min <= max);
     return clip01((n - min) / (max - min));
+}
+
+export function t10(min: number, max: number, n: number): number {
+    return 1 - t01(min, max, n);
 }
 
 export function clip01(n: number): number {
@@ -173,31 +182,19 @@ export function precision(n: number, p: number): number {
 
 type LNOTNIL<T,R> = (t:T)=>R
 type LNIL<R> = (()=>R);
+
 export function if_let<T,R>(ot:O<T>, nonnil:LNOTNIL<T,R>): O<R> {
     if (ot != null) {
         return nonnil(ot!);
     }
     return undefined;
 }
+
 export function if_let_safe<T,R>(ot:O<T>, nonnil:LNOTNIL<T,R>, nil:LNIL<R>): R {
     if (ot != null) {
         return nonnil(ot!);
     }
     return nil();
-}
-
-// todo: i know the name is stupid but i hate that js/ts don't let
-// me use characters in names e.g. '!' instead of '2' here, and i don't
-// want to make the name longer, and i don't want to think of another
-// term so eff it for now.
-// if_let2 prevents 'undefined'.
-export function if_let2<T,R>(ot:O<T>, nonnil:LNOTNIL<T,R>, nil:LNIL<R>): R {
-    if (ot != null) {
-        return nonnil(ot!);
-    }
-    else {
-        return nil();
-    }
 }
 
 // if_let"s" as in plural. all the os's have to be non-nil for it to call nonnil().

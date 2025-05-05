@@ -16,11 +16,13 @@ import * as U from '../util/util';
 import * as Eu from './enemy_util';
 import * as K from '../konfig';
 import * as D from '../debug';
+import { RGBA } from '../color';
+import { DebugGraphics } from '../debug_graphics';
 
 export interface EnemySpec {
     lt?: G.V2D,
     anim: A.AnimatorDimensions,
-    scale: S.Scale,
+    rank: S.Rank,
     hp_init: number,
     damage: number,
     weapons: S.Arsenal,
@@ -32,15 +34,26 @@ export interface EnemySpec {
 }
 
 export function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec): U.O<S.Sprite> {
-    const lt = spec.lt ?? Eu.safe_lt(db, size, Rnd.singleton);
+    if (!!spec.lt) {
+	DebugGraphics.add_DrawEllipse(
+	    DebugGraphics.get_permanent(),
+	    { wrap: true,
+	      color: RGBA.YELLOW,
+	      bounds: G.rect_mk(spec.lt, size)
+	    }
+	);
+    }
+    const lt = Eu.safe_lt(db, size, Rnd.singleton, spec.lt);
     const rect = G.rect_mk(lt, size);
+    spec.lt = lt;
+    DebugGraphics.add_rect(DebugGraphics.get_permanent(), rect);
     return A.warpin_mk(
         db,
         {
             duration_msec: K.WARPIN_TOTAL_MSEC,
             rect: rect,
             resource_id: db.uncloned.images.lookup(resource_id),
-            scale: spec.scale,
+            rank: spec.rank,
             on_end: (db: GDB.GameDB) => {
                 const images = db.uncloned.images;
                 const sprite: U.O<EnemyPrivate> = GDB.add_sprite_dict_id_mut(
@@ -77,8 +90,8 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
                 flight_pattern: spec.flight_pattern,
                 vel: G.v2d_mk_0(),
                 acc: G.v2d_mk_0(),
-                scale: spec.scale,
-                mass: S.scale2mass(spec.scale),
+                rank: spec.rank,
+                mass: S.rank2mass(spec.rank),
                 type_flags: Tf.TF.enemyShip,
                 weapons: spec.weapons,
                 z_back_to_front_ids: spec.anim.z_back_to_front_ids(db, F.DefaultFacing, false, 1),
@@ -111,7 +124,8 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
                 },
                 step_add_shots(db: GDB.GameDB) {
                     const return_fire = this.step_return_fire(db);
-                    if (return_fire || Eu.can_shoot_in_bounds(db, this)) {
+		    const in_bounds = Eu.can_shoot_in_bounds(db, this);
+                    if (return_fire || in_bounds) {
                         U.if_let(
                             GDB.get_player(db),
                             (p: S.Player) => {

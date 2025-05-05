@@ -40,6 +40,10 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
     GDB.add_sprite_dict_id_mut(
         shields,
         (dbid): S.Shield<S.Fighter> => {
+	    const fighter = GDB.get_fighter(db, spec.fighter.dbid);
+	    if (fighter != undefined) {
+		fighter.shield_id = dbid;
+	    }
             const s: ShieldPrivate = {
                 dbid: dbid,
                 get_wrapped(db: GDB.GameDB): U.O<S.Fighter> {
@@ -177,7 +181,8 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
 function on_death_fx(db: GDB.GameDB, shield: ShieldPrivate, fighter: S.Fighter) {
     db.shared.items.sfx.push(K.EXPLOSION_SFX);
     const exids: GDB.DBID[] = [];
-    const r = G.rect_circle_outside(G.rect_scale_mid_v2d(shield as G.Rect, G.v2d_mk_nn(1.2)));
+    const xs = fighter.rank == S.Rank.hypermega ? 1.2 : 0.5;
+    const r = G.rect_circle_outside(G.rect_scale_mid_v2d(shield as G.Rect, G.v2d_mk_nn(xs)));
     const type_flags = Tf.firstMatch(fighter.type_flags, [Tf.TF.player, Tf.TF.enemy]) | Tf.TF.explosion;
     GDB.add_sprite_dict_id_mut(
         db.shared.items.explosions,
@@ -188,14 +193,14 @@ function on_death_fx(db: GDB.GameDB, shield: ShieldPrivate, fighter: S.Fighter) 
                 comment: `explosionA-${dbid}`,
                 ...r,
                 type_flags: type_flags,
-                scale: fighter.scale,
+                rank: fighter.rank,
                 vel: G.v2d_mk_0(),
                 acc: G.v2d_mk_0(),
                 alpha: 1,
             })
         }
     );
-    if (fighter.scale >= S.Scale.hypermega || fighter.scale == S.Scale.player) {
+    if (fighter.rank >= S.Rank.hypermega || fighter.rank == S.Rank.player) {
         GDB.add_dict_id_mut(
             db.shared.items.particles,
             (dbid: GDB.DBID) => new Pr.ParticleEllipseGenerator(
@@ -220,7 +225,7 @@ function on_death_fx(db: GDB.GameDB, shield: ShieldPrivate, fighter: S.Fighter) 
                     comment: `explosionB-${dbid}`,
                     ...r,
                     type_flags: type_flags,
-                    scale: fighter.scale,
+                    rank: fighter.rank,
                     vel: G.v2d_mk_0(),
                     acc: G.v2d_mk_0(),
                     alpha: 1,
@@ -266,7 +271,7 @@ export class ShieldHitAnimation {
         if (shield != null && this.shield_size != null) {
             const now = db.shared.sim_now;
             const max_flare = U.clip01(shield.hp / shield.hp_init + 0.1);
-            const flare = max_flare * (1 - U.inv_lerp(this.start_msec, this.start_msec + this.duration_msec, now));
+            const flare = max_flare * U.t10(this.start_msec, this.start_msec + this.duration_msec, now);
             this.alpha = Math.max(K.SHIELD_ALPHA, flare);
         }
     }

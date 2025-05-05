@@ -1,6 +1,7 @@
 import * as Rnd from './random';
 import * as U from './util/util';
 import * as F from './facing';
+import * as D from './debug';
 import * as _ from 'lodash';
 
 // i know it is kinda dumb to be reinventing these wheels.
@@ -30,8 +31,11 @@ export function smallest_diff_wrapped(a: number, b: number, range: number): numb
 export interface V2D {
     x: number; y: number;
 }
-export function v2d_toS(v: V2D): string {
-    return `V2D(${v.x},${v.y})`;
+export function v2d_toS(v: U.O<V2D>): string {
+    if (v == undefined) {
+	return "V2D(undefined)";
+    }
+    return `V2D(x:${U.F2D(v.x)},y:${U.F2D(v.y)})`;
 }
 
 export const v2d_left = v2d_mk(-1, 0);
@@ -263,8 +267,11 @@ export interface P2D extends Rect {
     acc: V2D;
     mass?: number;
 }
-export function p2d_toS(p: P2D): string {
-    return `P2D(${v2d_toS(p.lt)},${v2d_toS(p.size)},${v2d_toS(p.vel)},${v2d_toS(p.acc)})`;
+export function p2d_toS(p: U.O<P2D>): string {
+    if (p == undefined) {
+	return "P2D(undefined)";
+    }
+    return `P2D(lt:${v2d_toS(p.lt)},sz:${v2d_toS(p.size)},v:${v2d_toS(p.vel)},a:${v2d_toS(p.acc)})`;
 }
 export function p2d_mk(r: Rect, vel: V2D, acc: V2D) {
     return {
@@ -327,8 +334,11 @@ export interface Rect {
     lt: V2D;
     size: V2D;
 }
-export function rect_toS(r: Rect): string {
-    return `Rect(${v2d_toS(r.lt)},${v2d_toS(r.size)})`;
+export function rect_toS(r: U.O<Rect>): string {
+    if (r == undefined) {
+	return "Rect(undefined)";
+    }
+    return `Rect(lt:${v2d_toS(r.lt)},sz:${v2d_toS(r.size)})`;
 }
 export function rect_mk(lt: V2D, size: V2D): Rect {
     return {
@@ -584,11 +594,8 @@ export function rect_align_rhs(r: Rect, bounds: Rect): Rect {
     )
 }
 export function rect_wrapH(r: Rect, bounds0: V2D): Rect {
-    const x2 = wrap_x(r.lt.x, bounds0);
-    return rect_mk(
-        v2d_mk(x2, r.lt.y),
-        r.size
-    );
+    const lt2 = v2d_wrapH(r.lt, bounds0);
+    return rect_mk(lt2, r.size);
 }
 export function rect_wrapH_mut(r: Rect, bounds0: V2D) {
     r.lt.x = wrap_x(r.lt.x, bounds0);

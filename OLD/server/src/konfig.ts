@@ -130,7 +130,7 @@ export const HUD_RIGHT_RECT = G.rect_move(
 );
 D.assert_fn(G.rect_rt(HUD_RIGHT_RECT), G.rect_rt(HUD_VISIBLE_RECT), (a,b)=>G.v2d_eq(a,b), "right");
 
-// gameport is below the hud area and has no inset (no drawn border).
+// gameport is below the hud area and has no inset; no drawn border.
 export const GAMEPORT_RECT = G.rect_mk(
     G.rect_lt(SCREEN_RECT),
     G.v2d_mk(
@@ -141,6 +141,7 @@ export const GAMEPORT_RECT = G.rect_mk(
 D.assert(G.rect_w(HUDPORT_RECT) == G.rect_w(GAMEPORT_RECT));
 D.assert(G.rect_h(SCREEN_RECT) - (G.rect_h(HUDPORT_RECT) + G.rect_h(GAMEPORT_RECT)) <= 0.01);
 
+// apparently trying to avoid having enemies shoot when too close to the sides.
 export const ENEMY_FIRING_INSET = G.v2d_mk(20, 0);
 export const ENEMY_FIRING_RECT = G.rect_inset(
     GAMEPORT_RECT,
@@ -162,7 +163,7 @@ export const GAMEPORT_PLAYER_ZONE_STEP_X = 10;
 // feeling of how y works, but haven't figured out how to get it back for x
 // and keep the zone stuff at the same time.
 export const GAMEPORT_PLAYER_ZONE_SCALE_Y = 0.2;
-export const GAMEPORT_SHAKE = 3; // K
+export const GAMEPORT_SHAKE = 4; // K
 
 export const OFF_SCREEN = G.v2d_mk_nn(-Number.MAX_SAFE_INTEGER);
 
@@ -210,7 +211,7 @@ export const BG_LAYER_SCALE = 2;
 // player should be not super hard to kill so
 // they have to actually try to dodge enemy bullets.
 // note/todo: odd that i set this to MAX but the player can still die when crashing into other shields?!
-export const PLAYER_HP = 20;
+export const PLAYER_HP = 40;
 
 export const BAD_COLOR = RGBA.new0255(202, 0, 32);
 export const GOOD_COLOR = RGBA.new0255(5, 133, 176);
@@ -250,19 +251,17 @@ export const DRAG_ACC = G.v2d_mk(-0.0025, -0.005); // L
 // match: if the PLAYER_DELTA_*_ACC changes then likely
 // the gameport zone code will need adjustment.
 // pixels/dt? pixels/sec? i dunno!
-export const PLAYER_DELTA_X_ACC = 0.002; // K
-export const PLAYER_DELTA_Y_VEL = 0.25; // K
+export const PLAYER_DELTA_X_ACC = 0.0015; // K
+export const PLAYER_DELTA_Y_VEL = 0.15; // K
 // todo: there's a bug that is hard to repro that
 // i think is caused by being near the world wrap boundary,
 // and using turbo, where the player breaks free of the zone & goes off screen.
 export const PLAYER_TURBO_X_SCALE = 4;
 
-// i think i'll keep this at 1, like Dropzone.
-export const PLAYER_MAX_PEOPLE = 1; // L
 export const PLAYER_BEAM_MAX_VEL2 = 0.2; // K
 export const PEOPLE_SIZE = G.v2d_mk_nn(32); // K
 
-export const GEM_SIZE = G.v2d_mk_nn(16);
+export const GEM_SIZE = G.v2d_mk_nn(10);
 export const GEM_HP_BONUS = 3; // keep it smallish.
 export const ENEMY_SMALL_GEM_COUNT = 1;
 export const ENEMY_MEGA_GEM_COUNT = 2;

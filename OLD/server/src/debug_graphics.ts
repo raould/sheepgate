@@ -1,7 +1,9 @@
+import * as K from './konfig';
 import * as G from './geom';
 import * as Dr from './drawing';
 import { RGBA } from './color';
 import * as GDB from './game_db';
+import * as Rnd from './random';
 import * as _ from 'lodash';
 
 // arbitrary colors to use, already alpha'd fwiw.
@@ -21,7 +23,9 @@ export namespace DebugGraphics {
         return [permanent, frame];
     }
 
-    // they only last 1 frame.
+    // they only last some number of frames.
+    // the fade-out is arbitrary and you can/should
+    // hack it on the fly for your testing use cases.
     export function get_frame(): Dr.Drawing {
         return frame;
     }
@@ -102,26 +106,30 @@ export namespace DebugGraphics {
         dst.texts.push(dt);
     }
 
-    function add_rect_cross(dst: Dr.Drawing, r: G.Rect) {
+    function add_rect_cross(dst: Dr.Drawing, r: G.Rect, name?:string) {
+	const line_width = !!name ?
+	      Rnd.singleton.next_int_range(2,5) :
+	      1;
         const lt = r.lt;
         const rb = G.rect_rb(r);
+	name && add_DrawText(dst, {wrap:true, lb:G.rect_mid(r), font:K.SCORE_FONT, fillStyle:DEBUG_COLOR_RED, text:name});
         dst.lines.push({
             p0: lt,
             p1: rb,
-            line_width: 1,
+            line_width,
             color: DEBUG_COLOR_RED,
             wrap: false,
         });
         dst.lines.push({
             p0: G.v2d_mk(rb.x, lt.y),
             p1: G.v2d_mk(lt.x, rb.y),
-            line_width: 1,
+            line_width,
             color: DEBUG_COLOR_RED,
             wrap: false,
         });
         dst.rects.push({
             rect: r,
-            line_width: 1,
+            line_width,
             color: DEBUG_COLOR_BLUE,
             is_filled: false,
             wrap: false,
@@ -129,7 +137,7 @@ export namespace DebugGraphics {
         // also inset 10 so we can see it if we're exactly aligned.
         dst.rects.push({
             rect: G.rect_pad_v2d(r, G.v2d_mk_nn(-10)),
-            line_width: 1,
+            line_width,
             color: DEBUG_COLOR_BLUE,
             is_filled: false,
             wrap: false,

@@ -7,6 +7,7 @@ import { explosion_sfx_b64 } from './explosion.ogg.b64';
 import { gem_collect_sfx_b64 } from './gem_collect.ogg.b64';
 import { player_shoot_sfx_b64 } from './player_shoot.ogg.b64';
 import { Gamepads, StandardMapping } from './gamepads';
+import { FPS } from './fps';
 
 // todo: use the server types.
 let server_db: any;
@@ -22,12 +23,13 @@ let particles: {[k:string]:ParticlesEllipseGenerator} = {};
 let socket_ws: any;
 let h5canvas: any;
 let contextAudio: any;
-let context2d: any;
+let cx2d: any;
 let sounds: any = {};
 let images: any = {};
-let last_time = { tick: 0, msec: Date.now() };
+let last_render_msec = 0;
+let game_fps = 0;
+let fps = new FPS((fps) => { game_fps = fps; });
 let tick = 0;
-let fps = 0;
 let currentGamepad: any;
 const server_host: string = "localhost";
 const ws_endpoint: string = `ws://${server_host}:6969`;
@@ -35,6 +37,7 @@ const BG_COLOR: string = "#111133";
 const DEBUG_IMG_BOX_COLOR: string = "rgba(255,0,0,0.5)";
 const client_id = Date.now()
 // todo: game breaks when the fps is set to anything other than 30.
+// also requestAnimationFrame() never gives me more than 30 fps anyway?
 const TARGET_FPS = 30;
 const MSEC_PER_FRAME = 1000 / TARGET_FPS;
 log("client_id", client_id);
@@ -61,7 +64,8 @@ enum CommandType {
     debug_toggle_stepping = "debug_toggle_stepping",
     debug_step_frame = "debug_step_frame",
     debug_dump_state = "debug_dump_state",
-		debug_win_level = "debug_win_level",
+    debug_win_level = "debug_win_level",
+    debug_lose_level = "debug_lose_level",
 }
 // todo: share this (unfortunately) with the server, esp. the "is_singular" part.
 // is_singular true means there's no auto-repeat while the key is held down.
@@ -76,6 +80,8 @@ const TurboSpec: CommandSpec = { command: CommandType.turbo, is_singular: false 
 const key2cmd: { [k: string]: CommandSpec } = {
     // standard gameplay commands.
     Escape:     PauseSpec,
+    p:     	PauseSpec,
+    P:     	PauseSpec,
     h:          HighScoreSpec,
     H:          HighScoreSpec,
     " ":        FireSpec,
@@ -102,14 +108,14 @@ const key2cmd: { [k: string]: CommandSpec } = {
     n:          { command: CommandType.debug_toggle_annotations, is_singular: true },
     "/":        { command: CommandType.debug_toggle_stepping, is_singular: true },
     "^":        { command: CommandType.debug_win_level, is_singular: true },
+    "&":        { command: CommandType.debug_lose_level, is_singular: true },
 };
 
 class ParticlesEllipseGenerator {
-    // yes there's maybe still a bug where the generator might
-    // live longer than it should and re-does
-    // the animation a 2nd time for some fubar reason.
     // "o" means "offset" because we're keeping the particles
     // as just a long array-of-structs that is nothing but floats.
+    // (todo: yes there's maybe still a bug where the generator might
+    // live longer than it should and animates a 2nd time.)
     ox = 0;
     oy = 1;
     ovx = 2;
@@ -166,24 +172,24 @@ class ParticlesEllipseGenerator {
             const a1 = Math.min(1, Math.max(0.5, 1 - this.age_t(gdb))); // 0.5 is arbitrary, yes.
             const fs = `rgba(64,0,0,${a1})`;
             // nifty trails, arbitrary hard-coded hacked values.
-            context2d.beginPath();
-            context2d.lineWidth = 1;
+            cx2d.beginPath();
+            cx2d.lineWidth = 1;
             const ss = `rgba(255,255,0,${a1})`;
-            context2d.strokeStyle = ss;
+            cx2d.strokeStyle = ss;
             const sxy1 = v2sv_wrapped({x:x1, y:y1}, gdb.world.gameport, gdb.world.bounds0, true);
-            context2d.moveTo(sxy1.x+this.pdim/2, sxy1.y+this.pdim/2);
-            context2d.lineTo(sxy1.x+this.pdim/2 - vx * 10, sxy1.y+this.pdim/2 - vy * 10);
-            context2d.stroke();
+            cx2d.moveTo(sxy1.x+this.pdim/2, sxy1.y+this.pdim/2);
+            cx2d.lineTo(sxy1.x+this.pdim/2 - vx * 10, sxy1.y+this.pdim/2 - vy * 10);
+            cx2d.stroke();
             // the particle itself.
-            context2d.fillStyle = fs;
-            context2d.fillRect(sxy1.x, sxy1.y, this.pdim, this.pdim);
+            cx2d.fillStyle = fs;
+            cx2d.fillRect(sxy1.x, sxy1.y, this.pdim, this.pdim);
             if (debugging_state.is_drawing) {
-                context2d.beginPath();
-                context2d.lineWidth = 1;
-                context2d.strokeStyle = "#00FF0033";
-                context2d.moveTo(sxy1.x, sxy1.y);
-                context2d.lineTo(sxy1.x + vx * 100, sxy1.y + vy * 100);
-                context2d.stroke();
+                cx2d.beginPath();
+                cx2d.lineWidth = 1;
+                cx2d.strokeStyle = "#00FF0033";
+                cx2d.moveTo(sxy1.x, sxy1.y);
+                cx2d.lineTo(sxy1.x + vx * 100, sxy1.y + vy * 100);
+                cx2d.stroke();
             }
         }
     }
@@ -203,14 +209,15 @@ function rand_mk(seed: number) {
     }
 }
 
-function nextFrame(/*using global gdb: any*/) {
+function nextFrame(/*using global server_db*/) {
     const now = Date.now();
-    const wall_clock_dt = now - last_time.msec;
-    if (wall_clock_dt >= MSEC_PER_FRAME) {
-        tick++;
-        fps = (tick - last_time.tick)*1000/wall_clock_dt;
-        last_time.msec = now;
-        last_time.tick = tick;
+    fps.on_tick();
+    // requestAnimationFrame() is running at 30fps for me
+    // so don't wait a whole nother round if we're close,
+    // hence this heuristic of scaling the threshold by 0.9.
+    if (now - last_render_msec >= MSEC_PER_FRAME*0.9) {
+        last_render_msec = now;
+	tick++;
         render(server_db);
     } 
     window.requestAnimationFrame(nextFrame);
@@ -310,12 +317,12 @@ function renderSpriteImageLayer(gdb: any, s: any, resource_id: string) {
         // todo: skip if the wr is not on the screen at all.
         try {
             if (s.alpha != 1) {
-                context2d.save();
-                context2d.globalAlpha = s.alpha;
+                cx2d.save();
+                cx2d.globalAlpha = s.alpha;
             }
             const img: any = images[resource_id];
             if (img != null) {
-                context2d.drawImage(img,
+                cx2d.drawImage(img,
                     0, 0, img.width, img.height,
                     Math.floor(wr.lt.x + ss.x), Math.floor(wr.lt.y + ss.y),
                     Math.floor(wr.size.x), Math.floor(wr.size.y),
@@ -325,7 +332,7 @@ function renderSpriteImageLayer(gdb: any, s: any, resource_id: string) {
 								//console.error(`no image for ${resource_id}`);
 						}
             if (s.alpha != 1) {
-                context2d.restore();
+                cx2d.restore();
             }
         }
         catch (err) {
@@ -346,9 +353,9 @@ function renderSprite(gdb: any, s: any) {
     if (s != null && debugging_state.is_annotating) {
         const wr = v2sr_wrapped(s, gdb.world.gameport, gdb.world.bounds0, true);
         const rid = (s.resource_id || "/nil").replace(/.*\//, "");
-        context2d.font = "9px mono";
-        context2d.fillStyle = "white";
-        context2d.fillText(`${s.comment} ${rid}`, wr.lt.x, wr.lt.y+10);
+        cx2d.font = "9px mono";
+        cx2d.fillStyle = "white";
+        cx2d.fillText(`${s.comment} ${rid}`, wr.lt.x, wr.lt.y+10);
     }
 }
 
@@ -431,7 +438,7 @@ function renderSky(gdb: any) {
     }
 }
 
-function two_decimals(n: number): number {
+function F2D(n: number): number {
     return Math.round((Number.EPSILON+n)*100)/100;
 }
 
@@ -441,18 +448,20 @@ function renderDebug(gdb: any) {
         const gameport_bounds = gdb.world.gameport.screen_bounds;
         const mwx = gameport_bounds.lt.x + gameport_bounds.size.x/2;
         const mwy = gameport_bounds.lt.y + gameport_bounds.size.y/2;
-        context2d.fillText(`${two_decimals(mwx)} ${two_decimals(mwy)}`, mwx-gameport_bounds.lt.x-40, mwy-gameport_bounds.lt.y-10);
+        cx2d.fillText(`${F2D(mwx)} ${F2D(mwy)}`, mwx-gameport_bounds.lt.x-40, mwy-gameport_bounds.lt.y-10);
         if (gdb.debug_graphics != null) {
             gdb.debug_graphics.forEach((g:any) => renderDrawing(gdb, g));
         }
 
         // these are hard-coded in screen coordinates.
-        context2d.font = "9px mono";
-        context2d.fillStyle = "white";
-        context2d.fillText(`ticks ${gdb.tick}`, 300, 10);
-        context2d.fillText(`sim clock ${Math.floor(gdb.sim_now)}`, 300, 30);
-        context2d.fillText(`sim fps ${Math.round((Number.EPSILON+gdb.fps)*100)/100}`, 300, 50);
-        context2d.fillText(`client fps ${two_decimals(fps)}`, 300, 70);
+        cx2d.font = "12px mono";
+        cx2d.fillStyle = "white";
+        cx2d.fillText(`ticks ${gdb.tick}`, 300, 10);
+        cx2d.fillText(`sim clock ${Math.floor(gdb.sim_now)}`, 300, 30);
+        cx2d.fillText(`sim fps ${F2D(gdb.fps)}`, 300, 50);
+	// todo: this needs some kind of smoothing, it is often unreadable.
+        cx2d.fillText(`client fps ${F2D(game_fps)}`, 300, 70);
+        cx2d.fillText(`client fps ${TARGET_FPS} ${game_fps >= TARGET_FPS} ${F2D(Math.abs(game_fps-TARGET_FPS))}`, 300, 90);
 
         renderLine(4, "#00FF0055", 0, 0, h5canvas.width, h5canvas.height);
         renderLine(4, "#00FF0055", 0, h5canvas.height, h5canvas.width, 0);
@@ -529,12 +538,12 @@ function renderLines(gdb: any, draw_lines: Array<any/*Dr.DrawLine*/>) {
     }
 }
 function renderLine(line_width: any, color: any, x0: any, y0: any, x1: any, y1: any) {
-    context2d.beginPath();
-    context2d.lineWidth = line_width;
-    context2d.strokeStyle = color;
-    context2d.moveTo(x0, y0);
-    context2d.lineTo(x1, y1);
-    context2d.stroke();
+    cx2d.beginPath();
+    cx2d.lineWidth = line_width;
+    cx2d.strokeStyle = color;
+    cx2d.moveTo(x0, y0);
+    cx2d.lineTo(x1, y1);
+    cx2d.stroke();
 }
 
 function renderRects(xdb: any, draw_rects: Array<any/*Dr.DrawRect*/>) {
@@ -551,14 +560,14 @@ function renderRects(xdb: any, draw_rects: Array<any/*Dr.DrawRect*/>) {
     }
 }
 function renderRect(is_filled: any, line_width: any, color: any, x: any, y: any, w: any, h: any) {
-    context2d.lineWidth = line_width;
-    context2d.strokeStyle = color;
+    cx2d.lineWidth = line_width;
+    cx2d.strokeStyle = color;
     if (is_filled) {
-        context2d.fillStyle = color;
-        context2d.fillRect(x, y, w, h);
+        cx2d.fillStyle = color;
+        cx2d.fillRect(x, y, w, h);
     }
     else {
-        context2d.strokeRect(x, y, w, h);
+        cx2d.strokeRect(x, y, w, h);
     }
 }
 
@@ -600,16 +609,16 @@ function renderArc(is_filled: any, line_width: any, color: any, x: any, y: any, 
     const yr = h / 2;
     const mx = x + xr;
     const my = y + yr;
-    context2d.lineWidth = line_width;
-    context2d.strokeStyle = color;
-    context2d.beginPath();
-    context2d.ellipse(mx, my, xr, yr, 0, r0, r1);
+    cx2d.lineWidth = line_width;
+    cx2d.strokeStyle = color;
+    cx2d.beginPath();
+    cx2d.ellipse(mx, my, xr, yr, 0, r0, r1);
     if (is_filled) {
-        context2d.fillStyle = color;
-        context2d.fill();
+        cx2d.fillStyle = color;
+        cx2d.fill();
     }
     else {
-        context2d.stroke();
+        cx2d.stroke();
     }
 }
 
@@ -625,9 +634,9 @@ function renderTexts(xdb: any, draw_texts: Array<any/*Dr.DrawText*/>) {
     }
 }
 function renderText(text: any, font: any, fillStyle: any, base_x: any, base_y: any) {
-    context2d.font = font;
-    context2d.fillStyle = fillStyle;
-    context2d.fillText(text, base_x, base_y);
+    cx2d.font = font;
+    cx2d.fillStyle = fillStyle;
+    cx2d.fillText(text, base_x, base_y);
 }
 
 function renderImages(xdb: any, draw_images: Array<any/*Dr.DrawImage*/>) {
@@ -646,7 +655,7 @@ function renderImages(xdb: any, draw_images: Array<any/*Dr.DrawImage*/>) {
 function renderImage(resource_id: string, x: number, y: number, w: number, h: number) {
     const img: any = images[resource_id];
     if (img != null) {
-        context2d.drawImage(img,
+        cx2d.drawImage(img,
             0, 0, img.width, img.height,
             x, y, w, h
         );
@@ -673,8 +682,8 @@ function renderParticles(gdb: any) {
 
 function render(mdb: any) {
     if (mdb != null) {    
-        context2d.fillStyle = mdb.menu_db?.bg_color || mdb.game_db?.bg_color || BG_COLOR;
-        context2d.fillRect(0, 0, h5canvas.width, h5canvas.height);
+        cx2d.fillStyle = mdb.menu_db?.bg_color || mdb.game_db?.bg_color || BG_COLOR;
+        cx2d.fillRect(0, 0, h5canvas.width, h5canvas.height);
         renderPlaying(mdb.game_db);
         renderMenu(mdb.menu_db);
     }
@@ -830,13 +839,12 @@ function applyDB(next_server_db: any) {
     //     log("gdb", next_server_db.game_db);
     // }
     
-    server_db = next_server_db;
-
-    // the client is mostly dumb and only
+    // the client is mostly dumb and just
     // renders things verbatim from the server db
     // without keeping any long term state on the client...
-    // but for expensive/big things it hurs too much,
+    // except for expensive/big things that hurt perf too much,
     // so make client-side-things like particle generators.
+    server_db = next_server_db;
     applyParticles(server_db.game_db);
 }
 
@@ -967,7 +975,7 @@ function loadImages() {
         loadImage(`enemies/e13/e13r_${anim}.png`)
     });
 
-    Array.from({length: 8}, (v, i) => i+1).forEach(i =>
+    Array.from({length: 5}, (v, i) => i+1).forEach(i =>
         loadImage(`gem/gem${i}.png`)
     );
 
@@ -1140,19 +1148,19 @@ function init() {
     // @ts-ignore
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     try { contextAudio = new AudioContext(); } catch(e) { console.error(e); }
-    context2d = h5canvas.getContext("2d");
+    cx2d = h5canvas.getContext("2d");
     loadSounds();
     loadImages();
     // todo: can/should i add it on the h5canvas instead of the windows?
     window.addEventListener("keydown", onKeyDown, true);
     window.addEventListener("keyup", onKeyUp, true);
-	Gamepads.start();
-	Gamepads.addEventListener("connect", (e:any)=> gamepadHandler(e, true));
-	Gamepads.addEventListener("disconnect", (e:any)=> gamepadHandler(e, false));
+    Gamepads.start();
+    Gamepads.addEventListener("connect", (e:any)=> gamepadHandler(e, true));
+    Gamepads.addEventListener("disconnect", (e:any)=> gamepadHandler(e, false));
 
     connectWS(
         ws_endpoint,
-        onMessageWS,
+        onMessageWS, // comes in at approximately the server fps.
         onConnectedWS
     );
 }

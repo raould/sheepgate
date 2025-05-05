@@ -16,10 +16,10 @@ import * as Vp from '../gameport';
 import * as Rdr from '../radar';
 import * as D from '../debug';
 import { DebugGraphics } from '../debug_graphics';
-import * as _ from 'lodash';
 import * as FS from 'fs';
 import * as OS from 'os';
 import * as Path from 'path';
+import * as _ from 'lodash';
 
 // currently this is less of a classic big Level object that is continually doing things,
 // instead it "just" adds new sprites etc. as they die off.
@@ -355,12 +355,11 @@ export abstract class AbstractLevel implements Level {
         // time, fps. supports single stepping debug mode.
         next.shared.tick = next.local.prev_db.shared.tick + 1;
 
-        // only update the statistics once per second
-        // because otherwise things were going nutty.
+        // smoothing statistics over about once per second.
         const now = Date.now();
-        const wall_clock_dt = now - next.local.fps_marker.msec;
-        if (wall_clock_dt >= 1000) {
-            next.shared.fps = (next.shared.tick - next.local.fps_marker.tick) * 1000 / wall_clock_dt;
+        const dt = now - next.local.fps_marker.msec;
+        if (dt >= 1000) {
+            next.shared.fps = (next.shared.tick - next.local.fps_marker.tick) * 1000 / dt;
             next.local.fps_marker.msec = now;
             next.local.fps_marker.tick = next.shared.tick;
         }
@@ -476,7 +475,7 @@ export abstract class AbstractLevel implements Level {
         // todo: this should ideally fade as the explosion fades,
         // which means the explosion needs to expose some timing,
         // or the explosions needs to be the ones to apply the shake?
-        if (Object.values(next.shared.items.explosions).some(e => e.scale >= S.Scale.hypermega)) {
+        if (Object.values(next.shared.items.explosions).some(e => e.rank >= S.Rank.hypermega)) {
             next.shared.screen_shake = G.v2d_random_inxy(Rnd.singleton, K.GAMEPORT_SHAKE, K.GAMEPORT_SHAKE);
         }
         else {

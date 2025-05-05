@@ -9,6 +9,9 @@ export function now_str(): string {
 export function log_stamp(...args: any) {
     console.log(now_str(), ...args);
 }
+export function error_stamp(...args: any) {
+    console.error(now_str(), ...args);
+}
 
 let debug_this_step = false;
 export function debug_step_enable() {
@@ -22,6 +25,10 @@ export function log_step(...args: any) {
     if (debug_this_step) {
         log_stamp(...args);
     }
+}
+
+export function error(...args: any) {
+    error_stamp(...args);
 }
 
 export function log(...args: any) {

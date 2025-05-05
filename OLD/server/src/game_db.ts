@@ -386,9 +386,8 @@ export function get_fx(db: GameDB, fid: DBID): U.O<S.Sprite> {
 }
 
 export function is_in_bounds(db: GameDB, p: G.P2D): boolean {
-    const bounds0 = db.shared.world.bounds0;
     if (p.lt.x < 0) { return false; }
-    if (p.lt.x >= bounds0.x) { return false; }
+    if (p.lt.x >= db.shared.world.bounds0.x) { return false; }
     // ugh, we can't check y very well because we actually let things
     // purposefully be "up in space" or "down past ground_y"
     // for gameplay and visual reasons.

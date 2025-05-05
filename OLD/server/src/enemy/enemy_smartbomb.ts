@@ -21,7 +21,7 @@ export function smartbomb_mk(db: GDB.GameDB, lt: G.V2D): U.O<S.Enemy> {
     const spec = {
         lt: lt,
         anim: anim,
-        scale: S.Scale.small,
+        rank: S.Rank.small,
         hp_init: 1,
         damage: K.PLAYER_HP / 2,
         weapons: {},

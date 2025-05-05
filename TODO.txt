@@ -1,25 +1,44 @@
 TODO:
 
 SEE ALL THE 'TODO' (AND 'MATCH') COMMENTS IN THE CODE!
+THESE ARE NOT IN ORDER because i keep changing my mind :-\
+and keep finding things i did that are super confusing.
 
 next-feature-short-list, in no order:
 * ha ha check all the bugs and todo's... bad stuff. see all the code notes below. :-(
-  [this is not any enforced ordering]
+  [not any enforced ordering]
 * should really be using proper 2d (3x3) matricies for everything, duh. :-(
   but i am not going to fix that ever.
-THESE ARE NOT IN ORDER because i keep changing my mind :-\
+
+* increase fps.
+  * crap, if the fps >= 40 then the sizzlers freeze wth?
+  * the client isn't running at the target fps.
+* do not spawn enemies on top of the player!
+* maybe things should move slower e.g. player ship?
+* see 7.1 below; have a watchdog at least?
 
 DO THESE NOW/NEXT:
+
 + hud proximity warning makers.
-+ add some livestock.
++ add some livestock. :-)
 !!!+ enemies should shoot when shot.
 + people/livestock should not be too close to the base, duh.
-+ enemy shots already can intersect people, so make people killable.
++ enemy shots already can intersect people, so make people killable?
 * a better way to do the bloody screen state machine.
-* pause feature.
+
+-3) good thing i am utterly consistent in naming in code.
+-3.5) the hard coding of image names and counts between server and client?!@#?!?@!?
+-2) support gamepads.
+-1.5) the client uses 'any' too much, i forget why.
+      * because i never set up shared types from the server e.g. V2D etc.
 -1) the entire simulation step is crap: has too many things that *do* get modified,
    and yet too many thing that do not, and it is unclear which is what when.
    a concrete example is the acc gets set to zero as soon as the phys step is called.
+-0.5) typescript could be leveraged more e.g. use strong LT, Size types;
+      * would also be nice for their field names to be specific, not just 'x' & 'y'.
+      * various synonyms are confusing e.g. x, y, lt, h, v.
+-0.1) DebugGraphics really should support things fading over N frames,
+   which means Drawing would need to be updated to support that.
 0) one of the worstest things about all this is that each simulation step / frame does
    makes a copy of the game db using _.cloneDeep() and then mutates that new one.
    which empirically ends up meaning that you can't really use regular js "this.field"
@@ -31,10 +50,12 @@ DO THESE NOW/NEXT:
 0.7) the whole DBID vs. PreDbid vs. passing dbids... inconsistent nightmare.
 0.9) full shields should perhaps always let you ram into 1 ship w/out dying,
    bouncing off of them or somethiing? feels odd to die on crashing into them
-   if you have shields at all?
+   if you have shields at all? but, unfair to be able to crash thru with very low shield.
 1) enemy bullets passing through the player sometimes somehow, world-wrap issue?
 1.1) enemies shouldn't be overlapping the ground ever.
 2) enemy ai of any kind at all!
+2.1) the scaling of weapons has a terrible DX.
+   * they do not even scale with the level?
 2.2) automagic loading of images and animations based on naming.
    the combinatoric explosion of art assets and then the code
    to set up the animations using them is really quite painful.
@@ -46,7 +67,7 @@ DO THESE NOW/NEXT:
    easy to just shoot them from behind.
 3) 3 stages of enemy types per level (brill, mega brill, hyper mega brill).
 3.1) with the level loading page showing them.
-4) sound.
+4) sound, bugs, platform issues, etc.
 5) beware too many things are being jsonized, but i did start using spriteJSON().
 6) all the hacked in constants that aren't in K or L config. :-(
 7) ACTUALLY UNIQUE LEVELS.
@@ -74,9 +95,13 @@ DO THESE NOW/NEXT:
 26) the implementation of the world wrapping is buggy and should be something more
     fundamentally built into some kind of vector & rect types, cf. player zone calculation.
 27) the code is a rats' nest of relations and calls and twistly little passages, all different :-(
-999) everything else...
+
+999) everything else..., especially code...
+* the DB breakdown and all the files involved is confusing.
+* the menu / level / instructions / sizzler code is badly factored, confusing.
+  * like i'd like the level won text to rez in slower.
 * funny how 'scale's are sometimes scalars, sometimes vectors.
-* glitch weapons.
+* glitch weapons. (?)
 * wish it were easier to e.g. debug draw all acc, vel vectors.
 * it is bad weird gameplay that the enemies can pass through each other unharmed.
 * player should have to be going slow to pick up people.
@@ -110,7 +135,7 @@ DO THESE NOW/NEXT:
 * 10k should not be brick wall altitude, but should exponentially dampen/spring rise.
 * probably using way too many calls to _.cloneDeep().
 * need to have a gamma adjustment option.
-* the font is not good.
+* the font sizing is inconsistent code.
 * mutant-izing support.
 * i wish the shots were more like defender/stargate laser/plasma, than like bullets.
 * change all "!!" to a safer test. (i wish typescript had a way to restrict

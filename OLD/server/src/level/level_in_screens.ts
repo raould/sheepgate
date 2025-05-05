@@ -4,8 +4,10 @@ import * as M from '../menu/menu';
 import * as Lss from '../menu/level_start_screen';
 import * as Les from '../menu/level_end_screen';
 import * as Lv from './level';
+import * as G from '../geom';
 import { RGBA } from '../color';
 import * as U from '../util/util';
+import * as Rnd from "../random";
 
 interface SubState extends Gs.Stepper {
     get_next_state(): U.O<SubState>;
@@ -82,7 +84,49 @@ class LevelWithScreen_StartScreen implements SubState {
 }
 
 class LevelWithScreen_EndScreen implements SubState {
-    end_screen: M.Menu;
+    static WON_PHRASES = [
+	"BULLY FOR YOU!",
+	"GOOD ON YER!",
+	"TAKE THAT!",
+	"ZOWIE!",
+	"WELL DONE!",
+	"HIP HIP HOORAY!",
+	"SALLY FORTH!",
+	"ONWARD!",
+	"DAMN THE TORPEDOES!",
+	"SHAZBOT!",
+	"SLICE AND DICE!",
+	"GO HUMAN!",
+	"TWITCH MASTER!",
+	"BRING IT!",
+	"BROUGHT IT!",
+	"SMACK DOWN!",
+	"CURB STOMP!",
+	"VICTORY!",
+	"IT AIN'T OVER!",
+    ];
+    static LOST_PHRASES = [
+	"NICE TRY!",
+	"INSERT COIN!",
+	"WAH WAH WAAH!",
+	"WELL, POOP!",
+	"SHINOLA!",
+	"SHAZBOT!",
+	"SHEEOOT!",
+	"MOVE ALONG!",
+	"WEAK SAUCE!",
+	"LAME!",
+	"EXCREMENT!",
+	"HA HA HUMANOID!",
+	"100053R!",
+	"YOU'RE DEAD, JIM!",
+	"WHIMPER!",
+	"LE GRAND MORT!",
+    ];
+    static PHRASE_SIZE = 80;
+
+    end_screen: Les.LevelEndScreen;
+    phrase: string[];
 
     constructor(index1: number, private readonly final_state: Gs.StepperState) {
         const won = final_state == Gs.StepperState.completed;
@@ -91,6 +135,13 @@ class LevelWithScreen_EndScreen implements SubState {
             `PRESS [FIRE] TO CONTINUE`,
             won ? RGBA.BLACK : LOST_COLOR
         );
+	const wonPhrase = index1 == 1 ?
+	      "YOU ROCK!" :
+	      Rnd.singleton.next_array_item(LevelWithScreen_EndScreen.WON_PHRASES) ?? "NICE!"
+	const lostPhrase = index1 == 1 ?
+	      "TRY AGAIN!" :
+	      Rnd.singleton.next_array_item(LevelWithScreen_EndScreen.LOST_PHRASES) ?? "DAGNABBIT!"
+	this.phrase = won ? [wonPhrase] : [lostPhrase];
     }
 
     get_state(): Gs.StepperState {
@@ -113,6 +164,19 @@ class LevelWithScreen_EndScreen implements SubState {
 
     step(): void {
         this.end_screen.step();
+	this.step_instructions();
+    }
+
+    step_instructions(): void {
+        const center = G.v2d_mk(
+	    this.end_screen.mdb.world.bounds0.x * 0.5,
+	    this.end_screen.mdb.world.bounds0.y * 0.5
+	);
+        this.end_screen.step_instructions(
+	    center,
+	    this.phrase,
+	    LevelWithScreen_EndScreen.PHRASE_SIZE
+	);
     }
 
     stringify(): string {

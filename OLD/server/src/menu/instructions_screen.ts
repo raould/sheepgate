@@ -2,26 +2,6 @@ import * as Sz from './sizzler_screen';
 import * as G from '../geom';
 import { RGBA, HCycle } from '../color';
 
-    /*
-    <p>Instructions</p>
-    <p style="font-size: 10pt;">Return people by picking them up and returning them to the Base.<br>
-    Defeat all enemies. Some enemies drop Energy Gems when defeated.<br>
-    FIRE = SPACE or Z or ENTER<br>
-    MOVE = {W,A,S,D} or {ARROW KEYS}<br>
-    BOOST = SHIFT</p>
-    */
-
-export const TOP_INSTRUCTIONS = [
-    "RETURN PEOPLE TO BASE.",
-    "DEFEAT ALL ENEMIES.",
-    "------",
-    "CONTROLS:",
-    "FIRE: SPACE / Z / ENTER",
-    "MOVE: {W,A,S,D} / {ARROW KEYS}",
-    "BOOST: SHIFT",
-    "PAUSE: ESC",
-];
-
 const INSTRUCTIONS_SIZE = 30;
 
 export class InstructionsScreen extends Sz.SizzlerScreen {

@@ -77,9 +77,7 @@ export function shot_mk(db: GDB.GameDB, src: S.Fighter, spec: ShotSpec): U.O<S.S
                     !G.rects_are_overlapping_wrapH(this, db.shared.world.gameport.world_bounds, db.shared.world.bounds0)) {
                     return GDB.Lifecycle.reap;
                 }
-                // let shots go up into space, because otherwise players can just
-                // dodge the enemy shots by letting them get clipped. but clip them
-                // if they "hit" the ground.
+		// clip shots when they hit the ground.
                 if (G.rect_mid(this).y > db.shared.world.ground_y) {
                     return GDB.Lifecycle.reap;
                 }
