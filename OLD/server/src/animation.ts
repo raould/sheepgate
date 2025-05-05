@@ -225,7 +225,8 @@ export enum MultiImageStartingMode {
 export enum MultiImageEndingMode {
     hide,
     hold,
-    repeat
+    loop,
+    bounce,
 }
 
 export interface MultiImageSpec {
@@ -394,10 +395,18 @@ export class MultiImageAnimator implements ResourceAnimator {
                 return undefined;
             case MultiImageEndingMode.hold:
                 return this.spec.resource_ids[this.spec.resource_ids.length-1];
-            case MultiImageEndingMode.repeat: {
+            case MultiImageEndingMode.loop: {
                 const now = db.shared.sim_now;
                 const elapsed = now - this.start_msec;
                 const index = Math.floor(elapsed / this.spec.frame_msec) % this.spec.resource_ids.length;
+                return this.spec.resource_ids[index];
+            }
+            case MultiImageEndingMode.bounce: {
+                const now = db.shared.sim_now;
+                const elapsed = now - this.start_msec;
+		const length = this.spec.resource_ids.length;
+                const long_index = Math.floor(elapsed / this.spec.frame_msec) % (length * 2);
+		const index = long_index < length ? long_index : length-(long_index-length)-1;
                 return this.spec.resource_ids[index];
             }
         }

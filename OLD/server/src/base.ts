@@ -86,7 +86,7 @@ function animator_mk(db: GDB.GameDB): A.ResourceAnimator {
         db.shared.sim_now,
         {
             starting_mode: A.MultiImageStartingMode.hold,
-            ending_mode: A.MultiImageEndingMode.repeat,
+            ending_mode: A.MultiImageEndingMode.loop,
             frame_msec: 100,
             resource_ids: [
                 ...images.lookup_range_n((n) => `ground/base${n}.png`, 1, 4)

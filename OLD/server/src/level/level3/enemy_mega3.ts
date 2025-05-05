@@ -89,11 +89,11 @@ function t2a_thrusting_facing_mk(db: GDB.GameDB, facing: F.Facing): A.Dimensions
                 {
                     frame_msec: 50,
                     resource_ids: [
-												images.lookup(`enemies/e17/e17${fstr}.png`),
-												images.lookup(`enemies/e17/e17${fstr}_0.png`),
+			images.lookup(`enemies/e17/e17${fstr}.png`),
+			images.lookup(`enemies/e17/e17${fstr}_0.png`),
                     ],
                     starting_mode: A.MultiImageStartingMode.hold,
-                    ending_mode: A.MultiImageEndingMode.repeat
+                    ending_mode: A.MultiImageEndingMode.loop
                 }
             )
         });
@@ -114,8 +114,8 @@ function t2a_still_facing_mk(db: GDB.GameDB, facing: F.Facing): A.DimensionsFram
             animator: A.animator_mk(
                 db.shared.sim_now,
                 {
-										resource_id: images.lookup(`enemies/e17/e17${fstr}.png`)
-								}
+		    resource_id: images.lookup(`enemies/e17/e17${fstr}.png`)
+		}
             )
         });
     });

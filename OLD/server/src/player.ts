@@ -225,13 +225,13 @@ function ship_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
             frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
             resource_ids: images.lookup_range_a((a) => `player/p1_${a}_left.png`, ['a', 'b', 'c']),
             starting_mode: A.MultiImageStartingMode.hold,
-            ending_mode: A.MultiImageEndingMode.repeat
+            ending_mode: A.MultiImageEndingMode.loop
         },
         {
             frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
             resource_ids: images.lookup_range_a((a) => `player/p1_${a}_right.png`, ['a', 'b', 'c']),
             starting_mode: A.MultiImageStartingMode.hold,
-            ending_mode: A.MultiImageEndingMode.repeat
+            ending_mode: A.MultiImageEndingMode.loop
         },
     );
 }
@@ -244,13 +244,13 @@ function flame_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
             frame_msec: K.PLAYER_ANIM_FRAME_MSEC/2,
             resource_ids: images.lookup_range_a((a) => `player/p1_f${a}_left.png`, ['a', 'b', 'c']),
             starting_mode: A.MultiImageStartingMode.hold,
-            ending_mode: A.MultiImageEndingMode.repeat
+            ending_mode: A.MultiImageEndingMode.loop
         },
         {
             frame_msec: K.PLAYER_ANIM_FRAME_MSEC/2,
             resource_ids: images.lookup_range_a((a) => `player/p1_f${a}_right.png`, ['a', 'b', 'c']),
             starting_mode: A.MultiImageStartingMode.hold,
-            ending_mode: A.MultiImageEndingMode.repeat
+            ending_mode: A.MultiImageEndingMode.loop
         },
     );
 }

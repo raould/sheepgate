@@ -91,7 +91,7 @@ function t2a_thrusting_facing_mk(db: GDB.GameDB, facing: F.Facing): A.Dimensions
                         ...images.lookup_range_n(n => `enemies/e13/e13${fstr}_${n}.png`, 1, 2)
                     ],
                     starting_mode: A.MultiImageStartingMode.hold,
-                    ending_mode: A.MultiImageEndingMode.repeat
+                    ending_mode: A.MultiImageEndingMode.loop
                 }
             )
         });

@@ -77,7 +77,7 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
                         ...images.lookup_range_n(n => `enemies/e12/e12${fstr}_${n}.png`, 1, 4)
                     ],
                     starting_mode: A.MultiImageStartingMode.hold,
-                    ending_mode: A.MultiImageEndingMode.repeat
+                    ending_mode: A.MultiImageEndingMode.loop
                 }
             )
         });

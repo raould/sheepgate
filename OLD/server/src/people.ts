@@ -159,7 +159,7 @@ function waving_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
     const images = db.uncloned.images;
     const spec: A.MultiImageSpec = {
         starting_mode: A.MultiImageStartingMode.hold,
-        ending_mode: A.MultiImageEndingMode.repeat,
+        ending_mode: A.MultiImageEndingMode.loop,
         offset_msec: Rnd.singleton.next_float_range(0, 250),
         frame_msec: Rnd.singleton.next_float_around(200, 50),
         resource_ids: images.lookup_range_n((n) => `people/waving${n}.png`, 1, 2)

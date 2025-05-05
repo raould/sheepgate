@@ -86,7 +86,7 @@ export function weapon_mk(spec: EnemyWeaponSpec): S.Weapon {
 						db.uncloned.images.lookup("shots/ball_shot8b.png")
 					    ],
 					    starting_mode: A.MultiImageStartingMode.hold,
-					    ending_mode: A.MultiImageEndingMode.repeat
+					    ending_mode: A.MultiImageEndingMode.loop
 					}
 				    ),
 				    size: spec.shot_size,
