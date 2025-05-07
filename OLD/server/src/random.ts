@@ -9,7 +9,7 @@ export interface Random {
     // to help avoid things like division by zero errors.
 
     // either true or false.
-    next_boolean(): boolean;
+    next_boolean(chance: number /*=0.5*/): boolean;
     
     // either -1 or 1.
     next_sign(): number;

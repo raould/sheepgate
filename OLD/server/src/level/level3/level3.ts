@@ -24,7 +24,7 @@ const LK = {
 		ENEMY_MEGA_SPAWN_COUNT_LIMIT: 2,
 
 	Ehm: Ehm,
-		ENEMY_HYPERMEGA_COUNT: 2,
+		ENEMY_HYPERMEGA_COUNT: 2, // it was surprising / confusing?
 		ENEMY_HYPERMEGA_SPAWN_COUNT_LIMIT: 1,
 
 	BG_COLOR: RGBA.new01(0.08, 0, 0),

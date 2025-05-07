@@ -11,7 +11,7 @@ import * as K from '../../konfig';
 import * as Esbw from '../../enemy/enemy_smartbomb_weapon';
 
 // match: sprite animation.
-export const SIZE = G.v2d_scale(G.v2d_mk(156, 204), 0.4);
+export const SIZE = G.v2d_scale(G.v2d_mk(156, 204), 0.5);
 export const WARPIN_RESOURCE_ID = "enemies/e18/e18.png";
 
 export function warpin_mk(db: GDB.GameDB): U.O<S.Sprite> {

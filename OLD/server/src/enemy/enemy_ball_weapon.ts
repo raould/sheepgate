@@ -139,8 +139,6 @@ export function scale_specs(level: number, rank: S.Rank, swivels: boolean): [Ene
         scale_spec(level, rank, F.Facing.left, swivels),
         scale_spec(level, rank, F.Facing.right, swivels)
     ];
-    D.log("ball spec left", level, rank, specs[0]);
-    D.log("ball spec right", level, rank, specs[1]);
     return specs;
 }
 

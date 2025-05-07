@@ -235,8 +235,8 @@ export const PLAYER_WEAPON_CLIP_COOLDOWN_MSEC = 300; // W
 export const PLAYER_WEAPON_SHOT_COOLDOWN_MSEC = 50; // W
 export const PLAYER_WEAPON_SHOT_COUNT = 3; // W
 export const BULLET_SHOT_SPEED = 0.7; // W // note that enemies use a scaled version of this. :-\
-export const BULLET_SHOT_LIFE_MSEC = 1000; // W
-export const BULLET_SHOT_SIZE = G.v2d_mk(44, 5); // W
+export const BULLET_SHOT_LIFE_MSEC = 3000; // W
+export const BULLET_SHOT_SIZE = G.v2d_mk(44, 3); // W
 export const BALL_SHOT_SIZE = G.v2d_mk(6, 6); // W
 
 // todo: explosions should have slightly different timings

@@ -49,26 +49,37 @@ function populate_random(db: GDB.GameDB, cluster_count: number) {
     const base = db.shared.items.base;
     D.assert(!!base);
     D.assert(cluster_count <= db.shared.items.ground.length);
-    db.shared.items.ground
-        .filter(g => g.ground_type == Gr.GroundType.land)
-        .filter(g => !G.rects_are_overlapping(base, g))
-        .slice(0, cluster_count)
-        .forEach(g => add_people_cluster(db, g, rnd));
+    const grounds = U.shuffle_array(db.shared.items.ground, rnd)
+          .filter(g => g.ground_type == Gr.GroundType.land)
+          .filter(g => !G.rects_are_overlapping(base, g));
+    while (cluster_count > 0) {
+        const g = rnd.next_array_item(grounds);
+        if (g != null && g.ground_type == Gr.GroundType.land) {
+	    const d = Math.abs(base.lt.x - g.lt.x)
+	    const f = U.clip(U.t10(0, db.shared.world.bounds0.x/2, d), 0.01, 1);
+	    const populate = Rnd.singleton.next_boolean(f);
+	    if (populate) {
+		add_people_cluster(db, g, rnd);
+		cluster_count--;
+	    }
+        }
+    }
 }
 
 function add_people_cluster(db: GDB.GameDB, g: Gr.Ground, rnd: Rnd.Random) {
-    const mt = G.v2d_set_y(G.rect_mid(g), g.lt.y);
     // [todo: do we even have lava any more?]
     // (keeping away from the edges that might have a little sea/lava.
     // todo: ideally we'd check the type of the tile and then adjust
     // for more or less room, but ha ha, whatever! we don't have
     // lavs/sea enabled now anyway.)
     // also this is hacky crap to allow room for (max 3) people in a row.
-    const ov = G.v2d_mk(g.size.x * 0.2, 0);
+    const mt = G.rect_mt(g);
+    const fudge_range = g.size.x * 0.4;
+    const ov = G.v2d_mk(fudge_range, 0);
     const dst = rnd.next_v2d_around(mt, ov);
-    // todo: currently hardcoded to have 2 people per cluster.
+    // todo: currently hardcoded to have 2 people per cluster!!!!
     add_person(db, dst, 0, rnd);
-    add_person(db, dst, rnd.next_float_range(-15, -25), rnd);
+    add_person(db, dst, rnd.next_float_range(-fudge_range, -fudge_range/2), rnd);
 }
 
 interface PersonPrivate extends S.Person {
