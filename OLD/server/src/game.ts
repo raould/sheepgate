@@ -35,11 +35,13 @@ interface GamePrivate extends Game {
 }
 
 type LevelMk = (level_index: number, score: number, high_score: Hs.HighScore) => Lis.LevelInScreens;
+// match: konfig.ts
 const level_mks: LevelMk[] = [
     (level_index: number, score: number, high_score: Hs.HighScore) => L1.level_mk(level_index, score, high_score),
     (level_index: number, score: number, high_score: Hs.HighScore) => L2.level_mk(level_index, score, high_score),
     (level_index: number, score: number, high_score: Hs.HighScore) => L3.level_mk(level_index, score, high_score),
 ];
+D.assert(level_mks.length === K.LEVEL_TEMPLATE_COUNT, "level template count");
 
 export function game_mk(high_scores: Hs.HighScores): Game {
     return new class _G implements GamePrivate {

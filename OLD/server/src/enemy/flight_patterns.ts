@@ -154,7 +154,8 @@ export class TargetPlayer implements FlightPattern {
     }
 }
 
-export class DecendAndGoStraight implements FlightPattern {
+// follow a sinusoidal-ish horizontal path.
+export class DecendAndGoSine implements FlightPattern {
     private target: G.V2D;
     private horizon_y: number;
     private acc_mag: number;
@@ -171,13 +172,10 @@ export class DecendAndGoStraight implements FlightPattern {
     }
 
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
+	const now = db.shared.sim_now;
+	const sin_y = Math.sin(now/2000) * db.shared.world.gameport.world_bounds.size.y * 0.1;
         const slt = G.rect_lt(src);
-        if (slt.y < this.horizon_y) {
-            this.target = G.v2d_mk(slt.x, this.horizon_y);
-        }
-        else {
-            this.target = G.v2d_add(slt, this.normal);
-        }
+        this.target = G.v2d_mk(slt.x, this.horizon_y + sin_y);
         const delta_acc = calculate_acc(G.rect_mid(src), this.target, this.acc_mag, db.local.frame_dt);
         return delta_acc;
     }

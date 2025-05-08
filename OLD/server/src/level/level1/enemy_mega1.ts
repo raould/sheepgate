@@ -20,7 +20,7 @@ export function warpin_mk(db: GDB.GameDB): U.O<S.Sprite> {
         'wl': Ebw.weapon_mk(ewsl),
         'wr': Ebw.weapon_mk(ewsr),
     };
-    const flight_pattern = new Fp.DecendAndGoStraight(db, SIZE, 0.001);
+    const flight_pattern = new Fp.DecendAndGoSine(db, SIZE, 0.001);
     return E.warpin_mk(
         db,
         SIZE,

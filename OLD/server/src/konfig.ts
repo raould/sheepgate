@@ -260,6 +260,9 @@ export const PLAYER_TURBO_X_SCALE = 4;
 
 export const PLAYER_BEAM_MAX_VEL2 = 0.2; // K
 export const PEOPLE_SIZE = G.v2d_mk_nn(32); // K
+// match: people.ts, currently hardcoded to have 2 people per cluster.
+// even this is too much toing and froing?
+export const PEOPLE_MAX_COUNT = 2 * 5; // K
 
 export const GEM_SIZE = G.v2d_mk_nn(10);
 export const GEM_HP_BONUS = 3; // keep it smallish.
@@ -320,3 +323,6 @@ export const BEAMUP_SFX = "sounds/beamup.ogg";
 export const EXPLOSION_SFX = "sounds/explosion.ogg";
 export const GEM_COLLECT_SFX = "sounds/gem_collect.ogg";
 export const PLAYER_SHOOT_SFX = "sounds/player_shoot.ogg";
+
+// match: game.ts
+export const LEVEL_TEMPLATE_COUNT = 3;

@@ -44,7 +44,7 @@ export function log_if(test: boolean, ...args: any) {
 }
 
 function msgs2strs(...msgs: any): string {
-    if (msgs.length == 0) {
+    if (msgs?.length ?? 0 === 0) {
         return "";
     }
     else {

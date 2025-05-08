@@ -97,6 +97,7 @@ DO THESE NOW/NEXT:
 27) the code is a rats' nest of relations and calls and twistly little passages, all different :-(
 
 999) everything else..., especially code...
+* also scale the weapons along level progression.
 * the DB breakdown and all the files involved is confusing.
 * the menu / level / instructions / sizzler code is badly factored, confusing.
   * like i'd like the level won text to rez in slower.

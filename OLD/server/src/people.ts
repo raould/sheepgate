@@ -52,21 +52,22 @@ function populate_random(db: GDB.GameDB, cluster_count: number) {
     const grounds = U.shuffle_array(db.shared.items.ground, rnd)
           .filter(g => g.ground_type == Gr.GroundType.land)
           .filter(g => !G.rects_are_overlapping(base, g));
-    while (cluster_count > 0) {
+    let population_count = 0;
+    while (cluster_count > 0 && population_count < K.PEOPLE_MAX_COUNT) {
         const g = rnd.next_array_item(grounds);
         if (g != null && g.ground_type == Gr.GroundType.land) {
 	    const d = Math.abs(base.lt.x - g.lt.x)
 	    const f = U.clip(U.t10(0, db.shared.world.bounds0.x/2, d), 0.01, 1);
 	    const populate = Rnd.singleton.next_boolean(f);
 	    if (populate) {
-		add_people_cluster(db, g, rnd);
+		population_count += add_people_cluster(db, g, rnd);
 		cluster_count--;
 	    }
         }
     }
 }
 
-function add_people_cluster(db: GDB.GameDB, g: Gr.Ground, rnd: Rnd.Random) {
+function add_people_cluster(db: GDB.GameDB, g: Gr.Ground, rnd: Rnd.Random): number {
     // [todo: do we even have lava any more?]
     // (keeping away from the edges that might have a little sea/lava.
     // todo: ideally we'd check the type of the tile and then adjust
@@ -77,9 +78,10 @@ function add_people_cluster(db: GDB.GameDB, g: Gr.Ground, rnd: Rnd.Random) {
     const fudge_range = g.size.x * 0.4;
     const ov = G.v2d_mk(fudge_range, 0);
     const dst = rnd.next_v2d_around(mt, ov);
-    // todo: currently hardcoded to have 2 people per cluster!!!!
+    // match: konfig.ts, currently hardcoded to have 2 people per cluster.
     add_person(db, dst, 0, rnd);
     add_person(db, dst, rnd.next_float_range(-fudge_range, -fudge_range/2), rnd);
+    return 2;
 }
 
 interface PersonPrivate extends S.Person {
