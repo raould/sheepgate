@@ -163,14 +163,13 @@ export class DecendAndGoSine implements FlightPattern {
     private sinY: number;
 
     constructor(db: GDB.GameDB, size: G.V2D, acc_mag: number) {
-        const world_rect = db.shared.world.gameport.world_bounds;
-        this.target = G.rect_mid(world_rect);
-	const sizeY = db.shared.world.gameport.screen_bounds.size.y;
+        this.acc_mag = acc_mag;
+        this.target = G.rect_mid(db.shared.world.gameport.world_bounds);
+	const sizeY = K.GAMEPORT_RECT.size.y;
 	const midY = sizeY * 0.5;
 	const rangeY = sizeY * 0.2;
         this.horizon_y = Rnd.singleton.next_float_around(midY, rangeY);
 	this.sinY = rangeY; // 0.1 to 0.9, i hope.
-        this.acc_mag = acc_mag;
         this.signX = Rnd.singleton.next_boolean() ? -1 : 1;
     }
 

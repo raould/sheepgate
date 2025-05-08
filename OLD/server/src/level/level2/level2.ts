@@ -9,9 +9,9 @@ import * as Ehm from './enemy_hypermega2';
 import * as Hs from '../../high_scores';
 
 enum EnemyPhase {
-	small_enemies,
-	mega_enemies,
-	hypermega_enemies,
+    small_enemies,
+    mega_enemies,
+    hypermega_enemies,
 }
 
 // todo: move 'L' things from konfig to here.
