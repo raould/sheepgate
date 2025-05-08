@@ -130,7 +130,7 @@ export const HUD_RIGHT_RECT = G.rect_move(
 );
 D.assert_fn(G.rect_rt(HUD_RIGHT_RECT), G.rect_rt(HUD_VISIBLE_RECT), (a,b)=>G.v2d_eq(a,b), "right");
 
-// gameport is below the hud area and has no inset; no drawn border.
+// gameport is above the hud area and has no inset; no drawn border.
 export const GAMEPORT_RECT = G.rect_mk(
     G.rect_lt(SCREEN_RECT),
     G.v2d_mk(
