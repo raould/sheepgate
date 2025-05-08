@@ -28,16 +28,18 @@ export function populate(db: GDB.GameDB, cluster_count: number) {
 
 function populate_next_to_base(db: GDB.GameDB, cluster_count: number) {
     const rnd = new Rnd.RandomImpl(db.shared.level_index1);
+    const gs = db.shared.items.ground;
     const base = db.shared.items.base;
     D.assert(!!base);
     D.assert(cluster_count <= db.shared.items.ground.length);
     // match: base must only be on land tiles.
-    const index = db.shared.items.ground.findIndex(g => G.rects_are_overlapping(base, g)) + 1;
-    D.assert(index > 0);
+    // put them close but not too close to the base.
+    const index = gs.findIndex(g => G.rects_are_overlapping(base, g)) + 2;
+    D.assert(index >= 0);
     let remaining = cluster_count;
     while (remaining > 0) {
-        const g = db.shared.items.ground[index];
-        if (g.ground_type == Gr.GroundType.land) {
+        const g = U.element_looped(gs, index);
+        if (g?.ground_type == Gr.GroundType.land) {
             add_people_cluster(db, g, rnd);
             remaining--;
         }
@@ -46,22 +48,32 @@ function populate_next_to_base(db: GDB.GameDB, cluster_count: number) {
 
 function populate_random(db: GDB.GameDB, cluster_count: number) {
     const rnd = new Rnd.RandomImpl(db.shared.level_index1);
+    const gs = db.shared.items.ground;
     const base = db.shared.items.base;
+    const index = gs.findIndex(g => G.rects_are_overlapping(base, g)) + 2;
     D.assert(!!base);
-    D.assert(cluster_count <= db.shared.items.ground.length);
-    const grounds = U.shuffle_array(db.shared.items.ground, rnd)
+    D.assert(index >= 0);
+    D.assert(cluster_count <= gs.length);
+    const grounds = U.shuffle_array(gs, rnd)
           .filter(g => g.ground_type == Gr.GroundType.land)
           .filter(g => !G.rects_are_overlapping(base, g));
     let population_count = 0;
     while (cluster_count > 0 && population_count < K.PEOPLE_MAX_COUNT) {
         const g = rnd.next_array_item(grounds);
         if (g != null && g.ground_type == Gr.GroundType.land) {
-	    const d = Math.abs(base.lt.x - g.lt.x)
-	    const f = U.clip(U.t10(0, db.shared.world.bounds0.x/2, d), 0.01, 1);
-	    const populate = Rnd.singleton.next_boolean(f);
-	    if (populate) {
-		population_count += add_people_cluster(db, g, rnd);
-		cluster_count--;
+	    // just not right next to the base, please.
+	    const dx = Math.abs(G.rect_l(g) - G.rect_l(base));
+	    // yes, the *2 below assumes there are enough tiles.
+	    const ok = dx > K.GROUND_SIZE.x * 2;
+	    D.log(dx, ok);
+	    if (ok) {
+		const d = Math.abs(base.lt.x - g.lt.x)
+		const f = U.clip(U.t10(0, db.shared.world.bounds0.x/2, d), 0.01, 1);
+		const populate = Rnd.singleton.next_boolean(f);
+		if (populate) {
+		    population_count += add_people_cluster(db, g, rnd);
+		    cluster_count--;
+		}
 	    }
         }
     }

@@ -9,6 +9,9 @@ export function now_str(): string {
 export function log_stamp(...args: any) {
     console.log(now_str(), ...args);
 }
+export function warn_stamp(...args: any) {
+    console.warn(now_str(), ...args);
+}
 export function error_stamp(...args: any) {
     console.error(now_str(), ...args);
 }
@@ -29,6 +32,10 @@ export function log_step(...args: any) {
 
 export function error(...args: any) {
     error_stamp(...args);
+}
+
+export function warn(...args: any) {
+    warn_stamp(...args);
 }
 
 export function log(...args: any) {
