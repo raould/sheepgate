@@ -1,10 +1,6 @@
 import * as Is from './menu/instructions_screen';
 import * as Hse from './menu/high_score_entry_screen';
 import * as Hst from './menu/high_score_table_screen';
-import * as Lis from './level/level_in_screens';
-import * as L1 from './level/level1/level1';
-import * as L2 from './level/level2/level2';
-import * as L3 from './level/level3/level3';
 import * as Cdb from './client_db';
 import * as Cmd from './commands';
 import * as Gs from './game_stepper';
@@ -12,6 +8,12 @@ import * as Hs from './high_scores';
 import * as U from './util/util';
 import * as D from './debug';
 import * as K from './konfig';
+import * as Lis from './level/level_in_screens';
+// well, this sucks.
+import * as L1 from './level/level1/level1';
+import * as L2 from './level/level2/level2';
+import * as L3 from './level/level3/level3';
+import * as L4 from './level/level4/level4';
 
 const TOP_INSTRUCTIONS = [
     "RETURN HUMANS TO BASE.",
@@ -40,6 +42,7 @@ const level_mks: LevelMk[] = [
     (level_index: number, score: number, high_score: Hs.HighScore) => L1.level_mk(level_index, score, high_score),
     (level_index: number, score: number, high_score: Hs.HighScore) => L2.level_mk(level_index, score, high_score),
     (level_index: number, score: number, high_score: Hs.HighScore) => L3.level_mk(level_index, score, high_score),
+    (level_index: number, score: number, high_score: Hs.HighScore) => L4.level_mk(level_index, score, high_score),
 ];
 D.assert(level_mks.length === K.LEVEL_TEMPLATE_COUNT, "level template count");
 

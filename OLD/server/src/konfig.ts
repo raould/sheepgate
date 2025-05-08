@@ -325,4 +325,4 @@ export const GEM_COLLECT_SFX = "sounds/gem_collect.ogg";
 export const PLAYER_SHOOT_SFX = "sounds/player_shoot.ogg";
 
 // match: game.ts
-export const LEVEL_TEMPLATE_COUNT = 3;
+export const LEVEL_TEMPLATE_COUNT = 4;
