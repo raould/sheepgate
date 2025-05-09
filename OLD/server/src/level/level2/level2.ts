@@ -42,7 +42,7 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
     mega_snapshot: S.ImageSized;
     hypermega_snapshot: S.ImageSized;
 
-    constructor(readonly index1: number, konfig: any, score: number, high_score: Hs.HighScore) {
+    constructor(readonly index1: number, konfig: Lta.LevelKonfig, score: number, high_score: Hs.HighScore) {
 	super(index1, konfig, score, high_score);
 	const images = this.db.uncloned.images;
 	this.basic1_snapshot = {
