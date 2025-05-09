@@ -37,7 +37,6 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
 };
 
 class LevelImpl extends Lta.AbstractLevelTypeA {
-    basic1_snapshot: S.ImageSized;
     small_snapshot: S.ImageSized;
     mega_snapshot: S.ImageSized;
     hypermega_snapshot: S.ImageSized;
@@ -45,10 +44,6 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
     constructor(readonly index1: number, konfig: Lta.LevelKonfig, score: number, high_score: Hs.HighScore) {
 	super(index1, konfig, score, high_score);
 	const images = this.db.uncloned.images;
-	this.basic1_snapshot = {
-	    size: Eb1.SIZE,
-	    resource_id: images.lookup(Eb1.WARPIN_RESOURCE_ID)
-	};
 	this.small_snapshot = {
 	    size: Es.SIZE,
 	    resource_id: images.lookup(Es.WARPIN_RESOURCE_ID)

@@ -185,7 +185,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	// of enemies generated & defeated so that these generators
 	// can query those values and react accordingly. no, no, instead
 	// this is going to be a crappy half-hard-coded state machine hack.
-	const basic_spec = {
+	const basic1_spec = {
 	    comment: "enemy-gen-basic1",
 	    generations: this.konfig.ENEMY_BASIC1_COUNT,
 	    max_alive: this.konfig.ENEMY_BASIC1_SPAWN_COUNT_LIMIT,
@@ -209,7 +209,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    max_alive: this.konfig.ENEMY_HYPERMEGA_SPAWN_COUNT_LIMIT,
 	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Ehm.warpin_mk(db)
 	}
-	Eg.add_generators(this.db, small_spec, mega_spec, hypermega_spec);
+	Eg.add_generators(this.db, [basic1_spec], small_spec, mega_spec, hypermega_spec);
     }
 
     update_impl(next: GDB.GameDB) {
