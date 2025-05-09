@@ -3,6 +3,9 @@ import * as G from './geom';
 import * as S from 'seedrandom';
 import * as D from './debug';
 
+// todo: remove all the leading "next_" boilerplate.
+// todo: rename 'singleton' to something shorter e.g. 'inst'.
+
 export interface Random {
     // note: constructor should take a (seed: number).
     // note: the argument "non_zero?"=true must force returned values to never be zero
