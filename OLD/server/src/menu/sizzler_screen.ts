@@ -14,25 +14,40 @@ import { RGBA, HCycle } from '../color';
 export const MESSAGE_MESC = 350;
 export const USER_SKIP_AFTER_MSEC = 250;
 
+// todo: all menus thus far are sizzlers, so a little strange to have M.Menu at all.
+
+export interface SizzlerScreenSpec {
+    title: string,
+    skip_text?: string,
+    bg_color: RGBA,
+    animated?: boolean, // default is true.
+    timeout?: number, // default is never.
+}
+
 export abstract class SizzlerScreen implements M.Menu {
     mdb: MDB.MenuDB;
     state: Gs.StepperState;
     elapsed: number;
+    timeout: U.O<number>;
     header_cycle: HCycle;
     body_cycle: HCycle;
+    title: string;
+    skip_text: U.O<string>;
+    bg_color: RGBA;
+    animated: boolean;
 
-    constructor(
-        private readonly title: string,
-        private readonly skip_text: U.O<string>,
-        readonly bg_color: RGBA,
-        private readonly animated: boolean = true
-    ) {
+    constructor(spec: SizzlerScreenSpec) {
+	this.title = spec.title;
+	this.skip_text = spec.skip_text;
+	this.bg_color = spec.bg_color;
+	this.animated = spec.animated ?? true;
+	this.timeout = spec.timeout;
         this.mdb = {
             world: {
                 screen: K.SCREEN_RECT,
                 bounds0: K.SCREEN_RECT.size,
             },
-            bg_color: bg_color,
+            bg_color: this.bg_color,
             frame_drawing: Dr.drawing_mk(),
             debug_graphics: [],
             images: {},
@@ -56,6 +71,9 @@ export abstract class SizzlerScreen implements M.Menu {
 
     step() {
         this.elapsed += this.mdb.frame_dt;
+	if (this.timeout && this.timeout < this.elapsed) {
+	    this.state = Gs.StepperState.completed;
+	}
         this.mdb.frame_drawing = Dr.drawing_mk();
         this.header_cycle.next();
         this.body_cycle.next();

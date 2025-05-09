@@ -14,7 +14,7 @@ import * as K from '../../konfig';
 // match: sprite animation.
 const SIZE = G.v2d_scale_i(G.v2d_mk(72, 150), 0.4);
 const WARPIN_RESOURCE_ID = "enemies/e16/e16l.png";
-const Hypermega: Lemk.EnemyMk = {
+const Small: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {

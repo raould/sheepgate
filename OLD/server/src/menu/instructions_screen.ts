@@ -6,7 +6,7 @@ const INSTRUCTIONS_SIZE = 30;
 
 export class InstructionsScreen extends Sz.SizzlerScreen {
     constructor(private readonly instructions: string[], animated: boolean) {
-        super("HOW TO PLAY", "PRESS [FIRE] TO CONTINUE", RGBA.DARK_BLUE, animated);
+        super({ title: "HOW TO PLAY", skip_text: "PRESS [FIRE] TO CONTINUE", bg_color: RGBA.DARK_BLUE, animated });
     }
 
     step() {

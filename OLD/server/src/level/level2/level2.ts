@@ -30,7 +30,7 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
 	ENEMY_HYPERMEGA_COUNT: 1 + buf,
 	ENEMY_HYPERMEGA_SPAWN_COUNT_LIMIT: 1 + buf,
 
-	BG_COLOR: RGBA.new01(0.1, 0, 0.1),
+	BG_COLOR: RGBA.new01(0.3, 0, 0.1),
 
 	people_cluster_count: 2 + buf,
     };

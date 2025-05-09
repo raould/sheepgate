@@ -130,11 +130,11 @@ class LevelWithScreen_EndScreen implements SubState {
 
     constructor(index1: number, private readonly final_state: Gs.StepperState) {
         const won = final_state == Gs.StepperState.completed;
-        this.end_screen = new Les.LevelEndScreen(
-            `LEVEL ${index1} ${won ? "WON!" : "LOST!"}`,
-            `PRESS [FIRE] TO CONTINUE`,
-            won ? RGBA.BLACK : LOST_COLOR
-        );
+        this.end_screen = new Les.LevelEndScreen({
+            title: `LEVEL ${index1} ${won ? "WON!" : "LOST!"}`,
+            skip_text: `PRESS [FIRE] TO CONTINUE`,
+            bg_color: won ? RGBA.BLACK : LOST_COLOR,
+        });
 	const wonPhrase = index1 == 1 ?
 	      "YOU ROCK!" :
 	      Rnd.singleton.next_array_item(LevelWithScreen_EndScreen.WON_PHRASES) ?? "NICE!"
