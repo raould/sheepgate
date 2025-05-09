@@ -11,8 +11,8 @@ import * as E from '../../enemy/enemy_mk';
 import * as K from '../../konfig';
 
 // match: sprite animation.
-export const SIZE = G.v2d_scale(G.v2d_mk(72, 150), 0.4);
-export const WARPIN_RESOURCE_ID = "enemies/e16/e16l.png";
+export const SIZE = G.v2d_scale_i(G.v2d_mk(256, 286), 0.2);
+export const WARPIN_RESOURCE_ID = "enemies/e22/hh1.png";
 
 export function warpin_mk(db: GDB.GameDB): U.O<S.Sprite> {
     const anim = new A.AnimatorDimensions(anims_spec_mk(db));
@@ -43,10 +43,6 @@ export function warpin_mk(db: GDB.GameDB): U.O<S.Sprite> {
     );
 }
 
-function f2s(f: F.Facing): string {
-    return F.on_facing(f, "l", "r");
-}
-
 function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     const frames: A.DimensionsFrame[] = [
         ...t2a_facing_mk(db, true, F.Facing.left),
@@ -61,7 +57,6 @@ const tspecs: Array<[number, string]> = [[1,""]];
 function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.DimensionsFrame[] {
     const table: A.DimensionsFrame[] = [];
     const images = db.uncloned.images;
-    const fstr = f2s(facing);
     tspecs.forEach(spec => {
         const [t, _] = spec;
         table.push({
@@ -71,7 +66,12 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
             animator: A.animator_mk(
                 db.shared.sim_now,
                 {
-                    resource_id: images.lookup(`enemies/e16/e16${fstr}.png`),
+                    frame_msec: 250,
+                    resource_ids: [
+                        ...images.lookup_range_n(n => `enemies/e22/hh${n}.png`, 1, 2)
+                    ],
+                    starting_mode: A.MultiImageStartingMode.hold,
+                    ending_mode: A.MultiImageEndingMode.loop
                 }
             )
         });

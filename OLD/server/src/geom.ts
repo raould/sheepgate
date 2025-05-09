@@ -140,6 +140,9 @@ export function v2d_sub_mut(a: V2D, b: V2D) {
 export function v2d_scale(v: V2D, s: number): V2D {
     return v2d_mk(v.x * s, v.y * s);
 }
+export function v2d_scale_i(v: V2D, s: number): V2D {
+    return v2d_mk(Math.round(v.x * s), Math.round(v.y * s));
+}
 export function v2d_scale_mut(v: V2D, s: number) {
     v.x *= s;
     v.y *= s;
@@ -152,6 +155,9 @@ export function v2d_scale_y(v: V2D, s: number): V2D {
 }
 export function v2d_scale_v2d(v: V2D, s: V2D): V2D {
     return v2d_mk(v.x * s.x, v.y * s.y);
+}
+export function v2d_scale_v2d_i(v: V2D, s: V2D): V2D {
+    return v2d_mk(Math.round(v.x * s.x), Math.round(v.y * s.y));
 }
 export function v2d_dot(a: V2D, b: V2D): number {
     return a.x * b.x + a.y * b.y;
