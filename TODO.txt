@@ -43,6 +43,7 @@ DO THESE NOW/NEXT:
       * various synonyms are confusing e.g. x, y, lt, h, v.
 -0.1) DebugGraphics really should support things fading over N frames,
    which means Drawing would need to be updated to support that.
+-0.05) relative path imports are evil.
 0) one of the worstest things about all this is that each simulation step / frame does
    makes a copy of the game db using _.cloneDeep() and then mutates that new one.
    which empirically ends up meaning that you can't really use regular js "this.field"

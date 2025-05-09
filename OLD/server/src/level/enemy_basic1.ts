@@ -1,20 +1,20 @@
-import * as GDB from '../../game_db';
-import * as S from '../../sprite';
-import * as G from '../../geom';
-import * as A from '../../animation';
-import * as U from '../../util/util';
-import * as F from '../../facing';
-import * as Ebw from '../../enemy/enemy_ball_weapon';
-import * as Fp from '../../enemy/flight_patterns';
-import * as Emk from '../../enemy/enemy_mk';
-import * as Lemk from '../enemy_mk';
-import * as K from '../../konfig';
+import * as GDB from '../game_db';
+import * as S from '../sprite';
+import * as G from '../geom';
+import * as A from '../animation';
+import * as U from '../util/util';
+import * as F from '../facing';
+import * as Ebw from '../enemy/enemy_ball_weapon';
+import * as Fp from '../enemy/flight_patterns';
+import * as Emk from '../enemy/enemy_mk';
+import * as Lemk from './enemy_mk';
+import * as K from '../konfig';
 
 // match: sprite animation.
 const SIZE = G.v2d_mk(32, 32);
-const WARPIN_RESOURCE_ID = "enemies/e10s/e10_s1.png";
+const WARPIN_RESOURCE_ID = "enemies/basic1/sph1.png";
 
-export const Small: Lemk.EnemyMk = {
+export const Basic1: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
@@ -61,20 +61,20 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
     tspecs.forEach(spec => {
         const [t, _] = spec;
         table.push({
-            facing: facing,
-            thrusting: thrusting,
-            t: t,
-            animator: A.animator_mk(
+	    facing: facing,
+	    thrusting: thrusting,
+	    t: t,
+	    animator: A.animator_mk(
                 db.shared.sim_now,
                 {
-                    frame_msec: 120,
-                    resource_ids: [
-                        ...images.lookup_range_n(n => `enemies/e10s/e10_s${n}.png`, 1, 5)
-                    ],
-                    starting_mode: A.MultiImageStartingMode.hold,
-                    ending_mode: A.MultiImageEndingMode.loop
+		    frame_msec: 120,
+		    resource_ids: [
+                        ...images.lookup_range_n(n => `enemies/basic1/sph${n}.png`, 1, 3)
+		    ],
+		    starting_mode: A.MultiImageStartingMode.hold,
+		    ending_mode: A.MultiImageEndingMode.bounce
                 }
-            )
+	    )
         });
     });
     return table;

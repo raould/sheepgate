@@ -3,31 +3,30 @@ import * as K from '../../konfig';
 import * as S from '../../sprite';
 import * as Lta from '../level_type_a';
 import * as Lis from '../level_in_screens';
+import * as Eb1 from '../enemy_basic1';
 import * as Es from './enemy_small1';
 import * as Em from './enemy_mega1';
 import * as Ehm from './enemy_hypermega1';
 import * as Hs from '../../high_scores';
 
-enum EnemyPhase {
-    small_enemies,
-    mega_enemies,
-    hypermega_enemies,
-}
-
 // todo: move 'L' things from konfig to here.
-const LKfn = (level_index: number) => {
+const LKfn = (level_index: number): Lta.LevelKonfig => {
     const denom = K.LEVEL_TEMPLATE_COUNT;
     const buf = Math.floor(level_index / denom);
     return {
-	Es: Es,
+	Eb1: Eb1.Basic1,
+	ENEMY_BASIC1_COUNT: 5 + buf,
+	ENEMY_BASIC1_SPAWN_COUNT_LIMIT: 2 + buf,
+
+	Es: Es.Small,
 	ENEMY_SMALL_COUNT: 4 + buf,
 	ENEMY_SMALL_SPAWN_COUNT_LIMIT: 3 + buf,
 
-	Em: Em,
+	Em: Em.Mega,
 	ENEMY_MEGA_COUNT: 2 + buf,
 	ENEMY_MEGA_SPAWN_COUNT_LIMIT: 1 + buf,
 
-	Ehm: Ehm,
+	Ehm: Ehm.Hypermega,
 	ENEMY_HYPERMEGA_COUNT: 1 + buf,
 	ENEMY_HYPERMEGA_SPAWN_COUNT_LIMIT: 1 + buf,
 
@@ -38,13 +37,18 @@ const LKfn = (level_index: number) => {
 };
 
 class LevelImpl extends Lta.AbstractLevelTypeA {
+    basic1_snapshot: S.ImageSized;
     small_snapshot: S.ImageSized;
     mega_snapshot: S.ImageSized;
     hypermega_snapshot: S.ImageSized;
 
-    constructor(readonly index1: number, konfig: any, score: number, high_score: Hs.HighScore) {
+    constructor(readonly index1: number, konfig: Lta.LevelKonfig, score: number, high_score: Hs.HighScore) {
 	super(index1, konfig, score, high_score);
 	const images = this.db.uncloned.images;
+	this.basic1_snapshot = {
+	    size: Eb1.SIZE,
+	    resource_id: images.lookup(Eb1.WARPIN_RESOURCE_ID)
+	},
 	this.small_snapshot = {
 	    size: Es.SIZE,
 	    resource_id: images.lookup(Es.WARPIN_RESOURCE_ID)

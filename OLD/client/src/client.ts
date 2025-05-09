@@ -934,6 +934,10 @@ function loadImages() {
         loadImage(`ground/base${anim}.png`);
     });
     
+    loadImage("enemies/basic1/sph1.png");
+    loadImage("enemies/basic1/sph2.png");
+    loadImage("enemies/basic1/sph3.png");
+
     loadImage("enemies/e1/e1.png");
     loadImage("enemies/e11/e11a.png");
     loadImage("enemies/e18/e18.png");

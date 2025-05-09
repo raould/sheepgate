@@ -33,7 +33,7 @@ export interface EnemySpec {
     hardpoint_right?: (r: G.Rect) => G.V2D,
 }
 
-export function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec): U.O<S.Sprite> {
+export function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec): U.O<S.Warpin> {
     if (!!spec.lt) {
 	DebugGraphics.add_DrawEllipse(
 	    DebugGraphics.get_permanent(),

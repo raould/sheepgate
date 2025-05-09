@@ -3,31 +3,30 @@ import * as K from '../../konfig';
 import * as S from '../../sprite';
 import * as Lta from '../level_type_a';
 import * as Lis from '../level_in_screens';
+import * as B from '../enemy_basic1';
 import * as Es from './enemy_small3';
 import * as Em from './enemy_mega3';
 import * as Ehm from './enemy_hypermega3';
 import * as Hs from '../../high_scores';
 
-enum EnemyPhase {
-    small_enemies,
-    mega_enemies,
-    hypermega_enemies,
-}
-
 // todo: move 'L' things from konfig to here.
-const LKfn = (level_index: number) => {
+const LKfn = (level_index: number): Lta.LevelKonfig => {
     const denom = K.LEVEL_TEMPLATE_COUNT;
     const buf = Math.floor(level_index / denom);
     return {
-	Es: Es,
+	B1: B.warpin_mk,
+	ENEMY_BASIC1_COUNT: 5 + buf,
+	ENEMY_BASIC1_SPAWN_COUNT_LIMIT: 2 + buf,
+
+	Es: Es.warpin_mk,
 	ENEMY_SMALL_COUNT: 5 + buf,
 	ENEMY_SMALL_SPAWN_COUNT_LIMIT: 3 + buf,
 
-	Em: Em,
+	Em: Em.warpin_mk,
 	ENEMY_MEGA_COUNT: 3 + buf,
 	ENEMY_MEGA_SPAWN_COUNT_LIMIT: 2 + buf,
 
-	Ehm: Ehm,
+	Ehm: Ehm.warpin_mk,
 	ENEMY_HYPERMEGA_COUNT: 2 + buf,
 	ENEMY_HYPERMEGA_SPAWN_COUNT_LIMIT: 1 + buf,
 

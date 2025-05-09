@@ -15,7 +15,7 @@ export class InstructionsScreen extends Sz.SizzlerScreen {
     }
 
     step_instructions() {
-        const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.5, this.mdb.world.bounds0.y * 0.32);
+        const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.5, this.mdb.world.bounds0.y * 0.28);
         super.step_instructions(center, this.instructions, INSTRUCTIONS_SIZE);
     }
 }
