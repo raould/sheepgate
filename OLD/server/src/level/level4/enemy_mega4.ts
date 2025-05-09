@@ -11,8 +11,8 @@ import * as E from '../../enemy/enemy_mk';
 import * as K from '../../konfig';
 
 // match: sprite animation.
-export const SIZE = G.v2d_scale_v2d(G.v2d_mk(190, 105), G.v2d_mk(0.5, 0.4));
-export const WARPIN_RESOURCE_ID = "enemies/e17/e17l.png";
+export const SIZE = G.v2d_scale(G.v2d_mk(350, 150), 0.2);
+export const WARPIN_RESOURCE_ID = "enemies/e21/gg1l.png";
 
 export function warpin_mk(db: GDB.GameDB): U.O<S.Sprite> {
     const anim = new A.AnimatorDimensions(anims_spec_mk(db));
@@ -89,8 +89,8 @@ function t2a_thrusting_facing_mk(db: GDB.GameDB, facing: F.Facing): A.Dimensions
                 {
                     frame_msec: 50,
                     resource_ids: [
-			images.lookup(`enemies/e17/e17${fstr}.png`),
-			images.lookup(`enemies/e17/e17${fstr}_0.png`),
+			images.lookup(`enemies/e21/gg1${fstr}.png`),
+			images.lookup(`enemies/e21/gg1${fstr}t.png`),
                     ],
                     starting_mode: A.MultiImageStartingMode.hold,
                     ending_mode: A.MultiImageEndingMode.loop
@@ -114,7 +114,7 @@ function t2a_still_facing_mk(db: GDB.GameDB, facing: F.Facing): A.DimensionsFram
             animator: A.animator_mk(
                 db.shared.sim_now,
                 {
-		    resource_id: images.lookup(`enemies/e17/e17${fstr}.png`)
+		    resource_id: images.lookup(`enemies/e21/gg1${fstr}.png`)
 		}
             )
         });

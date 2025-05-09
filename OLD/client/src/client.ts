@@ -979,6 +979,11 @@ function loadImages() {
         loadImage(`enemies/e20/g${anim}.png`)
     });
 
+    loadImage(`enemies/e21/gg1l.png`)
+    loadImage(`enemies/e21/gg1lt.png`)
+    loadImage(`enemies/e21/gg1r.png`)
+    loadImage(`enemies/e21/gg1rt.png`)
+
     Array.from({length: 10}, (v, i) => i+1).forEach(i =>
         loadImage(`gem/gem${i}.png`)
     );
