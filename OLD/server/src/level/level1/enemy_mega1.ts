@@ -13,8 +13,7 @@ import * as K from '../../konfig';
 // match: sprite animation.
 const SIZE = G.v2d_mk(55, 55);
 const WARPIN_RESOURCE_ID = "enemies/e10m/e10_m1.png";
-
-export const Mega: Lemk.EnemyMk = {
+const Mega: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
@@ -41,6 +40,7 @@ export const Mega: Lemk.EnemyMk = {
 	);
     }
 }
+export default Mega;
 
 function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     const frames: A.DimensionsFrame[] = [

@@ -13,8 +13,7 @@ import * as K from '../konfig';
 // match: sprite animation.
 const SIZE = G.v2d_mk(32, 32);
 const WARPIN_RESOURCE_ID = "enemies/basic1/sph1.png";
-
-export const Basic1: Lemk.EnemyMk = {
+const Basic1: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
@@ -42,6 +41,7 @@ export const Basic1: Lemk.EnemyMk = {
 	);
     }
 }
+export default Basic1;
 
 function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     const frames: A.DimensionsFrame[] = [
