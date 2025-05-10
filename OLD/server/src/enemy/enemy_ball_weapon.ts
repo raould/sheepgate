@@ -144,10 +144,6 @@ export function scale_specs(level: number, rank: S.Rank, swivel: boolean): [Enem
         scale_spec(level, rank, F.Facing.left, swivel),
         scale_spec(level, rank, F.Facing.right, swivel)
     ];
-    if (rank === S.Rank.basic) {
-	specs[0].clip_spec.debug = true;
-	specs[1].clip_spec.debug = true;
-    }
     return specs;
 }
 

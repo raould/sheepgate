@@ -16,13 +16,10 @@ export interface Cooldown {
 }
 
 // todo: trying to DRY but this ends up being so fugly and evil. better to split the interface into public vs. private vs. spec!
-type CooldownSpecBasic = Omit<Omit<Omit<U.FieldsOnly<Cooldown>, "last_msec">, "next_msec">, "id">;
-type CooldownSpecMoar = { debug?: boolean; };
-export type CooldownSpec = CooldownSpecBasic & CooldownSpecMoar;
+export type CooldownSpec = Omit<Omit<Omit<U.FieldsOnly<Cooldown>, "last_msec">, "next_msec">, "id">;
 
 export function cooldown_mk(spec: CooldownSpec): Cooldown {
     const id = next_id++;
-    D.log("cooldown_mk", id, spec);
     const c: Cooldown = ({
         ...spec,
 	id,
@@ -33,7 +30,6 @@ export function cooldown_mk(spec: CooldownSpec): Cooldown {
             if (usable) {
                 this.last_msec = now;
                 this.next_msec = now + Rnd.singleton.float_around(this.duration_msec, this.duration_msec*0.2);
-		spec.debug && D.log("Cooldown.maybe_fire():", this.id, usable, U.F2D(this.last_msec), U.F2D(this.next_msec), U.F2D(this.next_msec-this.last_msec), ">?", U.F2D(this.duration_msec));
             }
             return usable;
         },
@@ -53,7 +49,6 @@ export interface Clip {
     shot_spec: CooldownSpec;
     count: number; // must be >= 1.
     maybe_fire(now: number): boolean;
-    debug?: boolean;
 }
 
 export type ClipSpec = U.FieldsOnly<Clip>;
@@ -70,19 +65,17 @@ interface ClipPrivate extends Clip {
 
 export function clip_mk(spec: ClipSpec): Clip {
     const id = next_id++;
-    D.log("clip_mk", id, spec);
-    const s = cooldown_mk({ ...spec.shot_spec, debug: spec.debug });
+    const s = cooldown_mk(spec.shot_spec);
     const c: ClipPrivate = ({
         ...spec,
 	id,
-        reload_cooldown: cooldown_mk({ ...spec.reload_spec, debug: spec.debug }),
+        reload_cooldown: cooldown_mk(spec.reload_spec),
         shot_cooldown: s,
         cooldown: s,
         maybe_fire(now: number): boolean {
             const test = this.test(now);
             if (test) {
                 this.count--;
-		spec.debug && D.log("Clip.maybe_fire():", this.id, this.count);
                 if (this.count == 0) {
                     this.cooldown = this.reload_cooldown;
                     this.cooldown.catchup(now);
@@ -98,7 +91,6 @@ export function clip_mk(spec: ClipSpec): Clip {
             return test;
         },
         reload(now: number) {
-	    spec.debug && D.log("Clip.reload():", this.id, U.F2D(now));
             this.count = spec.count;
             this.cooldown = this.shot_cooldown;
             this.cooldown.catchup(now);

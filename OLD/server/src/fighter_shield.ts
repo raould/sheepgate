@@ -11,6 +11,10 @@ import * as Pr from './particles';
 import * as U from './util/util';
 import * as D from './debug';
 
+// note: only shields interact with weapons,
+// so everything destructible has to have a shield.
+// however, one-shot enemies should not show it.
+
 // a shield has as much hp as the sprite it wraps.
 // it is more about making collision detection easy
 // using ellipses than anything "realistic"!
@@ -23,12 +27,11 @@ export interface ShieldWrappingSpec extends C.Masked, C.Ignores {
     hp_init: number;
     damage: number;
     alpha?: number;
-    hide_bar?: boolean;
     on_collide?(thiz: S.Shield<S.Fighter>, db: GDB.GameDB, sprite: S.CollidableSprite, reaction: C.Reaction): void;
 }
 
 interface ShieldPrivate extends S.Shield<S.Fighter> {
-    hide_bar?: boolean;
+    visible: boolean;
     pull_rect(db: GDB.GameDB): void;
     step_anim(db: GDB.GameDB): void;
     step_bar(db: GDB.GameDB): void;
@@ -38,11 +41,12 @@ interface ShieldPrivate extends S.Shield<S.Fighter> {
 
 export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
     const shields = db.shared.items.shields;
+    const visible = spec.hp_init > K.PLAYER_SHOT_DAMAGE; // 'basic' enemies.
     GDB.add_sprite_dict_id_mut(
         shields,
         (dbid): S.Shield<S.Fighter> => {
 	    const fighter = GDB.get_fighter(db, spec.fighter.dbid);
-	    if (fighter != undefined) {
+	    if (U.exists(fighter)) {
 		fighter.shield_id = dbid;
 	    }
             const s: ShieldPrivate = {
@@ -52,19 +56,20 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
                 },
                 comment: spec.comment,
                 ...G.rect_clone(spec.fighter),
+		visible,
                 vel: G.v2d_mk_0(),
                 acc: G.v2d_mk_0(),
                 ignores: spec.ignores,
                 hp_init: spec.hp_init,
                 hp: spec.hp_init,
                 damage: spec.damage,
-		hide_bar: spec.hide_bar,
                 // todo: i wish i knew a better way to do all this 'typing'.
                 type_flags: Tf.firstMatch(spec.fighter.type_flags, [Tf.TF.player, Tf.TF.enemy]) | Tf.TF.shield,
                 in_cmask: spec.in_cmask,
                 from_cmask: spec.from_cmask,
                 resource_id: spec.resource_id,
-                alpha: spec.alpha ?? K.SHIELD_ALPHA, // shield will flare up when hit.
+		// match: client
+                alpha: !visible ? Number.MIN_VALUE : (spec.alpha ?? K.SHIELD_ALPHA), // shield will flare up when hit.
                 pull_rect(db: GDB.GameDB) {
                     U.if_let_safe(
                         this.get_wrapped(db),
@@ -82,12 +87,13 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
                 step(db: GDB.GameDB) {
                     this.pull_rect(db);
                     const t = U.clip01(this.hp / this.hp_init);
-                    this.alpha = spec.alpha ?? K.SHIELD_ALPHA * (0.1 + t);
+		    // match: client
+                    this.alpha = !this.visible ? Number.MIN_VALUE : (spec.alpha ?? K.SHIELD_ALPHA * (0.1 + t));
                     this.step_anim(db);
                     this.step_bar(db);
                 },
                 step_anim(db: GDB.GameDB) {
-                    if (this.anim != null) {
+                    if (this.visible && U.exists(this.anim)) {
                         if (this.anim.is_alive(db)) {
                             this.anim.step(db);
                             this.alpha = this.anim.alpha;
@@ -98,7 +104,7 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
                     }
                 },
                 step_bar(db: GDB.GameDB) {
-                    if (!this.hide_bar) {
+                    if (this.visible) {
                         // todo: optimize this.
                         // todo: abstract this.
                         // todo: make this more usable overall, and for folks with *chromacy.
@@ -262,7 +268,7 @@ export class ShieldHitAnimation {
 
     is_alive(db: GDB.GameDB): boolean {
         const shield = this.get_shield(db);
-        const alive = shield != null && shield.hp > 0;
+        const alive = U.exists(shield) && shield.hp > 0;
         const dt = db.shared.sim_now - this.start_msec;
         const running = dt < this.duration_msec;
         return alive && running;
@@ -270,7 +276,7 @@ export class ShieldHitAnimation {
 
     step(db: GDB.GameDB) {
         const shield = this.get_shield(db);
-        if (shield != null && this.shield_size != null) {
+        if (U.exists(shield) && U.exists(this.shield_size)) {
             const now = db.shared.sim_now;
             const max_flare = U.clip01(shield.hp / shield.hp_init + 0.1);
             const flare = max_flare * U.t10(this.start_msec, this.start_msec + this.duration_msec, now);

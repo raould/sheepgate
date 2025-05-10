@@ -25,7 +25,6 @@ export interface EnemySpec {
     rank: S.Rank,
     hp_init: number,
     damage: number,
-    hide_bar?: boolean,
     weapons: S.Arsenal,
     flight_pattern: Fp.FlightPattern,
     gem_count: number,
@@ -61,8 +60,7 @@ export function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec
                     db.shared.items.enemies,
                     (dbid: GDB.DBID): U.O<EnemyPrivate> => sprite_mk(db, rect, spec)
                 );
-		// shield is irrelevant if they are a one-shot enemy.
-                if (sprite != null && spec.hp_init > K.PLAYER_SHOT_DAMAGE) {
+                if (sprite != null) {
                     add_shield(db, sprite, spec);
                 }
             }
@@ -85,7 +83,7 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
             // todo: hard-coded #s here maybe should be world height %ages instead.
             const e: EnemyPrivate = {
                 dbid: dbid,
-                comment: `enemy-${dbid}`,
+                comment: `enemy-${dbid}-${spec.rank}`,
                 ...rect,
                 facing: F.DefaultFacing,
                 // todo: extract this.
@@ -207,7 +205,6 @@ function add_shield(db: GDB.GameDB, enemy: EnemyPrivate, spec: EnemySpec) {
         fighter: enemy,
         hp_init: spec.hp_init,
         damage: spec.damage,
-	hide_bar: spec.hide_bar,
         comment: `enemy-FF-shield-${enemy.dbid}`,
         in_cmask: C.CMask.enemy,
         from_cmask: C.CMask.player | C.CMask.playerShot,

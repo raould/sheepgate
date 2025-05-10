@@ -342,13 +342,16 @@ function renderSpriteImageLayer(gdb: any, s: any, resource_id: string) {
 }
 
 function renderSprite(gdb: any, s: any) {
-    renderSpriteImage(gdb, s);
-    // match: i do want the drawing on top ie for player's shield_bar.
-    renderDrawing(gdb, s.drawing);
-    if (s != null && debugging_state.is_drawing) {
-        renderRects(gdb,
-		    [{ rect: s, width: 1, color: DEBUG_IMG_BOX_COLOR }]
-		   );
+    if (s.alpha > Number.MIN_VALUE) { // match: server
+	renderSpriteImage(gdb, s);
+	// match: i do want the drawing on top ie for player's shield_bar.
+	renderDrawing(gdb, s.drawing);
+	if (s != null && debugging_state.is_drawing) {
+            renderRects(
+		gdb,
+		[{ rect: s, width: 1, color: DEBUG_IMG_BOX_COLOR }]
+	    );
+	}
     }
     if (s != null && debugging_state.is_annotating) {
         const wr = v2sr_wrapped(s, gdb.world.gameport, gdb.world.bounds0, true);
