@@ -22,6 +22,15 @@ const basic1_spec: EnemyGeneratorSpec = {
     }
 };
 
+const basic2_spec: EnemyGeneratorSpec = {
+    generations: 2,
+    max_alive: 2,
+    comment: `enemy-b2-from-adv`,
+    warpin: (db: GDB.GameDB, dbid: GDB.DBID): U.O<S.Warpin> => {
+	return Eb2.warpin_mk(db);
+    }
+};
+
 interface EnemyGenerationCounts {
     generated: number;
     generations: number;
@@ -31,7 +40,9 @@ interface EnemyGenerationState {
     small: EnemyGenerationCounts,
     mega: EnemyGenerationCounts,
     hypermega: EnemyGenerationCounts
+    // todo: this is an ugly hack, no doubt.
     basic1: EnemyGenerationCounts,
+    basic2: EnemyGenerationCounts,
 }
 
 export function add_generators(
@@ -45,13 +56,13 @@ export function add_generators(
         mega: { generated: 0, generations: mega_spec.generations },
         hypermega: { generated: 0, generations: hypermega_spec.generations },
 	basic1: { generated: 0, generations: basic1_spec.generations },
+	basic2: { generated: 0, generations: basic1_spec.generations },
     };
     add_generator(db, state, small_spec, should_generate_small, (s) => { s.small.generated++; });
     add_generator(db, state, mega_spec, should_generate_mega, (s) => { s.mega.generated++; });
     add_generator(db, state, hypermega_spec, should_generate_hypermega, (s) => { s.hypermega.generated++; });
-
-    // todo: this is an ugly hack, no doubt.
     add_generator(db, state, basic1_spec, should_generate_basic1, (s) => { s.basic1.generated++ });
+    add_generator(db, state, basic2_spec, should_generate_basic2, (s) => { s.basic2.generated++ });
 }
 
 type TestFn = (db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState) => boolean;
@@ -122,6 +133,12 @@ function should_generate_hypermega(db: GDB.GameDB, spec: EnemyGeneratorSpec, sta
 }
 
 function should_generate_basic1(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
+    const activated = state.hypermega.generated > 0;
+    const available = state.small.generated < spec.generations;
+    return activated && available;
+}
+
+function should_generate_basic2(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
     const activated = state.hypermega.generated > 0;
     const available = state.small.generated < spec.generations;
     return activated && available;

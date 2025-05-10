@@ -16,20 +16,20 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     const buf = Math.floor(level_index / denom);
     return {
 	Eb1: Eb1,
-	ENEMY_BASIC1_COUNT: 0,//3 + buf,
+	ENEMY_BASIC1_COUNT: 3 + buf,
 	ENEMY_BASIC1_SPAWN_COUNT_LIMIT: 1 + buf,
 
 	Eb2: Eb2,
-	ENEMY_BASIC2_COUNT: 0,//3 + buf,
+	ENEMY_BASIC2_COUNT: 3 + buf,
 	ENEMY_BASIC2_SPAWN_COUNT_LIMIT: 1 + buf,
 
 	Es: Es,
-	ENEMY_SMALL_COUNT: 0,//4 + buf,
+	ENEMY_SMALL_COUNT: 4 + buf,
 	// no buf so there aren't too many mixed in with basics.
 	ENEMY_SMALL_SPAWN_COUNT_LIMIT: 1,
 
 	Em: Em,
-	ENEMY_MEGA_COUNT: 0,//2 + buf,
+	ENEMY_MEGA_COUNT: 2 + buf,
 	ENEMY_MEGA_SPAWN_COUNT_LIMIT: 1 + buf,
 
 	Ehm: Ehm,
