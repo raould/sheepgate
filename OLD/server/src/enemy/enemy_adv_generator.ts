@@ -11,6 +11,8 @@ export interface EnemyGeneratorSpec {
     max_alive: number;
     comment: string;
     warpin: (db: GDB.GameDB, dbid: GDB.DBID) => U.O<S.Warpin>;
+    delay_msec?: number;
+    tick_msec?: number;
 }
 
 const basic1_spec: EnemyGeneratorSpec = {
@@ -19,7 +21,9 @@ const basic1_spec: EnemyGeneratorSpec = {
     comment: `enemy-b1-from-adv`,
     warpin: (db: GDB.GameDB, dbid: GDB.DBID): U.O<S.Warpin> => {
 	return Eb1.warpin_mk(db);
-    }
+    },
+    delay_msec: 1,
+    tick_msec: 2,
 };
 
 const basic2_spec: EnemyGeneratorSpec = {
@@ -28,7 +32,9 @@ const basic2_spec: EnemyGeneratorSpec = {
     comment: `enemy-b2-from-adv`,
     warpin: (db: GDB.GameDB, dbid: GDB.DBID): U.O<S.Warpin> => {
 	return Eb2.warpin_mk(db);
-    }
+    },
+    delay_msec: 1,
+    tick_msec: 2,
 };
 
 interface EnemyGenerationCounts {
@@ -80,10 +86,12 @@ function add_generator(
             Tkg.ticking_generator_mk(db, dbid, {
                 comment: spec.comment,
                 generations: spec.generations,
-                delay_msec: 1000,
-                tick_msec: 2000,
+		// yes, buried default values is evil.
+                delay_msec: spec.delay_msec ?? 1000,
+                tick_msec: spec.tick_msec ?? 2000,
                 generate: (db: GDB.GameDB): U.O<S.Sprite> => {
-                    if (testfn(db, spec, state)) {
+		    const yes = testfn(db, spec, state);
+                    if (yes) {
                         const e = add_enemy(db, spec);
                         incrfn(state);
                         return e;
@@ -134,13 +142,13 @@ function should_generate_hypermega(db: GDB.GameDB, spec: EnemyGeneratorSpec, sta
 
 function should_generate_basic1(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
     const activated = state.hypermega.generated > 0;
-    const available = state.small.generated < spec.generations;
+    const available = state.basic1.generated < spec.generations;
     return activated && available;
 }
 
 function should_generate_basic2(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
     const activated = state.hypermega.generated > 0;
-    const available = state.small.generated < spec.generations;
+    const available = state.basic2.generated < spec.generations;
     return activated && available;
 }
 
