@@ -269,8 +269,8 @@ export const GEM_HP_BONUS = 3; // keep it smallish.
 export const ENEMY_SMALL_GEM_COUNT = 1;
 export const ENEMY_MEGA_GEM_COUNT = 2;
 // if the final enemy generated any gems then there'd
-// be a race condition / ux problem of not/ending the
-// level until/before they are picked up by the player.
+// be an annoying race condition ux problem of ending the
+// level until/before they can be picked up by the player.
 export const ENEMY_HYPERMEGA_GEM_COUNT = 0;
 
 // todo: !!!! too many collision buckets as this gets bigger !!!!
@@ -306,14 +306,21 @@ export const WARPIN_TOTAL_MSEC = 500; // K
 
 // note/todo: not much time yet spent on real game balance for these (or any) values.
 
+export const ENEMY_BASIC_HP = PLAYER_SHOT_DAMAGE; // L
+export const ENEMY_BASIC_DAMAGE = Math.floor(PLAYER_HP/5); // L
+D.assert(ENEMY_BASIC_DAMAGE >= 1);
+
 export const ENEMY_SMALL_HP = PLAYER_SHOT_DAMAGE * 2; // L
 export const ENEMY_SMALL_DAMAGE = Math.floor(PLAYER_HP/4); // L
+D.assert(ENEMY_SMALL_DAMAGE >= 1);
 
 export const ENEMY_MEGA_HP = PLAYER_SHOT_DAMAGE * 12; // L
 export const ENEMY_MEGA_DAMAGE = Math.floor(PLAYER_HP/2); // L
+D.assert(ENEMY_MEGA_DAMAGE >= 1);
 
 export const ENEMY_HYPERMEGA_HP = PLAYER_SHOT_DAMAGE * 30; // L
 export const ENEMY_HYPERMEGA_DAMAGE = PLAYER_HP; // L
+D.assert(ENEMY_HYPERMEGA_DAMAGE >= 1);
 
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L
 export const ENEMY_RETURN_FIRE_MIN_MSEC = 100; // L

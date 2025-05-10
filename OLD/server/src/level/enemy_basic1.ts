@@ -18,7 +18,7 @@ const Basic1: Lemk.EnemyMk = {
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
 	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
-	const [ewsl, ewsr] = Ebw.scale_specs(db.shared.level_index1, S.Rank.small, true);
+	const [ewsl, ewsr] = Ebw.scale_specs(db.shared.level_index1, S.Rank.basic, true);
 	const weapons = {
             'wl': Ebw.weapon_mk(ewsl),
             'wr': Ebw.weapon_mk(ewsr),
@@ -26,12 +26,12 @@ const Basic1: Lemk.EnemyMk = {
 	const flight_pattern = new Fp.DecendAndGoSine(db, SIZE, 0.0005);
 	const spec: Emk.EnemySpec = {
             anim: anim,
-            rank: S.Rank.small,
-            hp_init: K.ENEMY_SMALL_HP,
-            damage: K.ENEMY_SMALL_DAMAGE,
+            rank: S.Rank.basic,
+            hp_init: K.ENEMY_BASIC_HP,
+            damage: K.ENEMY_BASIC_DAMAGE,
             weapons: weapons,
             flight_pattern: flight_pattern,
-            gem_count: K.ENEMY_SMALL_GEM_COUNT
+            gem_count: 0,
 	};
 	return Emk.warpin_mk(
             db,

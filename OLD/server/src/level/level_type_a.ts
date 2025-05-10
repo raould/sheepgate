@@ -18,6 +18,7 @@ import * as Dr from '../drawing';
 import * as ES from '../empty_sprite';
 import * as Pl from '../player';
 import * as Eag from '../enemy/enemy_adv_generator';
+import * as Ebg from '../enemy/enemy_basic_generator';
 import * as Sc from '../scoring';
 import * as Hs from '../high_scores';
 import * as U from '../util/util';
@@ -204,6 +205,12 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Ehm.warpin_mk(db)
 	}
 	Eag.add_generators(this.db, small_spec, mega_spec, hypermega_spec);
+	Ebg.add_generators(this.db, [
+	    { comment: "enemy-gen-basic1",
+	      generations: this.konfig.ENEMY_BASIC1_COUNT,
+	      max_alive: this.konfig.ENEMY_BASIC1_SPAWN_COUNT_LIMIT,
+	      warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Eb1.warpin_mk(db) }
+	]);
 
 	// TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	const basic1_spec = {
