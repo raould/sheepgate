@@ -53,7 +53,7 @@ export class HighScoreEntryScreen extends Sz.SizzlerScreen {
     rects: G.Rect[][];
 
     constructor(private readonly score: number) {
-        super("HIGH SCORE!", undefined, RGBA.DARK_BLUE);
+        super({ title: "HIGH SCORE!", bg_color: RGBA.DARK_BLUE, timeout: 120*1000 });
         this.letters = "";
         this.cursor = G.v2d_mk_0();
         this.rects = [];

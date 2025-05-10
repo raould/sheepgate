@@ -7,41 +7,46 @@ import * as F from '../../facing';
 import * as Ebw from '../../enemy/enemy_ball_weapon';
 import * as Rnd from '../../random';
 import * as Fp from '../../enemy/flight_patterns';
-import * as E from '../../enemy/enemy_mk';
+import * as Emk from '../../enemy/enemy_mk';
+import * as Lemk from '../enemy_mk';
 import * as K from '../../konfig';
 
 // match: sprite animation.
-export const SIZE = G.v2d_scale(G.v2d_mk(72, 150), 0.3);
-export const WARPIN_RESOURCE_ID = "enemies/e16/e16l.png";
-
-export function warpin_mk(db: GDB.GameDB): U.O<S.Sprite> {
-    const anim = new A.AnimatorDimensions(anims_spec_mk(db));
-    const [ewsl, ewsr] = Ebw.scale_specs(db.shared.level_index1, S.Rank.small, false);
-    const weapons = {
-        'wl': Ebw.weapon_mk(ewsl),
-        'wr': Ebw.weapon_mk(ewsr),
-    };
-    const acc_base = G.v2d_mk(0.0005, 0.00005);
-    const acc = Rnd.singleton.next_v2d_around(
-        acc_base,
-        G.v2d_scale(acc_base, 0.5)
-    );
-    const flight_pattern = new Fp.BuzzPlayer(db, acc);
-    return E.warpin_mk(
-        db,
-        SIZE,
-    	WARPIN_RESOURCE_ID,
-        {
-            anim: anim,
-            rank: S.Rank.small,
-            hp_init: K.ENEMY_SMALL_HP,
-            damage: K.ENEMY_SMALL_DAMAGE,
-            weapons: weapons,
-            flight_pattern: flight_pattern,
-            gem_count: K.ENEMY_SMALL_GEM_COUNT
-        }
-    );
+const SIZE = G.v2d_scale_i(G.v2d_mk(72, 150), 0.4);
+const WARPIN_RESOURCE_ID = "enemies/e16/e16l.png";
+const Small: Lemk.EnemyMk = {
+    SIZE,
+    WARPIN_RESOURCE_ID,
+    warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
+	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
+	const [ewsl, ewsr] = Ebw.scale_specs(db.shared.level_index1, S.Rank.small, false);
+	const weapons = {
+            'wl': Ebw.weapon_mk(ewsl),
+            'wr': Ebw.weapon_mk(ewsr),
+	};
+	const acc_base = G.v2d_mk(0.0005, 0.00005);
+	const acc = Rnd.singleton.next_v2d_around(
+            acc_base,
+            G.v2d_scale(acc_base, 0.5)
+	);
+	const flight_pattern = new Fp.BuzzPlayer(db, acc);
+	return Emk.warpin_mk(
+            db,
+            SIZE,
+    	    WARPIN_RESOURCE_ID,
+            {
+		anim: anim,
+		rank: S.Rank.small,
+		hp_init: K.ENEMY_SMALL_HP,
+		damage: K.ENEMY_SMALL_DAMAGE,
+		weapons: weapons,
+		flight_pattern: flight_pattern,
+		gem_count: K.ENEMY_SMALL_GEM_COUNT
+            }
+	);
+    }
 }
+export default Small;
 
 function f2s(f: F.Facing): string {
     return F.on_facing(f, "l", "r");

@@ -1,4 +1,5 @@
 import * as D from '../debug';
+import * as Rnd from '../random';
 
 // todo: uh, tests?
 // todo: share this with client, probably.
@@ -15,7 +16,10 @@ export function is_zero(n: number): boolean {
 }
 
 export type O<T> = T | undefined;
-
+export function isU(a: any): boolean { return a == undefined; }
+export function exists<T>(val: T | undefined | null): val is T {
+    return val !== undefined && val !== null;
+}
 export function unreachable(_: unknown): never {
     throw new Error("unreachable");
 }
@@ -77,6 +81,18 @@ export function filter_array<E>(array: Array<E>, fn: (_: E) => boolean): Filtere
         }
     }
     return f;
+}
+
+export function shuffle_array<E>(array: Array<E>, rnd: Rnd.Random = Rnd.singleton): Array<E> {
+    const a2 = array.slice();
+    for (let i = a2.length - 1; i > 0; --i) {
+	const j = Math.floor(rnd.next_float_0_1() * (i+1));
+	const ti = a2[i];
+	const tj = a2[j];
+	a2[i] = tj;
+	a2[j] = ti;
+    }
+    return a2;
 }
 
 // todo: this is an over simplification in that
@@ -234,10 +250,6 @@ export function element_looped<T>(array: T[], index: number): O<T> {
 
 export function a_lteq(a: number, ...numbers: number[]): boolean {
     return numbers.every(n => a <= n);
-}
-
-export function exists<T>(t: O<T> | null | void): t is T {
-    return t != null;
 }
 
 export function is_asc(a: number, b: number): boolean {

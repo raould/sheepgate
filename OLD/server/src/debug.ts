@@ -9,6 +9,9 @@ export function now_str(): string {
 export function log_stamp(...args: any) {
     console.log(now_str(), ...args);
 }
+export function warn_stamp(...args: any) {
+    console.warn(now_str(), ...args);
+}
 export function error_stamp(...args: any) {
     console.error(now_str(), ...args);
 }
@@ -31,6 +34,10 @@ export function error(...args: any) {
     error_stamp(...args);
 }
 
+export function warn(...args: any) {
+    warn_stamp(...args);
+}
+
 export function log(...args: any) {
     // todo: ifdef this to be quiet on 'release' builds somehow.
     log_stamp(...args);
@@ -44,7 +51,7 @@ export function log_if(test: boolean, ...args: any) {
 }
 
 function msgs2strs(...msgs: any): string {
-    if (msgs.length == 0) {
+    if (msgs?.length ?? 0 === 0) {
         return "";
     }
     else {

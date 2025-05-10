@@ -154,30 +154,47 @@ export class TargetPlayer implements FlightPattern {
     }
 }
 
-export class DecendAndGoStraight implements FlightPattern {
+// follow a sinusoidal-ish horizontal path.
+export class DecendAndGoSine implements FlightPattern {
     private target: G.V2D;
     private horizon_y: number;
     private acc_mag: number;
-    private normal: G.V2D;
+    private signX: number;
+    private sinY: number;
 
     constructor(db: GDB.GameDB, size: G.V2D, acc_mag: number) {
-        const world_rect = db.shared.world.gameport.world_bounds;
-        this.target = G.rect_mid(world_rect); // temporary non-null value until we step.
-        const lt = Rnd.singleton.next_v2d_inside_rect(world_rect);
-        const rect = rect_in_bounds_y(db, G.rect_mk(lt, size), TOP_PAD, BOTTOM_PAD);
-        this.horizon_y = G.rect_lt(rect).y;
         this.acc_mag = acc_mag;
-        this.normal = G.v2d_mk_x0(Rnd.singleton.next_boolean() ? -1 : 1);
+        this.target = G.rect_mid(db.shared.world.gameport.world_bounds);
+	const sizeY = K.GAMEPORT_RECT.size.y;
+	const midY = sizeY * 0.5;
+	const rangeY = sizeY * 0.2;
+        this.horizon_y = Rnd.singleton.next_float_around(midY, rangeY);
+	this.sinY = rangeY; // 0.1 to 0.9, i hope.
+        this.signX = Rnd.singleton.next_boolean() ? -1 : 1;
     }
 
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
+	const now = db.shared.sim_now;
+	const sin_y = Math.sin(now/2000) * this.sinY;
         const slt = G.rect_lt(src);
-        if (slt.y < this.horizon_y) {
-            this.target = G.v2d_mk(slt.x, this.horizon_y);
-        }
-        else {
-            this.target = G.v2d_add(slt, this.normal);
-        }
+        this.target = G.v2d_mk(
+	    slt.x + this.signX * 100,
+	    this.horizon_y + sin_y
+	);
+	DebugGraphics.add_point(
+	    DebugGraphics.get_frame(),
+	    this.target,
+	);
+	DebugGraphics.add_DrawLine(
+	    DebugGraphics.get_frame(),
+	    {
+		wrap: false,
+		color: RGBA.BLUE,
+		line_width: 3,
+		p0: slt,
+		p1: this.target,
+	    }
+	);
         const delta_acc = calculate_acc(G.rect_mid(src), this.target, this.acc_mag, db.local.frame_dt);
         return delta_acc;
     }

@@ -130,7 +130,7 @@ export const HUD_RIGHT_RECT = G.rect_move(
 );
 D.assert_fn(G.rect_rt(HUD_RIGHT_RECT), G.rect_rt(HUD_VISIBLE_RECT), (a,b)=>G.v2d_eq(a,b), "right");
 
-// gameport is below the hud area and has no inset; no drawn border.
+// gameport is above the hud area and has no inset; no drawn border.
 export const GAMEPORT_RECT = G.rect_mk(
     G.rect_lt(SCREEN_RECT),
     G.v2d_mk(
@@ -235,8 +235,8 @@ export const PLAYER_WEAPON_CLIP_COOLDOWN_MSEC = 300; // W
 export const PLAYER_WEAPON_SHOT_COOLDOWN_MSEC = 50; // W
 export const PLAYER_WEAPON_SHOT_COUNT = 3; // W
 export const BULLET_SHOT_SPEED = 0.7; // W // note that enemies use a scaled version of this. :-\
-export const BULLET_SHOT_LIFE_MSEC = 1000; // W
-export const BULLET_SHOT_SIZE = G.v2d_mk(44, 5); // W
+export const BULLET_SHOT_LIFE_MSEC = 3000; // W
+export const BULLET_SHOT_SIZE = G.v2d_mk(44, 3); // W
 export const BALL_SHOT_SIZE = G.v2d_mk(6, 6); // W
 
 // todo: explosions should have slightly different timings
@@ -260,14 +260,17 @@ export const PLAYER_TURBO_X_SCALE = 4;
 
 export const PLAYER_BEAM_MAX_VEL2 = 0.2; // K
 export const PEOPLE_SIZE = G.v2d_mk_nn(32); // K
+// match: people.ts, currently hardcoded to have 2 people per cluster.
+// even this is too much toing and froing?
+export const PEOPLE_MAX_COUNT = 2 * 5; // K
 
 export const GEM_SIZE = G.v2d_mk_nn(10);
 export const GEM_HP_BONUS = 3; // keep it smallish.
 export const ENEMY_SMALL_GEM_COUNT = 1;
 export const ENEMY_MEGA_GEM_COUNT = 2;
 // if the final enemy generated any gems then there'd
-// be a race condition / ux problem of not/ending the
-// level until/before they are picked up by the player.
+// be an annoying race condition ux problem of ending the
+// level until/before they can be picked up by the player.
 export const ENEMY_HYPERMEGA_GEM_COUNT = 0;
 
 // todo: !!!! too many collision buckets as this gets bigger !!!!
@@ -303,14 +306,21 @@ export const WARPIN_TOTAL_MSEC = 500; // K
 
 // note/todo: not much time yet spent on real game balance for these (or any) values.
 
+export const ENEMY_BASIC_HP = PLAYER_SHOT_DAMAGE; // L
+export const ENEMY_BASIC_DAMAGE = Math.floor(PLAYER_HP/5); // L
+D.assert(ENEMY_BASIC_DAMAGE >= 1);
+
 export const ENEMY_SMALL_HP = PLAYER_SHOT_DAMAGE * 2; // L
 export const ENEMY_SMALL_DAMAGE = Math.floor(PLAYER_HP/4); // L
+D.assert(ENEMY_SMALL_DAMAGE >= 1);
 
 export const ENEMY_MEGA_HP = PLAYER_SHOT_DAMAGE * 12; // L
 export const ENEMY_MEGA_DAMAGE = Math.floor(PLAYER_HP/2); // L
+D.assert(ENEMY_MEGA_DAMAGE >= 1);
 
 export const ENEMY_HYPERMEGA_HP = PLAYER_SHOT_DAMAGE * 30; // L
 export const ENEMY_HYPERMEGA_DAMAGE = PLAYER_HP; // L
+D.assert(ENEMY_HYPERMEGA_DAMAGE >= 1);
 
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L
 export const ENEMY_RETURN_FIRE_MIN_MSEC = 100; // L
@@ -320,3 +330,6 @@ export const BEAMUP_SFX = "sounds/beamup.ogg";
 export const EXPLOSION_SFX = "sounds/explosion.ogg";
 export const GEM_COLLECT_SFX = "sounds/gem_collect.ogg";
 export const PLAYER_SHOOT_SFX = "sounds/player_shoot.ogg";
+
+// match: game.ts
+export const LEVEL_TEMPLATE_COUNT = 4;

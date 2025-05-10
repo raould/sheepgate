@@ -6,7 +6,7 @@ const INSTRUCTIONS_SIZE = 30;
 
 export class InstructionsScreen extends Sz.SizzlerScreen {
     constructor(private readonly instructions: string[], animated: boolean) {
-        super("HOW TO PLAY", "PRESS [FIRE] TO CONTINUE", RGBA.DARK_BLUE, animated);
+        super({ title: "HOW TO PLAY", skip_text: "PRESS [FIRE] TO CONTINUE", bg_color: RGBA.DARK_BLUE, animated });
     }
 
     step() {
@@ -15,7 +15,7 @@ export class InstructionsScreen extends Sz.SizzlerScreen {
     }
 
     step_instructions() {
-        const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.5, this.mdb.world.bounds0.y * 0.32);
+        const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.5, this.mdb.world.bounds0.y * 0.28);
         super.step_instructions(center, this.instructions, INSTRUCTIONS_SIZE);
     }
 }

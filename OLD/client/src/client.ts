@@ -919,7 +919,7 @@ function loadImage(resource: string) {
 
 function loadImages() {
     // todo: this is really lame and really sucks to maintain!
-    //  if this at least just walked the files and loaded them all...
+    // if this at least just walked the files and loaded them all...
     // todo: load the graphics from the server, not locally???
     // or at least share this kind of big spec's code with the server.
     
@@ -934,6 +934,14 @@ function loadImages() {
         loadImage(`ground/base${anim}.png`);
     });
     
+    loadImage("enemies/basic1/sph1.png");
+    loadImage("enemies/basic1/sph2.png");
+    loadImage("enemies/basic1/sph3.png");
+
+    loadImage("enemies/basic2/tt1.png");
+    loadImage("enemies/basic2/tt2.png");
+    loadImage("enemies/basic2/tt3.png");
+
     loadImage("enemies/e1/e1.png");
     loadImage("enemies/e11/e11a.png");
     loadImage("enemies/e18/e18.png");
@@ -975,7 +983,19 @@ function loadImages() {
         loadImage(`enemies/e13/e13r_${anim}.png`)
     });
 
-    Array.from({length: 5}, (v, i) => i+1).forEach(i =>
+    [1,2,3].forEach(anim => {
+        loadImage(`enemies/e20/g${anim}.png`)
+    });
+
+    loadImage(`enemies/e21/gg1l.png`)
+    loadImage(`enemies/e21/gg1lt.png`)
+    loadImage(`enemies/e21/gg1r.png`)
+    loadImage(`enemies/e21/gg1rt.png`)
+
+    loadImage(`enemies/e22/hh1.png`)
+    loadImage(`enemies/e22/hh2.png`)
+
+    Array.from({length: 10}, (v, i) => i+1).forEach(i =>
         loadImage(`gem/gem${i}.png`)
     );
 

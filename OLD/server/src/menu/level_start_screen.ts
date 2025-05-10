@@ -7,7 +7,7 @@ import { RGBA, HCycle } from '../color';
 
 export class LevelStartScreen extends Sz.SizzlerScreen {
     constructor(title: string, skip_text: string, private readonly es: S.ImageSized, private readonly em: S.ImageSized, private readonly ehm: S.ImageSized, bg_color: RGBA) {
-        super(title, skip_text, bg_color);
+        super({ title, skip_text, bg_color, timeout: 10*1000 });
     }
 
     step() {

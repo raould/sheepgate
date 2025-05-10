@@ -1,4 +1,5 @@
 import * as Lv from './level';
+import * as Lemk from './enemy_mk';
 import * as Gs from '../game_stepper';
 import * as GDB from '../game_db';
 import * as K from '../konfig';
@@ -16,13 +17,43 @@ import * as S from '../sprite';
 import * as Dr from '../drawing';
 import * as ES from '../empty_sprite';
 import * as Pl from '../player';
-import * as Eg from '../enemy/enemy_generator';
+import * as Eag from '../enemy/enemy_adv_generator';
+import * as Ebg from '../enemy/enemy_basic_generator';
 import * as Sc from '../scoring';
 import * as Hs from '../high_scores';
 import * as U from '../util/util';
 import * as D from '../debug';
+import { RGBA } from '../color';
 import { DebugGraphics } from '../debug_graphics';
 import * as _ from 'lodash';
+
+export type warpin_mk = (db: GDB.GameDB) => U.O<S.Sprite>;
+
+export interface LevelKonfig {
+    Eb1: Lemk.EnemyMk,
+    ENEMY_BASIC1_COUNT: number,
+    ENEMY_BASIC1_SPAWN_COUNT_LIMIT: number,
+
+    Eb2: Lemk.EnemyMk,
+    ENEMY_BASIC2_COUNT: number,
+    ENEMY_BASIC2_SPAWN_COUNT_LIMIT: number,
+
+    Es: Lemk.EnemyMk,
+    ENEMY_SMALL_COUNT: number,
+    ENEMY_SMALL_SPAWN_COUNT_LIMIT: number,
+
+    Em: Lemk.EnemyMk,
+    ENEMY_MEGA_COUNT: number,
+    ENEMY_MEGA_SPAWN_COUNT_LIMIT: number,
+
+    Ehm: Lemk.EnemyMk,
+    ENEMY_HYPERMEGA_COUNT: number,
+    ENEMY_HYPERMEGA_SPAWN_COUNT_LIMIT: number,
+
+    BG_COLOR: RGBA,
+
+    people_cluster_count: number,
+};
 
 interface FarSpec0 {
     resource_name: string,
@@ -46,7 +77,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
     get_state(): Gs.StepperState { return this.state; }
     get_scoring(): Sc.Scoring { return this.db.local.scoring; }
 
-    constructor(public readonly index1: number, private readonly konfig: any/*todo: type it!*/, score: number, high_score: Hs.HighScore) {
+    constructor(public readonly index1: number, private readonly konfig: LevelKonfig, score: number, high_score: Hs.HighScore) {
 	super(high_score);
 	D.log(`new level_type_a for index1 ${index1}!`);
 	this.state = Gs.StepperState.running;
@@ -163,21 +194,39 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    comment: "enemy-gen-small",
 	    generations: this.konfig.ENEMY_SMALL_COUNT,
 	    max_alive: this.konfig.ENEMY_SMALL_SPAWN_COUNT_LIMIT,
-	    warpin: (db: GDB.GameDB): U.O<S.Enemy> => this.konfig.Es.warpin_mk(db)
+	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Es.warpin_mk(db)
 	}
 	const mega_spec = {
 	    comment: "enemy-gen-mega",
 	    generations: this.konfig.ENEMY_MEGA_COUNT,
 	    max_alive: this.konfig.ENEMY_MEGA_SPAWN_COUNT_LIMIT,
-	    warpin: (db: GDB.GameDB): U.O<S.Enemy> => this.konfig.Em.warpin_mk(db)
+	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Em.warpin_mk(db)
 	}
 	const hypermega_spec = {
 	    comment: "enemy-gen-hypermega",
 	    generations: this.konfig.ENEMY_HYPERMEGA_COUNT,
 	    max_alive: this.konfig.ENEMY_HYPERMEGA_SPAWN_COUNT_LIMIT,
-	    warpin: (db: GDB.GameDB): U.O<S.Enemy> => this.konfig.Ehm.warpin_mk(db)
+	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Ehm.warpin_mk(db)
 	}
-	Eg.add_generators(this.db, small_spec, mega_spec, hypermega_spec);
+	Eag.add_generators(this.db, small_spec, mega_spec, hypermega_spec);
+	Ebg.add_generators(this.db, [
+	    { comment: "enemy-gen-basic1",
+	      generations: this.konfig.ENEMY_BASIC1_COUNT,
+	      max_alive: this.konfig.ENEMY_BASIC1_SPAWN_COUNT_LIMIT,
+	      warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Eb1.warpin_mk(db) },
+	    { comment: "enemy-gen-basic2",
+	      generations: this.konfig.ENEMY_BASIC2_COUNT,
+	      max_alive: this.konfig.ENEMY_BASIC2_SPAWN_COUNT_LIMIT,
+	      warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Eb2.warpin_mk(db) },
+	]);
+
+	// TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	const basic1_spec = {
+	    comment: "enemy-gen-basic1",
+	    generations: this.konfig.ENEMY_BASIC1_COUNT,
+	    max_alive: this.konfig.ENEMY_BASIC1_SPAWN_COUNT_LIMIT,
+	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Eb1.warpin_mk(db)
+	}
     }
 
     update_impl(next: GDB.GameDB) {

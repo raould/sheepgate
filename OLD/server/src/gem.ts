@@ -42,14 +42,14 @@ export function gems_add(db: GDB.GameDB, around: G.V2D, count: number) {
 
 export function gem_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Gem {
     const images = db.uncloned.images;
-    const rids = images.lookup_range_n((n) => `gem/gem${n}.png`, 1, 5);
+    const rids = images.lookup_range_n((n) => `gem/gem${n}.png`, 1, 10); // todo: sheesh!
     const anim: A.ResourceAnimator = A.animator_mk(
         db.shared.sim_now,
         {
             frame_msec: Rnd.singleton.next_float_around(50, 10),
             resource_ids: rids,
             starting_mode: A.MultiImageStartingMode.hold,
-            ending_mode: A.MultiImageEndingMode.repeat,
+            ending_mode: A.MultiImageEndingMode.bounce,
         }
     );
     const g: GemPrivate = {

@@ -70,7 +70,7 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
                     frame_msec: 60,
                     resource_ids: [...fronts, back, back, back],
                     starting_mode: A.MultiImageStartingMode.hold,
-                    ending_mode: A.MultiImageEndingMode.repeat
+                    ending_mode: A.MultiImageEndingMode.loop
                 }
             )
         });

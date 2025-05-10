@@ -4,6 +4,10 @@ SEE ALL THE 'TODO' (AND 'MATCH') COMMENTS IN THE CODE!
 THESE ARE NOT IN ORDER because i keep changing my mind :-\
 and keep finding things i did that are super confusing.
 
+* document which way the (x,y) axes go ffs; i assume +x down, +y.
+* omfg the sprite loading between server+client sucks-sucks so much-much.
+  * also i wish animation could do resizing for bounce and stretch.
+
 next-feature-short-list, in no order:
 * ha ha check all the bugs and todo's... bad stuff. see all the code notes below. :-(
   [not any enforced ordering]
@@ -39,6 +43,7 @@ DO THESE NOW/NEXT:
       * various synonyms are confusing e.g. x, y, lt, h, v.
 -0.1) DebugGraphics really should support things fading over N frames,
    which means Drawing would need to be updated to support that.
+-0.05) relative path imports are evil.
 0) one of the worstest things about all this is that each simulation step / frame does
    makes a copy of the game db using _.cloneDeep() and then mutates that new one.
    which empirically ends up meaning that you can't really use regular js "this.field"
@@ -97,6 +102,9 @@ DO THESE NOW/NEXT:
 27) the code is a rats' nest of relations and calls and twistly little passages, all different :-(
 
 999) everything else..., especially code...
+* the enemy animation code is very underdocumented too much hidden magic?!
+  * the no-thrusting animation handling in t2a_facing_mk is confusing.
+* also scale the weapons along level progression.
 * the DB breakdown and all the files involved is confusing.
 * the menu / level / instructions / sizzler code is badly factored, confusing.
   * like i'd like the level won text to rez in slower.

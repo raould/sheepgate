@@ -102,6 +102,7 @@ export enum Rank {
     // note: these are an ordering and are used as such in code.
     // (todo/note: ideally this means the hp & weapon values
     // should be scaled along these lines too. sorta. maybe.)
+    basic,
     small,
     player,
     mega,
@@ -113,6 +114,7 @@ export enum Rank {
 // crappy hack instead. todo: not this!
 export function rank2mass(rank: Rank): number {
     switch (rank) {
+        case Rank.basic: return 1;
         case Rank.small: return 1;
         case Rank.player: return 1;
         case Rank.mega: return 3;

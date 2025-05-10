@@ -11,7 +11,7 @@ import { RGBA, HCycle } from '../color';
 
 export class HighScoreTableScreen extends Sz.SizzlerScreen {
     constructor(private readonly table: Hs.HighScores) {
-        super("HIGH SCORES", "PRESS [FIRE] TO CONTINUE", RGBA.DARK_BLUE);
+        super({ title: "HIGH SCORES", skip_text: "PRESS [FIRE] TO CONTINUE", bg_color: RGBA.DARK_BLUE, timeout: 30*1000 });
     }
 
     step() {

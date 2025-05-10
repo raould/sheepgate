@@ -1,10 +1,6 @@
 import * as Is from './menu/instructions_screen';
 import * as Hse from './menu/high_score_entry_screen';
 import * as Hst from './menu/high_score_table_screen';
-import * as Lis from './level/level_in_screens';
-import * as L1 from './level/level1/level1';
-import * as L2 from './level/level2/level2';
-import * as L3 from './level/level3/level3';
 import * as Cdb from './client_db';
 import * as Cmd from './commands';
 import * as Gs from './game_stepper';
@@ -12,12 +8,18 @@ import * as Hs from './high_scores';
 import * as U from './util/util';
 import * as D from './debug';
 import * as K from './konfig';
+import * as Lis from './level/level_in_screens';
+// well, this sucks.
+import * as L1 from './level/level1/level1';
+import * as L2 from './level/level2/level2';
+import * as L3 from './level/level3/level3';
+import * as L4 from './level/level4/level4';
 
 const TOP_INSTRUCTIONS = [
+    " ",
     "RETURN HUMANS TO BASE.",
     "DEFEAT ALL ENEMIES.",
     " ",
-    "CONTROLS:",
     "FIRE: SPACE / Z / ENTER",
     "MOVE: {W,A,S,D} / {ARROW KEYS}",
     "BOOST: SHIFT",
@@ -35,11 +37,14 @@ interface GamePrivate extends Game {
 }
 
 type LevelMk = (level_index: number, score: number, high_score: Hs.HighScore) => Lis.LevelInScreens;
+// match: konfig.ts
 const level_mks: LevelMk[] = [
     (level_index: number, score: number, high_score: Hs.HighScore) => L1.level_mk(level_index, score, high_score),
     (level_index: number, score: number, high_score: Hs.HighScore) => L2.level_mk(level_index, score, high_score),
     (level_index: number, score: number, high_score: Hs.HighScore) => L3.level_mk(level_index, score, high_score),
+    (level_index: number, score: number, high_score: Hs.HighScore) => L4.level_mk(level_index, score, high_score),
 ];
+D.assert(level_mks.length === K.LEVEL_TEMPLATE_COUNT, "level template count");
 
 export function game_mk(high_scores: Hs.HighScores): Game {
     return new class _G implements GamePrivate {
@@ -165,7 +170,7 @@ class GameLevels implements Gs.Stepper {
     paused: U.O<Gs.Stepper>;
     
     constructor(private readonly high_score: Hs.HighScore) {
-        this.index = 0;
+        this.index = 0; // hard to grep find this when you don't know.
         this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, 0, this.high_score);
     }
 

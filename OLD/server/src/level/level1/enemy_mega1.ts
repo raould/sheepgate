@@ -7,35 +7,40 @@ import * as F from '../../facing';
 import * as Ebw from '../../enemy/enemy_ball_weapon';
 import * as Fp from '../../enemy/flight_patterns';
 import * as E from '../../enemy/enemy_mk';
+import * as Lemk from '../enemy_mk';
 import * as K from '../../konfig';
 
 // match: sprite animation.
-export const SIZE = G.v2d_mk(55, 55);
-export const WARPIN_RESOURCE_ID = "enemies/e10m/e10_m1.png";
-
-export function warpin_mk(db: GDB.GameDB): U.O<S.Sprite> {
-    const anim = new A.AnimatorDimensions(anims_spec_mk(db));
-    const [ewsl, ewsr] = Ebw.scale_specs(db.shared.level_index1, S.Rank.mega, true);
-    const weapons = {
-        'wl': Ebw.weapon_mk(ewsl),
-        'wr': Ebw.weapon_mk(ewsr),
-    };
-    const flight_pattern = new Fp.DecendAndGoStraight(db, SIZE, 0.001);
-    return E.warpin_mk(
-        db,
-        SIZE,
-    	WARPIN_RESOURCE_ID,
-        {
-            anim: anim,
-            rank: S.Rank.mega,
-            hp_init: K.ENEMY_MEGA_HP,
-            damage: K.ENEMY_MEGA_DAMAGE,
-            weapons: weapons,
-            flight_pattern: flight_pattern,
-            gem_count: K.ENEMY_MEGA_GEM_COUNT
-        }
-    );
+const SIZE = G.v2d_mk(55, 55);
+const WARPIN_RESOURCE_ID = "enemies/e10m/e10_m1.png";
+const Mega: Lemk.EnemyMk = {
+    SIZE,
+    WARPIN_RESOURCE_ID,
+    warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
+	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
+	const [ewsl, ewsr] = Ebw.scale_specs(db.shared.level_index1, S.Rank.mega, true);
+	const weapons = {
+            'wl': Ebw.weapon_mk(ewsl),
+            'wr': Ebw.weapon_mk(ewsr),
+	};
+	const flight_pattern = new Fp.DecendAndGoSine(db, SIZE, 0.001);
+	return E.warpin_mk(
+            db,
+            SIZE,
+    	    WARPIN_RESOURCE_ID,
+            {
+		anim: anim,
+		rank: S.Rank.mega,
+		hp_init: K.ENEMY_MEGA_HP,
+		damage: K.ENEMY_MEGA_DAMAGE,
+		weapons: weapons,
+		flight_pattern: flight_pattern,
+		gem_count: K.ENEMY_MEGA_GEM_COUNT
+            }
+	);
+    }
 }
+export default Mega;
 
 function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     const frames: A.DimensionsFrame[] = [
@@ -65,7 +70,7 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
                         ...images.lookup_range_n(n => `enemies/e10m/e10_m${n}.png`, 1, 5)
                     ],
                     starting_mode: A.MultiImageStartingMode.hold,
-                    ending_mode: A.MultiImageEndingMode.repeat
+                    ending_mode: A.MultiImageEndingMode.loop
                 }
             )
         });
