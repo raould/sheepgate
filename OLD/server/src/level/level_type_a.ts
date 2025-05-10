@@ -209,24 +209,20 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Ehm.warpin_mk(db)
 	}
 	Eag.add_generators(this.db, small_spec, mega_spec, hypermega_spec);
-	Ebg.add_generators(this.db, [
-	    { comment: "enemy-gen-basic1",
-	      generations: this.konfig.ENEMY_BASIC1_COUNT,
-	      max_alive: this.konfig.ENEMY_BASIC1_SPAWN_COUNT_LIMIT,
-	      warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Eb1.warpin_mk(db) },
-	    { comment: "enemy-gen-basic2",
-	      generations: this.konfig.ENEMY_BASIC2_COUNT,
-	      max_alive: this.konfig.ENEMY_BASIC2_SPAWN_COUNT_LIMIT,
-	      warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Eb2.warpin_mk(db) },
-	]);
 
-	// TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	const basic1_spec = {
 	    comment: "enemy-gen-basic1",
 	    generations: this.konfig.ENEMY_BASIC1_COUNT,
 	    max_alive: this.konfig.ENEMY_BASIC1_SPAWN_COUNT_LIMIT,
 	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Eb1.warpin_mk(db)
-	}
+	};
+	const basic2_spec = {
+	    comment: "enemy-gen-basic2",
+	    generations: this.konfig.ENEMY_BASIC2_COUNT,
+	    max_alive: this.konfig.ENEMY_BASIC2_SPAWN_COUNT_LIMIT,
+	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Eb2.warpin_mk(db)
+	};
+	Ebg.add_generators(this.db, [basic1_spec, basic2_spec]);
     }
 
     update_impl(next: GDB.GameDB) {

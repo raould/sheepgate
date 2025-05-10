@@ -3,6 +3,8 @@ import * as Tkg from '../ticking_generator';
 import * as S from '../sprite';
 import * as U from '../util/util';
 import * as D from '../debug';
+import Eb1 from './enemy_basic1';
+import Eb2 from './enemy_basic2'; // todo:
 
 export interface EnemyGeneratorSpec {
     generations: number;
@@ -10,6 +12,15 @@ export interface EnemyGeneratorSpec {
     comment: string;
     warpin: (db: GDB.GameDB, dbid: GDB.DBID) => U.O<S.Warpin>;
 }
+
+const basic1_spec: EnemyGeneratorSpec = {
+    generations: 2,
+    max_alive: 2,
+    comment: `enemy-b1-from-adv`,
+    warpin: (db: GDB.GameDB, dbid: GDB.DBID): U.O<S.Warpin> => {
+	return Eb1.warpin_mk(db);
+    }
+};
 
 interface EnemyGenerationCounts {
     generated: number;
@@ -20,6 +31,7 @@ interface EnemyGenerationState {
     small: EnemyGenerationCounts,
     mega: EnemyGenerationCounts,
     hypermega: EnemyGenerationCounts
+    basic1: EnemyGenerationCounts,
 }
 
 export function add_generators(
@@ -32,10 +44,14 @@ export function add_generators(
         small: { generated: 0, generations: small_spec.generations },
         mega: { generated: 0, generations: mega_spec.generations },
         hypermega: { generated: 0, generations: hypermega_spec.generations },
+	basic1: { generated: 0, generations: basic1_spec.generations },
     };
     add_generator(db, state, small_spec, should_generate_small, (s) => { s.small.generated++; });
     add_generator(db, state, mega_spec, should_generate_mega, (s) => { s.mega.generated++; });
     add_generator(db, state, hypermega_spec, should_generate_hypermega, (s) => { s.hypermega.generated++; });
+
+    // todo: this is an ugly hack, no doubt.
+    add_generator(db, state, basic1_spec, should_generate_basic1, (s) => { s.basic1.generated++ });
 }
 
 type TestFn = (db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState) => boolean;
@@ -73,7 +89,7 @@ function count_rank(db: GDB.GameDB, rank: S.Rank): number {
 }
 
 function should_generate_small(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
-    const running = spec.generations > state.small.generated;
+    const running = state.small.generated < spec.generations;
     if (running) {
         const room = spec.max_alive > count_rank(db, S.Rank.small);
         return room;
@@ -82,7 +98,7 @@ function should_generate_small(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: 
 }
 
 function should_generate_mega(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
-    const running = spec.generations > state.mega.generated;
+    const running = state.mega.generated < spec.generations;
     if (running) {
         const room = spec.max_alive > count_rank(db, S.Rank.mega);
         const small_done = state.small.generated >= state.small.generations;
@@ -93,7 +109,7 @@ function should_generate_mega(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: E
 }
 
 function should_generate_hypermega(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
-    const running = spec.generations > state.hypermega.generated;
+    const running = state.hypermega.generated < spec.generations;
     if (running) {
         const room = spec.max_alive > count_rank(db, S.Rank.hypermega);
         const small_done = state.small.generated >= state.small.generations;
@@ -105,22 +121,17 @@ function should_generate_hypermega(db: GDB.GameDB, spec: EnemyGeneratorSpec, sta
     return false;
 }
 
+function should_generate_basic1(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
+    const activated = state.hypermega.generated > 0;
+    const available = state.small.generated < spec.generations;
+    return activated && available;
+}
+
 function add_enemy(db: GDB.GameDB, spec: EnemyGeneratorSpec): U.O<S.Warpin> {
     const e = GDB.add_dict_id_mut(
         db.shared.items.warpin,
         (dbid: GDB.DBID): U.O<S.Warpin> => spec.warpin(db, dbid)
     );
-
-    if (U.exists(e)) {
-	// todo: this is the worst hack, if you tell me you found this i'll give you a $1. maybe.
-	switch (e.rank) {
-	case S.Rank.mega:
-	    break;
-	case S.Rank.hypermega:
-	    break;
-	}
-    }
-
     return e;
 }
 
