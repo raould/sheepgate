@@ -121,7 +121,7 @@ export abstract class SizzlerScreen implements M.Menu {
 
     step_timeout() {
         if (U.exists(this.timeout)) {
-            const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.925, this.mdb.world.bounds0.y * 0.15);
+            const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.935, this.mdb.world.bounds0.y * 0.15);
 	    const msg = String(Math.ceil(this.timeout/1000));
             this.step_text(msg, center, 25, this.header_cycle);
         }
