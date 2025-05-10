@@ -169,15 +169,13 @@ export function scale_spec(level: number, rank: S.Rank, directions: F.Facing, sw
     }
 }
 
-// todo: i wish i could use macros/reflection to just build this with SMALL, MEGA, HYPERMEGA.
-
 const ENEMY_BASIC_SHOT_DAMAGE = K.PLAYER_HP / 30; // L, W
 D.assert(ENEMY_BASIC_SHOT_DAMAGE >= 0.1);
 const ENEMY_BASIC_SHOT_SPEED = 0.08; // L, W
 const ENEMY_BASIC_SHOT_SIZE = K.BALL_SHOT_SIZE;
 const ENEMY_BASIC_SHOT_LIFE_MSEC = 2*1000; // L, W
-const ENEMY_BASIC_WEAPON_CLIP_COOLDOWN_MSEC = 10*1000; // L, W
-const ENEMY_BASIC_WEAPON_SHOT_COOLDOWN_MSEC = 5*1000; // L, W
+const ENEMY_BASIC_WEAPON_CLIP_COOLDOWN_MSEC = 20*1000; // L, W
+const ENEMY_BASIC_WEAPON_SHOT_COOLDOWN_MSEC = 10*1000; // L, W
 const ENEMY_BASIC_WEAPON_SHOT_COUNT = 1; // L, W
 
 const ENEMY_SMALL_SHOT_DAMAGE = K.PLAYER_HP / 30; // L, W
@@ -206,6 +204,8 @@ const ENEMY_HYPERMEGA_SHOT_LIFE_MSEC = 3*1000; // L, W
 const ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC = 2*1000; // L, W
 const ENEMY_HYPERMEGA_WEAPON_SHOT_COOLDOWN_MSEC = 500; // L, W
 const ENEMY_HYPERMEGA_WEAPON_SHOT_COUNT = 4; // L, W
+
+// todo: meta-build these boilerplate-hell functions? sheesh.
 
 function enemy_basic_spec(level: number, direction: F.Facing, swivel: boolean): EnemyWeaponSpec {
     return {

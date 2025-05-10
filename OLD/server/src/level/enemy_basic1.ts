@@ -30,9 +30,10 @@ const Basic1: Lemk.EnemyMk = {
             rank: S.Rank.basic,
             hp_init: K.ENEMY_BASIC_HP,
             damage: K.ENEMY_BASIC_DAMAGE,
+	    hide_bar: true,
             weapons: weapons,
             flight_pattern: flight_pattern,
-            gem_count: 0,
+            gem_count: K.ENEMY_BASIC_GEM_COUNT,
 	};
 	return Emk.warpin_mk(
             db,

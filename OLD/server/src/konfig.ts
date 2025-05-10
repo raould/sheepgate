@@ -266,12 +266,6 @@ export const PEOPLE_MAX_COUNT = 2 * 5; // K
 
 export const GEM_SIZE = G.v2d_mk_nn(10);
 export const GEM_HP_BONUS = 3; // keep it smallish.
-export const ENEMY_SMALL_GEM_COUNT = 1;
-export const ENEMY_MEGA_GEM_COUNT = 2;
-// if the final enemy generated any gems then there'd
-// be an annoying race condition ux problem of ending the
-// level until/before they can be picked up by the player.
-export const ENEMY_HYPERMEGA_GEM_COUNT = 0;
 
 // todo: !!!! too many collision buckets as this gets bigger !!!!
 // note: avoid floating point error causing bins to not fully abut.
@@ -306,20 +300,30 @@ export const WARPIN_TOTAL_MSEC = 500; // K
 
 // note/todo: not much time yet spent on real game balance for these (or any) values.
 
+// basic enemies should be one-shots, that's why they are basic.
+// they also should not drop any gems, that's why they are basic.
+// they should also not show their hp meter to reduce chartjunk.
 export const ENEMY_BASIC_HP = PLAYER_SHOT_DAMAGE; // L
 export const ENEMY_BASIC_DAMAGE = Math.floor(PLAYER_HP/5); // L
+export const ENEMY_BASIC_GEM_COUNT = 0; // L
 D.assert(ENEMY_BASIC_DAMAGE >= 1);
 
-export const ENEMY_SMALL_HP = PLAYER_SHOT_DAMAGE * 2; // L
+export const ENEMY_SMALL_HP = PLAYER_SHOT_DAMAGE * 4; // L
 export const ENEMY_SMALL_DAMAGE = Math.floor(PLAYER_HP/4); // L
+export const ENEMY_SMALL_GEM_COUNT = 1;
 D.assert(ENEMY_SMALL_DAMAGE >= 1);
 
 export const ENEMY_MEGA_HP = PLAYER_SHOT_DAMAGE * 12; // L
 export const ENEMY_MEGA_DAMAGE = Math.floor(PLAYER_HP/2); // L
+export const ENEMY_MEGA_GEM_COUNT = 2;
 D.assert(ENEMY_MEGA_DAMAGE >= 1);
 
 export const ENEMY_HYPERMEGA_HP = PLAYER_SHOT_DAMAGE * 30; // L
 export const ENEMY_HYPERMEGA_DAMAGE = PLAYER_HP; // L
+// if the final enemy generated any gems then there'd
+// be an annoying race condition ux problem of ending the
+// level until/before they can be picked up by the player.
+export const ENEMY_HYPERMEGA_GEM_COUNT = 0;
 D.assert(ENEMY_HYPERMEGA_DAMAGE >= 1);
 
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L

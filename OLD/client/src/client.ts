@@ -323,14 +323,14 @@ function renderSpriteImageLayer(gdb: any, s: any, resource_id: string) {
             const img: any = images[resource_id];
             if (img != null) {
                 cx2d.drawImage(img,
-                    0, 0, img.width, img.height,
-                    Math.floor(wr.lt.x + ss.x), Math.floor(wr.lt.y + ss.y),
-                    Math.floor(wr.size.x), Math.floor(wr.size.y),
-                );
+			       0, 0, img.width, img.height,
+			       Math.floor(wr.lt.x + ss.x), Math.floor(wr.lt.y + ss.y),
+			       Math.floor(wr.size.x), Math.floor(wr.size.y),
+			      );
             }
-						else {
-								//console.error(`no image for ${resource_id}`);
-						}
+	    else {
+		//console.error(`no image for ${resource_id}`);
+	    }
             if (s.alpha != 1) {
                 cx2d.restore();
             }
@@ -347,8 +347,8 @@ function renderSprite(gdb: any, s: any) {
     renderDrawing(gdb, s.drawing);
     if (s != null && debugging_state.is_drawing) {
         renderRects(gdb,
-            [{ rect: s, width: 1, color: DEBUG_IMG_BOX_COLOR }]
-        );
+		    [{ rect: s, width: 1, color: DEBUG_IMG_BOX_COLOR }]
+		   );
     }
     if (s != null && debugging_state.is_annotating) {
         const wr = v2sr_wrapped(s, gdb.world.gameport, gdb.world.bounds0, true);
@@ -392,7 +392,6 @@ function renderEnemies(gdb: any) {
 
 function renderShields(gdb: any) {
     for (const s of Object.values(gdb.items.shields)) {
-        // const show = s.hp
         renderSprite(gdb, s);
     }
 }
@@ -554,8 +553,8 @@ function renderRects(xdb: any, draw_rects: Array<any/*Dr.DrawRect*/>) {
             const r = dr.rect;
             const sr = v2sr_wrapped(r, xdb.world.gameport, xdb.world.bounds0, wrap);
             renderRect(dr.is_filled, dr.line_width, dr.color,
-                sr.lt.x + ss.x, sr.lt.y + ss.y,
-                r.size.x, r.size.y);
+                       sr.lt.x + ss.x, sr.lt.y + ss.y,
+                       r.size.x, r.size.y);
         }
     }
 }
@@ -580,8 +579,8 @@ function renderEllipses(xdb: any, draw_ellipses: Array<any/*Dr.DrawEllipse*/>) {
             const sr = v2sr_wrapped(r, xdb.world.gameport, xdb.world.bounds0, wrap);
             const ss = xdb.screen_shake ?? {x:0, y:0};
             renderEllipse(de.is_filled, de.line_width, de.color,
-                sr.lt.x + ss.x, sr.lt.y + ss.y,
-                sr.size.x, sr.size.y);
+			  sr.lt.x + ss.x, sr.lt.y + ss.y,
+			  sr.size.x, sr.size.y);
         }
     }
 }
@@ -598,9 +597,9 @@ function renderArcs(xdb: any, draw_arcs: Array<any/*Dr.DrawArc*/>) {
             const sr = v2sr_wrapped(r, xdb.world.gameport, xdb.world.bounds0, wrap);
             const ss = xdb.screen_shake ?? {x:0, y:0};
             renderArc(da.is_filled, da.line_width, da.color,
-                sr.lt.x + ss.x, sr.lt.y + ss.y,
-                sr.size.x, sr.size.y,
-                da.radians_start, da.radians_end);
+                      sr.lt.x + ss.x, sr.lt.y + ss.y,
+                      sr.size.x, sr.size.y,
+                      da.radians_start, da.radians_end);
         }
     }
 }
@@ -629,7 +628,7 @@ function renderTexts(xdb: any, draw_texts: Array<any/*Dr.DrawText*/>) {
             const wrap = dt.wrap == null ? true : !!dt.wrap;
             const slb = v2sv_wrapped(dt.lb, xdb.world.gameport, xdb.world.bounds0, wrap);
             renderText(dt.text, dt.font, dt.fillStyle,
-                slb.x + ss.x, slb.y + ss.y);
+                       slb.x + ss.x, slb.y + ss.y);
         }
     }
 }
@@ -656,13 +655,13 @@ function renderImage(resource_id: string, x: number, y: number, w: number, h: nu
     const img: any = images[resource_id];
     if (img != null) {
         cx2d.drawImage(img,
-            0, 0, img.width, img.height,
-            x, y, w, h
-        );
+		       0, 0, img.width, img.height,
+		       x, y, w, h
+		      );
     }
-		else {
-				//console.error(`no image for ${resource_id}`);
-		}
+    else {
+	//console.error(`no image for ${resource_id}`);
+    }
 }
 
 // todo: this gets weird because the client
@@ -766,9 +765,9 @@ function onKey(event: any, is_keydown: boolean) {
             }
             sendState();
 
-			// todo: i am confused looking at this now,
-			// i should think after the delete we'd have
-			// to sendState() again for it to work right?!
+	    // todo: i am confused looking at this now,
+	    // i should think after the delete we'd have
+	    // to sendState() again for it to work right?!
             if (spec.is_singular) {
                 delete inputs.commands[ik];
                 log("  is_singular delete", inputs.commands[ik]);
@@ -879,20 +878,20 @@ function loadSound(resource: string, base64: string) {
     // this path is relative to where index.html lives.
     const buffer = base64ToAudioBuffer(base64);
     contextAudio.decodeAudioData(buffer,
-        (decoded: any) => {
-            sounds[`sounds/${resource}`] = {
-                play() {
-                    const source = contextAudio.createBufferSource();
-                    source.buffer = decoded;
-                    source.connect(contextAudio.destination);
-                    source.start();
-                }
-            }
-        },
-        (error: any) => {
-            console.error(error);
-        }
-    );
+				 (decoded: any) => {
+				     sounds[`sounds/${resource}`] = {
+					 play() {
+					     const source = contextAudio.createBufferSource();
+					     source.buffer = decoded;
+					     source.connect(contextAudio.destination);
+					     source.start();
+					 }
+				     }
+				 },
+				 (error: any) => {
+				     console.error(error);
+				 }
+				);
 }
 
 function loadSounds() {
@@ -996,8 +995,8 @@ function loadImages() {
     loadImage(`enemies/e22/hh2.png`)
 
     Array.from({length: 10}, (v, i) => i+1).forEach(i =>
-        loadImage(`gem/gem${i}.png`)
-    );
+						    loadImage(`gem/gem${i}.png`)
+						   );
 
     [1,2,3,4,5,6,7,8].forEach(anim => {
         loadImage(`warpin/warpin${anim}.png`);
@@ -1076,11 +1075,11 @@ function onMessageWS(event: any) {
 }
 
 function applyCommand(spec: CommandSpec, pressed: boolean) {
-	let ik = spec.command;
-	inputs.commands[ik] = pressed;
+    let ik = spec.command;
+    inputs.commands[ik] = pressed;
     sendState();
 
-	// todo: see comments on the other instance of this.
+    // todo: see comments on the other instance of this.
     if (spec.is_singular) {
         delete inputs.commands[ik];
     }
@@ -1092,75 +1091,75 @@ let gStickLeft: boolean = false;
 let gStickRight: boolean = false;
 function JoystickMove(event: any) {
     if (event.verticalValue < -0.5) {
-		if (!gStickUp) {
-			gStickUp = true;
-			applyCommand(UpSpec, true);
-		}
+	if (!gStickUp) {
+	    gStickUp = true;
+	    applyCommand(UpSpec, true);
+	}
     }
     else if (event.verticalValue <= 0) {
-		if (gStickUp) {
-			gStickUp = false;
-			applyCommand(UpSpec, false);
-		}
+	if (gStickUp) {
+	    gStickUp = false;
+	    applyCommand(UpSpec, false);
+	}
     }
 
     if (event.verticalValue > 0.5) {
-		if (!gStickDown) {
-			gStickDown = true;
-			applyCommand(DownSpec, true);
-		}
-    }
-	else if (event.verticalValue >= 0) {
-		if (gStickDown) {
-			gStickDown = false;
-			applyCommand(DownSpec, false);
-		}
+	if (!gStickDown) {
+	    gStickDown = true;
+	    applyCommand(DownSpec, true);
 	}
+    }
+    else if (event.verticalValue >= 0) {
+	if (gStickDown) {
+	    gStickDown = false;
+	    applyCommand(DownSpec, false);
+	}
+    }
 
     if (event.horizontalValue < -0.5) {
-		if (!gStickLeft) {
-			gStickLeft = true;
-			applyCommand(LeftSpec, true);
-		}
+	if (!gStickLeft) {
+	    gStickLeft = true;
+	    applyCommand(LeftSpec, true);
 	}
+    }
     else if (event.horizontalValue <= 0) {
-		if (gStickLeft) {
-			gStickLeft = false;
-			applyCommand(LeftSpec, false);
-		}
+	if (gStickLeft) {
+	    gStickLeft = false;
+	    applyCommand(LeftSpec, false);
+	}
     }
 
     if (event.horizontalValue > 0.5) {
-		if (!gStickRight) {
-			gStickRight = true;
-			applyCommand(RightSpec, true);
-		}
+	if (!gStickRight) {
+	    gStickRight = true;
+	    applyCommand(RightSpec, true);
+	}
     }
     else if (event.horizontalValue >= 0) {
-		if (gStickRight) {
-			gStickRight = false;
-			applyCommand(RightSpec, false);
-		}
+	if (gStickRight) {
+	    gStickRight = false;
+	    applyCommand(RightSpec, false);
 	}
+    }
 }
 
 function ButtonChange(event: any, pressed: boolean) {
-	applyCommand(FireSpec, pressed);
+    applyCommand(FireSpec, pressed);
 }
 
 function gamepadHandler(event: any, connecting: boolean) {
-	console.log("gamepadHandler", connecting ? 'on' : 'off');
-	if (connecting) {
-		if ( currentGamepad != null ) {
-			currentGamepad.removeEventListener("joystickmove", StandardMapping.Axis.JOYSTICK_LEFT);
-			currentGamepad.removeEventListener("buttonpress");
-			currentGamepad.removeEventListener("buttonrelease");
-		}
-		currentGamepad = event.gamepad;
-		currentGamepad.addEventListener("joystickmove", (e:any) => JoystickMove(e), StandardMapping.Axis.JOYSTICK_LEFT);
-		currentGamepad.addEventListener("buttonpress", (e:any) => ButtonChange(e, true));
-		currentGamepad.addEventListener("buttonrelease", (e:any) => ButtonChange(e, false));
+    console.log("gamepadHandler", connecting ? 'on' : 'off');
+    if (connecting) {
+	if ( currentGamepad != null ) {
+	    currentGamepad.removeEventListener("joystickmove", StandardMapping.Axis.JOYSTICK_LEFT);
+	    currentGamepad.removeEventListener("buttonpress");
+	    currentGamepad.removeEventListener("buttonrelease");
 	}
+	currentGamepad = event.gamepad;
+	currentGamepad.addEventListener("joystickmove", (e:any) => JoystickMove(e), StandardMapping.Axis.JOYSTICK_LEFT);
+	currentGamepad.addEventListener("buttonpress", (e:any) => ButtonChange(e, true));
+	currentGamepad.addEventListener("buttonrelease", (e:any) => ButtonChange(e, false));
+    }
 }
 
 function init() {

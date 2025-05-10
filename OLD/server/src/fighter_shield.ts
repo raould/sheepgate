@@ -23,10 +23,12 @@ export interface ShieldWrappingSpec extends C.Masked, C.Ignores {
     hp_init: number;
     damage: number;
     alpha?: number;
+    hide_bar?: boolean;
     on_collide?(thiz: S.Shield<S.Fighter>, db: GDB.GameDB, sprite: S.CollidableSprite, reaction: C.Reaction): void;
 }
 
 interface ShieldPrivate extends S.Shield<S.Fighter> {
+    hide_bar?: boolean;
     pull_rect(db: GDB.GameDB): void;
     step_anim(db: GDB.GameDB): void;
     step_bar(db: GDB.GameDB): void;
@@ -35,7 +37,6 @@ interface ShieldPrivate extends S.Shield<S.Fighter> {
 }
 
 export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
-    const shows_bar = spec.hp_init > K.PLAYER_SHOT_DAMAGE; // which is really kinda always true.
     const shields = db.shared.items.shields;
     GDB.add_sprite_dict_id_mut(
         shields,
@@ -57,6 +58,7 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
                 hp_init: spec.hp_init,
                 hp: spec.hp_init,
                 damage: spec.damage,
+		hide_bar: spec.hide_bar,
                 // todo: i wish i knew a better way to do all this 'typing'.
                 type_flags: Tf.firstMatch(spec.fighter.type_flags, [Tf.TF.player, Tf.TF.enemy]) | Tf.TF.shield,
                 in_cmask: spec.in_cmask,
@@ -96,7 +98,7 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
                     }
                 },
                 step_bar(db: GDB.GameDB) {
-                    if (shows_bar) {
+                    if (!this.hide_bar) {
                         // todo: optimize this.
                         // todo: abstract this.
                         // todo: make this more usable overall, and for folks with *chromacy.
