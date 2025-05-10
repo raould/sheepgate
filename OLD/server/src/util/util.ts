@@ -16,7 +16,10 @@ export function is_zero(n: number): boolean {
 }
 
 export type O<T> = T | undefined;
-
+export function isU(a: any): boolean { return a == undefined; }
+export function exists<T>(val: T | undefined | null): val is T {
+    return val !== undefined && val !== null;
+}
 export function unreachable(_: unknown): never {
     throw new Error("unreachable");
 }
@@ -247,10 +250,6 @@ export function element_looped<T>(array: T[], index: number): O<T> {
 
 export function a_lteq(a: number, ...numbers: number[]): boolean {
     return numbers.every(n => a <= n);
-}
-
-export function exists<T>(t: O<T> | null | void): t is T {
-    return t != null;
 }
 
 export function is_asc(a: number, b: number): boolean {

@@ -60,7 +60,7 @@ export abstract class SizzlerScreen implements M.Menu {
     }
 
     merge_client_db(cdb2: Cdb.ClientDB): void {
-        if (this.skip_text != null && this.elapsed > USER_SKIP_AFTER_MSEC && !!cdb2.inputs.commands[Cmd.CommandType.fire]) {
+        if (U.exists(this.skip_text) && this.elapsed > USER_SKIP_AFTER_MSEC && !!cdb2.inputs.commands[Cmd.CommandType.fire]) {
             this.state = Gs.StepperState.completed;
         }
     }
@@ -71,7 +71,8 @@ export abstract class SizzlerScreen implements M.Menu {
 
     step() {
         this.elapsed += this.mdb.frame_dt;
-	if (this.timeout && this.timeout < this.elapsed) {
+	if (U.exists(this.timeout)) { this.timeout -= this.mdb.frame_dt; }
+	if (U.exists(this.timeout) && this.timeout <= 0) {
 	    this.state = Gs.StepperState.completed;
 	}
         this.mdb.frame_drawing = Dr.drawing_mk();
@@ -80,6 +81,7 @@ export abstract class SizzlerScreen implements M.Menu {
         this.step_border();
         this.step_title();
         this.step_user_skip();
+	this.step_timeout();
     }
 
     step_string(text: string, delay_msec: number = 0): string {
@@ -111,9 +113,17 @@ export abstract class SizzlerScreen implements M.Menu {
     }
 
     step_user_skip() {
-        if (this.skip_text != null && (!this.animated || this.elapsed > USER_SKIP_AFTER_MSEC)) {
+        if (U.exists(this.skip_text) && (!this.animated || this.elapsed > USER_SKIP_AFTER_MSEC)) {
             const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.5, this.mdb.world.bounds0.y * 0.9);
             this.step_text(this.skip_text, center, 40, this.header_cycle);
+        }
+    }
+
+    step_timeout() {
+        if (U.exists(this.timeout)) {
+            const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.925, this.mdb.world.bounds0.y * 0.15);
+	    const msg = String(Math.ceil(this.timeout/1000));
+            this.step_text(msg, center, 25, this.header_cycle);
         }
     }
 
