@@ -881,21 +881,22 @@ function base64ToAudioBuffer(base64: string): any {
 function loadSound(resource: string, base64: string) {
     // this path is relative to where index.html lives.
     const buffer = base64ToAudioBuffer(base64);
-    contextAudio.decodeAudioData(buffer,
-				 (decoded: any) => {
-				     sounds[`sounds/${resource}`] = {
-					 play() {
-					     const source = contextAudio.createBufferSource();
-					     source.buffer = decoded;
-					     source.connect(contextAudio.destination);
-					     source.start();
-					 }
-				     }
-				 },
-				 (error: any) => {
-				     console.error(error);
-				 }
-				);
+    contextAudio.decodeAudioData(
+	buffer,
+	(decoded: any) => {
+	    sounds[`sounds/${resource}`] = {
+		play() {
+		    const source = contextAudio.createBufferSource();
+		    source.buffer = decoded;
+		    source.connect(contextAudio.destination);
+		    source.start();
+		}
+	    }
+	},
+	(error: any) => {
+	    console.error(error);
+	}
+    );
 }
 
 function loadSounds() {
