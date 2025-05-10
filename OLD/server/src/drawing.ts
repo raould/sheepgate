@@ -47,7 +47,7 @@ export function addSizzlerLine(drawing: Drawing, drawLine: DrawLine, segment_cou
         );
         const o = G.v2d_scale(
             p,
-            rnd.next_float_neg1_1() * sizzle_width
+            rnd.float_neg1_1() * sizzle_width
         );
         const c1o = G.v2d_add(c1, o);
         drawing.lines.push({

@@ -23,7 +23,7 @@ export function gems_add(db: GDB.GameDB, around: G.V2D, count: number) {
         );
     }
     else {
-        const rstart = 2 * Math.PI * Rnd.singleton.next_float_0_1();
+        const rstart = 2 * Math.PI * Rnd.singleton.float_0_1();
         const rstep = 2 * Math.PI / count;
         const radius = G.v2d_abs_max_coord(K.GEM_SIZE);
         for (let i = 0; i < count; ++i) {
@@ -46,7 +46,7 @@ export function gem_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Gem {
     const anim: A.ResourceAnimator = A.animator_mk(
         db.shared.sim_now,
         {
-            frame_msec: Rnd.singleton.next_float_around(50, 10),
+            frame_msec: Rnd.singleton.float_around(50, 10),
             resource_ids: rids,
             starting_mode: A.MultiImageStartingMode.hold,
             ending_mode: A.MultiImageEndingMode.bounce,

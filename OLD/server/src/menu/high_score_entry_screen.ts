@@ -174,8 +174,8 @@ export class HighScoreEntryScreen extends Sz.SizzlerScreen {
         );
         this.mdb.frame_drawing.rects.push({
             rect: rect,
-            line_width: Rnd.singleton.next_float_around(2, 1),
-            color: RGBA.YELLOW.setAlpha01(Rnd.singleton.next_float_around(0.8, 0.2)),
+            line_width: Rnd.singleton.float_around(2, 1),
+            color: RGBA.YELLOW.setAlpha01(Rnd.singleton.float_around(0.8, 0.2)),
             wrap: false
         });
     }

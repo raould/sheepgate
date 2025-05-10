@@ -48,9 +48,9 @@ export class RGBA {
 
     public static randomRGB(r: Rnd.RandomImpl): RGBA {
         return new RGBA(
-            r.next_float_0_1(),
-            r.next_float_0_1(),
-            r.next_float_0_1(),
+            r.float_0_1(),
+            r.float_0_1(),
+            r.float_0_1(),
             1
         );
     }

@@ -8,6 +8,7 @@ import * as U from './util/util';
 // match: also implies that code should do (left, right) when both are paired.
 export const DefaultFacing = Facing.left;
 
+// todo: see comment about facing in enemy_ball_weapon.
 export const enum Facing {
     left,
     right

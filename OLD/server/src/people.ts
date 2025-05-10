@@ -27,7 +27,7 @@ export function populate(db: GDB.GameDB, cluster_count: number) {
 }
 
 function populate_next_to_base(db: GDB.GameDB, cluster_count: number) {
-    const rnd = new Rnd.RandomImpl(db.shared.level_index1);
+    const rnd = new Rnd.RandomImpl(db.shared.level_index1); // some per-level determinism.
     const gs = db.shared.items.ground;
     const base = db.shared.items.base;
     D.assert(!!base);
@@ -47,7 +47,7 @@ function populate_next_to_base(db: GDB.GameDB, cluster_count: number) {
 }
 
 function populate_random(db: GDB.GameDB, cluster_count: number) {
-    const rnd = new Rnd.RandomImpl(db.shared.level_index1);
+    const rnd = new Rnd.RandomImpl(db.shared.level_index1); // some per-level determinism.
     const gs = db.shared.items.ground;
     const base = db.shared.items.base;
     const index = gs.findIndex(g => G.rects_are_overlapping(base, g)) + 2;
@@ -59,7 +59,7 @@ function populate_random(db: GDB.GameDB, cluster_count: number) {
           .filter(g => !G.rects_are_overlapping(base, g));
     let population_count = 0;
     while (cluster_count > 0 && population_count < K.PEOPLE_MAX_COUNT) {
-        const g = rnd.next_array_item(grounds);
+        const g = rnd.array_item(grounds);
         if (g != null && g.ground_type == Gr.GroundType.land) {
 	    // just not right next to the base, please.
 	    const dx = Math.abs(G.rect_l(g) - G.rect_l(base));
@@ -69,7 +69,7 @@ function populate_random(db: GDB.GameDB, cluster_count: number) {
 	    if (ok) {
 		const d = Math.abs(base.lt.x - g.lt.x)
 		const f = U.clip(U.t10(0, db.shared.world.bounds0.x/2, d), 0.01, 1);
-		const populate = Rnd.singleton.next_boolean(f);
+		const populate = rnd.boolean(f);
 		if (populate) {
 		    population_count += add_people_cluster(db, g, rnd);
 		    cluster_count--;
@@ -89,10 +89,10 @@ function add_people_cluster(db: GDB.GameDB, g: Gr.Ground, rnd: Rnd.Random): numb
     const mt = G.rect_mt(g);
     const fudge_range = g.size.x * 0.4;
     const ov = G.v2d_mk(fudge_range, 0);
-    const dst = rnd.next_v2d_around(mt, ov);
+    const dst = rnd.v2d_around(mt, ov);
     // match: konfig.ts, currently hardcoded to have 2 people per cluster.
     add_person(db, dst, 0, rnd);
-    add_person(db, dst, rnd.next_float_range(-fudge_range, -fudge_range/2), rnd);
+    add_person(db, dst, rnd.float_range(-fudge_range, -fudge_range/2), rnd);
     return 2;
 }
 
@@ -102,7 +102,7 @@ interface PersonPrivate extends S.Person {
 }
 
 function add_person(db: GDB.GameDB, mb: G.V2D, off_x: number, rnd: Rnd.Random) {
-    const offset_x = G.v2d_mk(off_x, rnd.next_float_range(-2, 2));
+    const offset_x = G.v2d_mk(off_x, rnd.float_range(-2, 2));
     const lt = G.v2d_sub(
         G.v2d_add(mb, offset_x),
         // hard coded hack to look good. todo: ground should have hidden hotspots instead.
@@ -185,8 +185,8 @@ function waving_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
     const spec: A.MultiImageSpec = {
         starting_mode: A.MultiImageStartingMode.hold,
         ending_mode: A.MultiImageEndingMode.loop,
-        offset_msec: Rnd.singleton.next_float_range(0, 250),
-        frame_msec: Rnd.singleton.next_float_around(200, 50),
+        offset_msec: Rnd.singleton.float_range(0, 250),
+        frame_msec: Rnd.singleton.float_around(200, 50),
         resource_ids: images.lookup_range_n((n) => `people/waving${n}.png`, 1, 2)
     };
     const anim = new A.MultiImageAnimator(db.shared.sim_now, spec);
@@ -198,7 +198,7 @@ function beaming_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, src: S.Person): S.Sp
     const images = db.uncloned.images;
     const resources = images.lookup_range_n((n) => `people/tp${n}.png`, 0, 5);
     const spec: A.MultiImageSpec = {
-        offset_msec: Rnd.singleton.next_float_range(0, 250),
+        offset_msec: Rnd.singleton.float_range(0, 250),
         starting_mode: A.MultiImageStartingMode.hold,
         ending_mode: A.MultiImageEndingMode.hide,
         frame_msec: K.TELEPORT_ANIM_FRAME_MSEC,

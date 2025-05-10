@@ -13,11 +13,16 @@ import * as D from '../debug';
 import * as Rnd from '../random';
 
 export interface EnemyWeaponSpec extends C.Masked {
-    // the enemy has to be facing in one of the
+    // todo: facing & swivel are a confusing abstraction, it should
+    // really not be left vs. right, rather "forward of ship's current
+    // facing" and "rearwad of ship's current facing".
+
+    // normally, the enemy has to be facing in one of the
     // supported spec.directions in order to fire this weapon.
     direction: F.Facing;
     // can it shoot in the opposite direction of the fighter's facing?
-    swivels: boolean;
+    swivel: boolean;
+
     clip_spec: Cd.ClipSpec;
     shot_damage: number;
     shot_speed: number;
@@ -68,7 +73,7 @@ export function weapon_mk(spec: EnemyWeaponSpec): S.Weapon {
 			F.v2f(at_vel),
 			(at_facing) => {
 			    const lt = this.calculate_shot_lt(src, at_vel)
-			    const is_facing_src = spec.swivels || this.direction == src.facing;
+			    const is_facing_src = spec.swivel || this.direction == src.facing;
 			    const is_facing_at = this.direction == at_facing;
 			    const now = db.shared.sim_now;
 			    if (is_facing_src && is_facing_at && (forced||this.clip.maybe_fire(now))) {
@@ -134,29 +139,33 @@ function calculate_at_vel(db: GDB.GameDB, src: S.Fighter, dst: G.Rect, spec: Ene
 }
 
 // by convention we return (left, right).
-export function scale_specs(level: number, rank: S.Rank, swivels: boolean): [EnemyWeaponSpec, EnemyWeaponSpec] {
+export function scale_specs(level: number, rank: S.Rank, swivel: boolean): [EnemyWeaponSpec, EnemyWeaponSpec] {
     const specs:[EnemyWeaponSpec, EnemyWeaponSpec] = [
-        scale_spec(level, rank, F.Facing.left, swivels),
-        scale_spec(level, rank, F.Facing.right, swivels)
+        scale_spec(level, rank, F.Facing.left, swivel),
+        scale_spec(level, rank, F.Facing.right, swivel)
     ];
+    if (rank === S.Rank.basic) {
+	specs[0].clip_spec.debug = true;
+	specs[1].clip_spec.debug = true;
+    }
     return specs;
 }
 
-export function scale_spec(level: number, rank: S.Rank, directions: F.Facing, swivels: boolean): EnemyWeaponSpec {
+export function scale_spec(level: number, rank: S.Rank, directions: F.Facing, swivel: boolean): EnemyWeaponSpec {
     switch (rank) {
     case S.Rank.basic:
-        return enemy_basic_spec(level, directions, swivels);
+        return enemy_basic_spec(level, directions, swivel);
     case S.Rank.small:
-        return enemy_small_spec(level, directions, swivels);
+        return enemy_small_spec(level, directions, swivel);
     case S.Rank.mega:
-        return enemy_mega_spec(level, directions, swivels);
+        return enemy_mega_spec(level, directions, swivel);
     case S.Rank.hypermega:
-        return enemy_hypermega_spec(level, directions, swivels);
+        return enemy_hypermega_spec(level, directions, swivel);
     case S.Rank.player:
         // todo: argues for splitting enemy vs. player ranks, duh.
         D.assert_fail("scale_spec(): only supports enemy ranks.");
         // satisfy the compiler by returning something.
-        return enemy_small_spec(level, directions, swivels);
+        return enemy_small_spec(level, directions, swivel);
     }
 }
 
@@ -166,42 +175,42 @@ const ENEMY_BASIC_SHOT_DAMAGE = K.PLAYER_HP / 30; // L, W
 D.assert(ENEMY_BASIC_SHOT_DAMAGE >= 0.1);
 const ENEMY_BASIC_SHOT_SPEED = 0.08; // L, W
 const ENEMY_BASIC_SHOT_SIZE = K.BALL_SHOT_SIZE;
-const ENEMY_BASIC_SHOT_LIFE_MSEC = 2000; // L, W
-const ENEMY_BASIC_WEAPON_CLIP_COOLDOWN_MSEC = 9000; // L, W
-const ENEMY_BASIC_WEAPON_SHOT_COOLDOWN_MSEC = 125; // L, W
+const ENEMY_BASIC_SHOT_LIFE_MSEC = 2*1000; // L, W
+const ENEMY_BASIC_WEAPON_CLIP_COOLDOWN_MSEC = 10*1000; // L, W
+const ENEMY_BASIC_WEAPON_SHOT_COOLDOWN_MSEC = 5*1000; // L, W
 const ENEMY_BASIC_WEAPON_SHOT_COUNT = 1; // L, W
 
 const ENEMY_SMALL_SHOT_DAMAGE = K.PLAYER_HP / 30; // L, W
 D.assert(ENEMY_SMALL_SHOT_DAMAGE >= 0.1);
 const ENEMY_SMALL_SHOT_SPEED = 0.10; // L, W
 const ENEMY_SMALL_SHOT_SIZE = K.BALL_SHOT_SIZE;
-const ENEMY_SMALL_SHOT_LIFE_MSEC = 3000; // L, W
-const ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC = 9000; // L, W
-const ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC = 125; // L, W
+const ENEMY_SMALL_SHOT_LIFE_MSEC = 3*1000; // L, W
+const ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC = 9*1000; // L, W
+const ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC = 1*1000; // L, W
 const ENEMY_SMALL_WEAPON_SHOT_COUNT = 3; // L, W
 
 const ENEMY_MEGA_SHOT_DAMAGE = K.PLAYER_HP / 40; // L, W
 D.assert(ENEMY_MEGA_SHOT_DAMAGE >= 0.1);
 const ENEMY_MEGA_SHOT_SPEED = 0.10; // L, W
 const ENEMY_MEGA_SHOT_SIZE = K.BALL_SHOT_SIZE;
-const ENEMY_MEGA_SHOT_LIFE_MSEC = 3000; // L, W
-const ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC = 8000; // L, W
-const ENEMY_MEGA_WEAPON_SHOT_COOLDOWN_MSEC = 75; // L, W
+const ENEMY_MEGA_SHOT_LIFE_MSEC = 3*1000; // L, W
+const ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC = 8*1000; // L, W
+const ENEMY_MEGA_WEAPON_SHOT_COOLDOWN_MSEC = 250; // L, W
 const ENEMY_MEGA_WEAPON_SHOT_COUNT = 3; // L, W
 
 const ENEMY_HYPERMEGA_SHOT_DAMAGE = K.PLAYER_HP / 20; // L, W
 D.assert(ENEMY_HYPERMEGA_SHOT_DAMAGE >= 0.1);
 const ENEMY_HYPERMEGA_SHOT_SPEED = 0.15; // L, W
 const ENEMY_HYPERMEGA_SHOT_SIZE = K.BALL_SHOT_SIZE;
-const ENEMY_HYPERMEGA_SHOT_LIFE_MSEC = 3000; // L, W
-const ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC = 7000; // L, W
-const ENEMY_HYPERMEGA_WEAPON_SHOT_COOLDOWN_MSEC = 75; // L, W
+const ENEMY_HYPERMEGA_SHOT_LIFE_MSEC = 3*1000; // L, W
+const ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC = 2*1000; // L, W
+const ENEMY_HYPERMEGA_WEAPON_SHOT_COOLDOWN_MSEC = 500; // L, W
 const ENEMY_HYPERMEGA_WEAPON_SHOT_COUNT = 4; // L, W
 
-function enemy_basic_spec(level: number, direction: F.Facing, swivels: boolean): EnemyWeaponSpec {
+function enemy_basic_spec(level: number, direction: F.Facing, swivel: boolean): EnemyWeaponSpec {
     return {
 	direction: direction,
-	swivels: swivels,
+	swivel: swivel,
         clip_spec: {
             reload_spec: {
                 duration_msec: Eu.level_scale_down(
@@ -233,10 +242,10 @@ function enemy_basic_spec(level: number, direction: F.Facing, swivels: boolean):
     }
 }
 
-function enemy_small_spec(level: number, direction: F.Facing, swivels: boolean): EnemyWeaponSpec {
+function enemy_small_spec(level: number, direction: F.Facing, swivel: boolean): EnemyWeaponSpec {
     return {
 	direction: direction,
-	swivels: swivels,
+	swivel: swivel,
         clip_spec: {
             reload_spec: {
                 duration_msec: Eu.level_scale_down(
@@ -268,10 +277,10 @@ function enemy_small_spec(level: number, direction: F.Facing, swivels: boolean):
     }
 }
 
-function enemy_mega_spec(level: number, direction: F.Facing, swivels: boolean): EnemyWeaponSpec {
+function enemy_mega_spec(level: number, direction: F.Facing, swivel: boolean): EnemyWeaponSpec {
     return {
 	direction: direction,
-	swivels: swivels,
+	swivel: swivel,
         clip_spec: {
             reload_spec: {
                 duration_msec: Eu.level_scale_down(
@@ -299,10 +308,10 @@ function enemy_mega_spec(level: number, direction: F.Facing, swivels: boolean): 
     }
 }
 
-function enemy_hypermega_spec(level: number, direction: F.Facing, swivels: boolean): EnemyWeaponSpec {
+function enemy_hypermega_spec(level: number, direction: F.Facing, swivel: boolean): EnemyWeaponSpec {
     return {
 	direction: direction,
-	swivels: swivels,
+	swivel: swivel,
         clip_spec: {
             reload_spec: {
                 duration_msec: Eu.level_scale_down(

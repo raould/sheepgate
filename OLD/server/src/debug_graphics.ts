@@ -108,7 +108,7 @@ export namespace DebugGraphics {
 
     function add_rect_cross(dst: Dr.Drawing, r: G.Rect, name?:string) {
 	const line_width = !!name ?
-	      Rnd.singleton.next_int_range(2,5) :
+	      Rnd.singleton.int_range(2,5) :
 	      1;
         const lt = r.lt;
         const rb = G.rect_rb(r);

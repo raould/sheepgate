@@ -115,7 +115,7 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
                 },
                 step_return_fire(db: GDB.GameDB): boolean {
                     const delta = db.shared.sim_now - this.last_hit_msec;
-                    const chance = Rnd.singleton.next_boolean();
+                    const chance = Rnd.singleton.boolean();
                     const return_fire = delta < K.ENEMY_RETURN_FIRE_MAX_MSEC && delta > K.ENEMY_RETURN_FIRE_MIN_MSEC && chance;
                     if (return_fire) {
                         this.last_hit_msec = 0;

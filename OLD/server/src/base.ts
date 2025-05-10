@@ -100,7 +100,7 @@ function pick_base_tile(db: GDB.GameDB): U.O<G.Rect> {
     let ground = db.shared.items.ground;
     let r: U.O<G.Rect> = undefined;
     while (r == null) {
-        const g = rnd.next_array_item(ground);
+        const g = rnd.array_item(ground);
         // match: people assumes the base must be on a land tile.
         if (g != null && g.ground_type == Gr.GroundType.land) {
             r = g;

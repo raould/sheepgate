@@ -44,8 +44,8 @@ function add_generator(
             Tkg.ticking_generator_mk(db, dbid, {
                 comment: spec.comment,
                 generations: spec.generations,
-                delay_msec: 250,
-                tick_msec: Rnd.singleton.next_float_around(1000, 100),
+                delay_msec: 2000,
+                tick_msec: Rnd.singleton.float_around(3000, 100),
                 generate: (db: GDB.GameDB): U.O<S.Sprite> => {
                     if (testfn(db, spec, counts)) {
                         const e = add_enemy(db, spec);
@@ -58,7 +58,7 @@ function add_generator(
 }
 
 function should_generate(db: GDB.GameDB, spec: EnemyGeneratorSpec, counts: EnemyGenerationCounts): boolean {
-    return spec.generations > counts.generated;
+    return spec.generations > counts.generated && Rnd.singleton.boolean(0.5);
 }
 
 function add_enemy(db: GDB.GameDB, spec: EnemyGeneratorSpec): U.O<S.Warpin> {

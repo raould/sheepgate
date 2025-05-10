@@ -3,10 +3,11 @@ import * as G from '../geom';
 import { RGBA, HCycle } from '../color';
 
 const INSTRUCTIONS_SIZE = 30;
+const BG_COLOR = RGBA.new01(0, 0, 0.1);
 
 export class InstructionsScreen extends Sz.SizzlerScreen {
     constructor(private readonly instructions: string[], animated: boolean) {
-        super({ title: "HOW TO PLAY", skip_text: "PRESS [FIRE] TO CONTINUE", bg_color: RGBA.DARK_BLUE, animated });
+        super({ title: "HOW TO PLAY", skip_text: "PRESS [FIRE] TO CONTINUE", bg_color: BG_COLOR, animated });
     }
 
     step() {

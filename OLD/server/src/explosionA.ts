@@ -18,7 +18,7 @@ interface ExplosionAPrivate extends S.Explosion {
 export function explosionA_mk(db: GDB.GameDB, spec: ExplosionASpec): S.Explosion {
     animations[spec.dbid] = new ExplosionAnimation(
         db,
-        Rnd.singleton.next_float_around(K.EXPLOSIONA_MSEC, K.EXPLOSIONA_MSEC/10)
+        Rnd.singleton.float_around(K.EXPLOSIONA_MSEC, K.EXPLOSIONA_MSEC/10)
     );
     const e: ExplosionAPrivate = {
         ...spec,

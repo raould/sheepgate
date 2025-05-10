@@ -4,6 +4,9 @@ SEE ALL THE 'TODO' (AND 'MATCH') COMMENTS IN THE CODE!
 THESE ARE NOT IN ORDER because i keep changing my mind :-\
 and keep finding things i did that are super confusing.
 
+* bounty: refactor all the things, like bad naming, ha ha.
+* bounty: rewrite cooldown and clip to not suck.
+
 * document which way the (x,y) axes go ffs; i assume +x down, +y.
 * omfg the sprite loading between server+client sucks-sucks so much-much.
   * also i wish animation could do resizing for bounce and stretch.
@@ -102,6 +105,10 @@ DO THESE NOW/NEXT:
 27) the code is a rats' nest of relations and calls and twistly little passages, all different :-(
 
 999) everything else..., especially code...
+* weapon and clip cooldown are confusing especially if there's a max 1 shot at a time, no?
+* be able to set clip to expired on enemies so they don't shoot as soon as they appear.
+* weapon facing & swivel are a broken abstraction, and have led to too many enemy shots.
+* another explosion.
 * the enemy animation code is very underdocumented too much hidden magic?!
   * the no-thrusting animation handling in t2a_facing_mk is confusing.
 * also scale the weapons along level progression.

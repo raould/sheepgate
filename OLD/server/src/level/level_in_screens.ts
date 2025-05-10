@@ -137,10 +137,10 @@ class LevelWithScreen_EndScreen implements SubState {
         });
 	const wonPhrase = index1 == 1 ?
 	      "YOU ROCK!" :
-	      Rnd.singleton.next_array_item(LevelWithScreen_EndScreen.WON_PHRASES) ?? "NICE!"
+	      Rnd.singleton.array_item(LevelWithScreen_EndScreen.WON_PHRASES) ?? "NICE!"
 	const lostPhrase = index1 == 1 ?
 	      "TRY AGAIN!" :
-	      Rnd.singleton.next_array_item(LevelWithScreen_EndScreen.LOST_PHRASES) ?? "DAGNABBIT!"
+	      Rnd.singleton.array_item(LevelWithScreen_EndScreen.LOST_PHRASES) ?? "DAGNABBIT!"
 	this.phrase = won ? [wonPhrase] : [lostPhrase];
     }
 

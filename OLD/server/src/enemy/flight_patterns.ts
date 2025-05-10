@@ -168,9 +168,9 @@ export class DecendAndGoSine implements FlightPattern {
 	const sizeY = K.GAMEPORT_RECT.size.y;
 	const midY = sizeY * 0.5;
 	const rangeY = sizeY * 0.2;
-        this.horizon_y = Rnd.singleton.next_float_around(midY, rangeY);
+        this.horizon_y = Rnd.singleton.float_around(midY, rangeY);
 	this.sinY = rangeY; // 0.1 to 0.9, i hope.
-        this.signX = Rnd.singleton.next_boolean() ? -1 : 1;
+        this.signX = Rnd.singleton.boolean() ? -1 : 1;
     }
 
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {

@@ -28,7 +28,7 @@ const Mega: Lemk.EnemyMk = {
             K.PLAYER_DELTA_X_ACC * 0.3,
             K.PLAYER_DELTA_X_ACC * 0.1
 	);
-	const acc = Rnd.singleton.next_v2d_around(
+	const acc = Rnd.singleton.v2d_around(
             acc_base,
             G.v2d_scale(acc_base, 0.5)
 	);

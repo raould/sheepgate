@@ -43,9 +43,9 @@ function sky_mk_range(db: GDB.GameDB, count: number, y_min: number, y_max: numbe
     const cvc = G.v2d_mk(0.01, 0);
     const cvr = G.v2d_mk(0.01, 0);
     for (let i = 0; i < count; ++i) {
-        const lt = Rnd.singleton.next_v2d_inside_rect(range_rect);
+        const lt = Rnd.singleton.v2d_inside_rect(range_rect);
         U.if_let(
-            Rnd.singleton.next_array_item(resource_ids),
+            Rnd.singleton.array_item(resource_ids),
             resource_id => {
                 GDB.add_sprite_dict_id_mut(
                     db.shared.items.sky,
@@ -53,10 +53,10 @@ function sky_mk_range(db: GDB.GameDB, count: number, y_min: number, y_max: numbe
                         const s = {
                             dbid: dbid,
                             comment: `sky-${i}`,
-                            vel: Rnd.singleton.next_v2d_around(cvc, cvr),
+                            vel: Rnd.singleton.v2d_around(cvc, cvr),
                             acc: G.v2d_mk_0(),
                             lt: lt,
-                            size: G.v2d_scale(K.CLOUD_SIZE, Rnd.singleton.next_float_around(1.5, 0.5)),
+                            size: G.v2d_scale(K.CLOUD_SIZE, Rnd.singleton.float_around(1.5, 0.5)),
                             alpha: K.CLOUD_ALPHA,
                             resource_id: images.lookup(resource_id),
                             get_lifecycle(_:GDB.GameDB) { return GDB.Lifecycle.alive },

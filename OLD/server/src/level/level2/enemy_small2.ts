@@ -25,7 +25,7 @@ const Small: Lemk.EnemyMk = {
             'wr': Ebw.weapon_mk(ewsr),
 	};
 	const acc_base = G.v2d_mk(0.0005, 0.00005);
-	const acc = Rnd.singleton.next_v2d_around(
+	const acc = Rnd.singleton.v2d_around(
             acc_base,
             G.v2d_scale(acc_base, 0.5)
 	);

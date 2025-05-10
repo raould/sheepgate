@@ -57,7 +57,7 @@ export function player_weapon_mk(spec: PlayerWeaponSpec): S.Weapon {
 						G.v2d_mk(spec.shot_size.x, 0)
 					)
 				);
-				const lt = Rnd.singleton.next_v2d_around(
+				const lt = Rnd.singleton.v2d_around(
 					lt_middle,
 					G.v2d_mk_0y(5)
 				)
