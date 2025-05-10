@@ -194,19 +194,28 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    comment: "enemy-gen-small",
 	    generations: this.konfig.ENEMY_SMALL_COUNT,
 	    max_alive: this.konfig.ENEMY_SMALL_SPAWN_COUNT_LIMIT,
-	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Es.warpin_mk(db)
+	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+		db.shared.items.sfx.push(K.WARPIN_SFX);
+		return this.konfig.Es.warpin_mk(db);
+	    }
 	}
 	const mega_spec = {
 	    comment: "enemy-gen-mega",
 	    generations: this.konfig.ENEMY_MEGA_COUNT,
 	    max_alive: this.konfig.ENEMY_MEGA_SPAWN_COUNT_LIMIT,
-	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Em.warpin_mk(db)
+	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+		db.shared.items.sfx.push(K.WARPIN_SFX);
+		return this.konfig.Em.warpin_mk(db);
+	    }
 	}
 	const hypermega_spec = {
 	    comment: "enemy-gen-hypermega",
 	    generations: this.konfig.ENEMY_HYPERMEGA_COUNT,
 	    max_alive: this.konfig.ENEMY_HYPERMEGA_SPAWN_COUNT_LIMIT,
-	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Ehm.warpin_mk(db)
+	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+		db.shared.items.sfx.push(K.WARPIN_SFX);
+		return this.konfig.Ehm.warpin_mk(db);
+	    }
 	}
 	Eag.add_generators(this.db, small_spec, mega_spec, hypermega_spec);
 
@@ -214,13 +223,19 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    comment: "enemy-gen-basic1",
 	    generations: this.konfig.ENEMY_BASIC1_COUNT,
 	    max_alive: this.konfig.ENEMY_BASIC1_SPAWN_COUNT_LIMIT,
-	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Eb1.warpin_mk(db)
+	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+		db.shared.items.sfx.push(K.WARPIN_SFX);
+		return this.konfig.Eb1.warpin_mk(db);
+	    }
 	};
 	const basic2_spec = {
 	    comment: "enemy-gen-basic2",
 	    generations: this.konfig.ENEMY_BASIC2_COUNT,
 	    max_alive: this.konfig.ENEMY_BASIC2_SPAWN_COUNT_LIMIT,
-	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Eb2.warpin_mk(db)
+	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+		db.shared.items.sfx.push(K.WARPIN_SFX);
+		return this.konfig.Eb2.warpin_mk(db);
+	    }
 	};
 	Ebg.add_generators(this.db, [basic1_spec, basic2_spec]);
     }

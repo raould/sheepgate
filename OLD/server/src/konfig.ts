@@ -334,6 +334,7 @@ export const BEAMUP_SFX = "sounds/beamup.ogg";
 export const EXPLOSION_SFX = "sounds/explosion.ogg";
 export const GEM_COLLECT_SFX = "sounds/gem_collect.ogg";
 export const PLAYER_SHOOT_SFX = "sounds/player_shoot.ogg";
+export const WARPIN_SFX = "sounds/warpin.ogg";
 
 // match: game.ts
 export const LEVEL_TEMPLATE_COUNT = 4;

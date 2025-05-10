@@ -5,22 +5,53 @@ import * as K from './konfig';
 import * as D from './debug';
 import * as U from './util/util';
 
-export type ExplosionASpec = Omit<U.FieldsOnly<S.Explosion>, "resource_id"|"drawing">;
+export type ExplosionImgSpec = Omit<U.FieldsOnly<S.Explosion>, "resource_id"|"drawing">;
+type FramesMk = (images: GDB.ImageResources) => string[];
 
 // keep animations outside of explosion instance so we don't json the animation instances.
 // allows for only one explosion A animation per dbid.
 const animations: {[k:string]: ExplosionAnimation} = {};
 
-interface ExplosionAPrivate extends S.Explosion {
+interface ExplosionImgPrivate extends S.Explosion {
     get_anim(): U.O<ExplosionAnimation>;
 }
 
-export function explosionA_mk(db: GDB.GameDB, spec: ExplosionASpec): S.Explosion {
+const frames_mkA = (images: GDB.ImageResources): string[] => {
+    const dir = "explosionA";
+    const base = "tile";
+    const start_n = 0;
+    const end_n = 11;
+    const frames = [];
+    for(let n = start_n; n <= end_n; ++n) {
+        const tail = String(n).padStart(3, '0') + ".png"
+        const file = dir + "/" + base + tail; // todo: use a file path api?
+        frames.push(images.lookup(file));
+    }
+    return frames;
+}
+
+const frames_mkB = (images: GDB.ImageResources): string[] => {
+    const dir = "explosionB";
+    const base = "exB";
+    const start_n = 1;
+    const end_n = 6;
+    const frames = [];
+    for(let n = start_n; n <= end_n; ++n) {
+        const tail = `${n}.png`;
+        const file = dir + "/" + base + tail; // todo: use a file path api?
+        frames.push(images.lookup(file));
+    }
+    return frames;
+}
+
+export function explosionImg_mk(db: GDB.GameDB, spec: ExplosionImgSpec): S.Explosion {
+    const frames_mk = Rnd.singleton.boolean() ? frames_mkA : frames_mkB;
     animations[spec.dbid] = new ExplosionAnimation(
         db,
-        Rnd.singleton.float_around(K.EXPLOSIONA_MSEC, K.EXPLOSIONA_MSEC/10)
+        Rnd.singleton.float_around(K.EXPLOSIONA_MSEC, K.EXPLOSIONA_MSEC/10),
+	frames_mk
     );
-    const e: ExplosionAPrivate = {
+    const e: ExplosionImgPrivate = {
         ...spec,
         get_anim(): U.O<ExplosionAnimation> {
             return animations[this.dbid];
@@ -59,33 +90,16 @@ export function explosionA_mk(db: GDB.GameDB, spec: ExplosionASpec): S.Explosion
 // todo: maybe pull out code for A.DrawingAnimator.
 // does not have a location, only the image resources.
 class ExplosionAnimation {
-    private duration_msec: number;
     private start_msec: number;
     private frames: string[];
     private frame: U.O<string>;
     private alpha: number;
 
-    constructor(db: GDB.GameDB, duration_msec: number) {
-        this.duration_msec = duration_msec;
+    constructor(db: GDB.GameDB, private readonly duration_msec: number, frames_mk: FramesMk) {
         this.start_msec = db.shared.sim_now;
-        this.frames = this.loadExplosionA(db.uncloned.images, "explosionA");
+        this.frames = frames_mk(db.uncloned.images);
         this.frame = this.frames[0]; // yes, runtime error if there's no images found! hah!
         this.alpha = 1;
-    }
-
-    // todo: omfg what a hard coded nightmare.
-    // match: todo: share this code with the client.
-    private loadExplosionA(images: GDB.ImageResources, dir: string): string[] {
-        const frames = [];
-        const start_n = 0;
-        const end_n = 11;
-        const base = "tile";
-        for(let n = start_n; n <= end_n; ++n) {
-            const tail = String(n).padStart(3, '0') + ".png"
-            const file = dir + "/" + base + tail; // todo: use a file path api?
-            frames.push(images.lookup(file));
-        }
-        return frames;
     }
 
     get_resource(): U.O<string> {

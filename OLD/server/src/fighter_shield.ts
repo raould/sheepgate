@@ -5,8 +5,8 @@ import * as C from './collision';
 import * as Tf from './type_flags';
 import * as K from './konfig';
 import * as Dr from './drawing';
-import * as Exa from './explosionA';
-import * as Exb from './explosionB';
+import * as Exi from './explosionImg';
+import * as Exx from './explosionX';
 import * as Pr from './particles';
 import * as U from './util/util';
 import * as D from './debug';
@@ -196,9 +196,9 @@ function on_death_fx(db: GDB.GameDB, shield: ShieldPrivate, fighter: S.Fighter) 
         db.shared.items.explosions,
         (dbid: GDB.DBID): S.Explosion => {
             exids.push(dbid);
-            return Exa.explosionA_mk(db, {
+            return Exi.explosionImg_mk(db, {
                 dbid: dbid,
-                comment: `explosionA-${dbid}`,
+                comment: `explosionImg-${dbid}`,
                 ...r,
                 type_flags: type_flags,
                 rank: fighter.rank,
@@ -228,9 +228,9 @@ function on_death_fx(db: GDB.GameDB, shield: ShieldPrivate, fighter: S.Fighter) 
             db.shared.items.explosions,
             (dbid: GDB.DBID): S.Explosion => {
                 exids.push(dbid);
-                return Exb.explosionB_mk(db, {
+                return Exx.explosionX_mk(db, {
                     dbid: dbid,
-                    comment: `explosionB-${dbid}`,
+                    comment: `explosionX-${dbid}`,
                     ...r,
                     type_flags: type_flags,
                     rank: fighter.rank,

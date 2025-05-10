@@ -6,6 +6,7 @@ import { beamup_sfx_b64 } from './beamup.ogg.b64';
 import { explosion_sfx_b64 } from './explosion.ogg.b64';
 import { gem_collect_sfx_b64 } from './gem_collect.ogg.b64';
 import { player_shoot_sfx_b64 } from './player_shoot.ogg.b64';
+import { warpin_sfx_b64 } from './warpin.ogg.b64';
 import { Gamepads, StandardMapping } from './gamepads';
 import { FPS } from './fps';
 
@@ -904,6 +905,7 @@ function loadSounds() {
     loadSound("explosion.ogg", explosion_sfx_b64);
     loadSound("gem_collect.ogg", gem_collect_sfx_b64);
     loadSound("player_shoot.ogg", player_shoot_sfx_b64);
+    loadSound("warpin.ogg", warpin_sfx_b64);
 }
 
 function loadImage(resource: string) {
@@ -997,9 +999,9 @@ function loadImages() {
     loadImage(`enemies/e22/hh1.png`)
     loadImage(`enemies/e22/hh2.png`)
 
-    Array.from({length: 10}, (v, i) => i+1).forEach(i =>
-						    loadImage(`gem/gem${i}.png`)
-						   );
+    Array.from({length: 10}, (v, i) => i+1).forEach((i) => {
+	loadImage(`gem/gem${i}.png`)
+    });
 
     [1,2,3,4,5,6,7,8].forEach(anim => {
         loadImage(`warpin/warpin${anim}.png`);
@@ -1040,21 +1042,21 @@ function loadImages() {
     loadImage("people/tp5.png");
     loadImage("people/skull.png");
     loadImage("empty1.png");
-    // special case: multi-image-resource.
-    loadExplosionA("explosionA");
     loadImage("bg/ma_far.png");
     loadImage("bg/mal_far.png");
     loadImage("bg/mar_far.png");
     loadImage("bg/ma_near.png");
+
+    loadExplosionA("explosionA", "tile", 0, 11, 3);
+    Array.from({length: 6}, (v, i) => i+1).forEach((i) => {
+	loadImage(`explosionB/exB${i}.png`)
+    });
 }
 
 // match: todo: share this code with the server.
-function loadExplosionA(dir: string) {
-    const start_n = 0;
-    const end_n = 11;
-    const base = "tile";
-    for (let n = start_n; n <= end_n; ++n) {
-        const tail = String(n).padStart(3, '0') + ".png"
+function loadExplosionA(dir: string, base: string, start: number, end: number, pad: number) {
+    for (let n = start; n <= end; ++n) {
+        const tail = String(n).padStart(pad, '0') + ".png"
         const file = dir + "/" + base + tail;
         loadImage(file);
     }
