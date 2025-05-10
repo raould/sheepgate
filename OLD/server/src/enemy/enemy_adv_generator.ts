@@ -110,6 +110,17 @@ function add_enemy(db: GDB.GameDB, spec: EnemyGeneratorSpec): U.O<S.Warpin> {
         db.shared.items.warpin,
         (dbid: GDB.DBID): U.O<S.Warpin> => spec.warpin(db, dbid)
     );
+
+    if (U.exists(e)) {
+	// todo: this is the worst hack, if you tell me you found this i'll give you a $1. maybe.
+	switch (e.rank) {
+	case S.Rank.mega:
+	    break;
+	case S.Rank.hypermega:
+	    break;
+	}
+    }
+
     return e;
 }
 

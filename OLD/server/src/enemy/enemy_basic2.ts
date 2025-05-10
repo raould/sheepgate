@@ -4,16 +4,16 @@ import * as G from '../geom';
 import * as A from '../animation';
 import * as U from '../util/util';
 import * as F from '../facing';
-import * as Ebw from '../enemy/enemy_ball_weapon';
-import * as Fp from '../enemy/flight_patterns';
-import * as Emk from '../enemy/enemy_mk';
-import * as Lemk from './enemy_mk';
+import * as Ebw from './enemy_ball_weapon';
+import * as Fp from './flight_patterns';
+import * as Emk from './enemy_mk';
+import * as Lemk from '../level/enemy_mk';
 import * as K from '../konfig';
 
 // match: sprite animation.
-const SIZE = G.v2d_scale(G.v2d_mk(32, 32), 0.7);
-const WARPIN_RESOURCE_ID = "enemies/basic1/sph1.png";
-const Basic1: Lemk.EnemyMk = {
+const SIZE = G.v2d_scale(G.v2d_mk(32, 32), 1);
+const WARPIN_RESOURCE_ID = "enemies/basic2/tt1.png";
+const Basic2: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
@@ -42,11 +42,11 @@ const Basic1: Lemk.EnemyMk = {
 	);
     }
 }
-export default Basic1;
+export default Basic2;
 
 function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     const frames: A.DimensionsFrame[] = [
-        // enemy e12 doesn't show any thrusters.
+        // enemy doesn't show any thrusters.
         ...t2a_facing_mk(db, true, F.Facing.left),
         ...t2a_facing_mk(db, true, F.Facing.right),
         ...t2a_facing_mk(db, false, F.Facing.left),
@@ -70,7 +70,7 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
                 {
 		    frame_msec: 120,
 		    resource_ids: [
-                        ...images.lookup_range_n(n => `enemies/basic1/sph${n}.png`, 1, 3)
+                        ...images.lookup_range_n(n => `enemies/basic2/tt${n}.png`, 1, 3)
 		    ],
 		    starting_mode: A.MultiImageStartingMode.hold,
 		    ending_mode: A.MultiImageEndingMode.bounce
