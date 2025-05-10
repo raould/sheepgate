@@ -34,6 +34,10 @@ export interface LevelKonfig {
     ENEMY_BASIC1_COUNT: number,
     ENEMY_BASIC1_SPAWN_COUNT_LIMIT: number,
 
+    Eb2: Lemk.EnemyMk,
+    ENEMY_BASIC2_COUNT: number,
+    ENEMY_BASIC2_SPAWN_COUNT_LIMIT: number,
+
     Es: Lemk.EnemyMk,
     ENEMY_SMALL_COUNT: number,
     ENEMY_SMALL_SPAWN_COUNT_LIMIT: number,
@@ -209,7 +213,11 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    { comment: "enemy-gen-basic1",
 	      generations: this.konfig.ENEMY_BASIC1_COUNT,
 	      max_alive: this.konfig.ENEMY_BASIC1_SPAWN_COUNT_LIMIT,
-	      warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Eb1.warpin_mk(db) }
+	      warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Eb1.warpin_mk(db) },
+	    { comment: "enemy-gen-basic2",
+	      generations: this.konfig.ENEMY_BASIC2_COUNT,
+	      max_alive: this.konfig.ENEMY_BASIC2_SPAWN_COUNT_LIMIT,
+	      warpin: (db: GDB.GameDB): U.O<S.Warpin> => this.konfig.Eb2.warpin_mk(db) },
 	]);
 
 	// TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -4,6 +4,7 @@ import * as S from '../../sprite';
 import * as Lta from '../level_type_a';
 import * as Lis from '../level_in_screens';
 import Eb1 from '../enemy_basic1';
+import Eb2 from '../enemy_basic2';
 import Es from './enemy_small2';
 import Em from './enemy_mega2';
 import Ehm from './enemy_hypermega2';
@@ -15,22 +16,26 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     const buf = Math.floor(level_index / denom);
     return {
 	Eb1: Eb1,
-	ENEMY_BASIC1_COUNT: 5 + buf,
-	ENEMY_BASIC1_SPAWN_COUNT_LIMIT: 2 + buf,
+	ENEMY_BASIC1_COUNT: 3 + buf,
+	ENEMY_BASIC1_SPAWN_COUNT_LIMIT: 1 + buf,
+
+	Eb2: Eb2,
+	ENEMY_BASIC2_COUNT: 3 + buf,
+	ENEMY_BASIC2_SPAWN_COUNT_LIMIT: 1 + buf,
 
 	Es: Es,
-	ENEMY_SMALL_COUNT: 6 + buf,
-	ENEMY_SMALL_SPAWN_COUNT_LIMIT: 3 + buf,
+	ENEMY_SMALL_COUNT: 4 + buf,
+	ENEMY_SMALL_SPAWN_COUNT_LIMIT: 1 + buf,
 
 	Em: Em,
-	ENEMY_MEGA_COUNT: 3 + buf,
+	ENEMY_MEGA_COUNT: 2 + buf,
 	ENEMY_MEGA_SPAWN_COUNT_LIMIT: 2 + buf,
 
 	Ehm: Ehm,
 	ENEMY_HYPERMEGA_COUNT: 1 + buf,
 	ENEMY_HYPERMEGA_SPAWN_COUNT_LIMIT: 1 + buf,
 
-	BG_COLOR: RGBA.new01(0.3, 0, 0.1),
+	BG_COLOR: RGBA.new01(0.15, 0, 0.05),
 
 	people_cluster_count: 2 + buf,
     };
