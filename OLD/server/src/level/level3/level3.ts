@@ -25,7 +25,8 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
 
 	Es: Es,
 	ENEMY_SMALL_COUNT: 4 + buf,
-	ENEMY_SMALL_SPAWN_COUNT_LIMIT: 2 + buf,
+	// no buf so there aren't too many mixed in with basics.
+	ENEMY_SMALL_SPAWN_COUNT_LIMIT: 2,
 
 	Em: Em,
 	ENEMY_MEGA_COUNT: 3 + buf,

@@ -33,6 +33,8 @@ DO THESE NOW/NEXT:
 + enemy shots already can intersect people, so make people killable?
 * a better way to do the bloody screen state machine.
 
+-5) the basic vs. adv enemy generators are not good, i would like the adv to no start until most/all basic are spawned.
+    * i hacked it by having no buf on Rank.Small concurrency limit.
 -4) shield alpha 0 means no collisions and i have no freaking idea why/where.
     * literally hacking it to use Number.MIN_VALUE in server & client.
 -3) good thing i am utterly consistent in naming in code.

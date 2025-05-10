@@ -18,7 +18,7 @@ const Hypermega: Lemk.EnemyMk = {
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
 	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
-	const [ewsl, ewsr] = Ebw.scale_specs(db.shared.level_index1, S.Rank.hypermega, false);
+	const [ewsl, ewsr] = Ebw.scale_specs(db.shared.level_index1, S.Rank.hypermega, true);
 	const weapons = {
             'wl': Ebw.weapon_mk(ewsl),
             'wr': Ebw.weapon_mk(ewsr),
