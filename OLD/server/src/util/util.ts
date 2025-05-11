@@ -248,11 +248,7 @@ export function element_looped<T>(array: T[], index: number): O<T> {
     return array[index_looped(array.length, index)];
 }
 
-export function element_random<T>(array: T[], rnd: Rnd.Random = Rnd.singleton): O<T> {
-    if (array.length == 0) { return undefined; }
-    const index = rnd.next_int(array.length);
-    return array[index_looped(array.length, index)];
-}
+// element_random: see Random.array_item().
 
 export function a_lteq(a: number, ...numbers: number[]): boolean {
     return numbers.every(n => a <= n);

@@ -93,14 +93,11 @@ export class RandomImpl implements Random {
     }
     array_item<T>(items: T[]): U.O<T> {
         if (items.length == 0) { return undefined; }
-        const i =
-        Math.min(items.length-1,
-            Math.max(0,
-                // since at least javascript's default random is [0,1)
-                // instead of doing -1 we floor it to be paranoid about overrun.
-                Math.floor(this.float_0_1() * (items.length))
-            )
-        );
+	const i = U.clip(
+	    Math.floor(this.float_0_1() * items.length),
+	    0,
+	    items.length-1
+	);
         return items[i];
     }
     dict_item<T>(items: U.Dict<T>): U.O<T> {

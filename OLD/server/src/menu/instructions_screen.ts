@@ -1,4 +1,5 @@
 import * as K from '../konfig';
+import * as U from '../util/util';
 import * as Sz from './sizzler_screen';
 import * as G from '../geom';
 import { RGBA, HCycle } from '../color';
@@ -16,9 +17,12 @@ export class InstructionsScreen extends Sz.SizzlerScreen {
     step() {
         super.step();
         this.step_instructions();
-	if (Rnd.singleton.boolean(0.001)) {
-	    const gain = Rnd.singleton.float_range(0.3, 0.7);
-	    this.mdb.items.sfx.push({ id: K.SYNTH_A_SFX, gain });
+	if (Rnd.singleton.boolean(0.1)) {
+	    const id = Rnd.singleton.array_item(SFX);
+	    if (U.exists(id)) {
+		const gain = Rnd.singleton.float_range(0.2, 0.5);
+		this.mdb.items.sfx.push({ id, gain });
+	    }
 	}
     }
 
