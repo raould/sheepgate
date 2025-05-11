@@ -1,14 +1,23 @@
 // todo: figure out the living hell that is 
 // packaging for the browser, so that this
 // can be split up & also share code w/ the server.
+import { begin_sfx_b64 } from './begin.ogg.b64';
 import { beamdown_sfx_b64 } from './beamdown.ogg.b64';
 import { beamup_sfx_b64 } from './beamup.ogg.b64';
 import { explosion_sfx_b64 } from './explosion.ogg.b64';
 import { gem_collect_sfx_b64 } from './gem_collect.ogg.b64';
 import { player_shoot_sfx_b64 } from './player_shoot.ogg.b64';
 import { warpin_sfx_b64 } from './warpin.ogg.b64';
+import { synthA_sfx_b64 } from './synthA.ogg.b64';
+import { synthB_sfx_b64 } from './synthB.ogg.b64';
+import { synthC_sfx_b64 } from './synthC.ogg.b64';
+import { synthD_sfx_b64 } from './synthD.ogg.b64';
+import { synthE_sfx_b64 } from './synthE.ogg.b64';
 import { Gamepads, StandardMapping } from './gamepads';
 import { FPS } from './fps';
+ 
+// so i can have everything in dark mode on my Windows machine
+const INVERT_COLORS = true;
 
 // todo: use the server types.
 let server_db: any;
@@ -23,7 +32,7 @@ let debugging_state: any = { is_stepping: false, is_drawing: false, is_annotatin
 let particles: {[k:string]:ParticlesEllipseGenerator} = {};
 let socket_ws: any;
 let h5canvas: any;
-let contextAudio: any;
+let cxAudio: any;
 let cx2d: any;
 let sounds: any = {};
 let images: any = {};
@@ -292,11 +301,11 @@ function gameport_wrap_rect(rect: any/*G.Rect*/, gameport: any/*gameport*/, worl
     };
 }
 
-function renderSounds(gdb: any) {
-    gdb.items.sfx.forEach((sid: string) => {
-        const sound = sounds[sid];
+function renderSounds(db: any) {
+    db.items.sfx.forEach((so: any) => {
+        const sound = sounds[so.id];
         if (!!sound) {
-            sound.play();
+            sound.play(so.gain);
         }
     });
 }
@@ -676,26 +685,28 @@ function renderImage(resource_id: string, x: number, y: number, w: number, h: nu
 function renderParticles(gdb: any) {
     for (const kv of Object.entries(particles)) {
         const [pid, pgen]:[string,any] = kv;
-        pgen.render(gdb, h5canvas);
+        pgen.renderGame(gdb, h5canvas);
         if (pgen.age_t(gdb) > 1) {
             delete particles[pid];
         }
     }
 }
 
-function render(mdb: any) {
-    if (mdb != null) {    
-        cx2d.fillStyle = mdb.menu_db?.bg_color || mdb.game_db?.bg_color || BG_COLOR;
+function render(db: any) {
+    if (db != null) {    
+        cx2d.fillStyle = db.menu_db?.bg_color || db.game_db?.bg_color || BG_COLOR;
         cx2d.fillRect(0, 0, h5canvas.width, h5canvas.height);
-        renderPlaying(mdb.game_db);
-        renderMenu(mdb.menu_db);
+        renderPlaying(db.game_db);
+	renderMenu(db.menu_db);
     }
 }
 
 function renderMenu(mdb: any) {
-    if (mdb == null) { return; }
-    renderDrawing(mdb, mdb.frame_drawing);
-    renderDebug(mdb);
+    if (mdb != null) {
+	renderSounds(mdb);
+	renderDrawing(mdb, mdb.frame_drawing);
+	renderDebug(mdb);
+    }
 }
 
 function renderPlaying(gdb: any) {
@@ -881,15 +892,18 @@ function base64ToAudioBuffer(base64: string): any {
 function loadSound(resource: string, base64: string) {
     // this path is relative to where index.html lives.
     const buffer = base64ToAudioBuffer(base64);
-    contextAudio.decodeAudioData(
+    cxAudio.decodeAudioData(
 	buffer,
 	(decoded: any) => {
 	    sounds[`sounds/${resource}`] = {
-		play() {
-		    const source = contextAudio.createBufferSource();
-		    source.buffer = decoded;
-		    source.connect(contextAudio.destination);
-		    source.start();
+		play(gain: number = 1) {
+		    const gainNode = cxAudio.createGain();
+		    gainNode.gain.value = gain;
+		    gainNode.connect(cxAudio.destination);
+		    const sourceNode = cxAudio.createBufferSource();
+		    sourceNode.buffer = decoded;
+		    sourceNode.connect(gainNode);
+		    sourceNode.start();
 		}
 	    }
 	},
@@ -901,12 +915,18 @@ function loadSound(resource: string, base64: string) {
 
 function loadSounds() {
     log("can play ogg?", (new Audio()).canPlayType("audio/ogg; codecs=vorbis"));
+    loadSound("begin.ogg", begin_sfx_b64);
     loadSound("beamdown.ogg", beamdown_sfx_b64);
     loadSound("beamup.ogg", beamup_sfx_b64);
     loadSound("explosion.ogg", explosion_sfx_b64);
     loadSound("gem_collect.ogg", gem_collect_sfx_b64);
     loadSound("player_shoot.ogg", player_shoot_sfx_b64);
     loadSound("warpin.ogg", warpin_sfx_b64);
+    loadSound("synthA.ogg", synthA_sfx_b64);
+    loadSound("synthB.ogg", synthB_sfx_b64);
+    loadSound("synthC.ogg", synthC_sfx_b64);
+    loadSound("synthD.ogg", synthD_sfx_b64);
+    loadSound("synthE.ogg", synthE_sfx_b64);
 }
 
 function loadImage(resource: string) {
@@ -1070,8 +1090,8 @@ function onConnectedWS() {
 
 function onMessageWS(event: any) {
     try {
-        // match: DBSharedState type from server code.
-        // todo: extract DBSharedState type into shared file.
+        // match: DBShared type from server code.
+        // todo: extract DBShared type into shared file.
         let next_server_db = JSON.parse(event.data);
         applyDB(next_server_db);
     }
@@ -1172,8 +1192,12 @@ function init() {
     h5canvas = document.getElementById("canvas");
     // @ts-ignore
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
-    try { contextAudio = new AudioContext(); } catch(e) { console.error(e); }
+    try { cxAudio = new AudioContext(); } catch(e) { console.error(e); }
     cx2d = h5canvas.getContext("2d");
+    if (INVERT_COLORS) {
+	// web apis are so utterly terrible.
+	cx2d.filter = 'invert(1)';
+    }
     loadSounds();
     loadImages();
     // todo: can/should i add it on the h5canvas instead of the windows?

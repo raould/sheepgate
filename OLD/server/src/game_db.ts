@@ -2,6 +2,7 @@ import * as DB from './db';
 import * as Cdb from './client_db';
 import * as C from './collision';
 import * as S from './sprite';
+import * as So from './sound';
 import * as Pr from './particles';
 import * as G from './geom';
 import * as U from './util/util';
@@ -11,6 +12,8 @@ import * as Gr from './ground';
 import * as Sc from './scoring';
 import * as Gs from './game_stepper';
 import * as Tkg from './ticking_generator';
+
+// NOTE: this is only for in-levels, see menu/menu_db.
 
 // todo:
 // THIS NEEDS TO BE SPLIT UP INTO
@@ -120,6 +123,7 @@ export interface Prev<T> {
     prev: T;
 }
 
+// note: apparently this is for levels only, not for e.g. splash screen.
 export interface GameDB {
     uncloned: DBUncloned,
     local: DBLocal,
@@ -268,7 +272,7 @@ export interface DBSharedItems {
     people: U.Dict<S.Person>;
     gems: U.Dict<S.Gem>;
     fx: U.Dict<S.Sprite>;
-    sfx: string[];
+    sfx: So.Sound[];
     particles: U.Dict<Pr.ParticleGenerator>;
 }
 
@@ -292,6 +296,7 @@ export function debug_dump_items(db: GameDB, msg?: string) {
         `#people=${U.count_dict(db.shared.items.people)}`,
         `#gems=${U.count_dict(db.shared.items.gems)}`,
         `#fx=${U.count_dict(db.shared.items.fx)}`,
+        `#sfx=${U.count_dict(db.shared.items.sfx)}`,
     );
 }
 

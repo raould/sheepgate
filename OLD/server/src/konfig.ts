@@ -329,12 +329,18 @@ D.assert(ENEMY_HYPERMEGA_DAMAGE >= 1);
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L
 export const ENEMY_RETURN_FIRE_MIN_MSEC = 100; // L
 
+export const BEGIN_SFX = "sounds/begin.ogg";
 export const BEAMDOWN_SFX = "sounds/beamdown.ogg";
 export const BEAMUP_SFX = "sounds/beamup.ogg";
 export const EXPLOSION_SFX = "sounds/explosion.ogg";
 export const GEM_COLLECT_SFX = "sounds/gem_collect.ogg";
 export const PLAYER_SHOOT_SFX = "sounds/player_shoot.ogg";
 export const WARPIN_SFX = "sounds/warpin.ogg";
+export const SYNTH_A_SFX = "sounds/synthA.ogg";
+export const SYNTH_B_SFX = "sounds/synthB.ogg";
+export const SYNTH_C_SFX = "sounds/synthC.ogg";
+export const SYNTH_D_SFX = "sounds/synthD.ogg";
+export const SYNTH_E_SFX = "sounds/synthE.ogg";
 
 // match: game.ts
 export const LEVEL_TEMPLATE_COUNT = 4;

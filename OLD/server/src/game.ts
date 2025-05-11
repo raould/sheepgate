@@ -88,9 +88,32 @@ export function game_mk(high_scores: Hs.HighScores): Game {
 class GameInstructions implements Gs.Stepper {
     stepper: Gs.Stepper;
 
-    constructor(animated: boolean = true) {
-        this.stepper = new Is.InstructionsScreen(TOP_INSTRUCTIONS, animated);
-        // this.stepper = new Hst.HighScoreTableScreen(Hs.high_scores_mk()); // just for testing it easily.
+    constructor() {
+        this.stepper = new Is.InstructionsScreen(TOP_INSTRUCTIONS, true);
+    }
+
+    get_state(): Gs.StepperState {
+        return this.stepper.get_state();
+    }
+
+    merge_client_db(cnew: Cdb.ClientDB) {
+        this.stepper.merge_client_db(cnew);
+    }
+
+    step() {
+        this.stepper.step();
+    }
+
+    stringify(): string {
+        return this.stepper.stringify();
+    }
+}
+
+class GamePaused implements Gs.Stepper {
+    stepper: Gs.Stepper;
+
+    constructor() {
+        this.stepper = new Is.InstructionsScreen(TOP_INSTRUCTIONS, false);
     }
 
     get_state(): Gs.StepperState {
@@ -139,31 +162,6 @@ class GameHighScoreEntry implements Gs.Stepper {
     }
 }
 
-class GameLevelPaused implements Gs.Stepper {
-    stepper: Gs.Stepper;
-
-    constructor() {
-        this.stepper = new Hst.HighScoreTableScreen(Hs.high_scores_mk()); // just for testing.
-    }
-
-    get_state(): Gs.StepperState {
-        return this.stepper.get_state();
-    }
-
-    merge_client_db(cnew: Cdb.ClientDB) {
-        this.stepper.merge_client_db(cnew);
-    }
-
-    // todo: this would all be better done as a visual graph / state machine.
-    step() {
-        this.stepper.step();
-    }
-
-    stringify(): string {
-        return this.stepper.stringify();
-    }
-}
-
 class GameLevels implements Gs.Stepper {
     index: number;
     stepper: Gs.Stepper;
@@ -192,7 +190,7 @@ class GameLevels implements Gs.Stepper {
             }
             else {
                 this.paused = this.stepper;
-                this.stepper = new GameInstructions(false);
+                this.stepper = new GamePaused();
             }
         }
     }

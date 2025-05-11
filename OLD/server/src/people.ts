@@ -159,7 +159,7 @@ function waiting_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Person {
                 db.shared.items.fx,
                 (dbid: GDB.DBID): S.Sprite => beaming_up_anim_mk(db, dbid, this)
             );
-            db.shared.items.sfx.push(K.BEAMUP_SFX);
+            db.shared.items.sfx.push({ id: K.BEAMUP_SFX });
         },
         get_lifecycle(_:GDB.GameDB) {
             return this.lifecycle_state;

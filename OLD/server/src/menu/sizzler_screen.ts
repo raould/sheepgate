@@ -52,6 +52,7 @@ export abstract class SizzlerScreen implements M.Menu {
             debug_graphics: [],
             images: {},
             frame_dt: K.DT,
+	    items: { sfx: [] },
         };
         this.state = Gs.StepperState.running;
         this.header_cycle = HCycle.newFromRed(90 / this.mdb.frame_dt);
