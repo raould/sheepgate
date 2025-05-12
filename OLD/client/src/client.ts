@@ -17,7 +17,7 @@ import { Gamepads, StandardMapping } from './gamepads';
 import { FPS } from './fps';
  
 // so i can have everything in dark mode on my Windows machine
-const INVERT_COLORS = true;
+const INVERT_COLORS = false;
 
 // todo: use the server types.
 let server_db: any;
@@ -1014,8 +1014,6 @@ function loadImages() {
 
     [1,2,3].forEach(anim => {
         loadImage(`enemies/e9/e9_${anim}.png`);
-        loadImage(`enemies/e9/e9_${anim}_50.png`);
-        loadImage(`enemies/e9/e9_${anim}_20.png`);
     });
 
     [1,2,3,4,5].forEach(anim => {

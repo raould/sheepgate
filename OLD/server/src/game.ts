@@ -68,9 +68,7 @@ export function game_mk(high_scores: Hs.HighScores): Game {
 
         constructor() {
             D.log("new game!");
-	    // todo: revert
-            //this.stepper = new GameWarning();
-            this.stepper = new GameHighScoreEntry(2, high_scores);
+            this.stepper = new GameWarning();
         }
 
         merge_client_db(cnew: Cdb.ClientDB) {

@@ -12,8 +12,10 @@ import * as Lemk from '../enemy_mk';
 import * as K from '../../konfig';
 
 // match: sprite animation.
-const SIZE = G.v2d_mk(55, 55);
-const WARPIN_RESOURCE_ID = "enemies/e12/e12l_1.png";
+// const SIZE = G.v2d_mk(55, 55);
+// const WARPIN_RESOURCE_ID = "enemies/e12/e12l_1.png";
+const SIZE = G.v2d_scale(G.v2d_mk(70, 70), 0.5);
+const WARPIN_RESOURCE_ID = "enemies/e9/e9_1.png";
 const Small: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
@@ -59,15 +61,11 @@ function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     return A.dimension_spec_mk(db, frames);
 }
 
-function f2s(f: F.Facing): string {
-    return F.on_facing(f, "l", "r");
-}
 // enemy e12 doesn't show either thrust, or any extra hp decay.
 const tspecs: Array<[number, string]> = [[1,""]];
 function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.DimensionsFrame[] {
     const table: A.DimensionsFrame[] = [];
     const images = db.uncloned.images;
-    const fstr = f2s(facing);
     tspecs.forEach(spec => {
         const [t, _] = spec;
         table.push({
@@ -77,12 +75,12 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
             animator: A.animator_mk(
                 db.shared.sim_now,
                 {
-                    frame_msec: 120,
+                    frame_msec: 80,
                     resource_ids: [
-                        ...images.lookup_range_n(n => `enemies/e12/e12${fstr}_${n}.png`, 1, 4)
+                        ...images.lookup_range_n(n => `enemies/e9/e9_${n}.png`, 1, 3)
                     ],
                     starting_mode: A.MultiImageStartingMode.hold,
-                    ending_mode: A.MultiImageEndingMode.loop
+                    ending_mode: A.MultiImageEndingMode.bounce
                 }
             )
         });
