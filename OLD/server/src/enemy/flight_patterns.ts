@@ -11,15 +11,19 @@ import { DebugGraphics } from '../debug_graphics';
 import * as D from '../debug';
 
 // some (mostly lame, crappy) movement behaviors.
+
+// note: enemies are thrusted from their midpoint,
+// so these should (todo) calculate based on that.
+
 // todo: these should be sure not to make the
-// sprites go off screen or anything else silly.
+// sprites go off screen or anything else silly. :-(
+// fix the logic, it is all kinda incorrect crap, unfortunately.
 
 const TOP_PAD = 10;
-// todo: fix the logic, THIS WAS STILL OVERLAPPING SO I AM FUDGING IT MORE
-const BOTTOM_PAD = 0;
+const BOTTOM_PAD = 50;
 
 export interface FlightPattern {
-    // 'src' has to be a valid reference in the given db instance
+    // note: 'src' has to be a valid reference in the given db instance
     // otherwise they will be out of sync and the changes to the
     // src will be broken on the next simulation step.
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D;
@@ -207,28 +211,44 @@ export class DecendAndGoSine implements FlightPattern {
 
 export class DescendAndGoStraight implements FlightPattern {
     private target: G.V2D;
-    private dst_y: number;
+    private dst_y: number | undefined;
     private acc_mag: number;
     private normal: G.V2D;
 
+    // up to the caller to adjust y? by size.y.
     constructor(db: GDB.GameDB, size: G.V2D, acc_mag: number, y?: number) {
         const world_rect = db.shared.world.gameport.world_bounds;
         this.target = G.rect_mid(world_rect); // temporary non-null value until we step.
-        const lt = Rnd.singleton.v2d_inside_rect(world_rect);
-        const rect = rect_in_bounds_y(db, G.rect_mk(lt, size), TOP_PAD, BOTTOM_PAD);
-        this.dst_y = y ?? G.rect_lt(rect).y;
+	const rnd_y = Rnd.singleton.float_range(
+	    G.rect_t(K.GAMEPORT_RECT) + TOP_PAD + size.y,
+	    G.rect_b(K.GAMEPORT_RECT) - BOTTOM_PAD - size.y,
+	);
+        this.dst_y = y ?? rnd_y;
         this.acc_mag = acc_mag;
-        this.normal = G.v2d_mk_x0(Rnd.singleton.boolean() ? -1 : 1);
+        this.normal = G.v2d_mk_x0(Rnd.singleton.sign() * 100);
     }
 
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
-        const slt = G.rect_lt(src);
-        if (slt.y < this.dst_y) {
-            this.target = G.v2d_mk(slt.x, this.dst_y);
+        const smid = G.rect_mid(src);
+        if (U.exists(this.dst_y) && smid.y < this.dst_y) {
+	    // +10 to overshoot, making sure to actually reach dst_y.
+            this.target = G.v2d_mk(smid.x, this.dst_y + 10);
         }
         else {
-            this.target = G.v2d_add(slt, this.normal);
+	    this.dst_y = undefined;
+            this.target = G.v2d_add(smid, this.normal);
         }
+	DebugGraphics.add_DrawLine(
+            DebugGraphics.get_frame(),
+            {
+                color: RGBA.randomRGB(Rnd.singleton),
+                line_width: 2,
+                p0: smid,
+		// misleading since it includes the +10,
+                p1: this.target,
+                wrap: false
+            }
+	)
         const delta_acc = calculate_acc(G.rect_mid(src), this.target, this.acc_mag, db.local.frame_dt);
         return delta_acc;
     }
