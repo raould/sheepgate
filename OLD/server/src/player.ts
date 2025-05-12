@@ -264,10 +264,6 @@ function get_player_acc_x(db: GDB.GameDB): number {
         // the gameport code in window.ts will need adjustment.
         if (!!commands[Cmd.CommandType.left]) { x -= K.PLAYER_DELTA_X_ACC; }
         if (!!commands[Cmd.CommandType.right]) { x += K.PLAYER_DELTA_X_ACC; }
-        // todo: show some special fx when going fast. bigger jets, bg blur, whatever.
-        if (!!commands[Cmd.CommandType.turbo]) {
-            x *= K.PLAYER_TURBO_X_SCALE;
-        }
         // debugging printout.
         // if (Object.values(commands).filter(e => !!e).length > 0) {
         //     D.log(x, y, commands);

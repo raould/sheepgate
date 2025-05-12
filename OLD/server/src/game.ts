@@ -38,7 +38,6 @@ const MAIN_INSTRUCTIONS = [
     " ",
     "FIRE: SPACE / Z / ENTER",
     "MOVE: {W,A,S,D} / {ARROW KEYS}",
-    "BOOST: SHIFT",
     "PAUSE: ESC",
 ];
 

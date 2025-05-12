@@ -21,7 +21,6 @@ export enum CommandType {
     down = "down",
     left = "left",
     right = "right",
-    turbo = "turbo",
     debug_toggle_graphics = "debug_toggle_graphics",
     debug_toggle_annotations = "debug_toggle_annotations",
     debug_toggle_stepping = "debug_toggle_stepping",
@@ -52,7 +51,6 @@ export const key2cmd: { [k: string]: CommandSpec } = {
     ArrowRight: { command: CommandType.right, is_singular: false },
     d:          { command: CommandType.right, is_singular: false },
     D:          { command: CommandType.right, is_singular: false },
-    Shift:      { command: CommandType.turbo, is_singular: false },
     
     // secret debugging stuff.
     ".":        { command: CommandType.debug_step_frame, is_singular: true },

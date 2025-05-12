@@ -256,10 +256,6 @@ export const DRAG_ACC = G.v2d_mk(-0.0025, -0.005); // L
 // pixels/dt? pixels/sec? i dunno!
 export const PLAYER_DELTA_X_ACC = 0.0015; // K
 export const PLAYER_DELTA_Y_VEL = 0.15; // K
-// todo: there's a bug that is hard to repro that
-// i think is caused by being near the world wrap boundary,
-// and using turbo, where the player breaks free of the zone & goes off screen.
-export const PLAYER_TURBO_X_SCALE = 4;
 
 export const PLAYER_BEAM_MAX_VEL2 = 0.2; // K
 export const PEOPLE_SIZE = G.v2d_mk_nn(32); // K

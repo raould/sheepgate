@@ -68,7 +68,6 @@ enum CommandType {
     down = "down",
     left = "left",
     right = "right",
-    turbo = "turbo",
     debug_toggle_graphics = "debug_toggle_graphics",
     debug_toggle_annotations = "debug_toggle_annotations",
     debug_toggle_stepping = "debug_toggle_stepping",
@@ -86,7 +85,6 @@ const UpSpec: CommandSpec = { command: CommandType.up, is_singular: false };
 const DownSpec: CommandSpec = { command: CommandType.down, is_singular: false };
 const LeftSpec: CommandSpec = { command: CommandType.left, is_singular: false };
 const RightSpec: CommandSpec = { command: CommandType.right, is_singular: false };
-const TurboSpec: CommandSpec = { command: CommandType.turbo, is_singular: false };
 const key2cmd: { [k: string]: CommandSpec } = {
     // standard gameplay commands.
     Escape:     PauseSpec,
@@ -110,7 +108,6 @@ const key2cmd: { [k: string]: CommandSpec } = {
     ArrowRight: RightSpec,
     d:          RightSpec,
     D:          RightSpec,
-    Shift:      TurboSpec,
     // secret debugging stuff.
     ".":        { command: CommandType.debug_step_frame, is_singular: true },
     "!":        { command: CommandType.debug_dump_state, is_singular: true },
