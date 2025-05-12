@@ -78,7 +78,7 @@ export function game_mk(high_scores: Hs.HighScores): Game {
 	step() {
             this.stepper.step();
             if (this.stepper instanceof GameWarning && this.stepper.get_state() != Gs.StepperState.running) {
-                this.stepper = new GameInstructions();
+                this.stepper = new GameInstructions(true, true);
 	    }
             else if (this.stepper instanceof GameInstructions && this.stepper.get_state() != Gs.StepperState.running) {
                 this.stepper = new GameLevels(high_scores.get_high_score());
@@ -138,7 +138,7 @@ class GameInstructions implements Gs.Stepper {
     stepper: Is.InstructionsScreen;
     last: number;
 
-    constructor(private readonly play_sfx: boolean = true) {
+    constructor(private readonly play_sfx: boolean, animated: boolean) {
         this.stepper = new Is.InstructionsScreen({
 	    title: "HOW TO PLAY",
 	    instructions: MAIN_INSTRUCTIONS,
@@ -171,7 +171,7 @@ class GameInstructions implements Gs.Stepper {
 
 class GamePaused extends GameInstructions implements Gs.Stepper {
     constructor() {
-	super(false);
+	super(false, false);
     }
 }
 

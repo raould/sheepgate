@@ -146,9 +146,10 @@ export function scale_spec(level: number, rank: S.Rank, direction: F.Facing): En
     }
 }
 
-// todo: i wish i could use macros/reflection to just build this with SMALL, MEGA, HYPERMEGA.
+// fyi: 'basic', 'small', here are enemy Rank, not the size of the bullet.
+// note: these are max values, see Eu.level_scale_{up,down}().
 
-const ENEMY_BASIC_SHOT_DAMAGE = K.PLAYER_HP / 30; // L, W
+const ENEMY_BASIC_SHOT_DAMAGE = K.PLAYER_HP / 10; // L, W
 D.assert(ENEMY_BASIC_SHOT_DAMAGE >= 0.1);
 const ENEMY_BASIC_SHOT_SPEED = 0.1; // L, W
 const ENEMY_BASIC_SHOT_SIZE = K.BULLET_SHOT_SIZE;
@@ -157,7 +158,7 @@ const ENEMY_BASIC_WEAPON_CLIP_COOLDOWN_MSEC = 9000; // L, W
 const ENEMY_BASIC_WEAPON_SHOT_COOLDOWN_MSEC = 500; // L, W
 const ENEMY_BASIC_WEAPON_SHOT_COUNT = 1; // L, W
 
-const ENEMY_SMALL_SHOT_DAMAGE = K.PLAYER_HP / 20; // L, W
+const ENEMY_SMALL_SHOT_DAMAGE = K.PLAYER_HP / 5; // L, W
 D.assert(ENEMY_SMALL_SHOT_DAMAGE >= 0.1);
 const ENEMY_SMALL_SHOT_SPEED = 0.25; // L, W
 const ENEMY_SMALL_SHOT_SIZE = K.BULLET_SHOT_SIZE;
@@ -166,7 +167,7 @@ const ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC = 9000; // L, W
 const ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC = 250; // L, W
 const ENEMY_SMALL_WEAPON_SHOT_COUNT = 4; // L, W
 
-const ENEMY_MEGA_SHOT_DAMAGE = K.PLAYER_HP / 30; // L, W
+const ENEMY_MEGA_SHOT_DAMAGE = K.PLAYER_HP / 4; // L, W
 D.assert(ENEMY_MEGA_SHOT_DAMAGE >= 0.1);
 const ENEMY_MEGA_SHOT_SPEED = 0.25; // L, W
 const ENEMY_MEGA_SHOT_SIZE = K.BULLET_SHOT_SIZE;
@@ -175,7 +176,7 @@ const ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC = 8000; // L, W
 const ENEMY_MEGA_WEAPON_SHOT_COOLDOWN_MSEC = 300; // L, W
 const ENEMY_MEGA_WEAPON_SHOT_COUNT = 5; // L, W
 
-const ENEMY_HYPERMEGA_SHOT_DAMAGE = K.PLAYER_HP / 15; // L, W
+const ENEMY_HYPERMEGA_SHOT_DAMAGE = K.PLAYER_HP / 3; // L, W
 D.assert(ENEMY_HYPERMEGA_SHOT_DAMAGE >= 0.1);
 const ENEMY_HYPERMEGA_SHOT_SPEED = 0.25; // L, W
 const ENEMY_HYPERMEGA_SHOT_SIZE = K.BULLET_SHOT_SIZE;

@@ -51,7 +51,8 @@ function calculate_acc(src: G.V2D, dst: G.V2D, acc_mag: number, dt: number): G.V
 
 // sorta like: fly at the player, then turn around and repeat.
 export class BuzzPlayer implements FlightPattern {
-    private static NEXT_SEEK_MSEC = 3000;
+    // allow them to go farish away otherwise they congregate unattractively.
+    private static NEXT_SEEK_MSEC = 10*1000;
     private acc_mag: G.V2D;
     private next_seek_msec: number;
 
@@ -157,29 +158,33 @@ export class TargetPlayer implements FlightPattern {
 // follow a sinusoidal-ish horizontal path.
 export class DecendAndGoSine implements FlightPattern {
     private target: G.V2D;
-    private horizon_y: number;
+    private dst_y: number;
     private acc_mag: number;
     private signX: number;
     private sinY: number;
+    private period_factor: number;
 
-    constructor(db: GDB.GameDB, size: G.V2D, acc_mag: number) {
+    constructor(db: GDB.GameDB, size: G.V2D, acc_mag: number, y?: number) {
         this.acc_mag = acc_mag;
         this.target = G.rect_mid(db.shared.world.gameport.world_bounds);
 	const sizeY = K.GAMEPORT_RECT.size.y;
 	const midY = sizeY * 0.5;
 	const rangeY = sizeY * 0.2;
-        this.horizon_y = Rnd.singleton.float_around(midY, rangeY);
-	this.sinY = rangeY; // 0.1 to 0.9, i hope.
+        this.dst_y = y ?? Rnd.singleton.float_around(midY, rangeY);
+	this.sinY = Math.min(
+	    this.dst_y, Math.abs(K.GAMEPORT_RECT.size.y - this.dst_y)
+	) / 2;
         this.signX = Rnd.singleton.boolean() ? -1 : 1;
+	this.period_factor = Rnd.singleton.float_around(2000, 250);
     }
 
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
 	const now = db.shared.sim_now;
-	const sin_y = Math.sin(now/2000) * this.sinY;
+	const sin_y = Math.sin(now/this.period_factor) * this.sinY;
         const slt = G.rect_lt(src);
         this.target = G.v2d_mk(
 	    slt.x + this.signX * 100,
-	    this.horizon_y + sin_y
+	    this.dst_y + sin_y
 	);
 	DebugGraphics.add_point(
 	    DebugGraphics.get_frame(),
@@ -195,6 +200,35 @@ export class DecendAndGoSine implements FlightPattern {
 		p1: this.target,
 	    }
 	);
+        const delta_acc = calculate_acc(G.rect_mid(src), this.target, this.acc_mag, db.local.frame_dt);
+        return delta_acc;
+    }
+}
+
+export class DescendAndGoStraight implements FlightPattern {
+    private target: G.V2D;
+    private dst_y: number;
+    private acc_mag: number;
+    private normal: G.V2D;
+
+    constructor(db: GDB.GameDB, size: G.V2D, acc_mag: number, y?: number) {
+        const world_rect = db.shared.world.gameport.world_bounds;
+        this.target = G.rect_mid(world_rect); // temporary non-null value until we step.
+        const lt = Rnd.singleton.v2d_inside_rect(world_rect);
+        const rect = rect_in_bounds_y(db, G.rect_mk(lt, size), TOP_PAD, BOTTOM_PAD);
+        this.dst_y = y ?? G.rect_lt(rect).y;
+        this.acc_mag = acc_mag;
+        this.normal = G.v2d_mk_x0(Rnd.singleton.boolean() ? -1 : 1);
+    }
+
+    step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
+        const slt = G.rect_lt(src);
+        if (slt.y < this.dst_y) {
+            this.target = G.v2d_mk(slt.x, this.dst_y);
+        }
+        else {
+            this.target = G.v2d_add(slt, this.normal);
+        }
         const delta_acc = calculate_acc(G.rect_mid(src), this.target, this.acc_mag, db.local.frame_dt);
         return delta_acc;
     }

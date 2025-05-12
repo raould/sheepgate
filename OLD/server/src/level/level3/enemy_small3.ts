@@ -12,7 +12,7 @@ import * as Lemk from '../enemy_mk';
 import * as K from '../../konfig';
 
 // match: sprite animation.
-const SIZE = G.v2d_scale_i(G.v2d_mk(72, 150), 0.4);
+const SIZE = G.v2d_scale_i(G.v2d_mk(36, 75), 1);
 const WARPIN_RESOURCE_ID = "enemies/e16/e16l.png";
 const Small: Lemk.EnemyMk = {
     SIZE,
@@ -24,12 +24,7 @@ const Small: Lemk.EnemyMk = {
             'wl': Ebw.weapon_mk(ewsl),
             'wr': Ebw.weapon_mk(ewsr),
 	};
-	const acc_base = G.v2d_mk(0.0005, 0.00005);
-	const acc = Rnd.singleton.v2d_around(
-            acc_base,
-            G.v2d_scale(acc_base, 0.5)
-	);
-	const flight_pattern = new Fp.BuzzPlayer(db, acc);
+	const flight_pattern = new Fp.DescendAndGoStraight(db, SIZE, 0.0002);
 	return Emk.warpin_mk(
             db,
             SIZE,

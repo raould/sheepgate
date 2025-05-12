@@ -4,6 +4,9 @@ SEE ALL THE 'TODO' (AND 'MATCH') COMMENTS IN THE CODE!
 THESE ARE NOT IN ORDER because i keep changing my mind :-\
 and keep finding things i did that are super confusing.
 
+and by 'bounty' i just mean a, "thank you!"
+
+* bounty: i broke it (fps) on anything but firefox?
 * bounty: refactor all the things, like bad naming, ha ha.
 * bounty: rewrite cooldown and clip to not suck.
 

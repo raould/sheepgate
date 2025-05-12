@@ -9,6 +9,7 @@ import * as Fp from './flight_patterns';
 import * as Emk from './enemy_mk';
 import * as Lemk from '../level/enemy_mk';
 import * as K from '../konfig';
+import * as Rnd from '../random';
 
 // match: sprite animation.
 const SIZE = G.v2d_scale(G.v2d_mk(32, 32), 0.7);
@@ -24,7 +25,10 @@ const Basic1: Lemk.EnemyMk = {
 	const weapons = {
             'w': Ebw.weapon_mk(ews),
 	};
-	const flight_pattern = new Fp.DecendAndGoSine(db, SIZE, 0.0005);
+	const flight_pattern = new Fp.DecendAndGoSine(
+	    db,
+	    SIZE,
+	    Rnd.singleton.float_around(0.0001, 0.00002));
 	const spec: Emk.EnemySpec = {
             anim: anim,
             rank: S.Rank.basic,
