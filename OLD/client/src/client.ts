@@ -990,6 +990,10 @@ function loadImages() {
     loadImage("enemies/basic2/tt2.png");
     loadImage("enemies/basic2/tt3.png");
 
+    loadImage("enemies/basic3/gh1.png");
+    loadImage("enemies/basic3/gh2.png");
+    loadImage("enemies/basic3/gh3.png");
+
     loadImage("enemies/e1/e1.png");
     loadImage("enemies/e11/e11a.png");
     loadImage("enemies/e18/e18.png");

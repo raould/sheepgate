@@ -5,6 +5,7 @@ import * as Lta from '../level_type_a';
 import * as Lis from '../level_in_screens';
 import Eb1 from '../../enemy/enemy_basic1';
 import Eb2 from '../../enemy/enemy_basic2';
+import Eb3 from '../../enemy/enemy_basic3';
 import Es from './enemy_small3';
 import Em from './enemy_mega3';
 import Ehm from './enemy_hypermega3';
@@ -22,6 +23,10 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
 	Eb2: Eb2,
 	ENEMY_BASIC2_COUNT: 3 + buf,
 	ENEMY_BASIC2_SPAWN_COUNT_LIMIT: 2 + buf,
+
+	Eb3: Eb3,
+	ENEMY_BASIC3_COUNT: 3 + buf,
+	ENEMY_BASIC3_SPAWN_COUNT_LIMIT: 2 + buf,
 
 	Es: Es,
 	ENEMY_SMALL_COUNT: 4 + buf,
