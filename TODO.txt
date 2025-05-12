@@ -7,6 +7,12 @@ and keep finding things i did that are super confusing.
 * bounty: refactor all the things, like bad naming, ha ha.
 * bounty: rewrite cooldown and clip to not suck.
 
++++ level statistics.
++++ more enemies.
++++ more levels.
++++ powerups.
++++ thrust sfx?
+
 * document which way the (x,y) axes go ffs; i assume +x down, +y.
 * omfg the sprite loading between server+client sucks-sucks so much-much.
   * also i wish animation could do resizing for bounce and stretch.
