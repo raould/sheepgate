@@ -6,8 +6,15 @@ import * as Dr from '../drawing';
 import { RGBA, HCycle } from '../color';
 
 export class LevelStartScreen extends Sz.SizzlerScreen {
-    constructor(title: string, skip_text: string, private readonly es: S.ImageSized, private readonly em: S.ImageSized, private readonly ehm: S.ImageSized, bg_color: RGBA) {
+    constructor(
+	title: string,
+	skip_text: string,
+	private readonly es: S.ImageSized,
+	private readonly em: S.ImageSized,
+	private readonly ehm: S.ImageSized,
+	bg_color: RGBA) {
         super({ title, skip_text, bg_color, timeout: 10*1000 });
+	this.mdb.items.sfx.push({ sfx_id: K.SYNTH_D_SFX });
     }
 
     step() {

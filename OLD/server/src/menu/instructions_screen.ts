@@ -4,30 +4,58 @@ import * as Sz from './sizzler_screen';
 import * as G from '../geom';
 import { RGBA, HCycle } from '../color';
 import * as Rnd from '../random';
+import * as D from '../debug';
 
-const INSTRUCTIONS_SIZE = 30;
-const BG_COLOR = RGBA.new01(0, 0, 0.1);
-const SFX = [K.SYNTH_A_SFX, K.SYNTH_B_SFX, K.SYNTH_C_SFX, K.SYNTH_D_SFX, K.SYNTH_E_SFX];
+export interface InstructionsScreenSpec {
+    title: string,
+    instructions: string[],
+    size: number,
+    animated: boolean,
+    bg_color: RGBA;
+    timeout?: number;
+    // this is where it becomes a big ball of mud.
+    top_offset_y?: number;
+    ignore_user_skip?: boolean;
+}
 
 export class InstructionsScreen extends Sz.SizzlerScreen {
-    constructor(private readonly instructions: string[], animated: boolean) {
-        super({ title: "HOW TO PLAY", skip_text: "PRESS [FIRE] TO CONTINUE", bg_color: BG_COLOR, animated });
+    instructions: string[];
+    top: G.V2D;
+    line_height: number;
+    size: number;
+
+    constructor(spec: InstructionsScreenSpec) {
+        super({
+	    ...spec,
+	    title: spec.title,
+	    skip_text: spec.ignore_user_skip ? undefined : "PRESS [FIRE] TO CONTINUE",
+	});
+	this.instructions = spec.instructions;
+	this.size = spec.size;
+	this.line_height = this.size * 1.05;
+	const iyoff = this.line_height * this.instructions.length / 2;
+	this.top = G.v2d_mk(
+	    this.mdb.world.bounds0.x * 0.5,
+	    this.mdb.world.bounds0.y * 0.5 - iyoff + (spec.top_offset_y ?? 0)
+	);
     }
 
     step() {
         super.step();
         this.step_instructions();
-	if (Rnd.singleton.boolean(0.1)) {
-	    const id = Rnd.singleton.array_item(SFX);
-	    if (U.exists(id)) {
-		const gain = Rnd.singleton.float_range(0.2, 0.5);
-		this.mdb.items.sfx.push({ id, gain });
-	    }
-	}
     }
 
     step_instructions() {
-        const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.5, this.mdb.world.bounds0.y * 0.28);
-        super.step_instructions(center, this.instructions, INSTRUCTIONS_SIZE);
+        const hcycle = HCycle.newFromHCycle(this.body_cycle);
+	this.instructions.forEach((line: string, index: number) => {
+            const v_offset = this.line_height * index;
+            this.step_text(
+                line,
+                G.v2d_add(this.top, G.v2d_mk_0y(v_offset)),
+                this.size,
+                hcycle
+            );
+            hcycle.skip(-45);
+        });
     }
 }

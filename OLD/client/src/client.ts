@@ -302,12 +302,13 @@ function gameport_wrap_rect(rect: any/*G.Rect*/, gameport: any/*gameport*/, worl
 }
 
 function renderSounds(db: any) {
-    db.items.sfx.forEach((so: any) => {
-        const sound = sounds[so.id];
+    db.items.sfx?.forEach((so: any) => {
+        const sound = sounds[so.sfx_id];
         if (!!sound) {
             sound.play(so.gain);
         }
     });
+    db.items.sfx = [];
 }
 
 function renderSpriteImage(gdb: any, s: any) {
@@ -521,10 +522,13 @@ function renderAllFgDrawings(gdb: any) {
 }
 
 function renderDrawing(xdb: any, drawing: any/*Dr.Drawing*/) {
-    // match: server expects client to draw rects first.
+    if (drawing == undefined) {
+	return;
+    }
     if (drawing?.other != null) {
         renderDrawing(xdb, drawing?.other);
     }
+    // match: server expects client to draw rect first.
     renderRects(xdb, drawing?.rects);
     renderLines(xdb, drawing?.lines);
     renderEllipses(xdb, drawing?.ellipses);
@@ -685,10 +689,15 @@ function renderImage(resource_id: string, x: number, y: number, w: number, h: nu
 function renderParticles(gdb: any) {
     for (const kv of Object.entries(particles)) {
         const [pid, pgen]:[string,any] = kv;
-        pgen.renderGame(gdb, h5canvas);
-        if (pgen.age_t(gdb) > 1) {
-            delete particles[pid];
-        }
+	if (pgen != undefined) {
+            pgen.render(gdb, h5canvas);
+            if (pgen.age_t(gdb) > 1) {
+		delete particles[pid];
+            }
+	}
+	else {
+	    console.error("missing pgen for", pid);
+	}
     }
 }
 
@@ -696,6 +705,8 @@ function render(db: any) {
     if (db != null) {    
         cx2d.fillStyle = db.menu_db?.bg_color || db.game_db?.bg_color || BG_COLOR;
         cx2d.fillRect(0, 0, h5canvas.width, h5canvas.height);
+	// painter's algorith, menus should render on top.
+	// note: bifurcating on the type of db here.
         renderPlaying(db.game_db);
 	renderMenu(db.menu_db);
     }
@@ -711,9 +722,8 @@ function renderMenu(mdb: any) {
 
 function renderPlaying(gdb: any) {
     if (gdb == null) { return; }
-
+    applyParticles(gdb);
     renderSounds(gdb);
-
     // painter's algorithm, back-to-front.
     // maintain the z-ordering here as appropriate
     // e.g. shields under other sprites. although
@@ -858,8 +868,24 @@ function applyDB(next_server_db: any) {
     // without keeping any long term state on the client...
     // except for expensive/big things that hurt perf too much,
     // so make client-side-things like particle generators.
-    server_db = next_server_db;
-    applyParticles(server_db.game_db);
+
+    // note that there is a race condition where getting more
+    // than 1 server update between client render events
+    // can lose messages from anything but the last db.
+    // at the moment we special case the sfx because of this.
+    const prevMenuSfx = server_db && server_db.menu_db?.items.sfx;
+    const prevGameSfx = server_db && server_db.game_db?.items.sfx;
+    if (next_server_db != undefined) {
+	server_db = next_server_db;
+    }
+    if ((prevMenuSfx?.length ?? 0) > 0 && server_db.menu_db != undefined) {
+    	server_db.menu_db.items.sfx = server_db.menu_db.items.sfx ?? [];
+    	server_db.menu_db.items.sfx.push(...prevMenuSfx);
+    }
+    if ((prevGameSfx?.length ?? 0) > 0 && server_db.game_db != undefined) {
+    	server_db.game_db.items.sfx = server_db.game_db.items.sfx ?? [];
+    	server_db.game_db.items.sfx.push(...prevGameSfx);
+    }
 }
 
 function applyParticles(gdb: any) {
@@ -1174,7 +1200,7 @@ function ButtonChange(event: any, pressed: boolean) {
 }
 
 function gamepadHandler(event: any, connecting: boolean) {
-    console.log("gamepadHandler", connecting ? 'on' : 'off');
+    log("gamepadHandler", connecting ? 'on' : 'off');
     if (connecting) {
 	if ( currentGamepad != null ) {
 	    currentGamepad.removeEventListener("joystickmove", StandardMapping.Axis.JOYSTICK_LEFT);

@@ -16,21 +16,21 @@ export function convert255to1(n: number): number {
 
 export class RGBA {
     static RED = RGBA.new01(1, 0, 0);
-    static DARK_RED = RGBA.new01(0.3, 0, 0);
+    static DARK_RED = RGBA.new01(0.15, 0, 0);
     static GREEN = RGBA.new01(0, 1, 0);
-    static DARK_GREEN = RGBA.new01(0, 0.3, 0);
+    static DARK_GREEN = RGBA.new01(0, 0.15, 0);
     static BLUE = RGBA.new01(0, 0, 1);
-    static DARK_BLUE = RGBA.new01(0, 0, 0.3);
+    static DARK_BLUE = RGBA.new01(0, 0, 0.15);
     static CYAN = RGBA.new01(0, 1, 1);
-    static DARK_CYAN = RGBA.new01(0, 0.3, 0.3);
+    static DARK_CYAN = RGBA.new01(0, 0.15, 0.15);
     static MAGENTA = RGBA.new01(1, 0, 1);
-    static DARK_MAGENTA = RGBA.new01(0.3, 0, 0.3);
+    static DARK_MAGENTA = RGBA.new01(0.15, 0, 0.15);
     static YELLOW = RGBA.new01(1, 1, 0);
-    static DARK_YELLOW = RGBA.new01(0.3, 0.3, 0);
+    static DARK_YELLOW = RGBA.new01(0.15, 0.15, 0);
     static BLACK = RGBA.new01(0, 0, 0);
     static WHITE = RGBA.new01(1, 1, 1);
     static GRAY = RGBA.new01(0.5, 0.5, 0.5);
-    static DARK_GRAY = RGBA.new01(0.3, 0.3, 0.3);
+    static DARK_GRAY = RGBA.new01(0.15, 0.15, 0.15);
     static CYCLES = [
         RGBA.RED,
         RGBA.MAGENTA,
@@ -132,7 +132,7 @@ export class HCycle {
         return [hue_dst, hsv[1], hsv[2]];
     }
 
-    public static newFromRed(delta: number): HCycle {
+    public static newFromRed(delta: number = 1): HCycle {
         const hsv = RGBA.RED.toHSV();
         return new HCycle(hsv, delta);
     }

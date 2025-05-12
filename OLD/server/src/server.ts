@@ -45,7 +45,7 @@ const t = new T.OnlyOneCallbackTimer(
 	const dbg_post = Date.now();
 	const dbg_dt = dbg_post - dbg_pre;
 	if (dbg_dt > K.DT) {
-	    D.warn("slow server loop:", dbg_count, U.F2D(dbg_dt), ">", K.DT);
+	    D.warn("slow server loop:", "#games:", dbg_count, "dt:", U.F2D(dbg_dt), ">", K.DT);
 	}
     },
     K.DT);

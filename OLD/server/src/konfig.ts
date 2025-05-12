@@ -33,6 +33,9 @@ import { RGBA } from './color';
 // world, game, hud, screen, etc.
 // shyeah, i wish, typescript!
 
+// small debounce so previous button mashing might end first.
+export const USER_SKIP_AFTER_MSEC = 500;
+
 // match: client/font.css
 // todo: figure out how the hell to measure strings.
 export const GAME_FONT = 'gamefont'; // K

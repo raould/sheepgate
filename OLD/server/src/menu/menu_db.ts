@@ -1,23 +1,37 @@
+import * as K from '../konfig';
 import * as DB from '../db';
 import * as U from '../util/util';
 import * as S from '../sprite';
 import * as So from '../sound';
 import * as G from '../geom';
+import * as Dr from '../drawing';
+import { RGBA } from '../color';
 
 export interface MenuDB extends DB.DB<DB.World> {
-    images: U.Dict<S.ImageLocated>;
     frame_dt: number;
-    items: { sfx: So.Sound[]; };
+    items: { sfx: So.Sfx[]; };
+    images?: U.Dict<S.ImageLocated>;
+}
+
+export function menudb_mk(bg_color: RGBA): MenuDB {
+    return {
+        world: {
+            screen: K.SCREEN_RECT,
+            bounds0: K.SCREEN_RECT.size,
+	    gameport: {
+		world_bounds: K.SCREEN_RECT,
+		screen_bounds: K.SCREEN_RECT,
+	    },
+        },
+        bg_color: bg_color,
+        frame_drawing: Dr.drawing_mk(),
+        debug_graphics: [],
+        images: {},
+        frame_dt: K.DT,
+	items: { sfx: [] },
+    };
 }
 
 export function stringify(mdb: MenuDB): string {
-    // todo: fix the db's to not be such a train wreck.
-    // adding in things here that the client is expecting.
-    const hack = mdb.world as any;
-    hack.gameport = {
-        world_bounds: G.v2d_2_rect(mdb.world.bounds0),
-        screen_bounds: G.v2d_2_rect(mdb.world.bounds0),
-        enemy_firing_bounds: G.v2d_mk_0()
-    }
     return `{"menu_db": ${U.stringify(mdb)}}`;
 }

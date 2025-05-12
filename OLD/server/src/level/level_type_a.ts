@@ -97,7 +97,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	// world visibly jumps badly from frame 1 to frame 2.
 	this.step();
 	
-	this.db.shared.items.sfx.push({ id: K.BEGIN_SFX });
+	this.db.shared.items.sfx.push({ sfx_id: K.BEGIN_SFX });
     }
 
     private db_mk(far_spec0: FarSpec0[], score: number): GDB.GameDB {
@@ -197,7 +197,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    generations: this.konfig.ENEMY_SMALL_COUNT,
 	    max_alive: this.konfig.ENEMY_SMALL_SPAWN_COUNT_LIMIT,
 	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		db.shared.items.sfx.push({ id: K.WARPIN_SFX, gain: 0.5 });
+		db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		return this.konfig.Es.warpin_mk(db);
 	    }
 	}
@@ -206,7 +206,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    generations: this.konfig.ENEMY_MEGA_COUNT,
 	    max_alive: this.konfig.ENEMY_MEGA_SPAWN_COUNT_LIMIT,
 	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		db.shared.items.sfx.push({ id: K.WARPIN_SFX, gain: 0.5 });
+		db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		return this.konfig.Em.warpin_mk(db);
 	    }
 	}
@@ -215,7 +215,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    generations: this.konfig.ENEMY_HYPERMEGA_COUNT,
 	    max_alive: this.konfig.ENEMY_HYPERMEGA_SPAWN_COUNT_LIMIT,
 	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		db.shared.items.sfx.push({ id: K.WARPIN_SFX, gain: 0.5 });
+		db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		return this.konfig.Ehm.warpin_mk(db);
 	    }
 	}
@@ -226,7 +226,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    generations: this.konfig.ENEMY_BASIC1_COUNT,
 	    max_alive: this.konfig.ENEMY_BASIC1_SPAWN_COUNT_LIMIT,
 	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		db.shared.items.sfx.push({ id: K.WARPIN_SFX, gain: 0.5 });
+		db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		return this.konfig.Eb1.warpin_mk(db);
 	    }
 	};
@@ -235,7 +235,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    generations: this.konfig.ENEMY_BASIC2_COUNT,
 	    max_alive: this.konfig.ENEMY_BASIC2_SPAWN_COUNT_LIMIT,
 	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		db.shared.items.sfx.push({ id: K.WARPIN_SFX, gain: 0.5 });
+		db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		return this.konfig.Eb2.warpin_mk(db);
 	    }
 	};

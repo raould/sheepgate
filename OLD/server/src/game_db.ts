@@ -13,7 +13,7 @@ import * as Sc from './scoring';
 import * as Gs from './game_stepper';
 import * as Tkg from './ticking_generator';
 
-// NOTE: this is only for in-levels, see menu/menu_db.
+// NOTE: a lot of this is mostly for in-levels, see menu/menu_db, it is very confusing.
 
 // todo:
 // THIS NEEDS TO BE SPLIT UP INTO
@@ -136,17 +136,17 @@ export function stringify(db: GameDB): string {
     // todo: maybe don't send data for anything outside the current window.
 
     // don't send all the debug drawing data if we don't have to.
-    // todo: all this (ie debugging_state) needs to be moved up and out of game_db to be shared with screen_db.
+    // todo: all this (ie debugging_state) needs to be moved up and out of game_db to be shared with menu_db.
     const hide_debug_drawing = !db.local.client_db.debugging_state.is_drawing;
     let d: U.O<Dr.Drawing[]> = undefined;
     let src = db.shared;
-    if (hide_debug_drawing) {
+    if (hide_debug_drawing) { // save them...
         d = src.debug_graphics;
         src.debug_graphics = [];
     }
     // todo: optimize the toJSON()s.
     const json = U.stringify(db.shared);
-    if (hide_debug_drawing && d != null) {
+    if (hide_debug_drawing && d != null) { // ...restore them.
         src.debug_graphics = d;
     }
     return `{"game_db": ${json}}`;
@@ -272,7 +272,7 @@ export interface DBSharedItems {
     people: U.Dict<S.Person>;
     gems: U.Dict<S.Gem>;
     fx: U.Dict<S.Sprite>;
-    sfx: So.Sound[];
+    sfx: So.Sfx[];
     particles: U.Dict<Pr.ParticleGenerator>;
 }
 

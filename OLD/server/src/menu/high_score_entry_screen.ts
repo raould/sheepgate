@@ -1,4 +1,4 @@
-import * as Sz from './sizzler_screen';
+import * as Is from './instructions_screen';
 import * as Hs from '../high_scores';
 import * as Cdb from '../client_db';
 import * as Gs from '../game_stepper';
@@ -47,15 +47,26 @@ const INSTRUCTIONS = [
     `CALL SIGN, MAX ${MAX_LETTERS} ASCII.`,
 ];
 
-export class HighScoreEntryScreen extends Sz.SizzlerScreen {
+export class HighScoreEntryScreen extends Is.InstructionsScreen {
     letters: string;
     cursor: G.V2D;
     rects: G.Rect[][];
+    callsign_cycle: HCycle;
 
     constructor(private readonly score: number) {
-        super({ title: "HIGH SCORE!", bg_color: RGBA.DARK_BLUE, timeout: 120*1000 });
+        super({
+	    title: "HIGH SCORE!",
+	    instructions: INSTRUCTIONS,
+	    size: INSTRUCTIONS_SIZE,
+	    bg_color: RGBA.DARK_BLUE,
+	    animated: true,
+	    timeout: 120*1000,
+	    top_offset_y: -80,
+	    ignore_user_skip: true,
+	});
         this.letters = "";
         this.cursor = G.v2d_mk_0();
+        this.callsign_cycle = HCycle.newFromRed();
         this.rects = [];
         this.init_rects();
     }
@@ -145,7 +156,7 @@ export class HighScoreEntryScreen extends Sz.SizzlerScreen {
 
     step() {
         super.step()
-        this.step_instructions();
+	this.callsign_cycle.next();
         this.step_input_symbols();
         this.step_input_cursor();
         this.step_callsign();
@@ -188,14 +199,9 @@ export class HighScoreEntryScreen extends Sz.SizzlerScreen {
             lb: G.v2d_sub(center, G.v2d_mk_x0(h_offset)),
             text: this.letters,
             font: `${CALLSIGN_SIZE}px ${K.MENU_FONT}`, // match: offset (hack).
-            fillStyle: RGBA.WHITE,
+            fillStyle: this.callsign_cycle.current(),
             wrap: false,
         };
         this.mdb.frame_drawing.texts.push(t);
-    }
-
-    step_instructions() {
-        const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.5, this.mdb.world.bounds0.y * 0.27);
-        super.step_instructions(center, INSTRUCTIONS, INSTRUCTIONS_SIZE);
     }
 }

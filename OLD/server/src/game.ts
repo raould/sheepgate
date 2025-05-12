@@ -1,4 +1,5 @@
 import * as Is from './menu/instructions_screen';
+import * as Ps from './menu/plain_screen';
 import * as Hse from './menu/high_score_entry_screen';
 import * as Hst from './menu/high_score_table_screen';
 import * as Cdb from './client_db';
@@ -8,14 +9,29 @@ import * as Hs from './high_scores';
 import * as U from './util/util';
 import * as D from './debug';
 import * as K from './konfig';
+import * as Rnd from './random';
 import * as Lis from './level/level_in_screens';
+import { RGBA } from './color';
 // well, this sucks.
 import * as L1 from './level/level1/level1';
 import * as L2 from './level/level2/level2';
 import * as L3 from './level/level3/level3';
 import * as L4 from './level/level4/level4';
 
-const TOP_INSTRUCTIONS = [
+// the leading blank lines are a hack, yes :-(
+const WARNING_INSTRUCTIONS = [
+    " ",
+    " ",
+    "=== WARNING: THIS GAME HAS FLASHING EFFECTS ===",
+    "Photosensitivity/epilepsy/seizures: a very small",
+    "percentage of individuals may experience",
+    "epileptic seizures or blackouts when exposed to",
+    "certain light patterns or flashing lights.",
+];
+
+// the leading blank lines are a hack, yes :-(
+const MAIN_INSTRUCTIONS = [
+    " ",
     " ",
     "RETURN HUMANS TO BASE.",
     "DEFEAT ALL ENEMIES.",
@@ -52,17 +68,22 @@ export function game_mk(high_scores: Hs.HighScores): Game {
 
         constructor() {
             D.log("new game!");
-            this.stepper = new GameInstructions();
+	    // todo: revert
+            //this.stepper = new GameWarning();
+            this.stepper = new GameHighScoreEntry(2, high_scores);
         }
 
         merge_client_db(cnew: Cdb.ClientDB) {
             this.stepper.merge_client_db(cnew);
         }
 
-        // todo: this would all be better done as a visual graph / state machine.
+        // todo: this would all be better done as a state machine / graph type of thing.
 	step() {
             this.stepper.step();
-            if (this.stepper instanceof GameInstructions && this.stepper.get_state() != Gs.StepperState.running) {
+            if (this.stepper instanceof GameWarning && this.stepper.get_state() != Gs.StepperState.running) {
+                this.stepper = new GameInstructions();
+	    }
+            else if (this.stepper instanceof GameInstructions && this.stepper.get_state() != Gs.StepperState.running) {
                 this.stepper = new GameLevels(high_scores.get_high_score());
             }
             else if (this.stepper instanceof GameLevels && this.stepper.get_state() != Gs.StepperState.running) {
@@ -71,11 +92,11 @@ export function game_mk(high_scores: Hs.HighScores): Game {
                     this.stepper = new GameHighScoreEntry(score, high_scores);
                 }
                 else {
-                    this.stepper = new GameInstructions();
+                    this.stepper = new GameWarning();
                 }
             }
             else if (this.stepper instanceof GameHighScoreEntry && this.stepper.get_state() != Gs.StepperState.running) {
-                this.stepper = new GameInstructions();
+                this.stepper = new GameWarning();
             }
         }
 
@@ -85,11 +106,18 @@ export function game_mk(high_scores: Hs.HighScores): Game {
     }
 }
 
-class GameInstructions implements Gs.Stepper {
+class GameWarning implements Gs.Stepper {
     stepper: Gs.Stepper;
 
     constructor() {
-        this.stepper = new Is.InstructionsScreen(TOP_INSTRUCTIONS, true);
+        this.stepper = new Ps.PlainScreen({
+	    title: "WARNING",
+	    skip_text: "CONTINUE: SPACE / Z / ENTER",
+	    instructions: WARNING_INSTRUCTIONS,
+	    instructions_size: 30,
+	    fg_color: RGBA.WHITE,
+	    bg_color: RGBA.DARK_MAGENTA,
+	});
     }
 
     get_state(): Gs.StepperState {
@@ -109,11 +137,22 @@ class GameInstructions implements Gs.Stepper {
     }
 }
 
-class GamePaused implements Gs.Stepper {
-    stepper: Gs.Stepper;
+class GameInstructions implements Gs.Stepper {
+    stepper: Is.InstructionsScreen;
+    last: number;
 
-    constructor() {
-        this.stepper = new Is.InstructionsScreen(TOP_INSTRUCTIONS, false);
+    constructor(private readonly play_sfx: boolean = true) {
+        this.stepper = new Is.InstructionsScreen({
+	    title: "HOW TO PLAY",
+	    instructions: MAIN_INSTRUCTIONS,
+	    size: 35,
+	    animated: true,
+	    bg_color: RGBA.DARK_BLUE,
+	});
+	if (this.play_sfx) {
+	    this.stepper.mdb.items.sfx.push({ sfx_id: K.SYNTH_C_SFX });
+	}
+	this.last = Date.now();
     }
 
     get_state(): Gs.StepperState {
@@ -130,6 +169,12 @@ class GamePaused implements Gs.Stepper {
 
     stringify(): string {
         return this.stepper.stringify();
+    }
+}
+
+class GamePaused extends GameInstructions implements Gs.Stepper {
+    constructor() {
+	super(false);
     }
 }
 
@@ -177,7 +222,7 @@ class GameLevels implements Gs.Stepper {
     }
 
     get_score(): number {
-        D.assert(!this.paused);
+        D.assert(!this.paused); // not sure why any more.
         return (this.stepper as Lis.LevelInScreens).level.get_scoring().score;
     }
 

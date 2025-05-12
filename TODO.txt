@@ -24,6 +24,32 @@ next-feature-short-list, in no order:
 * maybe things should move slower e.g. player ship?
 * see 7.1 below; have a watchdog at least?
 
+* the whole screen thing is just aweful because there are too
+  many varieties that are similar but different.
+
+* things often need more than one dimension of sorting / categorization,
+  and that shows up strongly here in the directory and file structure
+  being pretty chopped up and confusing.
+  e.g. screens are split among menu/*, level/*, and game.ts.
+
+* the db started out as being only for the core gameplay but
+  is the way to communicate with the client, so ends up being
+  needed in menus and level screens which at the moment
+  is actually badly done, bad DX. :-(
+
+* race condition between client receiving db updates from the server,
+  and the client's render happening. which means things like sounds
+  that are only in a single push from the server can be missed if
+  the render doesn't happen before the next server message.
+  (fixed for sfx only thus far.)
+
+* fyi the game loop is confusingly hidden and split up and modal
+  and depends on the database and how that steps.
+  there's the game loop in game.ts, then the db handling in
+  the components of menu/* vs. level/*.
+* also i really wish the handling of the frame dt was
+  better, more clear, more useful so i could use it in menu/*.
+
 DO THESE NOW/NEXT:
 
 + hud proximity warning makers.

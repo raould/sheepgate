@@ -123,25 +123,24 @@ class LevelWithScreen_EndScreen implements SubState {
 	"WHIMPER!",
 	"LE GRAND MORT!",
     ];
-    static PHRASE_SIZE = 80;
 
     end_screen: Les.LevelEndScreen;
-    phrase: string[];
 
     constructor(index1: number, private readonly final_state: Gs.StepperState) {
         const won = final_state == Gs.StepperState.completed;
-        this.end_screen = new Les.LevelEndScreen({
-            title: `LEVEL ${index1} ${won ? "WON!" : "LOST!"}`,
-            skip_text: `PRESS [FIRE] TO CONTINUE`,
-            bg_color: won ? RGBA.BLACK : LOST_COLOR,
-        });
 	const wonPhrase = index1 == 1 ?
 	      "YOU ROCK!" :
 	      Rnd.singleton.array_item(LevelWithScreen_EndScreen.WON_PHRASES) ?? "NICE!"
 	const lostPhrase = index1 == 1 ?
 	      "TRY AGAIN!" :
 	      Rnd.singleton.array_item(LevelWithScreen_EndScreen.LOST_PHRASES) ?? "DAGNABBIT!"
-	this.phrase = won ? [wonPhrase] : [lostPhrase];
+        this.end_screen = new Les.LevelEndScreen({
+            title: `LEVEL ${index1} ${won ? "WON!" : "LOST!"}`,
+	    instructions: won ? [wonPhrase] : [lostPhrase],
+	    size: 80,
+	    animated: true,
+            bg_color: won ? RGBA.BLACK : LOST_COLOR,
+        });
     }
 
     get_state(): Gs.StepperState {
@@ -164,19 +163,6 @@ class LevelWithScreen_EndScreen implements SubState {
 
     step(): void {
         this.end_screen.step();
-	this.step_instructions();
-    }
-
-    step_instructions(): void {
-        const center = G.v2d_mk(
-	    this.end_screen.mdb.world.bounds0.x * 0.5,
-	    this.end_screen.mdb.world.bounds0.y * 0.5
-	);
-        this.end_screen.step_instructions(
-	    center,
-	    this.phrase,
-	    LevelWithScreen_EndScreen.PHRASE_SIZE
-	);
     }
 
     stringify(): string {

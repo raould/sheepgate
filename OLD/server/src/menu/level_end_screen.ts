@@ -1,7 +1,9 @@
-import * as Sz from './sizzler_screen';
+import * as K from '../konfig';
+import * as Is from './instructions_screen';
 
-export class LevelEndScreen extends Sz.SizzlerScreen {
-    constructor(spec: Sz.SizzlerScreenSpec) {
-	super({ ...spec, timeout: 10*1000 });
+export class LevelEndScreen extends Is.InstructionsScreen {
+    constructor(spec: Is.InstructionsScreenSpec) {
+	super(spec);
+	this.mdb.items.sfx.push({ sfx_id: K.SYNTH_A_SFX });
     }
 }
