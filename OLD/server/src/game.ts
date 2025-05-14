@@ -7,6 +7,7 @@ import * as Cmd from './commands';
 import * as Gs from './game_stepper';
 import * as Hs from './high_scores';
 import * as U from './util/util';
+import * as G from './geom';
 import * as D from './debug';
 import * as K from './konfig';
 import * as Rnd from './random';
@@ -137,6 +138,7 @@ class GameWarning implements Gs.Stepper {
 class GameInstructions implements Gs.Stepper {
     stepper: Is.InstructionsScreen;
     last: number;
+    qr: any;
 
     constructor(private readonly play_sfx: boolean, animated: boolean) {
         this.stepper = new Is.InstructionsScreen({
@@ -150,6 +152,19 @@ class GameInstructions implements Gs.Stepper {
 	    this.stepper.mdb.items.sfx.push({ sfx_id: K.SYNTH_C_SFX });
 	}
 	this.last = Date.now();
+	this.qr = {
+            wrap: false,
+            image_located: {
+                resource_id: "images/qr.png",
+                rect: G.rect_mk(
+		    G.v2d_mk(
+			G.rect_w(K.SCREEN_RECT)*0.85,
+			G.rect_h(K.SCREEN_RECT)*0.75
+		    ),
+		    G.v2d_mk(80, 80),
+		),
+            }
+	};
     }
 
     get_state(): Gs.StepperState {
@@ -162,6 +177,8 @@ class GameInstructions implements Gs.Stepper {
 
     step() {
         this.stepper.step();
+	// gross, yes.
+        this.stepper.mdb.frame_drawing.images.push(this.qr);
     }
 
     stringify(): string {

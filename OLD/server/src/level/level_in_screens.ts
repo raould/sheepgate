@@ -1,8 +1,8 @@
 import * as Gs from '../game_stepper';
 import * as Cdb from '../client_db';
 import * as M from '../menu/menu';
-import * as Lss from '../menu/level_start_screen';
-import * as Les from '../menu/level_end_screen';
+import * as Lss from './level_start_screen';
+import * as Les from './level_end_screen';
 import * as Lv from './level';
 import * as G from '../geom';
 import { RGBA } from '../color';

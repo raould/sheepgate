@@ -10,7 +10,6 @@ import { RGBA } from '../color';
 export interface MenuDB extends DB.DB<DB.World> {
     frame_dt: number;
     items: { sfx: So.Sfx[]; };
-    images?: U.Dict<S.ImageLocated>;
 }
 
 export function menudb_mk(bg_color: RGBA): MenuDB {
@@ -26,7 +25,6 @@ export function menudb_mk(bg_color: RGBA): MenuDB {
         bg_color: bg_color,
         frame_drawing: Dr.drawing_mk(),
         debug_graphics: [],
-        images: {},
         frame_dt: K.DT,
 	items: { sfx: [] },
     };

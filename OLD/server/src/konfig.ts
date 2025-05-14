@@ -328,7 +328,11 @@ D.assert(ENEMY_HYPERMEGA_DAMAGE >= 1);
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L
 export const ENEMY_RETURN_FIRE_MIN_MSEC = 100; // L
 
+// note: these are not actual paths to anything used
+// on disk by the client at runtime, they are just names,
+// but they do have to be like the format `sounds/${resource}`.
 export const BEGIN_SFX = "sounds/begin.ogg";
+export const THRUST_SFX = "sounds/thrust.ogg";
 export const BEAMDOWN_SFX = "sounds/beamdown.ogg";
 export const BEAMUP_SFX = "sounds/beamup.ogg";
 export const EXPLOSION_SFX = "sounds/explosion.ogg";

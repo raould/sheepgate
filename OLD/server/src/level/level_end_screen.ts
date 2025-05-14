@@ -1,5 +1,5 @@
 import * as K from '../konfig';
-import * as Is from './instructions_screen';
+import * as Is from '../menu/instructions_screen';
 
 export class LevelEndScreen extends Is.InstructionsScreen {
     constructor(spec: Is.InstructionsScreenSpec) {

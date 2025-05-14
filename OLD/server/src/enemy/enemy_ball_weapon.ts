@@ -122,20 +122,19 @@ export function weapon_mk(spec: EnemyWeaponSpec): S.Weapon {
 }
 
 function calculate_at_vel(db: GDB.GameDB, src: S.Fighter, dst: G.Rect, spec: EnemyWeaponSpec): G.V2D {
-    const norm = G.v2d_shortest_normal(G.rect_mid(src), G.rect_mid(dst), db.shared.world.bounds0);
-    const min = G.v2d_scale(norm, spec.shot_speed);
+    const at = G.v2d_shortest_normal(G.rect_mid(src), G.rect_mid(dst), db.shared.world.bounds0);
+    const min = G.v2d_scale(at, spec.shot_speed);
     const src_vnorm = G.v2d_norm(src.vel);
-    const dot = G.v2d_dot(src_vnorm, norm);
+    const dot = G.v2d_dot(src_vnorm, at);
+
     // don't immediately run into a forward shot.
+    // todo: meh this isn't working well.
     let boost = G.v2d_mk_0();
     if (dot > 0) {
 	boost = src.vel;
     }
-    const rand = G.v2d_random_around(Rnd.singleton, G.v2d_mk(0,0), G.v2d_mk(0.1,0.01));
-    return G.v2d_add(
-	G.v2d_add(min, boost),
-	rand
-    );
+
+    return G.v2d_add(min, boost);
 }
 
 // by convention we return (left, right).

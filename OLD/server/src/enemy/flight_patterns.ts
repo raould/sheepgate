@@ -162,33 +162,34 @@ export class TargetPlayer implements FlightPattern {
 // follow a sinusoidal-ish horizontal path.
 export class DecendAndGoSine implements FlightPattern {
     private target: G.V2D;
-    private dst_y: number;
     private acc_mag: number;
     private signX: number;
+    private mid_y: number;
     private sinY: number;
     private period_factor: number;
 
+    // up to the caller to adjust y? by size.y.
     constructor(db: GDB.GameDB, size: G.V2D, acc_mag: number, y?: number) {
-        this.acc_mag = acc_mag;
-        this.target = G.rect_mid(db.shared.world.gameport.world_bounds);
-	const sizeY = K.GAMEPORT_RECT.size.y;
-	const midY = sizeY * 0.5;
-	const rangeY = sizeY * 0.2;
-        this.dst_y = y ?? Rnd.singleton.float_around(midY, rangeY);
-	this.sinY = Math.min(
-	    this.dst_y, Math.abs(K.GAMEPORT_RECT.size.y - this.dst_y)
-	) / 2;
-        this.signX = Rnd.singleton.boolean() ? -1 : 1;
+        const world_rect = db.shared.world.gameport.world_bounds;
+        this.target = G.rect_mid(world_rect); // temporary non-null value until we step.
+	const rnd_y = Rnd.singleton.float_range(
+	    G.rect_t(K.GAMEPORT_RECT) + TOP_PAD + (size.y*2),
+	    G.rect_b(K.GAMEPORT_RECT) - BOTTOM_PAD - (size.y*2),
+	);
+	this.mid_y = y ?? rnd_y;
 	this.period_factor = Rnd.singleton.float_around(2000, 250);
+	this.sinY = (size.y*2) / 2.1;
+        this.signX = Rnd.singleton.boolean() ? -1 : 1;
+        this.acc_mag = acc_mag;
     }
 
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
 	const now = db.shared.sim_now;
 	const sin_y = Math.sin(now/this.period_factor) * this.sinY;
-        const slt = G.rect_lt(src);
+        const smid = G.rect_mid(src);
         this.target = G.v2d_mk(
-	    slt.x + this.signX * 100,
-	    this.dst_y + sin_y
+	    smid.x + this.signX * 100,
+	    this.mid_y + sin_y
 	);
 	DebugGraphics.add_point(
 	    DebugGraphics.get_frame(),
@@ -200,7 +201,7 @@ export class DecendAndGoSine implements FlightPattern {
 		wrap: false,
 		color: RGBA.BLUE,
 		line_width: 3,
-		p0: slt,
+		p0: smid,
 		p1: this.target,
 	    }
 	);

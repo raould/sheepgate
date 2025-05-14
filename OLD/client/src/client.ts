@@ -1,6 +1,7 @@
 // todo: figure out the living hell that is 
 // packaging for the browser, so that this
 // can be split up & also share code w/ the server.
+import { thrust_sfx_b64 } from './thrust.ogg.b64';
 import { begin_sfx_b64 } from './begin.ogg.b64';
 import { beamdown_sfx_b64 } from './beamdown.ogg.b64';
 import { beamup_sfx_b64 } from './beamup.ogg.b64';
@@ -16,11 +17,18 @@ import { synthE_sfx_b64 } from './synthE.ogg.b64';
 import { Gamepads, StandardMapping } from './gamepads';
 import { FPS } from './fps';
  
-// so i can have everything in dark mode on my Windows machine
-const INVERT_COLORS = false;
+function assert(test: boolean, msg: string = "") {
+    if (!test) {
+	console.error("assertion failed!", msg);
+    }
+}
+
+// so i can have everything in dark mode on my Windows machine.
+// note that this kills Edge fps, but works ok with Firefox, whatevz!!!
+const INVERT_COLORS = true;
 
 // todo: use the server types.
-let server_db: any;
+let server_db_generation: { id: number; db: any; } = { id: 0, db: undefined };
 
 // todo: turn all this into an encapsulating instance.
 
@@ -32,10 +40,16 @@ let debugging_state: any = { is_stepping: false, is_drawing: false, is_annotatin
 let particles: {[k:string]:ParticlesEllipseGenerator} = {};
 let socket_ws: any;
 let h5canvas: any;
-let cxAudio: any;
 let cx2d: any;
-let sounds: any = {};
+let cxAudio: any;
+
 let images: any = {};
+
+// sfx_id resource path - to - { play function } object.
+let sounds: any = {};
+// sfx_id resource path - to - audio buffer source.
+let singletonSounds = new Map<string, any>(); 
+
 let last_render_msec = 0;
 let game_fps = 0;
 let fps = new FPS((fps) => { game_fps = fps; });
@@ -224,8 +238,8 @@ function nextFrame(/*using global server_db*/) {
     // hence this heuristic of scaling the threshold by 0.9.
     if (now - last_render_msec >= MSEC_PER_FRAME*0.9) {
         last_render_msec = now;
-	tick++;
-        render(server_db);
+	tick++; // just to be 1-based in render().
+        render(server_db_generation.db);
     } 
     window.requestAnimationFrame(nextFrame);
 }
@@ -299,12 +313,19 @@ function gameport_wrap_rect(rect: any/*G.Rect*/, gameport: any/*gameport*/, worl
 }
 
 function renderSounds(db: any) {
-    db.items.sfx?.forEach((so: any) => {
-        const sound = sounds[so.sfx_id];
-        if (!!sound) {
-            sound.play(so.gain);
+    db.items.sfx?.forEach((sfx: any) => {
+        const sound = sounds[sfx.sfx_id];
+        if (sound != null) {
+            sound.play(sfx);
         }
+	else {
+	    console.error("!! no resource for", sfx.sfx_id);
+	}
     });
+    // mutation is evil but we have to avoid
+    // playing sounds more than once if there are
+    // multiple client frames of renderSounds()
+    // between server db updates.
     db.items.sfx = [];
 }
 
@@ -519,7 +540,7 @@ function renderAllFgDrawings(gdb: any) {
 }
 
 function renderDrawing(xdb: any, drawing: any/*Dr.Drawing*/) {
-    if (drawing == undefined) {
+    if (drawing == null) {
 	return;
     }
     if (drawing?.other != null) {
@@ -686,7 +707,7 @@ function renderImage(resource_id: string, x: number, y: number, w: number, h: nu
 function renderParticles(gdb: any) {
     for (const kv of Object.entries(particles)) {
         const [pid, pgen]:[string,any] = kv;
-	if (pgen != undefined) {
+	if (pgen != null) {
             pgen.render(gdb, h5canvas);
             if (pgen.age_t(gdb) > 1) {
 		delete particles[pid];
@@ -741,7 +762,7 @@ function renderPlaying(gdb: any) {
     renderAllFgDrawings(gdb);
     // draw the hud last(ish) so it is z-on-top.
     renderHud(gdb);
-    renderDebug(gdb);        
+    renderDebug(gdb);
 }
 
 function onKeyDown(event: any) {
@@ -870,18 +891,70 @@ function applyDB(next_server_db: any) {
     // than 1 server update between client render events
     // can lose messages from anything but the last db.
     // at the moment we special case the sfx because of this.
-    const prevMenuSfx = server_db && server_db.menu_db?.items.sfx;
-    const prevGameSfx = server_db && server_db.game_db?.items.sfx;
-    if (next_server_db != undefined) {
-	server_db = next_server_db;
-    }
-    if ((prevMenuSfx?.length ?? 0) > 0 && server_db.menu_db != undefined) {
-    	server_db.menu_db.items.sfx = server_db.menu_db.items.sfx ?? [];
-    	server_db.menu_db.items.sfx.push(...prevMenuSfx);
-    }
-    if ((prevGameSfx?.length ?? 0) > 0 && server_db.game_db != undefined) {
-    	server_db.game_db.items.sfx = server_db.game_db.items.sfx ?? [];
-    	server_db.game_db.items.sfx.push(...prevGameSfx);
+    // note that there is also the opposite side of the race,
+    // where we have more than one render between server updates?!
+    // sfx vs. singleton sounds: who starts the sound? who stops it?
+
+    // * # of server db updates >= # of client renders:
+    //	+ retain the sfx until they are played by a render().
+    //  (that is what is happening here below.)
+    //  + gc singleton sfx but only if it reall is playing.
+    //  ? how do we know ?
+
+    // * # of client renders >= # of server db updates:
+    //	+ render() will play the sfx.
+    //  + render() has to account for 'singleton' sfx; start if new.
+ 
+    // i'm pretty sure a null would really be an error end to end.
+    assert(next_server_db != null, "next_server_db");
+    if (next_server_db != null) {
+	let server_db = server_db_generation.db;
+	const prevMenuSfx = server_db && server_db.menu_db?.items.sfx;
+	const prevGameSfx = server_db && server_db.game_db?.items.sfx;
+
+	server_db_generation = {
+	    id: server_db_generation.id++,
+	    db: next_server_db
+	};
+	server_db = server_db_generation.db;
+
+	// keep accumulating the sfx until a render() happens
+	// which will play, then reset the local db's sfx array
+	if ((prevMenuSfx?.length ?? 0) > 0 && server_db.menu_db != null) {
+    	    server_db.menu_db.items.sfx = server_db.menu_db.items.sfx ?? [];
+    	    server_db.menu_db.items.sfx.push(...prevMenuSfx);
+	}
+	if ((prevGameSfx?.length ?? 0) > 0 && server_db.game_db != null) {
+    	    server_db.game_db.items.sfx = server_db.game_db.items.sfx ?? [];
+    	    server_db.game_db.items.sfx.push(...prevGameSfx);
+	}
+
+
+	// todo: determine which ones are no longer needed by the server_db.
+	// unfortunately the server_db sounds are not a map, nor are they split by singletonness.
+	const nextSingletonSounds = new Map<string, any>(); 
+	if (server_db.game_db != null) {
+	    server_db.game_db.items.sfx.forEach((sfx: any) => {
+		const sound = singletonSounds.get(sfx.sfx_id);
+		if (sound != null) {
+		    nextSingletonSounds.set(sfx.sfx_id, sound);
+		    singletonSounds.delete(sfx.sfx_id);
+		}
+	    });
+	}
+	if (server_db.menu_db != null) {
+	    server_db.menu_db.items.sfx.forEach((sfx: any) => {
+		const sound = singletonSounds.get(sfx.sfx_id);
+		if (sound != null) {
+		    nextSingletonSounds.set(sfx.sfx_id, sound);
+		    singletonSounds.delete(sfx.sfx_id);
+		}
+	    });
+	}
+	singletonSounds.forEach((sound) => {
+	    sound.stop()
+	});
+	singletonSounds = nextSingletonSounds;
     }
 }
 
@@ -912,21 +985,44 @@ function base64ToAudioBuffer(base64: string): any {
     return bytes.buffer;
 }
 
+// the 'singleton' sfx code is kind of a hell; race conditions; it is split up across functions.
+// 0) there could be more than one request for a singleton in a single db.
+// (locally we only need one copy, so no arrays needed.)
+// 1) don't stack up singleton sounds.
+// 2) stop singleton sounds if they are no longer in the server_db in gcSounds().
+// 3) singletons have to be continuous i.e. loop in play().
+// 4) generationally keep singeltons that are still in demand.
+// 5) have to consider the "carry-over" aging case vs. the "was not already playing" case.
+// 6) oh and it is yet more complicated, because races between server db update & client frame render.
+function logSoundState(msg: string) {
+    const ss = Array.from(singletonSounds.keys());
+    if (ss.length > 0) { log(msg, "ss", ss); }
+}
+
 function loadSound(resource: string, base64: string) {
-    // this path is relative to where index.html lives.
+    // i guess this path is relative to where index.html lives.
+    const sfx_id = `sounds/${resource}`;
     const buffer = base64ToAudioBuffer(base64);
     cxAudio.decodeAudioData(
 	buffer,
 	(decoded: any) => {
-	    sounds[`sounds/${resource}`] = {
-		play(gain: number = 1) {
+	    sounds[sfx_id] = {
+		play: (sfx: { sfx_id: string, gain?: number, singleton?: boolean }) => {
+		    if (!!sfx.singleton && singletonSounds.has(sfx.sfx_id)) {
+			return;
+		    }
 		    const gainNode = cxAudio.createGain();
-		    gainNode.gain.value = gain;
+		    gainNode.gain.value = sfx.gain ?? 1;
 		    gainNode.connect(cxAudio.destination);
 		    const sourceNode = cxAudio.createBufferSource();
 		    sourceNode.buffer = decoded;
 		    sourceNode.connect(gainNode);
+		    sourceNode.loop = !!sfx.singleton;
 		    sourceNode.start();
+		    // the sound was not already playing.
+		    if (!!sfx.singleton && !singletonSounds.has(sfx_id)) {
+			singletonSounds.set(sfx_id, sourceNode);
+		    }
 		}
 	    }
 	},
@@ -938,6 +1034,7 @@ function loadSound(resource: string, base64: string) {
 
 function loadSounds() {
     log("can play ogg?", (new Audio()).canPlayType("audio/ogg; codecs=vorbis"));
+    loadSound("thrust.ogg", thrust_sfx_b64);
     loadSound("begin.ogg", begin_sfx_b64);
     loadSound("beamdown.ogg", beamdown_sfx_b64);
     loadSound("beamup.ogg", beamup_sfx_b64);
@@ -971,6 +1068,8 @@ function loadImages() {
     // todo: load the graphics from the server, not locally???
     // or at least share this kind of big spec's code with the server.
     
+    loadImage("qr.png");
+
     ['left', 'right'].forEach(dir => {
         ['a', 'b', 'c'].forEach(anim => {
             loadImage(`player/p1_${anim}_${dir}.png`);

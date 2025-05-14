@@ -1,4 +1,4 @@
-import * as Sz from './sizzler_screen';
+import * as Sz from '../menu/sizzler_screen';
 import * as S from '../sprite';
 import * as G from '../geom';
 import * as K from '../konfig';

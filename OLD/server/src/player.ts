@@ -15,6 +15,13 @@ import * as Cmd from './commands';
 import * as K from './konfig';
 import * as Sc from './scoring';
 import * as D from './debug';
+import * as So from './sound';
+
+const thrust_sfx: So.Sfx = {
+    sfx_id: K.THRUST_SFX,
+    gain: 0.5,
+    singleton: true
+};
 
 export type PlayerSpec = {
     facing: F.Facing;
@@ -55,6 +62,9 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
             const delta_vel_y = get_player_vel_y(db);
             this.step_pos(db, delta_acc_x, delta_vel_y);
             this.step_resource_id(db, delta_acc_x);
+	    if (delta_acc_x != 0) {
+		db.shared.items.sfx.push(thrust_sfx);
+	    }
         },
         step_pos(db: GDB.GameDB, delta_acc_x: number, delta_vel_y: number) {
             // note: jsyk this entire wall of text is the result
@@ -255,7 +265,6 @@ function flame_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
     );
 }
 
-// todo: mapping of multiple players to individual control sets.
 function get_player_acc_x(db: GDB.GameDB): number {
     const commands = db.local.client_db.inputs.commands;
     let x: number = 0;
