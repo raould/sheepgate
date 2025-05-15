@@ -2,6 +2,7 @@
 // packaging for the browser, so that this
 // can be split up & also share code w/ the server.
 import { track1_sfx_b64 } from './track1.ogg.b64';
+import { kcart1_sfx_b64 } from './kcart1.ogg.b64';
 import { thrust_sfx_b64 } from './thrust.ogg.b64';
 import { begin_sfx_b64 } from './begin.ogg.b64';
 import { beamdown_sfx_b64 } from './beamdown.ogg.b64';
@@ -1081,6 +1082,7 @@ function loadSound(resource: string, base64: string) {
 function loadSounds() {
     log("can play ogg?", (new Audio()).canPlayType("audio/ogg; codecs=vorbis"));
     loadSound("track1.ogg", track1_sfx_b64);
+    loadSound("kcart1.ogg", kcart1_sfx_b64);
     loadSound("thrust.ogg", thrust_sfx_b64);
     loadSound("begin.ogg", begin_sfx_b64);
     loadSound("beamdown.ogg", beamdown_sfx_b64);
