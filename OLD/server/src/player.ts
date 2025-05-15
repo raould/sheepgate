@@ -19,7 +19,7 @@ import * as So from './sound';
 
 const thrust_sfx: So.Sfx = {
     sfx_id: K.THRUST_SFX,
-    gain: 0.5,
+    gain: 0.2,
     singleton: true
 };
 
@@ -190,7 +190,7 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
                                 )
                             );
                             if (!!s) {
-                                db.shared.items.sfx.push({ sfx_id: K.BEAMDOWN_SFX });
+                                db.shared.items.sfx.push({ sfx_id: K.BEAMDOWN_SFX, gain: 0.5 });
                             }
                         });
                     }

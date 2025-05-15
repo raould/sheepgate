@@ -75,20 +75,20 @@ export function shot_mk(db: GDB.GameDB, src: S.Fighter, spec: ShotSpec): U.O<S.S
                 // still be there.
                 if (U.has_bits(this.in_cmask, C.CMask.playerShot) &&
                     !G.rects_are_overlapping_wrapH(this, db.shared.world.gameport.world_bounds, db.shared.world.bounds0)) {
-                    return GDB.Lifecycle.reap;
+                    return GDB.Lifecycle.dead;
                 }
 		// clip shots when they hit the ground.
                 if (G.rect_mid(this).y > db.shared.world.ground_y) {
-                    return GDB.Lifecycle.reap;
+                    return GDB.Lifecycle.dead;
                 }
                 if (this.life_msec <= 0) {
-                    return GDB.Lifecycle.reap;
+                    return GDB.Lifecycle.dead;
                 }
                 if (this.hp <= 0) {
                     this.damage = 0;
                     // todo: something architecturally better than this
                     // hack allowing the shot to appear for at least 1 frame.
-                    return this.life_msec == spec.life_msec ? GDB.Lifecycle.alive : GDB.Lifecycle.reap;
+                    return this.life_msec == spec.life_msec ? GDB.Lifecycle.alive : GDB.Lifecycle.dead;
                 }
                 return GDB.Lifecycle.alive;
             },

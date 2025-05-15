@@ -62,7 +62,7 @@ export function anim2sprite(dbid: GDB.DBID, anim: ResourceAnimator, rect: G.Rect
             this.z_back_to_front_ids = anim.z_back_to_front_ids(db);
         },
         get_lifecycle(db: GDB.GameDB) {
-            return anim.is_alive(db) ? GDB.Lifecycle.alive : GDB.Lifecycle.reap
+            return anim.is_alive(db) ? GDB.Lifecycle.alive : GDB.Lifecycle.dead
         },
         on_death(db: GDB.GameDB) {},
         toJSON() {
@@ -115,7 +115,7 @@ export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
             this.z_back_to_front_ids = [spec.resource_id, ...top];
         },
         get_lifecycle(db: GDB.GameDB) {
-            return events.is_alive(db) ? GDB.Lifecycle.alive : GDB.Lifecycle.reap
+            return events.is_alive(db) ? GDB.Lifecycle.alive : GDB.Lifecycle.dead
         },
         on_death(db: GDB.GameDB) {},
         toJSON() {
@@ -447,7 +447,7 @@ export function anim_sprite_mk(db: GDB.GameDB, anim: ResourceAnimator, rect: G.R
             this.z_back_to_front_ids = anim.z_back_to_front_ids(db);
         },
         get_lifecycle(db: GDB.GameDB) {
-            return anim.is_alive(db) ? GDB.Lifecycle.alive : GDB.Lifecycle.reap;
+            return anim.is_alive(db) ? GDB.Lifecycle.alive : GDB.Lifecycle.dead;
         },
         on_death(_:GDB.GameDB) {},
         toJSON() {

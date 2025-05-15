@@ -62,7 +62,7 @@ export function ticking_generator_mk<T>(db: GDB.GameDB, dbid: GDB.DBID, spec: Ti
             return this.generations == null || this.generation < this.generations;
         },
         get_lifecycle(db: GDB.GameDB) {
-            return this.is_alive() ? GDB.Lifecycle.alive : GDB.Lifecycle.reap;
+            return this.is_alive() ? GDB.Lifecycle.alive : GDB.Lifecycle.dead;
         },
         on_death(_: GDB.GameDB) {}
     };

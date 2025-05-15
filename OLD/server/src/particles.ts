@@ -2,41 +2,37 @@ import * as G from './geom';
 import * as GDB from './game_db';
 import * as D from './debug';
 
-export interface ParticleGenerator extends GDB.Item {
-    start_msec: number;
+// todo: kinda arbitrary units, maybe pixels/msec or something!?
+export interface IParticleGenerator extends GDB.Item {
+    isEightGrid: boolean;
     duration_msec: number;
     bounds: G.Rect;
     count: number;
-    speed: number; // kinda arbitrary units. pixels/msec maybe?!
-    gravity: number; // kinda arbitrary units!?
+    speed: number;
+    gravity: number;
 }
 
-export class ParticleEllipseGenerator implements ParticleGenerator {
-    // todo: use some DAO interface spec boilerplate reduction style?
-    dbid: GDB.DBID;
+export class ParticleGenerator implements IParticleGenerator {
     comment: string;
-    start_msec: number;
-    duration_msec: number;
-    bounds: G.Rect;
-    count: number;
-    speed: number; 
-    vel: G.V2D;
-    // todo: gravity is a hack, ie no idea what the units of measure are.
-    gravity: number;
-    constructor(dbid: GDB.DBID, start_msec: number, duration_msec: number, bounds: G.Rect, count: number, speed: number, vel: G.V2D, gravity: number = 0) {
-        this.dbid = dbid;
-        this.comment = "particles";
-        this.start_msec = start_msec;
-        this.duration_msec = duration_msec;
-        this.bounds = bounds;
-        this.count = count;
-        this.speed = speed;
-        this.vel = vel;
-        this.gravity = gravity;
+    lifecycle: GDB.Lifecycle;
+    constructor(
+	public dbid: GDB.DBID,
+	public isEightGrid: boolean, // defendery style explosions.
+	public duration_msec: number,
+	public bounds: G.Rect,
+	public count: number,
+	public speed: number,
+	public gravity: number = 0) {
+	D.log("+pgen", dbid);
+	this.comment = "particle-generator";
+	this.lifecycle = GDB.Lifecycle.alive;
     }
     get_lifecycle(db: GDB.GameDB): GDB.Lifecycle {
-        const alive = db.shared.sim_now - this.start_msec <= this.duration_msec;
-        return alive ? GDB.Lifecycle.alive : GDB.Lifecycle.reap;
+	const l = this.lifecycle;
+	this.lifecycle = GDB.Lifecycle.dead;
+	return l;
     }
-    on_death(_: GDB.GameDB) {}
+    on_death(db: GDB.GameDB) {
+	D.log("-pgen", this.dbid);
+    }
 }

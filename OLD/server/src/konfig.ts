@@ -255,7 +255,7 @@ export const DRAG_ACC = G.v2d_mk(-0.0025, -0.005); // L
 // the gameport zone code will need adjustment.
 // pixels/dt? pixels/sec? i dunno!
 export const PLAYER_DELTA_X_ACC = 0.0015; // K
-export const PLAYER_DELTA_Y_VEL = 0.15; // K
+export const PLAYER_DELTA_Y_VEL = 0.20; // K
 
 export const PLAYER_BEAM_MAX_VEL2 = 0.2; // K
 export const PEOPLE_SIZE = G.v2d_mk_nn(32); // K
@@ -278,10 +278,10 @@ export const PLAYER_ANIM_FRAME_MSEC = 1000 / 5; // K.
 export const SHIELD_HIT_ANIM_MSEC = 0.5 * 1000; // K? // L?
 export const SHIELD_HIT_ANIM_RADIUS = 0.1; // arbitrary hack. // K? // L?
 
-export const EXPLOSION_PARTICLE_COUNT = 500; // K
+export const EXPLOSION_PARTICLE_COUNT = 8 * 5; // K
 export const EXPLOSION_PARTICLE_DURATION_MSEC = 500; // K
 export const EXPLOSION_PARTICLE_SPEED = 0.2; // units? K
-export const SHIELD_HIT_PARTICLE_COUNT = 250; // K
+export const SHIELD_HIT_PARTICLE_COUNT = 100; // K
 export const SHIELD_HIT_PARTICLE_DURATION_MSEC = 250; // K
 export const SHIELD_HIT_PARTICLE_SPEED = 0.1; // units? K
 
@@ -331,6 +331,7 @@ export const ENEMY_RETURN_FIRE_MIN_MSEC = 100; // L
 // note: these are not actual paths to anything used
 // on disk by the client at runtime, they are just names,
 // but they do have to be like the format `sounds/${resource}`.
+export const TRACK1_SFX = "sounds/track1.ogg";
 export const BEGIN_SFX = "sounds/begin.ogg";
 export const THRUST_SFX = "sounds/thrust.ogg";
 export const BEAMDOWN_SFX = "sounds/beamdown.ogg";

@@ -19,6 +19,8 @@ import * as L2 from './level/level2/level2';
 import * as L3 from './level/level3/level3';
 import * as L4 from './level/level4/level4';
 
+const TRACK1_SFX = { sfx_id: K.TRACK1_SFX, gain: 0.3, singleton: true };
+
 // the leading blank lines are a hack, yes :-(
 const WARNING_INSTRUCTIONS = [
     " ",
@@ -177,8 +179,9 @@ class GameInstructions implements Gs.Stepper {
 
     step() {
         this.stepper.step();
-	// gross, yes.
+	// reaching into mdb like this is gross, yes.
         this.stepper.mdb.frame_drawing.images.push(this.qr);
+	this.stepper.mdb.items.sfx.push(TRACK1_SFX);
     }
 
     stringify(): string {

@@ -75,7 +75,7 @@ export function explosionImg_mk(db: GDB.GameDB, spec: ExplosionImgSpec): S.Explo
                 anim => anim.is_alive(db),
                 () => false
             );
-            return is ? GDB.Lifecycle.alive : GDB.Lifecycle.reap;
+            return is ? GDB.Lifecycle.alive : GDB.Lifecycle.dead;
         },
         on_death(_:GDB.GameDB) {
             delete animations[this.dbid];

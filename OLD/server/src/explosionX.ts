@@ -44,7 +44,7 @@ export function explosionX_mk(db: GDB.GameDB, spec: ExplosionBSpec): S.Explosion
                 this.anim,
                 (anim: ExplosionAnimation) => anim.is_alive(db)
             ) || false;
-            return is ? GDB.Lifecycle.alive : GDB.Lifecycle.reap;
+            return is ? GDB.Lifecycle.alive : GDB.Lifecycle.dead;
         },
         on_death(_:GDB.GameDB) {},
         toJSON() {

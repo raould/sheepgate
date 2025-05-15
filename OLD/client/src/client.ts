@@ -1,6 +1,7 @@
 // todo: figure out the living hell that is 
 // packaging for the browser, so that this
 // can be split up & also share code w/ the server.
+import { track1_sfx_b64 } from './track1.ogg.b64';
 import { thrust_sfx_b64 } from './thrust.ogg.b64';
 import { begin_sfx_b64 } from './begin.ogg.b64';
 import { beamdown_sfx_b64 } from './beamdown.ogg.b64';
@@ -37,7 +38,7 @@ let inputs: {commands: {[k:string]:boolean}, keys: {[k:string]:boolean}} = {
 };
 // todo: unfortunately if is_stepping is true at the start, things break. fix it!
 let debugging_state: any = { is_stepping: false, is_drawing: false, is_annotating: false };
-let particles: {[k:string]:ParticlesEllipseGenerator} = {};
+let particles: {[k:string]:AbstractParticleGenerator} = {};
 let socket_ws: any;
 let h5canvas: any;
 let cx2d: any;
@@ -132,7 +133,7 @@ const key2cmd: { [k: string]: CommandSpec } = {
     "&":        { command: CommandType.debug_lose_level, is_singular: true },
 };
 
-class ParticlesEllipseGenerator {
+abstract class AbstractParticleGenerator {
     // "o" means "offset" because we're keeping the particles
     // as just a long array-of-structs that is nothing but floats.
     // (todo: yes there's maybe still a bug where the generator might
@@ -140,39 +141,13 @@ class ParticlesEllipseGenerator {
     ox = 0;
     oy = 1;
     ovx = 2;
-    ovy = 3; ostep = this.ovy+1;
+    ovy = 3;
+    ostep = 4; // four floats per particle: ox, oy, ovx, ovy.
     pdim = 2;
-    count: number;
-    start_msec: number;
-    duration_msec: number;
-    gravity: number;
     particles: Float32Array;
-    constructor(count: number, duration_msec: number, start_msec: number, speed: number, vel: any/*G.V2D*/, bounds: any/*G.Rect*/, gravity: number) {
-        this.count = count;
-        this.duration_msec = duration_msec;
-        this.start_msec = start_msec;
-        this.gravity = gravity;
+    constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/, public gravity: number, particles_mk: (self: AbstractParticleGenerator) => void) {
         this.particles = new Float32Array(this.count * this.ostep);
-        const mx = bounds.lt.x + bounds.size.x/2;
-        const my = bounds.lt.y + bounds.size.y/2;
-        const rx = bounds.size.x/2;
-        const ry = bounds.size.y/2;
-        const vx = vel.x;
-        const vy = vel.y;
-        for (let i = 0; i < this.count; i += this.ostep) {
-            // todo: shared libs with server so we can have the random lib, geom lib, etc.
-            // todo: this isn't generating "fair" particles so the explosions look a little weird.
-            const radians = Math.random() * Math.PI * 2;
-            const ix = mx + rx * Math.cos(radians);
-            const iy = my + ry * Math.sin(radians);
-            this.particles[i + this.ox] = ix;
-            this.particles[i + this.oy] = iy;
-            const ivx = ix - mx;
-            const ivy = iy - my;
-            const d = Math.sqrt(ivx * ivx + ivy * ivy);
-            this.particles[i + this.ovx] = vx + ivx / d * speed * (Math.random() + 0.5);
-            this.particles[i + this.ovy] = vy + ivy / d * speed * (Math.random() + 0.5);
-        }
+	particles_mk(this);
     }
     age_t(gdb: any): number {
         const elapsed_msec = gdb.sim_now - this.start_msec;
@@ -193,11 +168,11 @@ class ParticlesEllipseGenerator {
             const a1 = Math.min(1, Math.max(0.5, 1 - this.age_t(gdb))); // 0.5 is arbitrary, yes.
             const fs = `rgba(64,0,0,${a1})`;
             // nifty trails, arbitrary hard-coded hacked values.
+            const sxy1 = v2sv_wrapped({x:x1, y:y1}, gdb.world.gameport, gdb.world.bounds0, true);
             cx2d.beginPath();
-            cx2d.lineWidth = 1;
+            cx2d.lineWidth = 2;
             const ss = `rgba(255,255,0,${a1})`;
             cx2d.strokeStyle = ss;
-            const sxy1 = v2sv_wrapped({x:x1, y:y1}, gdb.world.gameport, gdb.world.bounds0, true);
             cx2d.moveTo(sxy1.x+this.pdim/2, sxy1.y+this.pdim/2);
             cx2d.lineTo(sxy1.x+this.pdim/2 - vx * 10, sxy1.y+this.pdim/2 - vy * 10);
             cx2d.stroke();
@@ -206,7 +181,7 @@ class ParticlesEllipseGenerator {
             cx2d.fillRect(sxy1.x, sxy1.y, this.pdim, this.pdim);
             if (debugging_state.is_drawing) {
                 cx2d.beginPath();
-                cx2d.lineWidth = 1;
+                cx2d.lineWidth = 4;
                 cx2d.strokeStyle = "#00FF0033";
                 cx2d.moveTo(sxy1.x, sxy1.y);
                 cx2d.lineTo(sxy1.x + vx * 100, sxy1.y + vy * 100);
@@ -215,6 +190,65 @@ class ParticlesEllipseGenerator {
         }
     }
 }
+
+class ParticlesEllipseGenerator extends AbstractParticleGenerator {
+    constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/, public gravity: number) {
+	super(count, duration_msec, start_msec, speed, bounds, gravity, 
+	      (self) => {
+		  const mx = bounds.lt.x + bounds.size.x/2;
+		  const my = bounds.lt.y + bounds.size.y/2;
+		  const rx = bounds.size.x/2;
+		  const ry = bounds.size.y/2;
+		  for (let i = 0; i < self.count; i += self.ostep) {
+		      // todo: shared libs with server so we can have the random lib, geom lib, etc.
+		      // todo: self isn't generating "fair" particles so the explosions look a little weird.
+		      const radians = Math.random() * Math.PI * 2;
+		      const ix = mx + rx * Math.cos(radians);
+		      const iy = my + ry * Math.sin(radians);
+		      self.particles[i + self.ox] = ix;
+		      self.particles[i + self.oy] = iy;
+		      const ivx = ix - mx;
+		      const ivy = iy - my;
+		      const d = Math.sqrt(ivx * ivx + ivy * ivy);
+		      self.particles[i + self.ovx] = ivx / d * speed * (Math.random() + 0.5);
+		      self.particles[i + self.ovy] = ivy / d * speed * (Math.random() + 0.5);
+		  }
+	      });
+    }
+}
+
+const P8 = [
+    [-1, -1], [0, -1], [1, -1],
+    [-1, 0],         , [1, 0],
+    [-1, 1],  [0, 1],  [1, 1]
+];
+
+class ParticlesEightGenerator extends AbstractParticleGenerator {
+    constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/, public gravity: number) {
+	super(count, duration_msec, start_msec, speed, bounds, gravity, 
+	      (self) => {
+		  const mx = bounds.lt.x + bounds.size.x/2;
+		  const my = bounds.lt.y + bounds.size.y/2;
+		  const rx = bounds.size.x/2;
+		  const ry = bounds.size.y/2;
+		  for (let i = 0; i < self.count; i += self.ostep) {
+		      // todo: shared libs with server so we can have the random lib, geom lib, etc.
+		      // todo: self isn't generating "fair" particles so the explosions look a little weird.
+		      const radians = Math.random() * Math.PI * 2;
+		      const ix = mx + rx * Math.cos(radians);
+		      const iy = my + ry * Math.sin(radians);
+		      self.particles[i + self.ox] = ix;
+		      self.particles[i + self.oy] = iy;
+		      const ivx = ix - mx;
+		      const ivy = iy - my;
+		      const d = Math.sqrt(ivx * ivx + ivy * ivy);
+		      self.particles[i + self.ovx] = ivx / d * speed * (Math.random() + 0.5);
+		      self.particles[i + self.ovy] = ivy / d * speed * (Math.random() + 0.5);
+		  }
+	      });
+    }
+}
+
 
 function log(...args: any) {
     console.log(...args);
@@ -958,20 +992,32 @@ function applyDB(next_server_db: any) {
     }
 }
 
+// once particles are created, they live outside the server_db updates.
 function applyParticles(gdb: any) {
     if (gdb == null) { return; }
     for (const kv of Object.entries(gdb.items.particles)) {
         const [pid, pspec]:[string,any] = kv;
         if (particles[pid] == null) {
-            particles[pid] = new ParticlesEllipseGenerator(
-                pspec.count,
-                pspec.duration_msec,
-                gdb.sim_now,
-                pspec.speed,
-                pspec.vel,
-                pspec.bounds,
-                pspec.gravity
-            );
+	    if (pspec.isEightGrid) {
+		particles[pid] = new ParticlesEightGenerator(
+                    pspec.count,
+                    pspec.duration_msec,
+                    gdb.sim_now,
+                    pspec.speed,
+                    pspec.bounds,
+                    pspec.gravity
+		);
+	    }
+	    else {
+		particles[pid] = new ParticlesEllipseGenerator(
+                    pspec.count,
+                    pspec.duration_msec,
+                    gdb.sim_now,
+                    pspec.speed,
+                    pspec.bounds,
+                    pspec.gravity
+		);
+	    }
         }
     }
 }
@@ -1034,6 +1080,7 @@ function loadSound(resource: string, base64: string) {
 
 function loadSounds() {
     log("can play ogg?", (new Audio()).canPlayType("audio/ogg; codecs=vorbis"));
+    loadSound("track1.ogg", track1_sfx_b64);
     loadSound("thrust.ogg", thrust_sfx_b64);
     loadSound("begin.ogg", begin_sfx_b64);
     loadSound("beamdown.ogg", beamdown_sfx_b64);

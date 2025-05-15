@@ -153,28 +153,28 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
                             this.hp -= sprite.damage;
                             GDB.add_dict_id_mut(
                                 db.shared.items.particles,
-                                (dbid: GDB.DBID) => new Pr.ParticleEllipseGenerator(
+                                (dbid: GDB.DBID) => new Pr.ParticleGenerator(
                                     dbid,
-                                    db.shared.sim_now,
-                                    K.SHIELD_HIT_PARTICLE_COUNT,
-                                    this,
+				    false,
                                     K.SHIELD_HIT_PARTICLE_DURATION_MSEC,
+                                    this,
+                                    K.SHIELD_HIT_PARTICLE_COUNT,
                                     K.SHIELD_HIT_PARTICLE_SPEED,
-                                    G.v2d_mk_0()
+				    0,
                                 )
                             );                        
                             break;
                     }
                 },
                 get_lifecycle(_: GDB.GameDB): GDB.Lifecycle {
-                    return this.hp > 0 ? GDB.Lifecycle.alive : GDB.Lifecycle.reap;
+                    return this.hp > 0 ? GDB.Lifecycle.alive : GDB.Lifecycle.dead;
                 },
                 on_death(db: GDB.GameDB) {
                     U.if_let(
                         this.get_wrapped(db),
                         fighter => {
                             on_death_fx(db, this, fighter);
-                            fighter.set_lifecycle(GDB.Lifecycle.reap);
+                            fighter.set_lifecycle(GDB.Lifecycle.dead);
                         }
                     );
                 },
@@ -211,17 +211,14 @@ function on_death_fx(db: GDB.GameDB, shield: ShieldPrivate, fighter: S.Fighter) 
     if (fighter.rank >= S.Rank.hypermega || fighter.rank == S.Rank.player) {
         GDB.add_dict_id_mut(
             db.shared.items.particles,
-            (dbid: GDB.DBID) => new Pr.ParticleEllipseGenerator(
+            (dbid: GDB.DBID) => new Pr.ParticleGenerator(
                 dbid,
-                db.shared.sim_now,
+		true,
                 K.EXPLOSION_PARTICLE_DURATION_MSEC,
-                // todo: this is a hack to make the explosions more axial.
-                // really it should perhaps be more about the velocities making
-                // the axial ellipse effect.
-                G.rect_scale_mid_v2d(r, G.v2d_mk(0.2, 1.2)),
+		r,
                 K.EXPLOSION_PARTICLE_COUNT,
                 K.EXPLOSION_PARTICLE_SPEED,
-                G.v2d_mk_0()
+		0
             )
         );
         GDB.add_sprite_dict_id_mut(

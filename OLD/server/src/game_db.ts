@@ -56,7 +56,7 @@ export interface Comment {
 }
 export enum Lifecycle {
     alive,
-    reap
+    dead,
 }
 
 export interface Aliveness {
@@ -437,7 +437,7 @@ export function reap_particles(db: GameDB) {
     // todo: fuhgly that 'particle' handling is some super special hard coded stuff right here. :(
     for (const kv of Object.entries(db.shared.items.particles)) {
         const [pid, pgen]: [string, Pr.ParticleGenerator] = kv;
-        if (pgen.get_lifecycle(db) == Lifecycle.reap) {
+        if (pgen.get_lifecycle(db) == Lifecycle.dead) {
             delete db.shared.items.particles[pid];
         }
     }

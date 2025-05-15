@@ -154,12 +154,12 @@ function waiting_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Person {
             D.assert(false, "wtf");
         },
         beam_up(db: GDB.GameDB) {
-            this.lifecycle_state = GDB.Lifecycle.reap;
+            this.lifecycle_state = GDB.Lifecycle.dead;
             GDB.add_sprite_dict_id_mut(
                 db.shared.items.fx,
                 (dbid: GDB.DBID): S.Sprite => beaming_up_anim_mk(db, dbid, this)
             );
-            db.shared.items.sfx.push({ sfx_id: K.BEAMUP_SFX });
+            db.shared.items.sfx.push({ sfx_id: K.BEAMUP_SFX, gain: 0.5 });
         },
         get_lifecycle(_:GDB.GameDB) {
             return this.lifecycle_state;

@@ -76,7 +76,7 @@ export function gem_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Gem {
             return this.lifecycle_state;
         },
         collide(db: GDB.GameDB, dsts: Set<S.CollidableSprite>) {
-            this.lifecycle_state = GDB.Lifecycle.reap;
+            this.lifecycle_state = GDB.Lifecycle.dead;
         },
         on_death(_:GDB.GameDB) {},
         toJSON() {
