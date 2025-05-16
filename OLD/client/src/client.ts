@@ -1161,8 +1161,11 @@ function loadImages() {
     loadImage("enemies/basic3/gh3.png");
 
     loadImage("enemies/e1/e1.png");
-    loadImage("enemies/e11/e11a.png");
     loadImage("enemies/e18/e18.png");
+
+    loadImage("enemies/e11/e11a.png");
+    loadImage("enemies/e11/e11b.png");
+    loadImage("enemies/e11/e11c.png");
 
     ["l", "r"].forEach(d => {
         loadImage(`enemies/e15/e15${d}.png`);

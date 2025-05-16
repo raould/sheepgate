@@ -70,7 +70,12 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
             animator: A.animator_mk(
                 db.shared.sim_now,
                 {
-                    resource_id: images.lookup("enemies/e11/e11a.png"),
+		    frame_msec: 200,
+                    resource_ids: [
+                        ...images.lookup_range_a(a => `enemies/e11/e11${a}.png`, ['a','b','c'])
+                    ],
+                    starting_mode: A.MultiImageStartingMode.hold,
+                    ending_mode: A.MultiImageEndingMode.bounce,
                 }
             )
         });
