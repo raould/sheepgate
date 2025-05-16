@@ -39,9 +39,9 @@ const MAIN_INSTRUCTIONS = [
     "RETURN HUMANS TO BASE.",
     "DEFEAT ALL ENEMIES.",
     " ",
+    "MOVE: {WASD} / {ARROWS} / {VI}",
     "FIRE: SPACE / Z / ENTER",
-    "MOVE: {W,A,S,D} / {ARROW KEYS}",
-    "PAUSE: ESC",
+    "PAUSE: ESC, P",
 ];
 
 export interface Game {
