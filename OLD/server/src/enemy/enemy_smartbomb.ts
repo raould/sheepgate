@@ -7,8 +7,10 @@ import * as A from '../animation';
 import * as U from '../util/util';
 import * as F from '../facing';
 import * as Fp from '../enemy/flight_patterns';
-import * as E from '../enemy/enemy_mk';
+import * as Emk from '../enemy/enemy_mk';
 import * as K from '../konfig';
+
+const FLYING_SFX = { sfx_id: K.SMARTBOMB_SFX, gain: 0.4, singleton: true };
 
 // match: sprite animation.
 export const SIZE = G.v2d_mk(20, 20);
@@ -32,7 +34,7 @@ export function smartbomb_mk(db: GDB.GameDB, lt: G.V2D): U.O<S.Enemy> {
     const images = db.uncloned.images;
     const sprite = GDB.add_sprite_dict_id_mut(
         db.shared.items.enemies,
-        (dbid: GDB.DBID): U.O<S.Enemy> => E.sprite_mk(db, rect, spec)
+        (dbid: GDB.DBID): U.O<S.Enemy> => Emk.sprite_mk(db, rect, spec)
     );
     // unfortunately enemy collisions don't work w/out shields.
     if (sprite != null) {
@@ -78,7 +80,7 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
     return table;
 }
 
-function add_shield(db: GDB.GameDB, enemy: S.Enemy, spec: E.EnemySpec) {
+function add_shield(db: GDB.GameDB, enemy: S.Enemy, spec: Emk.EnemySpec) {
     const images = db.uncloned.images;
     Sh.add_fighter_shield(db, {
         resource_id: images.lookup("shield/shield2.png"),

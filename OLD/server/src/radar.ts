@@ -131,7 +131,7 @@ function render_base(db: GDB.GameDB, sprite: S.Base, center: S.Player) {
             wrap: false,
             line_width: 1,
             color: K.GOOD_COLOR,
-            is_filled: false,
+            is_filled: true,
             rect: r
         })
     );

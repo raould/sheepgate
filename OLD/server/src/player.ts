@@ -190,7 +190,7 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
                                 )
                             );
                             if (!!s) {
-                                db.shared.items.sfx.push({ sfx_id: K.BEAMDOWN_SFX, gain: 0.5 });
+                                db.shared.items.sfx.push({ sfx_id: K.BEAMDOWN_SFX, gain: 0.35 });
                             }
                         });
                     }

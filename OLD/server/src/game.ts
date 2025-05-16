@@ -81,7 +81,7 @@ export function game_mk(high_scores: Hs.HighScores): Game {
 	step() {
             this.stepper.step();
             if (this.stepper instanceof GameWarning && this.stepper.get_state() != Gs.StepperState.running) {
-                this.stepper = new GameInstructions(true, true);
+                this.stepper = new GameInstructions();
 	    }
             else if (this.stepper instanceof GameInstructions && this.stepper.get_state() != Gs.StepperState.running) {
                 this.stepper = new GameLevels(high_scores.get_high_score());
@@ -142,7 +142,7 @@ class GameInstructions implements Gs.Stepper {
     last: number;
     qr: any;
 
-    constructor(private readonly play_sfx: boolean, animated: boolean) {
+    constructor() {
         this.stepper = new Is.InstructionsScreen({
 	    title: "HOW TO PLAY",
 	    instructions: MAIN_INSTRUCTIONS,
@@ -150,9 +150,7 @@ class GameInstructions implements Gs.Stepper {
 	    animated: true,
 	    bg_color: RGBA.DARK_BLUE,
 	});
-	if (this.play_sfx) {
-	    this.stepper.mdb.items.sfx.push({ sfx_id: K.SYNTH_C_SFX });
-	}
+	this.stepper.mdb.items.sfx.push({ sfx_id: K.SYNTH_C_SFX });
 	this.last = Date.now();
 	this.qr = {
             wrap: false,
@@ -189,9 +187,51 @@ class GameInstructions implements Gs.Stepper {
     }
 }
 
-class GamePaused extends GameInstructions implements Gs.Stepper {
+class GamePaused implements Gs.Stepper {
+    stepper: Is.InstructionsScreen;
+    last: number;
+    qr: any;
+
     constructor() {
-	super(false, false);
+        this.stepper = new Is.InstructionsScreen({
+	    title: "GAME PAUSED",
+	    instructions: MAIN_INSTRUCTIONS,
+	    size: 35,
+	    animated: false,
+	    bg_color: RGBA.DARK_BLUE,
+	});
+	this.last = Date.now();
+	this.qr = {
+            wrap: false,
+            image_located: {
+                resource_id: "images/qr.png",
+                rect: G.rect_mk(
+		    G.v2d_mk(
+			G.rect_w(K.SCREEN_RECT)*0.85,
+			G.rect_h(K.SCREEN_RECT)*0.75
+		    ),
+		    G.v2d_mk(80, 80),
+		),
+            }
+	};
+    }
+
+    get_state(): Gs.StepperState {
+        return this.stepper.get_state();
+    }
+
+    merge_client_db(cnew: Cdb.ClientDB) {
+        this.stepper.merge_client_db(cnew);
+    }
+
+    step() {
+        this.stepper.step();
+	// reaching into mdb like this is gross, yes.
+        this.stepper.mdb.frame_drawing.images.push(this.qr);
+    }
+
+    stringify(): string {
+        return this.stepper.stringify();
     }
 }
 

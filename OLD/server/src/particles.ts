@@ -9,7 +9,6 @@ export interface IParticleGenerator extends GDB.Item {
     bounds: G.Rect;
     count: number;
     speed: number;
-    gravity: number;
 }
 
 export class ParticleGenerator implements IParticleGenerator {
@@ -21,8 +20,7 @@ export class ParticleGenerator implements IParticleGenerator {
 	public duration_msec: number,
 	public bounds: G.Rect,
 	public count: number,
-	public speed: number,
-	public gravity: number = 0) {
+	public speed: number) {
 	D.log("+pgen", dbid);
 	this.comment = "particle-generator";
 	this.lifecycle = GDB.Lifecycle.alive;
@@ -36,3 +34,26 @@ export class ParticleGenerator implements IParticleGenerator {
 	D.log("-pgen", this.dbid);
     }
 }
+
+export class ParticleEllipseGenerator extends ParticleGenerator {
+    constructor(
+	public dbid: GDB.DBID,
+	public duration_msec: number,
+	public bounds: G.Rect,
+	public count: number,
+	public speed: number) {
+	super(dbid, false, duration_msec, bounds, count, speed);
+    }
+}
+    
+export class ParticleEightGenerator extends ParticleGenerator {
+    constructor(
+	public dbid: GDB.DBID,
+	public duration_msec: number,
+	public bounds: G.Rect,
+	public count: number,
+	public speed: number) {
+	super(dbid, true, duration_msec, bounds, count, speed);
+    }
+}
+

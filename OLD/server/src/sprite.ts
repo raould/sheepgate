@@ -109,6 +109,18 @@ export enum Rank {
     hypermega,
 };
 
+// values.length must be >= 5, one per rank.
+export function rank2value(rank: Rank, values: any[]): any {
+    switch (rank) {
+    case Rank.basic: return values[0];
+    case Rank.small: return values[1];
+    case Rank.player: return values[2];
+    case Rank.mega: return values[3];
+    case Rank.hypermega: return values[4];
+    default: U.unreachable(rank);
+    }
+}
+
 // sad that i am too lazy to actually thread
 // mass through all the sprites so i did this
 // crappy hack instead. todo: not this!

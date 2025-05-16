@@ -278,12 +278,13 @@ export const PLAYER_ANIM_FRAME_MSEC = 1000 / 5; // K.
 export const SHIELD_HIT_ANIM_MSEC = 0.5 * 1000; // K? // L?
 export const SHIELD_HIT_ANIM_RADIUS = 0.1; // arbitrary hack. // K? // L?
 
-export const EXPLOSION_PARTICLE_COUNT = 8 * 5; // K
-export const EXPLOSION_PARTICLE_DURATION_MSEC = 500; // K
+export const EXPLOSION_PARTICLE_COUNT = 4 * 5; // K // match: 4 is client particles float size.
+export const EXPLOSION_PARTICLE_DURATION_MSEC = 1000; // K
 export const EXPLOSION_PARTICLE_SPEED = 0.2; // units? K
-export const SHIELD_HIT_PARTICLE_COUNT = 100; // K
+export const SHIELD_HIT_PARTICLE_COUNT = 25; // K
 export const SHIELD_HIT_PARTICLE_DURATION_MSEC = 250; // K
 export const SHIELD_HIT_PARTICLE_SPEED = 0.1; // units? K
+export const P8_COUNT_SCALES = [2, 3, 4, 5, 6];
 
 // empty means you wanted it to not be there,
 // missing means it wasn't found and is a bug.
@@ -346,6 +347,9 @@ export const SYNTH_B_SFX = "sounds/synthB.ogg";
 export const SYNTH_C_SFX = "sounds/synthC.ogg";
 export const SYNTH_D_SFX = "sounds/synthD.ogg";
 export const SYNTH_E_SFX = "sounds/synthE.ogg";
+export const SHOT1_SFX = "sounds/shot1.ogg";
+export const SHOT2_SFX = "sounds/shot2.ogg";
+export const SMARTBOMB_SFX = "sounds/smartbomb.ogg";
 
 // match: game.ts
 export const LEVEL_TEMPLATE_COUNT = 4;

@@ -143,27 +143,29 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
                     U.if_let(spec.on_collide, c => c(this, db, sprite, reaction));
                     U.if_let(this.get_wrapped(db), w => w.on_collide(db, sprite));
                     switch (reaction) {
-                        case C.Reaction.ignore:
-                            break;
-                        case C.Reaction.fx:
-                            this.anim = new ShieldHitAnimation(db, this.dbid);
-                            break;
-                        case C.Reaction.hp:
-                            this.anim = new ShieldHitAnimation(db, this.dbid);
-                            this.hp -= sprite.damage;
-                            GDB.add_dict_id_mut(
-                                db.shared.items.particles,
-                                (dbid: GDB.DBID) => new Pr.ParticleGenerator(
-                                    dbid,
-				    false,
-                                    K.SHIELD_HIT_PARTICLE_DURATION_MSEC,
-                                    this,
-                                    K.SHIELD_HIT_PARTICLE_COUNT,
-                                    K.SHIELD_HIT_PARTICLE_SPEED,
-				    0,
-                                )
-                            );                        
-                            break;
+                    case C.Reaction.ignore: {
+                        break;
+		    }
+                    case C.Reaction.fx: {
+                        this.anim = new ShieldHitAnimation(db, this.dbid);
+                        break;
+		    }
+                    case C.Reaction.hp: {
+                        this.anim = new ShieldHitAnimation(db, this.dbid);
+			db.shared.items.sfx.push({ sfx_id: K.EXPLOSION_SFX, gain: 0.45 });
+                        this.hp -= sprite.damage;
+                        GDB.add_dict_id_mut(
+                            db.shared.items.particles,
+                            (dbid: GDB.DBID) => new Pr.ParticleEllipseGenerator(
+                                dbid,
+                                K.SHIELD_HIT_PARTICLE_DURATION_MSEC,
+                                this,
+                                K.SHIELD_HIT_PARTICLE_COUNT,
+                                K.SHIELD_HIT_PARTICLE_SPEED,
+                            )
+                        );                        
+                        break;
+		    }
                     }
                 },
                 get_lifecycle(_: GDB.GameDB): GDB.Lifecycle {
@@ -208,19 +210,21 @@ function on_death_fx(db: GDB.GameDB, shield: ShieldPrivate, fighter: S.Fighter) 
             })
         }
     );
+    const p8count = Math.floor(
+	K.EXPLOSION_PARTICLE_COUNT *
+	    S.rank2value(fighter.rank, K.P8_COUNT_SCALES)
+    );
+    GDB.add_dict_id_mut(
+        db.shared.items.particles,
+        (dbid: GDB.DBID) => new Pr.ParticleEightGenerator(
+            dbid,
+            K.EXPLOSION_PARTICLE_DURATION_MSEC,
+	    G.rect_scale_mid(r, 0.5),
+            K.EXPLOSION_PARTICLE_COUNT,
+            K.EXPLOSION_PARTICLE_SPEED,
+        )
+    );
     if (fighter.rank >= S.Rank.hypermega || fighter.rank == S.Rank.player) {
-        GDB.add_dict_id_mut(
-            db.shared.items.particles,
-            (dbid: GDB.DBID) => new Pr.ParticleGenerator(
-                dbid,
-		true,
-                K.EXPLOSION_PARTICLE_DURATION_MSEC,
-		r,
-                K.EXPLOSION_PARTICLE_COUNT,
-                K.EXPLOSION_PARTICLE_SPEED,
-		0
-            )
-        );
         GDB.add_sprite_dict_id_mut(
             db.shared.items.explosions,
             (dbid: GDB.DBID): S.Explosion => {

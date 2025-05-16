@@ -16,6 +16,9 @@ import { synthB_sfx_b64 } from './synthB.ogg.b64';
 import { synthC_sfx_b64 } from './synthC.ogg.b64';
 import { synthD_sfx_b64 } from './synthD.ogg.b64';
 import { synthE_sfx_b64 } from './synthE.ogg.b64';
+import { shot1_sfx_b64 } from './shot1.ogg.b64';
+import { shot2_sfx_b64 } from './shot2.ogg.b64';
+import { smartbomb_sfx_b64 } from './smartbomb.ogg.b64';
 import { Gamepads, StandardMapping } from './gamepads';
 import { FPS } from './fps';
  
@@ -27,7 +30,7 @@ function assert(test: boolean, msg: string = "") {
 
 // so i can have everything in dark mode on my Windows machine.
 // note that this kills Edge fps, but works ok with Firefox, whatevz!!!
-const INVERT_COLORS = false;
+const INVERT_COLORS = true;
 
 // todo: use the server types.
 let server_db_generation: { id: number; db: any; } = { id: 0, db: undefined };
@@ -143,10 +146,11 @@ abstract class AbstractParticleGenerator {
     oy = 1;
     ovx = 2;
     ovy = 3;
-    ostep = 4; // four floats per particle: ox, oy, ovx, ovy.
+    osize = 4;
+    ostep = 5; // four floats per particle: ox, oy, ovx, ovy, size.
     pdim = 2;
     particles: Float32Array;
-    constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/, public gravity: number, particles_mk: (self: AbstractParticleGenerator) => void) {
+    constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/, particles_mk: (self: AbstractParticleGenerator) => void) {
         this.particles = new Float32Array(this.count * this.ostep);
 	particles_mk(this);
     }
@@ -158,20 +162,20 @@ abstract class AbstractParticleGenerator {
     // note: this is step() and render() together in one.
     render(gdb: any, h5canvas: any) {
         const elapsed_msec = gdb.sim_now - this.start_msec;
-        for (let i = 0; i < this.count; i += this.ostep) {
+        for (let i = 0; i < this.count * this.ostep; i += this.ostep) {
             const x0 = this.particles[i + this.ox];
             const y0 = this.particles[i + this.oy];
             const vx = this.particles[i + this.ovx];
             const vy = this.particles[i + this.ovy];
-            const gy = this.gravity * elapsed_msec;
+	    const size = this.particles[i + this.osize];
             const x1 = x0 + vx * elapsed_msec;
-            const y1 = y0 + (vy + gy) * elapsed_msec;
+            const y1 = y0 + vy * elapsed_msec;
             const a1 = Math.min(1, Math.max(0.5, 1 - this.age_t(gdb))); // 0.5 is arbitrary, yes.
             const fs = `rgba(64,0,0,${a1})`;
             // nifty trails, arbitrary hard-coded hacked values.
             const sxy1 = v2sv_wrapped({x:x1, y:y1}, gdb.world.gameport, gdb.world.bounds0, true);
             cx2d.beginPath();
-            cx2d.lineWidth = 2;
+            cx2d.lineWidth = size/2;
             const ss = `rgba(255,255,0,${a1})`;
             cx2d.strokeStyle = ss;
             cx2d.moveTo(sxy1.x+this.pdim/2, sxy1.y+this.pdim/2);
@@ -182,7 +186,7 @@ abstract class AbstractParticleGenerator {
             cx2d.fillRect(sxy1.x, sxy1.y, this.pdim, this.pdim);
             if (debugging_state.is_drawing) {
                 cx2d.beginPath();
-                cx2d.lineWidth = 4;
+                cx2d.lineWidth = size;
                 cx2d.strokeStyle = "#00FF0033";
                 cx2d.moveTo(sxy1.x, sxy1.y);
                 cx2d.lineTo(sxy1.x + vx * 100, sxy1.y + vy * 100);
@@ -193,14 +197,14 @@ abstract class AbstractParticleGenerator {
 }
 
 class ParticlesEllipseGenerator extends AbstractParticleGenerator {
-    constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/, public gravity: number) {
-	super(count, duration_msec, start_msec, speed, bounds, gravity, 
+    constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/) {
+	super(count, duration_msec, start_msec, speed, bounds,
 	      (self) => {
 		  const mx = bounds.lt.x + bounds.size.x/2;
 		  const my = bounds.lt.y + bounds.size.y/2;
 		  const rx = bounds.size.x/2;
 		  const ry = bounds.size.y/2;
-		  for (let i = 0; i < self.count; i += self.ostep) {
+		  for (let i = 0; i < self.particles.length; i += self.ostep) {
 		      // todo: shared libs with server so we can have the random lib, geom lib, etc.
 		      // todo: self isn't generating "fair" particles so the explosions look a little weird.
 		      const radians = Math.random() * Math.PI * 2;
@@ -213,38 +217,43 @@ class ParticlesEllipseGenerator extends AbstractParticleGenerator {
 		      const d = Math.sqrt(ivx * ivx + ivy * ivy);
 		      self.particles[i + self.ovx] = ivx / d * speed * (Math.random() + 0.5);
 		      self.particles[i + self.ovy] = ivy / d * speed * (Math.random() + 0.5);
+		      self.particles[i + self.osize] = 4;
 		  }
 	      });
     }
 }
 
 const P8 = [
-    [-1, -1], [0, -1], [1, -1],
-    [-1, 0],         , [1, 0],
-    [-1, 1],  [0, 1],  [1, 1]
+    [-1, -1], [0, -1],  [1, -1],
+    [-1, 0],  /*blank*/ [1, 0],
+    [-1, 1],  [0, 1],   [1, 1]
 ];
 
 class ParticlesEightGenerator extends AbstractParticleGenerator {
-    constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/, public gravity: number) {
-	super(count, duration_msec, start_msec, speed, bounds, gravity, 
+    constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/) {
+	super(count, duration_msec, start_msec, speed, bounds,
 	      (self) => {
 		  const mx = bounds.lt.x + bounds.size.x/2;
 		  const my = bounds.lt.y + bounds.size.y/2;
 		  const rx = bounds.size.x/2;
 		  const ry = bounds.size.y/2;
-		  for (let i = 0; i < self.count; i += self.ostep) {
+		  for (let i = 0; i < self.particles.length; i += self.ostep) {
 		      // todo: shared libs with server so we can have the random lib, geom lib, etc.
-		      // todo: self isn't generating "fair" particles so the explosions look a little weird.
-		      const radians = Math.random() * Math.PI * 2;
-		      const ix = mx + rx * Math.cos(radians);
-		      const iy = my + ry * Math.sin(radians);
-		      self.particles[i + self.ox] = ix;
-		      self.particles[i + self.oy] = iy;
-		      const ivx = ix - mx;
-		      const ivy = iy - my;
-		      const d = Math.sqrt(ivx * ivx + ivy * ivy);
-		      self.particles[i + self.ovx] = ivx / d * speed * (Math.random() + 0.5);
-		      self.particles[i + self.ovy] = ivy / d * speed * (Math.random() + 0.5);
+		      const pi = Math.floor((i/self.ostep)%8);
+		      const xy = P8[pi];
+		      assert(xy != undefined, "xy");
+		      if (xy != undefined) {
+			  const ix = mx + xy[0] * (rx * Math.random()*0.5);
+			  const iy = my + xy[1] * (ry * Math.random()*0.5);
+			  self.particles[i + self.ox] = ix;
+			  self.particles[i + self.oy] = iy;
+			  const ivx = ix - mx;
+			  const ivy = iy - my;
+			  const d = Math.sqrt(ivx * ivx + ivy * ivy);
+			  self.particles[i + self.ovx] = ivx / d * speed * (Math.random() + 0.5);
+			  self.particles[i + self.ovy] = ivy / d * speed * (Math.random() + 0.5);
+			  self.particles[i + self.osize] = 8;
+		      }
 		  }
 	      });
     }
@@ -1006,7 +1015,6 @@ function applyParticles(gdb: any) {
                     gdb.sim_now,
                     pspec.speed,
                     pspec.bounds,
-                    pspec.gravity
 		);
 	    }
 	    else {
@@ -1016,7 +1024,6 @@ function applyParticles(gdb: any) {
                     gdb.sim_now,
                     pspec.speed,
                     pspec.bounds,
-                    pspec.gravity
 		);
 	    }
         }
@@ -1096,6 +1103,9 @@ function loadSounds() {
     loadSound("synthC.ogg", synthC_sfx_b64);
     loadSound("synthD.ogg", synthD_sfx_b64);
     loadSound("synthE.ogg", synthE_sfx_b64);
+    loadSound("shot1.ogg", shot1_sfx_b64);
+    loadSound("shot2.ogg", shot2_sfx_b64);
+    loadSound("smartbomb.ogg", smartbomb_sfx_b64);
 }
 
 function loadImage(resource: string) {

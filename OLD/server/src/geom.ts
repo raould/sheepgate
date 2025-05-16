@@ -466,6 +466,17 @@ export function rect_set_mid_mut(r: Rect, m: V2D) {
 export function rect_align(r_src: Rect, anchor_src: V2D, anchor_dest: V2D): Rect {
     return rect_move(r_src, v2d_sub(anchor_dest, anchor_src));
 }
+export function rect_scale_mid(r: Rect, scale: number): Rect {
+    const mid = rect_mid(r);
+    const s2 = v2d_scale(r.size, scale);
+    return {
+	lt: v2d_mk(
+	    mid.x - s2.x/2,
+	    mid.y - s2.y/2,
+	),
+	size: s2,
+    };
+}
 export function rect_scale_mid_v2d(r: Rect, scale: V2D): Rect {
     return rect_scale_v2d_anchor(
         r,
