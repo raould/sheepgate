@@ -39,7 +39,7 @@ const MAIN_INSTRUCTIONS = [
     "RETURN HUMANS TO BASE.",
     "DEFEAT ALL ENEMIES.",
     " ",
-    "MOVE: {WASD} / {ARROWS} / {VI}",
+    "MOVE: WASD / ARROWS / VI",
     "FIRE: SPACE / Z / ENTER",
     "PAUSE: ESC, P",
 ];
