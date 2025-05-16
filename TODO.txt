@@ -152,6 +152,7 @@ DO THESE NOW/NEXT:
 27) the code is a rats' nest of relations and calls and twistly little passages, all different :-(
 
 999) everything else..., especially code...
+* high score entry screen cursor should start on 'del'.
 * smartbomb flying sound.
 * enemy basic1 shots too slow sometimes.
 * weapon and clip cooldown are confusing especially if there's a max 1 shot at a time, no?
