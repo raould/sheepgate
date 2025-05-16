@@ -170,7 +170,7 @@ abstract class AbstractParticleGenerator {
 	    const size = this.particles[i + this.osize];
             const x1 = x0 + vx * elapsed_msec;
             const y1 = y0 + vy * elapsed_msec;
-            const a1 = Math.min(1, Math.max(0.5, 1 - this.age_t(gdb))); // 0.5 is arbitrary, yes.
+            const a1 = Math.min(1, Math.max(0.2, 1 - this.age_t(gdb))); // 0.2 is arbitrary, yes.
             const fs = `rgba(64,0,0,${a1})`;
             // nifty trails, arbitrary hard-coded hacked values.
             const sxy1 = v2sv_wrapped({x:x1, y:y1}, gdb.world.gameport, gdb.world.bounds0, true);
