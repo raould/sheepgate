@@ -29,33 +29,22 @@ import * as _ from 'lodash';
 
 export type warpin_mk = (db: GDB.GameDB) => U.O<S.Sprite>;
 
+export interface LevelEnemyKonfig {
+    mk: Lemk.Warpin_Mk;
+    count: number,
+    limit: number,
+}
+
 export interface LevelKonfig {
-    Eb1: Lemk.EnemyMk,
-    ENEMY_BASIC1_COUNT: number,
-    ENEMY_BASIC1_SPAWN_COUNT_LIMIT: number,
-
-    Eb2?: Lemk.EnemyMk,
-    ENEMY_BASIC2_COUNT?: number,
-    ENEMY_BASIC2_SPAWN_COUNT_LIMIT?: number,
-
-    Eb3?: Lemk.EnemyMk,
-    ENEMY_BASIC3_COUNT?: number,
-    ENEMY_BASIC3_SPAWN_COUNT_LIMIT?: number,
-
-    Es: Lemk.EnemyMk,
-    ENEMY_SMALL_COUNT: number,
-    ENEMY_SMALL_SPAWN_COUNT_LIMIT: number,
-
-    Em: Lemk.EnemyMk,
-    ENEMY_MEGA_COUNT: number,
-    ENEMY_MEGA_SPAWN_COUNT_LIMIT: number,
-
-    Ehm: Lemk.EnemyMk,
-    ENEMY_HYPERMEGA_COUNT: number,
-    ENEMY_HYPERMEGA_SPAWN_COUNT_LIMIT: number,
-
+    Eb1?: LevelEnemyKonfig,
+    Eb2?: LevelEnemyKonfig,
+    Eb3?: LevelEnemyKonfig,
+    Eb4?: LevelEnemyKonfig,
+    Eb5?: LevelEnemyKonfig,
+    Es?: LevelEnemyKonfig,
+    Em?: LevelEnemyKonfig,
+    Ehm?: LevelEnemyKonfig,
     BG_COLOR: RGBA,
-
     people_cluster_count: number,
 };
 
@@ -71,7 +60,6 @@ interface FarSpec0 {
 // of levels, called "TypeA".
 
 export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
-
     abstract small_snapshot: S.ImageSized;
     abstract mega_snapshot: S.ImageSized;
     abstract hypermega_snapshot: S.ImageSized;
@@ -196,68 +184,95 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	// of enemies generated & defeated so that these generators
 	// can query those values and react accordingly. no, no, instead
 	// this is going to be a crappy half-hard-coded state machine hack.
-	const small_spec = {
-	    comment: "enemy-gen-small",
-	    generations: this.konfig.ENEMY_SMALL_COUNT,
-	    max_alive: this.konfig.ENEMY_SMALL_SPAWN_COUNT_LIMIT,
-	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		return this.konfig.Es.warpin_mk(db);
-	    }
-	}
-	const mega_spec = {
-	    comment: "enemy-gen-mega",
-	    generations: this.konfig.ENEMY_MEGA_COUNT,
-	    max_alive: this.konfig.ENEMY_MEGA_SPAWN_COUNT_LIMIT,
-	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		return this.konfig.Em.warpin_mk(db);
-	    }
-	}
-	const hypermega_spec = {
-	    comment: "enemy-gen-hypermega",
-	    generations: this.konfig.ENEMY_HYPERMEGA_COUNT,
-	    max_alive: this.konfig.ENEMY_HYPERMEGA_SPAWN_COUNT_LIMIT,
-	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		return this.konfig.Ehm.warpin_mk(db);
-	    }
-	}
-	Eag.add_generators(this.db, small_spec, mega_spec, hypermega_spec);
-
-	const basics: Ebg.EnemyGeneratorSpec[] = [];
-	basics.push({
-	    comment: "enemy-gen-basic1",
-	    generations: this.konfig.ENEMY_BASIC1_COUNT,
-	    max_alive: this.konfig.ENEMY_BASIC1_SPAWN_COUNT_LIMIT,
-	    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		return this.konfig.Eb1.warpin_mk(db);
-	    }
-	});
-	if (U.exists(this.konfig.Eb2) &&
-	    U.exists(this.konfig.ENEMY_BASIC2_COUNT) &&
-	    U.exists(this.konfig.ENEMY_BASIC2_SPAWN_COUNT_LIMIT)) {
-	    basics.push({
-		comment: "enemy-gen-basic2",
-		generations: this.konfig.ENEMY_BASIC2_COUNT,
-		max_alive: this.konfig.ENEMY_BASIC2_SPAWN_COUNT_LIMIT,
+	const spec: Eag.AddGeneratorsSpec = {}
+	if (U.exists(this.konfig.Es)) {
+	    spec.small = {
+		comment: "enemy-gen-small",
+		generations: this.konfig.Es?.count,
+		max_alive: this.konfig.Es?.limit,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
 		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		    return this.konfig.Eb2?.warpin_mk(db); // wtf tsc?
+		    return this.konfig.Es?.mk(db);
+		}
+	    }
+	}
+	if (U.exists(this.konfig.Em)) {
+	    spec.mega = {
+		comment: "enemy-gen-mega",
+		generations: this.konfig.Em?.count,
+		max_alive: this.konfig.Em?.limit,
+		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    return this.konfig.Em?.mk(db);
+		}
+	    }
+	}
+	if (U.exists(this.konfig.Ehm)) {
+	    spec.hypermega = {
+		comment: "enemy-gen-hypermega",
+		generations: this.konfig.Ehm?.count,
+		max_alive: this.konfig.Ehm?.limit,
+		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    return this.konfig.Ehm?.mk(db);
+		}
+	    }
+	}
+	Eag.add_generators(this.db, spec);
+
+	const basics: Ebg.EnemyGeneratorSpec[] = [];
+	if (U.exists(this.konfig.Eb1)) {
+	    basics.push({
+		comment: "enemy-gen-basic1",
+		generations: this.konfig.Eb1?.count,
+		max_alive: this.konfig.Eb1?.limit,
+		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    return this.konfig.Eb1?.mk(db); // wtf tsc?
 		}
 	    });
 	}
-	if (U.exists(this.konfig.Eb3) &&
-	    U.exists(this.konfig.ENEMY_BASIC3_COUNT) &&
-	    U.exists(this.konfig.ENEMY_BASIC3_SPAWN_COUNT_LIMIT)) {
+	if (U.exists(this.konfig.Eb2)) {
 	    basics.push({
-		comment: "enemy-gen-basic3",
-		generations: this.konfig.ENEMY_BASIC3_COUNT,
-		max_alive: this.konfig.ENEMY_BASIC3_SPAWN_COUNT_LIMIT,
+		comment: "enemy-gen-basic2",
+		generations: this.konfig.Eb2?.count,
+		max_alive: this.konfig.Eb2?.limit,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
 		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		    return this.konfig.Eb3?.warpin_mk(db); // wtf tsc?
+		    return this.konfig.Eb2?.mk(db); // wtf tsc?
+		}
+	    });
+	}
+	if (U.exists(this.konfig.Eb3)) {
+	    basics.push({
+		comment: "enemy-gen-basic3",
+		generations: this.konfig.Eb3?.count,
+		max_alive: this.konfig.Eb3?.limit,
+		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    return this.konfig.Eb3?.mk(db); // wtf tsc?
+		}
+	    });
+	}
+	if (U.exists(this.konfig.Eb4)) {
+	    basics.push({
+		comment: "enemy-gen-basic4",
+		generations: this.konfig.Eb4?.count,
+		max_alive: this.konfig.Eb4?.limit,
+		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    return this.konfig.Eb4?.mk(db); // wtf tsc?
+		}
+	    });
+	}
+	if (U.exists(this.konfig.Eb5)) {
+	    basics.push({
+		comment: "enemy-gen-basic5",
+		generations: this.konfig.Eb5?.count,
+		max_alive: this.konfig.Eb5?.limit,
+		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    return this.konfig.Eb5?.mk(db); // wtf tsc?
 		}
 	    });
 	}

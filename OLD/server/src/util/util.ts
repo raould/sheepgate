@@ -17,6 +17,7 @@ export function is_zero(n: number): boolean {
 
 export type O<T> = T | undefined;
 export function isU(a: any): boolean { return a == undefined; }
+// wtf tsc?
 export function exists<T>(val: T | undefined | null): val is T {
     return val !== undefined && val !== null;
 }

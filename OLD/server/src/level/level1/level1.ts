@@ -14,25 +14,11 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     const denom = K.LEVEL_TEMPLATE_COUNT;
     const buf = Math.floor(level_index / denom);
     return {
-	Eb1: Eb1,
-	ENEMY_BASIC1_COUNT: 3 + buf,
-	ENEMY_BASIC1_SPAWN_COUNT_LIMIT: 1 + buf,
-
-	Es: Es,
-	ENEMY_SMALL_COUNT: 4 + buf,
-	// no buf so there aren't too many mixed in with basics.
-	ENEMY_SMALL_SPAWN_COUNT_LIMIT: 1,
-
-	Em: Em,
-	ENEMY_MEGA_COUNT: 2 + buf,
-	ENEMY_MEGA_SPAWN_COUNT_LIMIT: 1 + buf,
-
-	Ehm: Ehm,
-	ENEMY_HYPERMEGA_COUNT: 1 + buf,
-	ENEMY_HYPERMEGA_SPAWN_COUNT_LIMIT: 1 + buf,
-
+	Eb1: { mk: Eb1.warpin_mk, count: 3 + buf, limit: 1 + buf },
+	Es: { mk: Es.warpin_mk, count: 4 + buf, limit: 1 + buf },
+	Em: { mk: Em.warpin_mk, count: 2 + buf, limit: 1 + buf },
+	Ehm: { mk: Ehm.warpin_mk, count: 1 + buf, limit: 1 + buf },
 	BG_COLOR: RGBA.new01(0, 0, 0.1),
-
 	people_cluster_count: 1 + buf,
     };
 };
