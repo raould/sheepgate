@@ -21,7 +21,6 @@ export class ParticleGenerator implements IParticleGenerator {
 	public bounds: G.Rect,
 	public count: number,
 	public speed: number) {
-	D.log("+pgen", dbid);
 	this.comment = "particle-generator";
 	this.lifecycle = GDB.Lifecycle.alive;
     }
@@ -31,7 +30,6 @@ export class ParticleGenerator implements IParticleGenerator {
 	return l;
     }
     on_death(db: GDB.GameDB) {
-	D.log("-pgen", this.dbid);
     }
 }
 

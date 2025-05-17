@@ -97,7 +97,7 @@ enum CommandType {
     debug_lose_level = "debug_lose_level",
 }
 // todo: share this (unfortunately) with the server, esp. the "is_singular" part.
-// is_singular true means there's no auto-repeat while the key is held down.
+// is_singular true means there's no auto-repeat while the key is held down. (wtf?)
 const PauseSpec: CommandSpec = { command: CommandType.pause, is_singular: true };
 const HighScoreSpec: CommandSpec = { command: CommandType.high_score, is_singular: true };
 const FireSpec: CommandSpec = { command: CommandType.fire, is_singular: false };
@@ -1364,7 +1364,19 @@ function JoystickMove(event: any) {
 }
 
 function ButtonChange(event: any, pressed: boolean) {
-    applyCommand(FireSpec, pressed);
+    if (pressed) {
+	if (event.index === 16 || event.index === 8 || event.index === 9) {
+	    applyCommand(PauseSpec, pressed);
+	}
+	// todo: get the directional pad working.
+	// if (event.index === 12) { applyCommand(UpSpec, pressed); }
+	// if (event.index === 13) { applyCommand(DownSpec, pressed); }
+	// if (event.index === 14) { applyCommand(LeftSpec, pressed); }
+	// if (event.index === 15) { applyCommand(RightSpec, pressed); }
+    }
+    else {
+	applyCommand(FireSpec, pressed);
+    }
 }
 
 function gamepadHandler(event: any, connecting: boolean) {
@@ -1372,11 +1384,13 @@ function gamepadHandler(event: any, connecting: boolean) {
     if (connecting) {
 	if ( currentGamepad != null ) {
 	    currentGamepad.removeEventListener("joystickmove", StandardMapping.Axis.JOYSTICK_LEFT);
+	    currentGamepad.removeEventListener("joystickmove", StandardMapping.Axis.JOYSTICK_RIGHT);
 	    currentGamepad.removeEventListener("buttonpress");
 	    currentGamepad.removeEventListener("buttonrelease");
 	}
 	currentGamepad = event.gamepad;
 	currentGamepad.addEventListener("joystickmove", (e:any) => JoystickMove(e), StandardMapping.Axis.JOYSTICK_LEFT);
+	currentGamepad.addEventListener("joystickmove", (e:any) => JoystickMove(e), StandardMapping.Axis.JOYSTICK_RIGHT);
 	currentGamepad.addEventListener("buttonpress", (e:any) => ButtonChange(e, true));
 	currentGamepad.addEventListener("buttonrelease", (e:any) => ButtonChange(e, false));
     }
