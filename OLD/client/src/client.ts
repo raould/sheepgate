@@ -1299,7 +1299,7 @@ function applyCommand(spec: CommandSpec, pressed: boolean) {
     inputs.commands[ik] = pressed;
     sendState();
 
-    // todo: see comments on the other instance of this.
+    // todo: see comments on the other instance of this. (like, "wtf?")
     if (spec.is_singular) {
         delete inputs.commands[ik];
     }
@@ -1367,11 +1367,10 @@ function ButtonChange(event: any, pressed: boolean) {
     if (pressed && (event.index === 16 || event.index === 8 || event.index === 9)) {
 	applyCommand(PauseSpec, pressed);
     }
-    // todo: get the directional pad working.
-    // if (event.index === 12) { applyCommand(UpSpec, pressed); }
-    // if (event.index === 13) { applyCommand(DownSpec, pressed); }
-    // if (event.index === 14) { applyCommand(LeftSpec, pressed); }
-    // if (event.index === 15) { applyCommand(RightSpec, pressed); }
+    else if (event.index === 12) { applyCommand(UpSpec, pressed); }
+    else if (event.index === 13) { applyCommand(DownSpec, pressed); }
+    else if (event.index === 14) { applyCommand(LeftSpec, pressed); }
+    else if (event.index === 15) { applyCommand(RightSpec, pressed); }
     else {
 	applyCommand(FireSpec, pressed);
     }
