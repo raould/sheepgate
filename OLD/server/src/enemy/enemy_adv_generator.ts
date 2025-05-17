@@ -15,7 +15,8 @@ export interface EnemyGeneratorSpec {
     tick_msec?: number;
 }
 
-const basic1_spec: EnemyGeneratorSpec = {
+// basic 1 and 2 are hard coded to spawn along with the hypermega.
+const basic1: EnemyGeneratorSpec = {
     generations: 2,
     max_alive: 2,
     comment: `enemy-b1-from-adv`,
@@ -25,8 +26,7 @@ const basic1_spec: EnemyGeneratorSpec = {
     delay_msec: 1,
     tick_msec: 2,
 };
-
-const basic2_spec: EnemyGeneratorSpec = {
+const basic2: EnemyGeneratorSpec = {
     generations: 2,
     max_alive: 2,
     comment: `enemy-b2-from-adv`,
@@ -43,32 +43,36 @@ interface EnemyGenerationCounts {
 }
 
 interface EnemyGenerationState {
-    small: EnemyGenerationCounts,
-    mega: EnemyGenerationCounts,
-    hypermega: EnemyGenerationCounts
+    small: EnemyGenerationCounts;
+    mega: EnemyGenerationCounts;
+    hypermega: EnemyGenerationCounts;
     // todo: this is an ugly hack, no doubt.
-    basic1: EnemyGenerationCounts,
-    basic2: EnemyGenerationCounts,
+    basic1: EnemyGenerationCounts;
+    basic2: EnemyGenerationCounts;
+}
+
+export interface AddGeneratorsSpec {
+    small?: EnemyGeneratorSpec;
+    mega?: EnemyGeneratorSpec;
+    hypermega?: EnemyGeneratorSpec;
 }
 
 export function add_generators(
     db: GDB.GameDB,
-    small_spec: EnemyGeneratorSpec,
-    mega_spec: EnemyGeneratorSpec,
-    hypermega_spec: EnemyGeneratorSpec
+    spec: AddGeneratorsSpec
 ) {
     const state: EnemyGenerationState = {
-        small: { generated: 0, generations: small_spec.generations },
-        mega: { generated: 0, generations: mega_spec.generations },
-        hypermega: { generated: 0, generations: hypermega_spec.generations },
-	basic1: { generated: 0, generations: basic1_spec.generations },
-	basic2: { generated: 0, generations: basic1_spec.generations },
+        small: { generated: 0, generations: spec.small?.generations ?? 0 },
+        mega: { generated: 0, generations: spec.mega?.generations ?? 0 },
+        hypermega: { generated: 0, generations: spec.hypermega?.generations?? 0 },
+	basic1: { generated: 0, generations: basic1.generations },
+	basic2: { generated: 0, generations: basic1.generations },
     };
-    add_generator(db, state, small_spec, should_generate_small, (s) => { s.small.generated++; });
-    add_generator(db, state, mega_spec, should_generate_mega, (s) => { s.mega.generated++; });
-    add_generator(db, state, hypermega_spec, should_generate_hypermega, (s) => { s.hypermega.generated++; });
-    add_generator(db, state, basic1_spec, should_generate_basic1, (s) => { s.basic1.generated++ });
-    add_generator(db, state, basic2_spec, should_generate_basic2, (s) => { s.basic2.generated++ });
+    add_generator(db, state, spec.small, should_generate_small, (s) => { s.small.generated++; });
+    add_generator(db, state, spec.mega, should_generate_mega, (s) => { s.mega.generated++; });
+    add_generator(db, state, spec.hypermega, should_generate_hypermega, (s) => { s.hypermega.generated++; });
+    add_generator(db, state, basic1, should_generate_basic1, (s) => { s.basic1.generated++ });
+    add_generator(db, state, basic2, should_generate_basic2, (s) => { s.basic2.generated++ });
 }
 
 type TestFn = (db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState) => boolean;
@@ -77,9 +81,10 @@ type IncrFn = (state: EnemyGenerationState) => void;
 function add_generator(
     db: GDB.GameDB,
     state: EnemyGenerationState,
-    spec: EnemyGeneratorSpec,
+    spec: EnemyGeneratorSpec | undefined,
     testfn: TestFn,
     incrfn: IncrFn) {
+    if (spec == undefined) { return; }
     GDB.add_dict_id_mut(
         db.local.enemy_generators,
         (dbid: GDB.DBID): U.O<Tkg.TickingGenerator<S.Sprite>> =>

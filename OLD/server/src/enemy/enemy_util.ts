@@ -40,7 +40,7 @@ export function safe_lt_vs_player(db: GDB.GameDB, size: G.V2D, rnd: Rnd.Random, 
 	const hit = G.rects_are_overlapping_wrapH(rect, p, db.shared.world.bounds0);
         if (hit) {
             // move horizontally to avoid the hit.
-	    lt.x = p.lt.x + p.size.x * 2;
+	    lt.x = p.lt.x + size.x * 5;
 	}
     }
 }

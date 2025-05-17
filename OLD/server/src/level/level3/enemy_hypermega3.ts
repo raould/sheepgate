@@ -13,7 +13,7 @@ import * as Esbw from '../../enemy/enemy_smartbomb_weapon';
 
 // match: sprite animation.
 const SIZE = G.v2d_scale_i(G.v2d_mk(156, 204), 0.5);
-const WARPIN_RESOURCE_ID = "enemies/e18/e18.png";
+const WARPIN_RESOURCE_ID = "enemies/e18/e18l.png";
 const Hypermega: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
@@ -55,10 +55,14 @@ function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     return A.dimension_spec_mk(db, frames);
 }
 
+function f2s(f: F.Facing): string {
+    return F.on_facing(f, "l", "r");
+}
 const tspecs: Array<[number, string]> = [[1,""]];
 function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.DimensionsFrame[] {
     const table: A.DimensionsFrame[] = [];
     const images = db.uncloned.images;
+    const fstr = f2s(facing);
     tspecs.forEach(spec => {
         const [t, _] = spec;
         table.push({
@@ -68,7 +72,7 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
             animator: A.animator_mk(
                 db.shared.sim_now,
                 {
-                    resource_id: images.lookup("enemies/e18/e18.png"),
+                    resource_id: images.lookup(`enemies/e18/e18${fstr}.png`),
                 }
             )
         });

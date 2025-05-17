@@ -1148,20 +1148,36 @@ function loadImages() {
         loadImage(`ground/base${anim}.png`);
     });
     
-    loadImage("enemies/basic1/sph1.png");
-    loadImage("enemies/basic1/sph2.png");
-    loadImage("enemies/basic1/sph3.png");
+    [1,2,3].forEach(anim => {
+	loadImage(`enemies/basic1/sph${anim}.png`);
+    });
 
-    loadImage("enemies/basic2/tt1.png");
-    loadImage("enemies/basic2/tt2.png");
-    loadImage("enemies/basic2/tt3.png");
+    [1,2,3].forEach(anim => {
+	loadImage(`enemies/basic2/tt${anim}.png`);
+    });
 
-    loadImage("enemies/basic3/gh1.png");
-    loadImage("enemies/basic3/gh2.png");
-    loadImage("enemies/basic3/gh3.png");
+    [1,2,3].forEach(anim => {
+	loadImage(`enemies/basic3/gh${anim}.png`);
+    });
+
+    [1,2,3].forEach(anim => {
+	loadImage(`enemies/basic3/gh${anim}.png`);
+    });
+
+    [1,2,3,4].forEach(anim => {
+	loadImage(`enemies/basic4/eb4${anim}.png`);
+    });
+
+    [1,2,3,4].forEach(anim => {
+	["l", "r"].forEach(d => {
+	    loadImage(`enemies/basic5/eb5${d}${anim}.png`);
+	});
+    });
 
     loadImage("enemies/e1/e1.png");
-    loadImage("enemies/e18/e18.png");
+
+    loadImage("enemies/e18/e18l.png");
+    loadImage("enemies/e18/e18r.png");
 
     loadImage("enemies/e11/e11a.png");
     loadImage("enemies/e11/e11b.png");
