@@ -5,6 +5,7 @@ import * as U from '../util/util';
 import * as Rnd from '../random';
 import * as K from '../konfig';
 import * as D from '../debug';
+import * as F from '../facing';
 
 export function level_scale_down(level: number, max: number, min: number): number {
     D.assert(min <= max);
@@ -24,7 +25,7 @@ export function can_shoot_in_bounds(db: GDB.GameDB, enemy: S.Enemy): boolean {
     );
 }
 
-// todo: this doesn't actaually work right: things do sometimes still overlap, wtf!!!!!!!!!!!!!!!
+// todo: this doesn't actaually work right: things do sometimes still overlap or are too close, wtf!!!!!!!!!!!!!!!
 export function safe_lt(db: GDB.GameDB, size: G.V2D, rnd: Rnd.Random, lt: G.V2D | undefined): G.V2D {
     const slt = safe_lt_vs_enemy(db, size, rnd, lt);
     safe_lt_vs_player(db, size, rnd, slt);
@@ -40,7 +41,7 @@ export function safe_lt_vs_player(db: GDB.GameDB, size: G.V2D, rnd: Rnd.Random, 
 	const hit = G.rects_are_overlapping_wrapH(rect, p, db.shared.world.bounds0);
         if (hit) {
             // move horizontally to avoid the hit.
-	    lt.x = p.lt.x + size.x * 10;
+	    lt.x = p.lt.x + size.x * (5 * F.f2x(p.facing));
 	}
     }
 }
