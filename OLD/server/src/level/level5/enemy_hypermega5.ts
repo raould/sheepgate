@@ -9,39 +9,41 @@ import * as Fp from '../../enemy/flight_patterns';
 import * as Emk from '../../enemy/enemy_mk';
 import * as Lemk from '../enemy_mk';
 import * as K from '../../konfig';
+import * as Esbw from '../../enemy/enemy_smartbomb_weapon';
 
 // match: sprite animation.
-const SIZE = G.v2d_mk(32, 32);
-const WARPIN_RESOURCE_ID = "enemies/e10s/e10_s1.png";
-const Small: Lemk.EnemyMk = {
+const SIZE = G.v2d_scale_i(G.v2d_mk(70, 70), 1.5);
+const WARPIN_RESOURCE_ID = "enemies/e23/g387l.png";
+const Hypermega: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
 	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
-	const [ewsl, ewsr] = Ebw.scale_specs(db.shared.level_index1, S.Rank.small, true);
+	const [ewsl, ewsr] = Ebw.scale_specs(db.shared.level_index1, S.Rank.hypermega, true);
+	const ewsb = Esbw.get_spec();
 	const weapons = {
             'wl': Ebw.weapon_mk(ewsl),
             'wr': Ebw.weapon_mk(ewsr),
+            'wsb': Esbw.weapon_mk(ewsb), // todo: other sprites.
 	};
 	const flight_pattern = new Fp.DecendAndGoSine(db, SIZE, 0.0005);
-	const spec: Emk.EnemySpec = {
-            anim: anim,
-            rank: S.Rank.small,
-            hp_init: K.ENEMY_SMALL_HP,
-            damage: K.ENEMY_SMALL_DAMAGE,
-            weapons: weapons,
-            flight_pattern: flight_pattern,
-            gem_count: K.ENEMY_SMALL_GEM_COUNT
-	};
 	return Emk.warpin_mk(
             db,
             SIZE,
     	    WARPIN_RESOURCE_ID,
-	    spec,
+            {
+		anim: anim,
+		rank: S.Rank.hypermega,
+		hp_init: K.ENEMY_HYPERMEGA_HP,
+		damage: K.ENEMY_HYPERMEGA_DAMAGE,
+		weapons: weapons,
+		flight_pattern: flight_pattern,
+		gem_count: K.ENEMY_HYPERMEGA_GEM_COUNT
+            }
 	);
     }
 }
-export default Small;
+export default Hypermega;
 
 function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     const frames: A.DimensionsFrame[] = [
@@ -54,25 +56,24 @@ function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     return A.dimension_spec_mk(db, frames);
 }
 
+function f2s(f: F.Facing): string {
+    return F.on_facing(f, "l", "r");
+}
 const tspecs: Array<[number, string]> = [[1,""]];
 function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.DimensionsFrame[] {
     const table: A.DimensionsFrame[] = [];
     const images = db.uncloned.images;
+    const fstr = f2s(facing);
     tspecs.forEach(spec => {
         const [t, _] = spec;
         table.push({
-            facing: facing,
-            thrusting: thrusting,
-            t: t,
+            facing,
+            thrusting,
+            t,
             animator: A.animator_mk(
                 db.shared.sim_now,
                 {
-                    frame_msec: 120,
-                    resource_ids: [
-                        ...images.lookup_range_n(n => `enemies/e10s/e10_s${n}.png`, 1, 5)
-                    ],
-                    starting_mode: A.MultiImageStartingMode.hold,
-                    ending_mode: A.MultiImageEndingMode.loop
+                    resource_id: images.lookup(`enemies/e23/g387${fstr}.png`),
                 }
             )
         });

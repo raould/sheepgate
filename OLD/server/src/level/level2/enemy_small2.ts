@@ -52,7 +52,7 @@ export default Small;
 
 function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     const frames: A.DimensionsFrame[] = [
-        // enemy e12 doesn't show any thrusters.
+        // enemy doesn't show any thrusters.
         ...t2a_facing_mk(db, true, F.Facing.left),
         ...t2a_facing_mk(db, true, F.Facing.right),
         ...t2a_facing_mk(db, false, F.Facing.left),
@@ -61,7 +61,6 @@ function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     return A.dimension_spec_mk(db, frames);
 }
 
-// enemy e12 doesn't show either thrust, or any extra hp decay.
 const tspecs: Array<[number, string]> = [[1,""]];
 function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.DimensionsFrame[] {
     const table: A.DimensionsFrame[] = [];
