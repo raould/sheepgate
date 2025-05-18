@@ -139,6 +139,7 @@ function calculate_at_vel(db: GDB.GameDB, src: S.Fighter, dst: G.Rect, spec: Ene
 }
 
 // by convention we return (left, right).
+// todo: explain 'swivel' and left vs. right better...
 export function scale_specs(level: number, rank: S.Rank, swivel: boolean): [EnemyWeaponSpec, EnemyWeaponSpec] {
     const specs:[EnemyWeaponSpec, EnemyWeaponSpec] = [
         scale_spec(level, rank, F.Facing.left, swivel),

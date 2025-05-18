@@ -1174,8 +1174,6 @@ function loadImages() {
 	});
     });
 
-    loadImage("enemies/e1/e1.png");
-
     loadImage("enemies/e18/e18l.png");
     loadImage("enemies/e18/e18r.png");
 
@@ -1229,6 +1227,12 @@ function loadImages() {
 
     loadImage(`enemies/e22/hh1.png`)
     loadImage(`enemies/e22/hh2.png`)
+
+    loadImage(`enemies/e23/g387l.png`)
+    loadImage(`enemies/e23/g387r.png`)
+
+    loadImage(`enemies/e24/e24l.png`)
+    loadImage(`enemies/e24/e24r.png`)
 
     Array.from({length: 10}, (v, i) => i+1).forEach((i) => {
 	loadImage(`gem/gem${i}.png`)

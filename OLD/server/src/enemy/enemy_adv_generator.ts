@@ -15,7 +15,7 @@ export interface EnemyGeneratorSpec {
     tick_msec?: number;
 }
 
-// basic 1 and 2 are hard coded to spawn along with the hypermega.
+// todo: ugly, but basic 1 and 2 are hard-coded to spawn along with the hypermega.
 const basic1: EnemyGeneratorSpec = {
     generations: 2,
     max_alive: 2,
@@ -46,7 +46,6 @@ interface EnemyGenerationState {
     small: EnemyGenerationCounts;
     mega: EnemyGenerationCounts;
     hypermega: EnemyGenerationCounts;
-    // todo: this is an ugly hack, no doubt.
     basic1: EnemyGenerationCounts;
     basic2: EnemyGenerationCounts;
 }
@@ -140,7 +139,8 @@ function should_generate_hypermega(db: GDB.GameDB, spec: EnemyGeneratorSpec, sta
         const small_dead = 0 == count_rank(db, S.Rank.small);
         const mega_done = state.mega.generated >= state.mega.generations;
         const mega_dead = 0 == count_rank(db, S.Rank.mega);
-        return room && small_done && small_dead && mega_done && mega_dead;
+	const should = room && small_done && small_dead && mega_done && mega_dead;
+        return should;
     }
     return false;
 }

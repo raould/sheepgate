@@ -10,6 +10,9 @@ import * as A from './animation';
 import * as U from './util/util';
 import * as K from './konfig';
 
+// note: K.PEOPLE_MAX_COUNT is enforced below (hopefully)
+// so the scaling up across level progression doesn't too crazy.
+
 /* make some clusters of people around the world,
    on safe ground, that then have to be able to 
    be picked up by the player, and then have
