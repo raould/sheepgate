@@ -33,6 +33,8 @@ import { RGBA } from './color';
 // world, game, hud, screen, etc.
 // shyeah, i wish, typescript!
 
+// for the actual WORLD size see e.g. level_type_a.ts
+
 // small debounce so previous button mashing might end first.
 export const USER_SKIP_AFTER_MSEC = 500;
 
