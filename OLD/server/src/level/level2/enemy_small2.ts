@@ -14,7 +14,7 @@ import * as K from '../../konfig';
 // match: sprite animation.
 // const SIZE = G.v2d_mk(55, 55);
 // const WARPIN_RESOURCE_ID = "enemies/e12/e12l_1.png";
-const SIZE = G.v2d_scale(G.v2d_mk(70, 70), 0.5);
+const SIZE = G.v2d_scale_i(G.v2d_mk(70, 70), 0.5);
 const WARPIN_RESOURCE_ID = "enemies/e9/e9_1.png";
 const Small: Lemk.EnemyMk = {
     SIZE,
