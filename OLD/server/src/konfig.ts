@@ -262,6 +262,7 @@ export const PEOPLE_SIZE = G.v2d_mk_nn(32); // K
 // match: people.ts, currently hardcoded to have 2 people per cluster.
 // even this is too much toing and froing?
 export const PEOPLE_MAX_COUNT = 2 * 5; // K
+export const PEOPLE_REMINDER_TIMEOUT = 3 * 1000; // K
 
 export const GEM_SIZE = G.v2d_mk_nn(10);
 export const GEM_HP_BONUS = 3; // keep it smallish.

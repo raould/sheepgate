@@ -123,6 +123,7 @@ export class HCycle {
     // to use negative delta values to have the color cycling
     // go from top to bottom, unclear to me why.
     
+    // todo: wugly: this next() returns HSV vs. the other next() returns RGB.
     public static next(hsv: HSV, delta: number): HSV {
         const hue_src = hsv[0];
         let hue_dst = (hue_src + delta) % 360

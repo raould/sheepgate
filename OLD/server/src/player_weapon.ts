@@ -47,16 +47,17 @@ export function player_weapon_mk(spec: PlayerWeaponSpec): S.Weapon {
 		// todo: adjust for ship speed so they don't visually immediately overlap.
 		const lt_sx = -0.1;
 		const lt_sy = 0.5;
-		const lt_middle = F.on_facing(src.facing,
-					      G.v2d_sub(
-						  G.v2d_add(src.lt, G.v2d_scale_v2d(src.size, G.v2d_mk(lt_sx, lt_sy))),
-						  G.v2d_mk(2 * spec.shot_size.x, 0)
-					      ),
-					      G.v2d_add(
-						  G.v2d_add(src.lt, G.v2d_scale_v2d(src.size, G.v2d_mk(1 - lt_sx, lt_sy))),
-						  G.v2d_mk(spec.shot_size.x, 0)
-					      )
-					     );
+		const lt_middle = F.on_facing(
+		    src.facing,
+		    G.v2d_sub(
+			G.v2d_add(src.lt, G.v2d_scale_v2d(src.size, G.v2d_mk(lt_sx, lt_sy))),
+			G.v2d_mk(2 * spec.shot_size.x, 0)
+		    ),
+		    G.v2d_add(
+			G.v2d_add(src.lt, G.v2d_scale_v2d(src.size, G.v2d_mk(1 - lt_sx, lt_sy))),
+			G.v2d_mk(spec.shot_size.x, 0)
+		    )
+		);
 		const lt = Rnd.singleton.v2d_around(
 		    lt_middle,
 		    G.v2d_mk_0y(5)
