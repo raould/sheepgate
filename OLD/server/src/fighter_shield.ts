@@ -189,8 +189,7 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
 }
 
 function on_death_fx(db: GDB.GameDB, shield: ShieldPrivate, fighter: S.Fighter) {
-    db.shared.items.sfx.push({ sfx_id: K.EXPBOOM_SFX, gain: 2 });
-    //db.shared.items.sfx.push({ sfx_id: K.EXPLOSION_SFX });
+    db.shared.items.sfx.push({ sfx_id: K.EXPBOOM_SFX, gain: 3 });
     const exids: GDB.DBID[] = [];
     const xs = fighter.rank == S.Rank.hypermega ? 1.2 : 0.5;
     const r = G.rect_circle_outside(G.rect_scale_mid_v2d(shield as G.Rect, G.v2d_mk_nn(xs)));
