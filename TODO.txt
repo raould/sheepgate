@@ -69,6 +69,9 @@ next-feature-short-list, in no order:
 * also i really wish the handling of the frame dt was
   better, more clear, more useful so i could use it in menu/*.
 
+* augh i have no idea where in the code i have to use x-wrap()ping
+  e.g. the enemy (especially hypermega) spawning?!
+
 DO THESE NOW/NEXT:
 
 + hud proximity warning makers.

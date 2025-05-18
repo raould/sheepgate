@@ -29,7 +29,7 @@ export function can_shoot_in_bounds(db: GDB.GameDB, enemy: S.Enemy): boolean {
 export function safe_lt(db: GDB.GameDB, rank: S.Rank, size: G.V2D, rnd: Rnd.Random, lt: G.V2D | undefined): G.V2D {
     const slt = safe_lt_vs_enemy(db, size, rnd, lt);
     safe_lt_vs_player(db, rank, size, rnd, slt);
-    return slt;
+    return G.v2d_wrapH(slt, db.shared.world.bounds0); // todo: no idea any more where/when i do/not have to wrap.
 }
 
 export function safe_lt_vs_player(db: GDB.GameDB, rank: S.Rank, size: G.V2D, rnd: Rnd.Random, lt: G.V2D) {
@@ -37,7 +37,7 @@ export function safe_lt_vs_player(db: GDB.GameDB, rank: S.Rank, size: G.V2D, rnd
     if (!!p) {
 	if (rank >= S.Rank.hypermega) {
 	    lt = G.v2d_mk(
-		p.lt.x + db.shared.world.bounds0.x/2,
+		p.lt.x + db.shared.world.bounds0.x/3,
 		lt.y,
 	    )
 	}
