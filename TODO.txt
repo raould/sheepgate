@@ -21,6 +21,8 @@ really really todo, maybe?
 +++ per-level high scores?
 +++ show level # in hud.
 
+* hilariously / inevitably, the 'db' has become a big ball of mud; very confusing.
+
 * note: the files in client/resources/sounds/ are not used at runtime,
   they were just used to generate client/src/*b64*, which is perhaps confusing.
 

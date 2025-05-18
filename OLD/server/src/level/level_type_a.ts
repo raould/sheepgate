@@ -23,7 +23,7 @@ import * as Sc from '../scoring';
 import * as Hs from '../high_scores';
 import * as U from '../util/util';
 import * as D from '../debug';
-import { RGBA } from '../color';
+import { RGBA, HCycle } from '../color';
 import { DebugGraphics } from '../debug_graphics';
 import * as _ from 'lodash';
 
@@ -65,6 +65,8 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
     abstract hypermega_snapshot: S.ImageSized;
     db: GDB.GameDB; // todo: a LevelDB for level specific things?
     state: Gs.StepperState;
+    people_reminder_timeout: U.O<number>;
+    reminder_cycle: HCycle;
 
     get_state(): Gs.StepperState { return this.state; }
     get_scoring(): Sc.Scoring { return this.db.local.scoring; }
@@ -73,6 +75,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	super(high_score);
 	D.log(`new level_type_a for index1 ${index1}!`);
 	this.state = Gs.StepperState.running;
+        this.reminder_cycle = HCycle.newFromRed(90 / K.DT);
 	const far_spec0 = this.far_spec0_mk();
 	this.db = this.db_mk(far_spec0, score);
 	this.init_bg(far_spec0);
@@ -276,8 +279,22 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		}
 	    });
 	}
-	D.assert(basics.length > 0);
+	D.assert(basics.length > 0, "no basic enemies found?!");
 	Ebg.add_generators(this.db, basics);
+    }
+
+    private are_all_tasks_done(next: GDB.GameDB): boolean {
+	return U.count_dict(next.local.enemy_generators) == 0 &&
+	    U.count_dict(next.shared.items.warpin) == 0 &&
+	    U.count_dict(next.shared.items.enemies) == 0 &&
+	    U.count_dict(next.shared.items.explosions) == 0;
+    }
+
+    // once people are either rescued or dead, they won't show up in this count.
+    private get_people_count(next: GDB.GameDB): number {
+	return (GDB.get_player(next)?.passenger_ids.size ?? 0) +
+	    (GDB.get_player(next)?.beaming_ids.size ?? 0) +
+	    U.count_dict(next.shared.items.people);
     }
 
     update_impl(next: GDB.GameDB) {
@@ -299,20 +316,36 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		}
 	    }
 	    // all tasks accomplished?
-	    else if (U.count_dict(next.local.enemy_generators) == 0 &&
-		     U.count_dict(next.shared.items.warpin) == 0 &&
-		     U.count_dict(next.shared.items.enemies) == 0 &&
-		     U.count_dict(next.shared.items.explosions) == 0) {
-		// once people are either rescued or dead, they won't show up in this count.
-		let waiting_count =
-		    (GDB.get_player(next)?.passenger_ids.size ?? 0) +
-		    (GDB.get_player(next)?.beaming_ids.size ?? 0) +
-		    U.count_dict(next.shared.items.people);
-		if (waiting_count == 0) {
+	    else if (this.are_all_tasks_done(next)) {
+		if (this.get_people_count(next) == 0) {
 		    this.state = next.shared.rescued_count == 0 ? Gs.StepperState.lost : Gs.StepperState.completed;
 		    return;
 		}
 	    }
+	}
+    }
+
+    protected update_hud(next: GDB.GameDB) {
+	super.update_hud(next);
+	if (this.are_all_tasks_done(next) && this.get_people_count(next) > 0) {
+    	    if (U.isU(this.people_reminder_timeout)) {
+		this.people_reminder_timeout = K.PEOPLE_REMINDER_TIMEOUT;
+	    }
+	}
+	if (U.exists(this.people_reminder_timeout) && this.people_reminder_timeout > 0) {
+	    this.people_reminder_timeout -= K.DT; // todo: the whole DT things is poorly implemented.
+	    const reminder: Dr.DrawText = {
+		wrap: false,
+		// hard-coded eye-balled positioning.
+		lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.36, K.GAMEPORT_RECT.size.y/2),
+		font: `60px ${K.MENU_FONT}`,
+		fillStyle: this.reminder_cycle.next().setAlpha01(
+		    U.t01(0, K.PEOPLE_REMINDER_TIMEOUT, this.people_reminder_timeout)
+		),
+		text: "SAVE PEOPLE!",
+		comment: "save-people-reminder",
+	    };
+	    next.shared.hud_drawing.texts.push(reminder);
 	}
     }
 

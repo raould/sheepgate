@@ -372,7 +372,7 @@ export abstract class AbstractLevel implements Level {
 
     // todo: a lot of these update_x() routines could be moved out to other files to clean up here.
 
-    private update_hud(next: GDB.GameDB) {
+    protected update_hud(next: GDB.GameDB) {
         this.clear_hud(next);
         Rdr.step(next);
         this.update_scores(next);

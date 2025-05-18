@@ -169,11 +169,13 @@ export function lerp(a: number, b: number, t: number): number {
     );
 }
 
+// t = 0 at min.
 export function t01(min: number, max: number, n: number): number {
     D.assert(min <= max);
     return clip01((n - min) / (max - min));
 }
 
+// t = 1 at min.
 export function t10(min: number, max: number, n: number): number {
     return 1 - t01(min, max, n);
 }

@@ -5,13 +5,16 @@ import * as Rnd from './random';
 
 const _rnd = new Rnd.RandomImpl();
 
+// todo: all Drawings should support lifetime & fade.
+
+// note: z-order in each array is [back...front].
 // todo: this is bad because it only supports
 // z-ordering within each type of array. ideally
 // we'd have 1 heterogenious array, however then
 // we'd also have to have some kind of instanceof
 // which gets really bloody annoyingly redundant
 // in typescript especially with interfaces.
-// note: z-order in each array is [back...front].
+
 export interface Drawing {
     // match: for now, we expect rects to always be drawn first by the client.
     other?: Drawing;

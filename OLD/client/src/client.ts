@@ -577,9 +577,11 @@ function renderHudDrawing(gdb: any) {
         da.bounds.size.x, da.bounds.size.y,
         da.radians_start, da.radians_end
     ) });
-    drawing.texts.forEach((dt: any) => { renderText(
-        dt.text, dt.font, dt.fillStyle, dt.lb.x, dt.lb.y
-    ) });
+    drawing.texts.forEach((dt: any) => {
+	renderText(
+            dt.text, dt.font, dt.fillStyle, dt.lb.x, dt.lb.y
+	)
+    });
     drawing.images.forEach((di: any) => { renderImage(
         di.resource_id, di.rect.lt.x, di.rect.lt.y, di.rect.size.x, di.rect.size.y
     ) });

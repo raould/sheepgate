@@ -33,6 +33,8 @@ import { RGBA } from './color';
 // world, game, hud, screen, etc.
 // shyeah, i wish, typescript!
 
+// for the actual WORLD size see e.g. level_type_a.ts
+
 // small debounce so previous button mashing might end first.
 export const USER_SKIP_AFTER_MSEC = 500;
 
@@ -262,6 +264,7 @@ export const PEOPLE_SIZE = G.v2d_mk_nn(32); // K
 // match: people.ts, currently hardcoded to have 2 people per cluster.
 // even this is too much toing and froing?
 export const PEOPLE_MAX_COUNT = 2 * 5; // K
+export const PEOPLE_REMINDER_TIMEOUT = 3 * 1000; // K
 
 export const GEM_SIZE = G.v2d_mk_nn(10);
 export const GEM_HP_BONUS = 3; // keep it smallish.

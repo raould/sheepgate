@@ -7,18 +7,6 @@ import * as U from './util/util';
 import * as D from './debug';
 import * as _ from 'lodash';
 
-// the client is going to have to know this in order to handle the window y right?
-// if we convert the sea level data to
-// sprites/tiles then it won't, but also it
-// means more gratuitous data sent over json.
-// perhaps the sprites can be sorta stupid simple
-// textures that are sized to be giant so
-// there's fewer of them.
-// so:
-// 1) create (large) non-colliding sprites for the graphics.
-// 2) implement a simple player y-column ground check test so we can easily
-// keep players etc. from going through the ground.
-
 export enum BgFarType {
     mountain,
     sea, // lava, water, etc.
