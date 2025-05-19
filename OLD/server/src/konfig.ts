@@ -357,4 +357,4 @@ export const SMARTBOMB_SFX = "sounds/smartbomb.ogg";
 
 // match: game.ts
 // used to scale things across levels.
-export const LEVEL_TEMPLATE_COUNT = 5;
+export const LEVEL_TEMPLATE_COUNT = 6;

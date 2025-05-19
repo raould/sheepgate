@@ -26,6 +26,8 @@ really really todo, maybe?
 * note: the files in client/resources/sounds/ are not used at runtime,
   they were just used to generate client/src/*b64*, which is perhaps confusing.
 
+* the enemy sprite loading is horrible, horrible. ('t' is i guess health 1...0, btw; never really used.)
+
 * document which way the (x,y) axes go ffs; i assume +x down, +y.
 * omfg the sprite loading between server+client sucks-sucks so much-much.
   * also i wish animation could do resizing for bounce and stretch.

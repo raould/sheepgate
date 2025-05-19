@@ -133,6 +133,10 @@ export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
 
 // todo: maybe pull out code for A.DrawingAnimator from the explosion code.
 
+// todo: 't' below might have (???) originally been to allow for different
+// sprites depending on the level of damage 0...1, so sprites could
+// degreade as they are hit. but then i moved to having the hp bar,
+// and haven't used 't' other than at '1' i guess.
 export type T2A = [number, ResourceAnimator];
 export type AnimationDimensionsSpec_Thrusting2T01 = Map<boolean, Array<T2A>>;
 export type AnimatorDimensionsSpec = Map<F.Facing, AnimationDimensionsSpec_Thrusting2T01>;
@@ -140,7 +144,7 @@ export interface DimensionsFrame {
     animator: ResourceAnimator;
     facing: F.Facing;
     thrusting: boolean;
-    t: number;
+    t: number; // health 1...0, 'unused' feature.
 }
 
 export function dimension_spec_mk(db: GDB.GameDB, frames: DimensionsFrame[]): AnimatorDimensionsSpec {
