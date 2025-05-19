@@ -230,12 +230,14 @@ class ParticlesEllipseGenerator extends AbstractParticleGenerator {
     }
 }
 
+// these should only use -1, 0, 1.
 const P8 = [
     [-1, -1], [0, -1],  [1, -1],
     [-1, 0],  /*blank*/ [1, 0],
     [-1, 1],  [0, 1],   [1, 1]
 ];
 
+// trying to still make it biased in favor or horizontalness.
 class ParticlesEightGenerator extends AbstractParticleGenerator {
     constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/) {
 	super(count, duration_msec, start_msec, speed, bounds,
@@ -247,18 +249,20 @@ class ParticlesEightGenerator extends AbstractParticleGenerator {
 		  for (let i = 0; i < self.particles.length; i += self.ostep) {
 		      // todo: shared libs with server so we can have the random lib, geom lib, etc.
 		      const pi = Math.floor((i/self.ostep)%8);
-		      const xy = P8[pi];
-		      assert(xy != undefined, "xy");
-		      if (xy != undefined) {
-			  const ix = mx + xy[0] * (rx * Math.random()*0.5);
-			  const iy = my + xy[1] * (ry * Math.random()*0.5);
+		      if (P8[pi] != undefined) {
+			  const [x, y] = P8[pi];
+			  assert(x != undefined, "x");
+			  assert(y != undefined, "y");
+			  const ix = mx + x * (rx * Math.random()*0.5);
+			  const iy = my + y * (ry * Math.random()*0.5);
 			  self.particles[i + self.ox] = ix;
 			  self.particles[i + self.oy] = iy;
 			  const ivx = ix - mx;
 			  const ivy = iy - my;
+			  const ySlower = y != 0 ? 0.8 : 1; // ellipsizer.
 			  const d = Math.sqrt(ivx * ivx + ivy * ivy);
-			  self.particles[i + self.ovx] = ivx / d * speed * (Math.random() + 0.5);
-			  self.particles[i + self.ovy] = ivy / d * speed * (Math.random() + 0.5);
+			  self.particles[i + self.ovx] = ivx / d * (speed) * (Math.random() + 0.5);
+			  self.particles[i + self.ovy] = ivy / d * (speed*ySlower) * (Math.random() + 0.5);
 			  self.particles[i + self.osize] = 8;
 		      }
 		  }

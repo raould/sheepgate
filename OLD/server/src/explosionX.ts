@@ -6,6 +6,8 @@ import { RGBA } from './color';
 import * as K from './konfig';
 import * as U from './util/util';
 
+// this one is done w/out sprites; all drawing for a big boom effect.
+
 // todo: some less horrible way to do all the specs, ugh.
 export type ExplosionBSpec = Omit<U.FieldsOnly<S.Explosion>, "resource_id" | "drawing">;
 

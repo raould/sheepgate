@@ -281,9 +281,11 @@ export const PLAYER_ANIM_FRAME_MSEC = 1000 / 5; // K.
 export const SHIELD_HIT_ANIM_MSEC = 0.5 * 1000; // K? // L?
 export const SHIELD_HIT_ANIM_RADIUS = 0.1; // arbitrary hack. // K? // L?
 
-export const EXPLOSION_PARTICLE_COUNT = 4 * 5; // K // match: 4 is client particles float size.
-export const EXPLOSION_PARTICLE_DURATION_MSEC = 1000; // K
-export const EXPLOSION_PARTICLE_SPEED = 0.2; // units? K
+// match: explosion particle generator is an 8-way.
+export const EXPLOSION_PARTICLE_COUNT = 8 * 4; // K
+export const EXPLOSION_PARTICLE_DURATION_MSEC = 400; // K
+export const EXPLOSION_PARTICLE_SPEED = 0.25; // units? K
+// match: shield hit particle generator is an ellipse.
 export const SHIELD_HIT_PARTICLE_COUNT = 25; // K
 export const SHIELD_HIT_PARTICLE_DURATION_MSEC = 250; // K
 export const SHIELD_HIT_PARTICLE_SPEED = 0.1; // units? K
