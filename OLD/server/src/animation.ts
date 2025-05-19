@@ -133,18 +133,20 @@ export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
 
 // todo: maybe pull out code for A.DrawingAnimator from the explosion code.
 
-// todo: 't' below might have (???) originally been to allow for different
+// todo: dead code alert. 't' below was originally to allow for different
 // sprites depending on the level of damage 0...1, so sprites could
-// degreade as they are hit. but then i moved to having the hp bar,
-// and haven't used 't' other than at '1' i guess.
+// degreade as they are hit.
+// but (1) now we have the damage bar, and (2) there was not a good
+// way to calculate 't' from the sprite (only from the shield). :-(
 export type T2A = [number, ResourceAnimator];
 export type AnimationDimensionsSpec_Thrusting2T01 = Map<boolean, Array<T2A>>;
 export type AnimatorDimensionsSpec = Map<F.Facing, AnimationDimensionsSpec_Thrusting2T01>;
+
 export interface DimensionsFrame {
     animator: ResourceAnimator;
     facing: F.Facing;
     thrusting: boolean;
-    t: number; // health 1...0, 'unused' feature.
+    t: number; // health 1...0, unimplemented feature.
 }
 
 export function dimension_spec_mk(db: GDB.GameDB, frames: DimensionsFrame[]): AnimatorDimensionsSpec {
@@ -238,17 +240,19 @@ export interface MultiImageSpec {
     resource_ids: Array<string>;
     starting_mode: MultiImageStartingMode;
     ending_mode: MultiImageEndingMode;
+    // er, i assume to delay for warp anim?
     offset_msec?: number;
 }
 export interface SingleImageSpec {
     resource_id: string;
-    offset_msec?: number;
+    // er, i assume to delay for warp anim?
+    offset_msec?: number; 
 }
 // i really dislike that ts doesn't support nominal typing well.
 export type ImagesSpec = MultiImageSpec | SingleImageSpec;
 
 export function animator_mk(now: number, spec: ImagesSpec): ResourceAnimator {
-    if ((spec as any).frame_msec == null) {
+    if ((spec as any).frame_msec == null) { // structural typing can be wugly.
         return new SingleImageAnimator(now, spec as SingleImageSpec);
     }
     else {
@@ -317,7 +321,6 @@ export const TheVoidImageAnimator = new class implements ResourceAnimator {
 }();
 
 export class SingleImageAnimator implements ResourceAnimator {
-    private static SINGLE_IMAGE_MSEC: number = Number.MAX_SAFE_INTEGER;
     private start_msec: number;
     private spec: SingleImageSpec;
 

@@ -9,7 +9,7 @@ and by 'bounty' i just mean a very heart-felt, "thank you!"
 * bounty: rewrite cooldown and clip to not suck.
 * (joke bounty: refactor all the things, like bad naming, ha ha.)
 * bounty: smooth out the player thurst sound e.g. when turning a lot.
-* bounty: fix player_shot to not go off screen.
+* bounty: fix player_shot to not go ahead off screen. (!!!!!!!!!!!!!!!!!)
 
 really really todo, maybe?
 +++ eight-way death particles.
