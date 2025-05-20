@@ -54,9 +54,9 @@ function calculate_acc(src: G.V2D, dst: G.V2D, acc_mag: number, dt: number): G.V
 }
 
 // sorta like: fly at the player, then turn around and repeat.
+// todo: would be nice if the patterns could react to e.g. being shot.
 export class BuzzPlayer implements FlightPattern {
-    // allow them to go farish away otherwise they congregate unattractively.
-    private static NEXT_SEEK_MSEC = 10*1000;
+    private static NEXT_SEEK_MSEC = 5*1000;
     private acc_mag: G.V2D;
     private next_seek_msec: number;
 

@@ -12,7 +12,7 @@ import * as Lemk from '../enemy_mk';
 import * as K from '../../konfig';
 
 // match: sprite animation.
-const SIZE = G.v2d_scale_v2d_i(G.v2d_mk(150, 75), G.v2d_mk(0.7, 0.4));
+const SIZE = G.v2d_scale_v2d_i(G.v2d_mk(150, 75), G.v2d_mk(0.8, 0.6));
 const WARPIN_RESOURCE_ID = "enemies/e21/gg1l.png";
 const Mega: Lemk.EnemyMk = {
     SIZE,
@@ -25,7 +25,7 @@ const Mega: Lemk.EnemyMk = {
             'wr': Ebw.weapon_mk(ewsr),
 	};
 	const acc_base = G.v2d_mk(
-            K.PLAYER_DELTA_X_ACC * 0.3,
+            K.PLAYER_DELTA_X_ACC * 0.65,
             K.PLAYER_DELTA_X_ACC * 0.1
 	);
 	const acc = Rnd.singleton.v2d_around(
