@@ -284,6 +284,8 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
     }
 
     private are_all_tasks_done(next: GDB.GameDB): boolean {
+	// note: this isn't totally correct e.g. if you hack a level
+	// to only have 1 Rank.small and you shoot it, this still doesn't trigger?!
 	return U.count_dict(next.local.enemy_generators) == 0 &&
 	    U.count_dict(next.shared.items.warpin) == 0 &&
 	    U.count_dict(next.shared.items.enemies) == 0 &&
@@ -337,7 +339,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    const reminder: Dr.DrawText = {
 		wrap: false,
 		// hard-coded eye-balled positioning.
-		lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.35, K.GAMEPORT_RECT.size.y/2),
+		lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.335, K.GAMEPORT_RECT.size.y/2),
 		font: `60px ${K.MENU_FONT}`,
 		fillStyle: this.reminder_cycle.next().setAlpha01(
 		    U.t01(0, K.PEOPLE_REMINDER_TIMEOUT, this.people_reminder_timeout)
