@@ -12,7 +12,7 @@ import * as K from '../../konfig';
 import * as Esbw from '../../enemy/enemy_smartbomb_weapon';
 
 // match: sprite animation.
-const SIZE = G.v2d_mk(90, 109);
+const SIZE = G.v2d_scale_i(G.v2d_mk(90, 109), 1.1);
 const WARPIN_RESOURCE_ID = "enemies/e20/g1.png";
 const Hypermega: Lemk.EnemyMk = {
     SIZE,
