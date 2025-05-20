@@ -12,9 +12,9 @@ import * as K from '../konfig';
 import * as Rnd from '../random';
 
 // match: sprite animation.
-const SIZE = G.v2d_scale_i(G.v2d_mk(20, 16), 2);
-const WARPIN_RESOURCE_ID = "enemies/basic4/eb41.png";
-const Basic4: Lemk.EnemyMk = {
+const SIZE = G.v2d_scale_i(G.v2d_mk(8, 8), 3);
+const WARPIN_RESOURCE_ID = "enemies/basic6/eb62.png"; // not eb61.
+const Basic6: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
@@ -28,7 +28,7 @@ const Basic4: Lemk.EnemyMk = {
 	const flight_pattern = new Fp.DecendAndGoSine(
 	    db,
 	    SIZE,
-	    Rnd.singleton.float_around(0.0008, 0.0001),
+	    Rnd.singleton.float_around(0.0003, 0.0001),
 	    db.shared.world.gameport.world_bounds.size.y * 0.3
 	);
 	const spec: Emk.EnemySpec = {
@@ -48,11 +48,10 @@ const Basic4: Lemk.EnemyMk = {
 	);
     }
 }
-export default Basic4;
+export default Basic6;
 
 function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     const frames: A.DimensionsFrame[] = [
-        // enemy doesn't show any thrusters.
         ...t2a_facing_mk(db, true, F.Facing.left),
         ...t2a_facing_mk(db, true, F.Facing.right),
         ...t2a_facing_mk(db, false, F.Facing.left),
@@ -76,10 +75,10 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
                 {
 		    frame_msec: 80,
 		    resource_ids: [
-                        ...images.lookup_range_n(n => `enemies/basic4/eb4${n}.png`, 1, 4)
+                        ...images.lookup_range_n(n => `enemies/basic6/eb6${n}.png`, 1, 3)
 		    ],
 		    starting_mode: A.MultiImageStartingMode.hold,
-		    ending_mode: A.MultiImageEndingMode.loop,
+		    ending_mode: A.MultiImageEndingMode.bounce,
                 }
 	    )
         });

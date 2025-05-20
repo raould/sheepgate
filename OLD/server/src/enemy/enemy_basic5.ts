@@ -25,7 +25,7 @@ const Basic5: Lemk.EnemyMk = {
 	const weapons = {
             'w': Ebw.weapon_mk(ews),
 	};
-	const flight_pattern = new Fp.DecendAndGoSine( // tod: something more random saucery.
+	const flight_pattern = new Fp.DecendAndGoSine(
 	    db,
 	    SIZE,
 	    Rnd.singleton.float_around(0.0008, 0.0001),
