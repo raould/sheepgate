@@ -89,7 +89,7 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
                 {
                     frame_msec: 80,
                     resource_ids: [
-                        ...images.lookup_range_n(n => `enemies/e29/e7m${n}.png`, 1, 3),
+                        ...images.lookup_range_n(n => `enemies/e29/e7m${n}.png`, 1, 6),
                     ],
                     starting_mode: A.MultiImageStartingMode.hold,
                     ending_mode: A.MultiImageEndingMode.bounce

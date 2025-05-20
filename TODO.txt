@@ -4,6 +4,8 @@ SEE ALL THE 'TODO' (AND 'MATCH') COMMENTS IN THE CODE!
 THESE ARE NOT IN ORDER because i keep changing my mind :-\
 and keep finding things i did that are super confusing.
 
+this code base is consisently inconsistent.
+
 and by 'bounty' i just mean a very heart-felt, "thank you!"
 * bounty: player can break free of their 'zone' sometimes!
 * bounty: player wrapping can freak out sometimes!
