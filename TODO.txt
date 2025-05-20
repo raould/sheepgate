@@ -14,9 +14,7 @@ and by 'bounty' i just mean a very heart-felt, "thank you!"
 
 
 really really todo, maybe?
-+++ eight-way death particles.
 +++ more enemies.
-+++ more levels.
 +++ improve sprites.
 +++ powerups.
 +++ end of level statistics.
