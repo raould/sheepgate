@@ -259,7 +259,7 @@ class ParticlesEightGenerator extends AbstractParticleGenerator {
 			  self.particles[i + self.oy] = iy;
 			  const ivx = ix - mx;
 			  const ivy = iy - my;
-			  const ySlower = y != 0 ? 0.8 : 1; // ellipsizer.
+			  const ySlower = y != 0 ? 0.7 : 1; // ellipsizeringish.
 			  const d = Math.sqrt(ivx * ivx + ivy * ivy);
 			  self.particles[i + self.ovx] = ivx / d * (speed) * (Math.random() + 0.5);
 			  self.particles[i + self.ovy] = ivy / d * (speed*ySlower) * (Math.random() + 0.5);
@@ -1248,6 +1248,16 @@ function loadImages() {
     loadImage(`enemies/e26/e26t1r.png`);
     loadImage(`enemies/e26/e26t2l.png`);
     loadImage(`enemies/e26/e26t2r.png`);
+
+    [0,1,2,3].forEach(anim => {
+	loadImage(`enemies/e27/e7s${anim}.png`);
+    });
+    [1,2,3].forEach(anim => {
+	loadImage(`enemies/e28/e7hm${anim}.png`);
+    });
+    [1,2,3].forEach(anim => {
+	loadImage(`enemies/e29/e7m${anim}.png`);
+    });
 
     Array.from({length: 10}, (v, i) => i+1).forEach((i) => {
 	loadImage(`gem/gem${i}.png`)

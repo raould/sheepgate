@@ -20,6 +20,7 @@ import * as L3 from './level/level3/level3';
 import * as L4 from './level/level4/level4';
 import * as L5 from './level/level5/level5';
 import * as L6 from './level/level6/level6';
+import * as L7 from './level/level7/level7';
 
 const TRACK1_SFX = { sfx_id: K.TRACK1_SFX, gain: 0.3, singleton: true };
 
@@ -65,6 +66,7 @@ const level_mks: LevelMk[] = [
     (i: number, score: number, hi: Hs.HighScore) => L4.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L5.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L6.level_mk(i, score, hi),
+    (i: number, score: number, hi: Hs.HighScore) => L7.level_mk(i, score, hi),
 ];
 D.assert(level_mks.length === K.LEVEL_TEMPLATE_COUNT, "level template count");
 
