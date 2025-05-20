@@ -17,7 +17,10 @@ export enum Event {
     medium_defeat,
     hard_defeat,
     boss_defeat,
-	gem_pickup,
+    // actually i've decided no points for pickup,
+    // otherwise it can get stressful for some players
+    // if the level ends before they can pick them all up.
+    gem_pickup,
     // remember to update this, duh.
     // (wow i kinda hate typescript.)
     LAST = gem_pickup

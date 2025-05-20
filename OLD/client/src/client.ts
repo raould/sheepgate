@@ -263,7 +263,7 @@ class ParticlesEightGenerator extends AbstractParticleGenerator {
 			  const d = Math.sqrt(ivx * ivx + ivy * ivy);
 			  self.particles[i + self.ovx] = ivx / d * (speed) * (Math.random() + 0.5);
 			  self.particles[i + self.ovy] = ivy / d * (speed*ySlower) * (Math.random() + 0.5);
-			  self.particles[i + self.osize] = 8;
+			  self.particles[i + self.osize] = 30;
 		      }
 		  }
 	      });
