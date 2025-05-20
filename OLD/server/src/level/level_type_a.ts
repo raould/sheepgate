@@ -412,7 +412,6 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    [Sc.Event.medium_defeat, 15],
 	    [Sc.Event.hard_defeat, 20],
 	    [Sc.Event.boss_defeat, 50],
-	    [Sc.Event.gem_pickup, 0], // si, nada.
 	]);
 	const local: GDB.DBLocal = {
 	    // client_db is temporary until the client sends us a real db, duh.

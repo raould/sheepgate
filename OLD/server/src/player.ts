@@ -321,7 +321,6 @@ export function add_shield(db: GDB.GameDB, player: S.Player) {
             if (U.has_bits_eq(c.type_flags, Tf.TF.gem)) {
                 thiz.hp = Math.min(thiz.hp_init, thiz.hp + K.GEM_HP_BONUS);
                 db.shared.items.sfx.push({ sfx_id: K.GEM_COLLECT_SFX });
-		db.local.scoring.on_event(Sc.Event.gem_pickup);
             }
             // note: the player has an extra hard-coded ability to crash through enemies somewhat.
             if (U.has_bits_eq(c.type_flags, Tf.TF.enemyShield)) {
