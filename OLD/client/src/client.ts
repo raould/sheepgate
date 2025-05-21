@@ -200,7 +200,6 @@ class ParticlesEllipseGenerator extends AbstractParticleGenerator {
     constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/) {
 	super(count, duration_msec, start_msec, speed, bounds,
 	      (self) => {
-		  return;
 		  const mx = bounds.lt.x + bounds.size.x/2;
 		  const my = bounds.lt.y + bounds.size.y/2;
 		  const rx = bounds.size.x/2;
@@ -240,24 +239,29 @@ class ParticlesEightGenerator extends AbstractParticleGenerator {
 		  const my = bounds.lt.y + bounds.size.y/2;
 		  const rx = bounds.size.x/2;
 		  const ry = bounds.size.y/2;
+		  let spd = speed;
 		  for (let i = 0; i < self.particles.length; i += self.ostep) {
 		      // todo: shared libs with server so we can have the random lib, geom lib, etc.
 		      const pi = Math.floor((i/self.ostep)%8);
+		      // make 'layers' every 8 particles.
+		      if (i > 0 && pi === 0) {
+			  spd /= (i/(self.ostep*8))+1;
+		      }
 		      if (P8[pi] != undefined) {
 			  const [x, y] = P8[pi];
 			  assert(x != undefined, "x");
 			  assert(y != undefined, "y");
-			  const ix = mx + x * (rx * Math.random()*0.5);
-			  const iy = my + y * (ry * Math.random()*0.5);
+			  const ix = mx + x * rx;
+			  const iy = my + y * ry;
 			  self.particles[i + self.ox] = ix;
 			  self.particles[i + self.oy] = iy;
 			  const ivx = ix - mx;
 			  const ivy = iy - my;
 			  const ySlower = y != 0 ? 0.4 : 1; // ellipsizeringish.
 			  const d = Math.sqrt(ivx * ivx + ivy * ivy);
-			  self.particles[i + self.ovx] = ivx / d * (speed) * (Math.random() + 0.5);
-			  self.particles[i + self.ovy] = ivy / d * (speed*ySlower) * (Math.random() + 0.5);
-			  self.particles[i + self.osize] = 4;
+			  self.particles[i + self.ovx] = ivx/d * spd;
+			  self.particles[i + self.ovy] = ivy/d * spd*ySlower;
+			  self.particles[i + self.osize] = 6;
 		      }
 		  }
 	      });
