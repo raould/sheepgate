@@ -155,8 +155,8 @@ abstract class AbstractParticleGenerator {
     ovy = 3;
     osize = 4;
     ostep = 5; // four floats per particle: ox, oy, ovx, ovy, size.
-    pdim = 2;
     particles: Float32Array;
+
     constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/, particles_mk: (self: AbstractParticleGenerator) => void) {
         this.particles = new Float32Array(this.count * this.ostep);
 	particles_mk(this);
@@ -169,6 +169,8 @@ abstract class AbstractParticleGenerator {
     // note: this is step() and render() together in one.
     render(gdb: any, h5canvas: any) {
         const elapsed_msec = gdb.sim_now - this.start_msec;
+        const v = Math.min(1, Math.max(0.2, 1 - this.age_t(gdb))); // 0.1 is arbitrary, yes.
+	const fs = "rgb(" + (255*v).toString() + "," + (128*v).toString() + ",0)";
         for (let i = 0; i < this.count * this.ostep; i += this.ostep) {
             const x0 = this.particles[i + this.ox];
             const y0 = this.particles[i + this.oy];
@@ -177,28 +179,19 @@ abstract class AbstractParticleGenerator {
 	    const size = this.particles[i + this.osize];
             const x1 = x0 + vx * elapsed_msec;
             const y1 = y0 + vy * elapsed_msec;
-            const a1 = Math.min(1, Math.max(0.2, 1 - this.age_t(gdb))); // 0.2 is arbitrary, yes.
-            const fs = `rgba(64,0,0,${a1})`;
+            const sxy = v2sv_wrapped({x:x1, y:y1}, gdb.world.gameport, gdb.world.bounds0, true);
             // nifty trails, arbitrary hard-coded hacked values.
-            const sxy1 = v2sv_wrapped({x:x1, y:y1}, gdb.world.gameport, gdb.world.bounds0, true);
+	    const dx = (x1 - x0) * 5;
+	    const dy = (y1 - y0) * 5;
             cx2d.beginPath();
-            cx2d.lineWidth = size/2;
-            const ss = `rgba(255,255,0,${a1})`;
-            cx2d.strokeStyle = ss;
-            cx2d.moveTo(sxy1.x+this.pdim/2, sxy1.y+this.pdim/2);
-            cx2d.lineTo(sxy1.x+this.pdim/2 - vx * 10, sxy1.y+this.pdim/2 - vy * 10);
+            cx2d.moveTo(sxy.x+size/2, sxy.y+size/2);
+            cx2d.moveTo(sxy.x+size/2+dx, sxy.y+size/2+dy);
+            cx2d.lineWidth = Math.min(3, Math.max(1, size/4));
+            cx2d.strokeStyle = "#AA0F00FF";
             cx2d.stroke();
             // the particle itself.
             cx2d.fillStyle = fs;
-            cx2d.fillRect(sxy1.x, sxy1.y, this.pdim, this.pdim);
-            if (debugging_state.is_drawing) {
-                cx2d.beginPath();
-                cx2d.lineWidth = size;
-                cx2d.strokeStyle = "#00FF0033";
-                cx2d.moveTo(sxy1.x, sxy1.y);
-                cx2d.lineTo(sxy1.x + vx * 100, sxy1.y + vy * 100);
-                cx2d.stroke();
-            }
+            cx2d.fillRect(sxy.x, sxy.y, size, size);
         }
     }
 }
@@ -207,6 +200,7 @@ class ParticlesEllipseGenerator extends AbstractParticleGenerator {
     constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/) {
 	super(count, duration_msec, start_msec, speed, bounds,
 	      (self) => {
+		  return;
 		  const mx = bounds.lt.x + bounds.size.x/2;
 		  const my = bounds.lt.y + bounds.size.y/2;
 		  const rx = bounds.size.x/2;
@@ -224,7 +218,7 @@ class ParticlesEllipseGenerator extends AbstractParticleGenerator {
 		      const d = Math.sqrt(ivx * ivx + ivy * ivy);
 		      self.particles[i + self.ovx] = ivx / d * speed * (Math.random() + 0.5);
 		      self.particles[i + self.ovy] = ivy / d * speed * (Math.random() + 0.5);
-		      self.particles[i + self.osize] = 4;
+		      self.particles[i + self.osize] = 2;
 		  }
 	      });
     }
@@ -259,11 +253,11 @@ class ParticlesEightGenerator extends AbstractParticleGenerator {
 			  self.particles[i + self.oy] = iy;
 			  const ivx = ix - mx;
 			  const ivy = iy - my;
-			  const ySlower = y != 0 ? 0.7 : 1; // ellipsizeringish.
+			  const ySlower = y != 0 ? 0.4 : 1; // ellipsizeringish.
 			  const d = Math.sqrt(ivx * ivx + ivy * ivy);
 			  self.particles[i + self.ovx] = ivx / d * (speed) * (Math.random() + 0.5);
 			  self.particles[i + self.ovy] = ivy / d * (speed*ySlower) * (Math.random() + 0.5);
-			  self.particles[i + self.osize] = 30;
+			  self.particles[i + self.osize] = 4;
 		      }
 		  }
 	      });
