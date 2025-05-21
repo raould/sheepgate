@@ -210,10 +210,6 @@ function on_death_fx(db: GDB.GameDB, shield: ShieldPrivate, fighter: S.Fighter) 
             })
         }
     );
-    const p8count = Math.floor(
-	K.EXPLOSION_PARTICLE_COUNT *
-	    S.rank2value(fighter.rank, K.P8_COUNT_SCALES)
-    );
     GDB.add_dict_id_mut(
         db.shared.items.particles,
         (dbid: GDB.DBID) => new Pr.ParticleEightGenerator(

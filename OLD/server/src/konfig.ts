@@ -286,10 +286,9 @@ export const EXPLOSION_PARTICLE_COUNT = 8 * 2; // K
 export const EXPLOSION_PARTICLE_DURATION_MSEC = 300; // K
 export const EXPLOSION_PARTICLE_SPEED = 0.5; // units? K
 // match: shield hit particle generator is an ellipse.
-export const SHIELD_HIT_PARTICLE_COUNT = 25; // K
-export const SHIELD_HIT_PARTICLE_DURATION_MSEC = 250; // K
-export const SHIELD_HIT_PARTICLE_SPEED = 0.1; // units? K
-export const P8_COUNT_SCALES = [2, 3, 4, 5, 6];
+export const SHIELD_HIT_PARTICLE_COUNT = 10; // K
+export const SHIELD_HIT_PARTICLE_DURATION_MSEC = 200; // K
+export const SHIELD_HIT_PARTICLE_SPEED = 0.15; // units? K
 
 // empty means you wanted it to not be there,
 // missing means it wasn't found and is a bug.

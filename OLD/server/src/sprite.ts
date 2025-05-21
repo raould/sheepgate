@@ -6,6 +6,7 @@ import * as Sh from './fighter_shield';
 import * as U from './util/util';
 import * as Tf from './type_flags';
 import * as F from './facing';
+import * as D from './debug';
 
 // todo: these are growing to maybe
 // have too much stuff in them, see
@@ -111,13 +112,14 @@ export enum Rank {
 
 // values.length must be >= 5, one per rank.
 export function rank2value(rank: Rank, values: any[]): any {
+    D.assert(values.length >= 5);
     switch (rank) {
     case Rank.basic: return values[0];
     case Rank.small: return values[1];
     case Rank.player: return values[2];
     case Rank.mega: return values[3];
     case Rank.hypermega: return values[4];
-    default: U.unreachable(rank);
+    default: return 1;
     }
 }
 
