@@ -220,6 +220,7 @@ export const PLAYER_HP = 40;
 
 export const BAD_COLOR = RGBA.new0255(202, 0, 32);
 export const GOOD_COLOR = RGBA.new0255(5, 133, 176);
+export const PLAYER_COLOR = RGBA.new0255(255, 255, 128);
 
 // shields are faded but will flare up when hit.
 export const SHIELD_ALPHA = 0.2; // K? // L?
@@ -266,7 +267,7 @@ export const PEOPLE_SIZE = G.v2d_mk_nn(32); // K
 export const PEOPLE_MAX_COUNT = 2 * 5; // K
 export const PEOPLE_REMINDER_TIMEOUT = 3 * 1000; // K
 
-export const GEM_SIZE = G.v2d_mk_nn(10);
+export const GEM_SIZE = G.v2d_mk_nn(13);
 export const GEM_HP_BONUS = 3; // keep it smallish.
 
 // todo: !!!! too many collision buckets as this gets bigger !!!!

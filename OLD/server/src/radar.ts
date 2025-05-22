@@ -103,7 +103,7 @@ function render_player(db: GDB.GameDB, sprite: S.Player) {
     db.shared.hud_drawing.rects.push({
         wrap: false,
         line_width: 0,
-        color: K.GOOD_COLOR,
+        color: K.PLAYER_COLOR,
         is_filled: true,
         rect: r
     });
