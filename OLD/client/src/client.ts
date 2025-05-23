@@ -1186,6 +1186,13 @@ function loadImages() {
 	loadImage(`enemies/basic7/eb${anim}.png`);
     });
 
+    loadImage(`enemies/basic8/defl.png`);
+    loadImage(`enemies/basic8/deflt1.png`);
+    loadImage(`enemies/basic8/deflt2.png`);
+    loadImage(`enemies/basic8/defr.png`);
+    loadImage(`enemies/basic8/defrt1.png`);
+    loadImage(`enemies/basic8/defrt2.png`);
+
     loadImage("enemies/e18/e18l.png");
     loadImage("enemies/e18/e18r.png");
 

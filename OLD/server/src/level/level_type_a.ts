@@ -43,6 +43,7 @@ export interface LevelKonfig {
     Eb5?: LevelEnemyKonfig,
     Eb6?: LevelEnemyKonfig,
     Eb7?: LevelEnemyKonfig,
+    Eb8?: LevelEnemyKonfig,
     Es?: LevelEnemyKonfig,
     Em?: LevelEnemyKonfig,
     Ehm?: LevelEnemyKonfig,
@@ -303,6 +304,18 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		}
 	    });
 	}
+	if (U.exists(this.konfig.Eb8)) {
+	    basics.push({
+		comment: "enemy-gen-basic8",
+		generations: this.konfig.Eb8?.count,
+		max_alive: this.konfig.Eb8?.limit,
+		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    return this.konfig.Eb8?.mk(db); // wtf tsc?
+		}
+	    });
+	}
+	D.log("basic enemies", basics);
 	D.assert(basics.length > 0, "no basic enemies found?!");
 	Ebg.add_generators(this.db, basics);
     }
