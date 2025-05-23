@@ -4,6 +4,7 @@ import * as S from '../../sprite';
 import * as Lta from '../level_type_a';
 import * as Lis from '../level_in_screens';
 import Eb3 from '../../enemy/enemy_basic3';
+import Eb7 from '../../enemy/enemy_basic7';
 import Es from './enemy_small3';
 import Em from './enemy_mega3';
 import Ehm from './enemy_hypermega3';
@@ -14,7 +15,8 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     const denom = K.LEVEL_TEMPLATE_COUNT;
     const buf = Math.floor(level_index / denom);
     return {
-	Eb3: { mk: Eb3.warpin_mk, count: 3 + buf, limit: 3 + buf },
+	Eb3: { mk: Eb3.warpin_mk, count: 3 + buf, limit: 2 + buf },
+	Eb7: { mk: Eb7.warpin_mk, count: 3 + buf, limit: 2 + buf },
 	Es: { mk: Es.warpin_mk, count: 4 + buf, limit: 1 + buf },
 	Em: { mk: Em.warpin_mk, count: 2 + buf, limit: 1 + buf },
 	Ehm: { mk: Ehm.warpin_mk, count: 1 + buf, limit: 1 + buf },

@@ -42,6 +42,7 @@ export interface LevelKonfig {
     Eb4?: LevelEnemyKonfig,
     Eb5?: LevelEnemyKonfig,
     Eb6?: LevelEnemyKonfig,
+    Eb7?: LevelEnemyKonfig,
     Es?: LevelEnemyKonfig,
     Em?: LevelEnemyKonfig,
     Ehm?: LevelEnemyKonfig,
@@ -288,6 +289,17 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
 		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		    return this.konfig.Eb6?.mk(db); // wtf tsc?
+		}
+	    });
+	}
+	if (U.exists(this.konfig.Eb7)) {
+	    basics.push({
+		comment: "enemy-gen-basic7",
+		generations: this.konfig.Eb7?.count,
+		max_alive: this.konfig.Eb7?.limit,
+		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    return this.konfig.Eb7?.mk(db); // wtf tsc?
 		}
 	    });
 	}
