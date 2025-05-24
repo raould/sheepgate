@@ -344,6 +344,15 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    this.state = Gs.StepperState.lost;
 	    return;
 	}
+	if (!!next.local.client_db.inputs.commands[Cmd.CommandType.debug_smite]) {
+	    Object.values(next.shared.items.enemies).forEach(e => {
+		const sid = e.shield_id;
+		if (U.exists(sid)) {
+		    const shield = next.shared.items.shields?.[sid];
+		    shield.hp = 0;
+		}
+	    });
+	}
 	if (this.state == Gs.StepperState.running) {
 	    // the player bought the farm?
 	    if (GDB.get_player(next) == null) {

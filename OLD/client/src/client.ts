@@ -95,6 +95,7 @@ enum CommandType {
     debug_dump_state = "debug_dump_state",
     debug_win_level = "debug_win_level",
     debug_lose_level = "debug_lose_level",
+    debug_smite = "debug_smite",
 }
 // todo: share this (unfortunately) with the server, esp. the "is_singular" part.
 // is_singular true means there's no auto-repeat while the key is held down. (wtf?)
@@ -142,6 +143,7 @@ const key2cmd: { [k: string]: CommandSpec } = {
     "/":        { command: CommandType.debug_toggle_stepping, is_singular: true },
     "^":        { command: CommandType.debug_win_level, is_singular: true },
     "&":        { command: CommandType.debug_lose_level, is_singular: true },
+    "*":        { command: CommandType.debug_smite, is_singular: true },
 };
 
 abstract class AbstractParticleGenerator {
