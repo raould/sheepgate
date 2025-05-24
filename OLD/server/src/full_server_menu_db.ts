@@ -38,7 +38,7 @@ export const full_server_menu_db = {
 		}
 	    }
 	},
-	"bg_color":"#aF2000FF",
+	"bg_color":"#FF2000FF",
 	"frame_drawing": {
 	    "rects":[],
 	    "lines":[],
@@ -59,7 +59,7 @@ export const full_server_menu_db = {
 			      "x":277,
 			      "y":277
 			  },
-			  "text":"THE SERVER IS FULL!",
+			  "text":"THE SERVER IS FULL",
 			  "font":"40px menufont",
 			  "fillStyle":"#000000FF",
 			  "wrap": false
@@ -70,7 +70,7 @@ export const full_server_menu_db = {
 			      "y":307
 			  },
 			  "text":"try again later?",
-			  "font":"20px menufont",
+			  "font":"30px menufont",
 			  "fillStyle":"#000000FF",
 			  "wrap": false
 		      },
@@ -79,8 +79,18 @@ export const full_server_menu_db = {
 			      "x":277,
 			      "y":377
 			  },
-			  "text":"SCAN QR FOR THE SOURCE...",
+			  "text":"SCAN QR FOR THE SOURCE",
 			  "font":"40px menufont",
+			  "fillStyle":"#000000FF",
+			  "wrap": false
+		      },
+		      {
+			  "lb": {
+			      "x":277,
+			      "y":407
+			  },
+			  "text":"(it plays mucho better running locally, anyway!)",
+			  "font":"20px menufont",
 			  "fillStyle":"#000000FF",
 			  "wrap": false
 		      },
