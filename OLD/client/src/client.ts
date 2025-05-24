@@ -918,6 +918,7 @@ function connectWS(endpoint: string, onMessage?: any, onConnected?: any) {
     };
     socket_ws.onerror = (event: any) => {
         log("ERROR", event);
+	alert("Could not talk to the server. To run the game on your local machine, see: https://github.com/raould/sheepgate");
     };
 }
 
