@@ -170,12 +170,12 @@ export const RADAR_FILL_COLOR = RGBA.BLACK;
 export const RADAR_OUTLINE_COLOR = RGBA.new01(1, 0, 0); // K
 export const RADAR_RECT_MIN_SIZE = G.v2d_mk_nn(4);
 export const DANGER_HPT_THRESHOLD = 0.5; // K
-export const DANGER_COLOR = RGBA.MAGENTA; // K
-export const DANGER_RECT_WIDTH = 15;
-export const DANGER_LEFT_RECT = G.rect_mk_lt(G.rect_lt(SCREEN_RECT0), G.v2d_set_x(SCREEN_RECT0.size, DANGER_RECT_WIDTH));
-export const DANGER_RIGHT_RECT = G.rect_mk_rt(G.rect_rt(SCREEN_RECT0), G.v2d_set_x(SCREEN_RECT0.size, DANGER_RECT_WIDTH));
-export const DANGER_IMAGE_SIZE = G.v2d_scale_i(G.v2d_mk(63, 20), 2);
-export const DANGER_IMAGE_LOCATED = {
+export const DANGER_COLOR = RGBA.MAGENTA.setAlpha01(0.5); // K
+export const DANGER_RECT_WIDTH = 15; // K
+export const DANGER_LEFT_RECT = G.rect_mk_lt(G.rect_lt(SCREEN_RECT0), G.v2d_set_x(SCREEN_RECT0.size, DANGER_RECT_WIDTH)); // K
+export const DANGER_RIGHT_RECT = G.rect_mk_rt(G.rect_rt(SCREEN_RECT0), G.v2d_set_x(SCREEN_RECT0.size, DANGER_RECT_WIDTH)); // K
+export const DANGER_IMAGE_SIZE = G.v2d_scale_i(G.v2d_mk(140, 26), 1.25); // K
+export const DANGER_IMAGE_LOCATED = { // K
     wrap: false,
     comment: "danger",
     image_located: {
@@ -190,7 +190,6 @@ export const DANGER_IMAGE_LOCATED = {
 	),
     }
 };
-D.log(DANGER_IMAGE_LOCATED);
 
 export const CLOUD_SIZE = G.v2d_mk(80, 20); // L
 export const CLOUD_ALPHA = 0.1; // L
