@@ -50,6 +50,14 @@ export function log_if(test: boolean, ...args: any) {
     }
 }
 
+const seen = new Set<string>();
+export function log_once(key: string, ...args: any) {
+    if (!seen.has(key)) {
+	seen.add(key);
+	log(key, ...args);
+    }
+}
+
 function msgs2strs(...msgs: any): string {
     if (msgs?.length ?? 0 === 0) {
         return "";

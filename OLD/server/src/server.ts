@@ -7,6 +7,7 @@ import * as U from './util/util';
 import * as Hs from './high_scores';
 import * as P from './perf';
 import * as F from './fps';
+import * as Full from './full_server_menu_db';
 import * as WS from 'ws';
 
 const ws2game: Map<any, U.O<Gm.Game>> = new Map();
@@ -34,7 +35,9 @@ const t = new T.OnlyOneCallbackTimer(
 		game.step();
 		if (PROFILE) { pGame.end(); }
 
-		ws.send(game.stringify());
+		const msg = game.stringify();
+		ws.send(msg);
+
 		D.debug_step_cancel();
 	    }
 	});
@@ -55,7 +58,7 @@ t.start();
 wss.on('connection', (ws) => {
     D.log("ws connected!");
 
-    ws2game.set(ws, undefined); // paranoia.
+    ws2game.delete(ws); // paranoia.
 
     ws.on('open', () => {
         // todo: why the heck is this never called?!
@@ -65,23 +68,33 @@ wss.on('connection', (ws) => {
 
     ws.on('close', () => {
         ws2game.delete(ws);
-        D.log(`ws closed! # remaining games: ${ws2game.size}`);
+        D.log("ws closed! ws game--", ws2game.size);
     });
 
     ws.on(
         'message',
         (msg: string) => {
             try {
-                const client_db: Cdb.ClientDB | null = JSON.parse(msg);
-                if (client_db != null) {
-                    let g: U.O<Gm.Game> = ws2game.get(ws);
-                    if (g == null) {
-                        g = Gm.game_mk(high_scores);
-                        ws2game.set(ws, g);
-			D.log("ws game++", ws2game.size);
-                    }
-                    g.merge_client_db(client_db);
-                }
+		const full = ws2game.size >= K.MAX_CONCURRENT_GAMES;
+		if (full) {
+		    D.log("full!", ws2game.size, K.MAX_CONCURRENT_GAMES);
+		    const msg = JSON.stringify(Full.full_server_menu_db);
+		    ws.send(msg);
+		    ws.close();
+		}
+		else {
+                    const client_db: Cdb.ClientDB | null = JSON.parse(msg);
+                    if (client_db != null) {
+			let g: U.O<Gm.Game> = ws2game.get(ws);
+			if (g == null) {
+                            g = Gm.game_mk(high_scores);
+                            ws2game.set(ws, g);
+		    	    D.log("new! ws game++", ws2game.size);
+			}
+			D.assert(g != null, "g");
+			g?.merge_client_db(client_db);
+		    }
+		}
             }
             catch (err) {
                 D.error("ws Error:", err);
