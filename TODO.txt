@@ -14,7 +14,6 @@ and by 'bounty' i just mean a very heart-felt, "thank you!"
 * bounty: smooth out the player thurst sound e.g. when turning a lot.
 * bounty: fix player_shot to not go ahead off screen. (!!!!!!!!!!!!!!!!!)
 
-
 really really todo, maybe?
 +++ more enemies.
 +++ improve sprites.
@@ -27,6 +26,8 @@ really really todo, maybe?
 
 * note: the files in client/resources/sounds/ are not used at runtime,
   they were just used to generate client/src/*b64*, which is perhaps confusing.
+
+* too confusing which coordinates are/not in world vs. screen space; which are/not "wrapped"; etc.
 
 * the enemy sprite loading is horrible, horrible. ('t' is i guess health 1...0, btw; never really used.)
 
@@ -75,6 +76,9 @@ next-feature-short-list, in no order:
 
 * augh i have no idea where in the code i have to use x-wrap()ping
   e.g. the enemy (especially hypermega) spawning?!
+
+NOTE:
+* do try to avoid relying on pure red or green, out of some basic accessibility respect.
 
 DO THESE NOW/NEXT:
 

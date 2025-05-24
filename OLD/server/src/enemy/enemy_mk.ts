@@ -34,7 +34,6 @@ export interface EnemySpec {
 }
 
 export function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec): U.O<S.Warpin> {
-    D.log("wrapin_mk", resource_id, spec);
     if (!!spec.lt) {
 	DebugGraphics.add_DrawEllipse(
 	    DebugGraphics.get_permanent(),

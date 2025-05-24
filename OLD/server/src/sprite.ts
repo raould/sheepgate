@@ -8,6 +8,14 @@ import * as Tf from './type_flags';
 import * as F from './facing';
 import * as D from './debug';
 
+// todo: too late, but this kind of atomization of interfaces
+// and structural typing ends up being really confusing
+// to anybody trying to figure out what actually has what.
+// i do not know of any dev tools environment that solves
+// that problem, and my minimalistic approach using just
+// unextended emacs sure doesn't.
+// weap and learn from this, young jedi.
+
 // todo: these are growing to maybe
 // have too much stuff in them, see
 // the evolution of the player.ts.Player.
@@ -51,7 +59,7 @@ export interface ImageResource {
 }
 
 export interface HitPoints {
-    hp_init: number;
+    hp_init: number; // must never be zero since it is often used in division.
     hp: number;
 }
 

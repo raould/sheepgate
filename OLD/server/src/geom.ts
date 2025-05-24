@@ -352,6 +352,9 @@ export function rect_mk(lt: V2D, size: V2D): Rect {
         size: size
     };
 }
+export function rect_mk_lt(lt: V2D, size: V2D): Rect {
+    return rect_mk(lt, size);
+}
 export function rect_mk_lb(lb: V2D, size: V2D): Rect {
     const lt = v2d_sub(lb, v2d_0y(size));
     return {

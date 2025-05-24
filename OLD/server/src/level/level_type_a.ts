@@ -315,7 +315,6 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		}
 	    });
 	}
-	D.log("basic enemies", basics);
 	D.assert(basics.length > 0, "no basic enemies found?!");
 	Ebg.add_generators(this.db, basics);
     }
@@ -364,8 +363,8 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	}
     }
 
-    protected update_hud(next: GDB.GameDB) {
-	super.update_hud(next);
+    protected update_alerts(next: GDB.GameDB) {
+	super.update_alerts(next);
 	if (this.are_all_tasks_done(next) && this.get_people_count(next) > 0) {
     	    if (U.isU(this.people_reminder_timeout)) {
 		this.people_reminder_timeout = K.PEOPLE_REMINDER_TIMEOUT;

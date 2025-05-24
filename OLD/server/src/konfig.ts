@@ -55,12 +55,6 @@ export const INVALID_CLIENT_ID = Number.NEGATIVE_INFINITY;  // K
 export const FPS = 30; // K
 export const DT = 1000 / FPS; // K
 
-export const HUD_FILL_COLOR = RGBA.BLACK; // K
-export const HUD_OUTLINE_COLOR = RGBA.new01(0.3, 0, 0); // K
-export const RADAR_FILL_COLOR = RGBA.BLACK;
-export const RADAR_OUTLINE_COLOR = RGBA.new01(1, 0, 0); // K
-export const RADAR_RECT_MIN_SIZE = G.v2d_mk_nn(4);
-
 // todo: match: the size of the game world is runtime
 // calculated, and i want to change it to be like stargate
 // where the whole vertical area is always visible, there's
@@ -76,6 +70,7 @@ export const RADAR_RECT_MIN_SIZE = G.v2d_mk_nn(4);
 // so it should ideally be as big as the fully displayable area on the output device.
 export const PLAYER_SIZE = G.v2d_mk(76, 25); // L?
 const SCREEN_BOUNDS0 = G.v2d_mk(960, 540); // K
+const SCREEN_RECT0 = G.v2d_2_rect(SCREEN_BOUNDS0);
 
 // todo: overscan only sorta works, if it gets too big
 // you see rendering popin and other grossness.
@@ -83,10 +78,7 @@ const SCREEN_BOUNDS0 = G.v2d_mk(960, 540); // K
 // so things like sizzlers overlap the title text.
 // todo: ideally would scale and be user configurable, for TVs.
 const OVERSCAN_INSET = G.v2d_mk(5, 5); // K
-export const SCREEN_RECT = G.rect_inset(
-    G.v2d_2_rect(SCREEN_BOUNDS0),
-    OVERSCAN_INSET
-);
+export const SCREEN_RECT = G.rect_inset(SCREEN_RECT0, OVERSCAN_INSET);
 
 // todo: all the screen -> hud/gameport would be better done with 2d 3x3 matricies.
 
@@ -171,6 +163,34 @@ export const GAMEPORT_PLAYER_ZONE_SCALE_Y = 0.2;
 export const GAMEPORT_SHAKE = 4; // K
 
 export const OFF_SCREEN = G.v2d_mk_nn(-Number.MAX_SAFE_INTEGER);
+
+export const HUD_FILL_COLOR = RGBA.BLACK; // K
+export const HUD_OUTLINE_COLOR = RGBA.new01(0.3, 0, 0); // K
+export const RADAR_FILL_COLOR = RGBA.BLACK;
+export const RADAR_OUTLINE_COLOR = RGBA.new01(1, 0, 0); // K
+export const RADAR_RECT_MIN_SIZE = G.v2d_mk_nn(4);
+export const DANGER_HPT_THRESHOLD = 0.5; // K
+export const DANGER_COLOR = RGBA.MAGENTA; // K
+export const DANGER_RECT_WIDTH = 15;
+export const DANGER_LEFT_RECT = G.rect_mk_lt(G.rect_lt(SCREEN_RECT0), G.v2d_set_x(SCREEN_RECT0.size, DANGER_RECT_WIDTH));
+export const DANGER_RIGHT_RECT = G.rect_mk_rt(G.rect_rt(SCREEN_RECT0), G.v2d_set_x(SCREEN_RECT0.size, DANGER_RECT_WIDTH));
+export const DANGER_IMAGE_SIZE = G.v2d_scale_i(G.v2d_mk(63, 20), 2);
+export const DANGER_IMAGE_LOCATED = {
+    wrap: false,
+    comment: "danger",
+    image_located: {
+	// todo: this should really maybe be in an ImageResources, not hard-coded here. :-(
+	resource_id: "images/danger.png",
+	rect: G.rect_mk(
+	    G.v2d_mk(
+		Math.round(SCREEN_BOUNDS0.x/2 - DANGER_IMAGE_SIZE.x/2),
+		Math.round(SCREEN_BOUNDS0.y*0.05)
+	    ),
+	    DANGER_IMAGE_SIZE
+	),
+    }
+};
+D.log(DANGER_IMAGE_LOCATED);
 
 export const CLOUD_SIZE = G.v2d_mk(80, 20); // L
 export const CLOUD_ALPHA = 0.1; // L

@@ -559,6 +559,7 @@ function renderHud(gdb: any) {
 function renderHudDrawing(gdb: any) {
     // note: the radar and other HUD items are drawn
     // in screen space, not in game world space.
+    // so "wrap" is always ignored. :-\
     const drawing = gdb.hud_drawing;
     // match: server expects client to draw rects first
     // so it can blank out areas of the view for painter's algorithm.
@@ -584,9 +585,14 @@ function renderHudDrawing(gdb: any) {
             dt.text, dt.font, dt.fillStyle, dt.lb.x, dt.lb.y
 	)
     });
-    drawing.images.forEach((di: any) => { renderImage(
-        di.resource_id, di.rect.lt.x, di.rect.lt.y, di.rect.size.x, di.rect.size.y
-    ) });
+    drawing.images.forEach((di: any) => {
+	var spec = di.image_located;
+	renderImage(
+	    spec.resource_id,
+	    spec.rect.lt.x, spec.rect.lt.y,
+	    spec.rect.size.x, spec.rect.size.y
+	);
+    });
 }
 
 function renderAllFgDrawings(gdb: any) {
@@ -1319,6 +1325,8 @@ function loadImages() {
     loadImage("bg/mal_far.png");
     loadImage("bg/mar_far.png");
     loadImage("bg/ma_near.png");
+
+    loadImage("danger.png");
 
     loadExplosionA("explosionA", "tile", 0, 11, 3);
     Array.from({length: 6}, (v, i) => i+1).forEach((i) => {

@@ -15,8 +15,16 @@ export function is_zero(n: number): boolean {
     return n == 0 || n == -0;
 }
 
+// on the whole i wish i deeply understood falsiness in javascript
+// so that i could 100% accurately use it right all the time,
+// and not thing to myself that i should write utilities to
+// manage it, which themselves might be incorrect since i
+// don't fully grok it. ok, ok, actually i don't wish that, what
+// i wish is that javascript's design and DX didn't suck like that!
 export type O<T> = T | undefined;
-export function isU(a: any): boolean { return a == undefined; }
+export function isU(a: any): boolean {
+    return a == undefined;
+}
 // wtf tsc?
 export function exists<T>(val: T | undefined | null): val is T {
     return val !== undefined && val !== null;
@@ -202,6 +210,7 @@ export function precision(n: number, p: number): number {
 type LNOTNIL<T,R> = (t:T)=>R
 type LNIL<R> = (()=>R);
 
+// yes, this (all of them) was a dumb idea: javascript is not swift.
 export function if_let<T,R>(ot:O<T>, nonnil:LNOTNIL<T,R>): O<R> {
     if (ot != null) {
         return nonnil(ot!);

@@ -374,6 +374,8 @@ export abstract class AbstractLevel implements Level {
 
     protected update_hud(next: GDB.GameDB) {
         this.clear_hud(next);
+	// painter's algorithm.
+	this.update_alerts(next);
         Rdr.step(next);
         this.update_scores(next);
         this.update_stats(next);
@@ -467,6 +469,40 @@ export abstract class AbstractLevel implements Level {
             };
             next.shared.hud_drawing.texts.push(t);
         }    
+    }
+
+    protected update_alerts(next: GDB.GameDB) {
+        U.if_let(
+            GDB.get_player(next),
+            player => {
+		if (U.exists(player.shield_id)) {
+		    U.if_let(
+			GDB.get_shield(next, player.shield_id),
+			shield => {
+			    const hpt = shield.hp / shield.hp_init;
+			    if (hpt < K.DANGER_HPT_THRESHOLD) {
+				const color: RGBA = K.DANGER_COLOR;
+				next.shared.hud_drawing.rects.push({
+				    wrap: false,
+				    line_width: 0,
+				    color,
+				    is_filled: true,
+				    rect: K.DANGER_LEFT_RECT,
+				});
+				next.shared.hud_drawing.rects.push({
+				    wrap: false,
+				    line_width: 0,
+				    color,
+				    is_filled: true,
+				    rect: K.DANGER_RIGHT_RECT,
+				});
+				next.shared.hud_drawing.images.push(
+				    K.DANGER_IMAGE_LOCATED
+				);
+			    }
+			});
+		}
+	    });
     }
 
     private update_screen_shake(next: GDB.GameDB) {
