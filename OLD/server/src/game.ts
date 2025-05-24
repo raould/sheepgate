@@ -3,6 +3,7 @@ import * as Ps from './menu/plain_screen';
 import * as Hse from './menu/high_score_entry_screen';
 import * as Hst from './menu/high_score_table_screen';
 import * as Cdb from './client_db';
+import * as Db from './db';
 import * as Cmd from './commands';
 import * as Gs from './game_stepper';
 import * as Hs from './high_scores';
@@ -50,6 +51,7 @@ const MAIN_INSTRUCTIONS = [
 export interface Game {
     merge_client_db(cnew: Cdb.ClientDB): void;
     step(): void;
+    get_db(): any;
     stringify(): string;
 }
 
@@ -106,6 +108,10 @@ export function game_mk(high_scores: Hs.HighScores): Game {
             }
         }
 
+	get_db(): any {
+	    return this.stepper.get_db();
+	}
+
         stringify(): string {
             return this.stepper.stringify();
         }
@@ -136,6 +142,10 @@ class GameWarning implements Gs.Stepper {
 
     step() {
         this.stepper.step();
+    }
+
+    get_db(): any {
+	return this.stepper.get_db();
     }
 
     stringify(): string {
@@ -188,6 +198,10 @@ class GameInstructions implements Gs.Stepper {
 	this.stepper.mdb.items.sfx.push(TRACK1_SFX);
     }
 
+    get_db(): any {
+	return this.stepper.get_db();
+    }
+
     stringify(): string {
         return this.stepper.stringify();
     }
@@ -236,6 +250,10 @@ class GamePaused implements Gs.Stepper {
         this.stepper.mdb.frame_drawing.images.push(this.qr);
     }
 
+    get_db(): any {
+	return this.stepper.get_db();
+    }
+
     stringify(): string {
         return this.stepper.stringify();
     }
@@ -263,6 +281,10 @@ class GameHighScoreEntry implements Gs.Stepper {
             this.high_scores.maybe_add_score(high_score);
             this.stepper = new Hst.HighScoreTableScreen(this.high_scores);
         }
+    }
+
+    get_db(): any {
+	return this.stepper.get_db();
     }
 
     stringify(): string {
@@ -319,6 +341,10 @@ class GameLevels implements Gs.Stepper {
                 this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, score, this.high_score);
             }
         }
+    }
+
+    get_db(): any {
+	return this.stepper.get_db();
     }
 
     stringify(): string {

@@ -1,0 +1,37 @@
+{
+    "compilerOptions": {
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "module": "commonjs",
+        "noErrorTruncation": true,
+        "pretty": false,
+        "removeComments": true,
+        "rootDirs": ["../OLD/server/src", "../OLD/client/src", "../OLD/client/resources", "./src"],
+        "outDir": "out",
+        "sourceMap": true,
+        "strict": true,
+	"target": "ES2019",
+	"paths": {
+	    "@server/*": ["../OLD/server/src/*"],
+	    "@client/*": ["../OLD/client/src/*"],
+	    "@resources/*": ["../OLD/client/resources/*"]
+	},
+        "lib": [
+            "es5",
+            "es6",
+            "dom"
+        ]
+    },
+    "files": [
+	"./src/onering.ts",
+	"./src/typings.d.ts"
+    ],
+    "exclude": [
+	"../OLD/src/client/src/client.ts",
+	"../OLD/server/src/server.ts",
+        "./node_modules",
+        "./out",
+	"./build",
+	"./.git"
+    ]
+}

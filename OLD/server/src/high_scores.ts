@@ -1,6 +1,8 @@
 import * as K from './konfig';
 import * as U from './util/util';
 
+// todo: local storage.
+
 export class HighScore {
     constructor(public readonly callsign: string, public readonly score: number) {}
 }

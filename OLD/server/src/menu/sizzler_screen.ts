@@ -1,6 +1,7 @@
 import * as M from './menu';
 import * as Mdb from './menu_db';
 import * as Cdb from '../client_db';
+import * as Db from '../db';
 import * as Gs from '../game_stepper';
 import * as G from '../geom';
 import * as K from '../konfig';
@@ -144,8 +145,12 @@ export class SizzlerScreen implements M.Menu {
         );
     }
 
+    get_db(): any {
+	return this.mdb;
+    }
+
     stringify(): string {
-        const str = Mdb.stringify(this.mdb);
+        const str = Mdb.stringify(this.get_db());
 	this.mdb = Mdb.menudb_mk(this.bg_color);
 	return str;
     }

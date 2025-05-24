@@ -8,6 +8,7 @@ import * as Rnd from './random';
 import * as D from './debug';
 import * as A from './animation';
 import * as U from './util/util';
+import * as Ur from './util/util_rnd';
 import * as K from './konfig';
 
 // note: K.PEOPLE_MAX_COUNT is enforced below (hopefully)
@@ -57,7 +58,7 @@ function populate_random(db: GDB.GameDB, cluster_count: number) {
     D.assert(!!base);
     D.assert(index >= 0);
     D.assert(cluster_count <= gs.length);
-    const grounds = U.shuffle_array(gs, rnd)
+    const grounds = Ur.shuffle_array(gs, rnd)
           .filter(g => g.ground_type == Gr.GroundType.land)
           .filter(g => !G.rects_are_overlapping(base, g));
     let population_count = 0;

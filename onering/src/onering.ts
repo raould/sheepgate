@@ -1,28 +1,33 @@
 // todo: figure out the living hell that is 
 // packaging for the browser, so that this
 // can be split up & also share code w/ the server.
-import { track1_sfx_b64 } from './track1.ogg.b64';
-import { kcart1_sfx_b64 } from './kcart1.ogg.b64';
-import { thrust_sfx_b64 } from './thrust.ogg.b64';
-import { begin_sfx_b64 } from './begin.ogg.b64';
-import { beamdown_sfx_b64 } from './beamdown.ogg.b64';
-import { beamup_sfx_b64 } from './beamup.ogg.b64';
-import { explosion_sfx_b64 } from './explosion.ogg.b64';
-import { expboom_sfx_b64 } from './expboom.ogg.b64';
-import { gem_collect_sfx_b64 } from './gem_collect.ogg.b64';
-import { player_shoot_sfx_b64 } from './player_shoot.ogg.b64';
-import { warpin_sfx_b64 } from './warpin.ogg.b64';
-import { synthA_sfx_b64 } from './synthA.ogg.b64';
-import { synthB_sfx_b64 } from './synthB.ogg.b64';
-import { synthC_sfx_b64 } from './synthC.ogg.b64';
-import { synthD_sfx_b64 } from './synthD.ogg.b64';
-import { synthE_sfx_b64 } from './synthE.ogg.b64';
-import { shot1_sfx_b64 } from './shot1.ogg.b64';
-import { shot2_sfx_b64 } from './shot2.ogg.b64';
-import { smartbomb_sfx_b64 } from './smartbomb.ogg.b64';
-import { Gamepads, StandardMapping } from './gamepads';
-import { FPS } from './fps';
+import { track1_sfx_b64 } from '@client/track1.ogg.b64';
+import { kcart1_sfx_b64 } from '@client/kcart1.ogg.b64';
+import { thrust_sfx_b64 } from '@client/thrust.ogg.b64';
+import { begin_sfx_b64 } from '@client/begin.ogg.b64';
+import { beamdown_sfx_b64 } from '@client/beamdown.ogg.b64';
+import { beamup_sfx_b64 } from '@client/beamup.ogg.b64';
+import { explosion_sfx_b64 } from '@client/explosion.ogg.b64';
+import { expboom_sfx_b64 } from '@client/expboom.ogg.b64';
+import { gem_collect_sfx_b64 } from '@client/gem_collect.ogg.b64';
+import { player_shoot_sfx_b64 } from '@client/player_shoot.ogg.b64';
+import { warpin_sfx_b64 } from '@client/warpin.ogg.b64';
+import { synthA_sfx_b64 } from '@client/synthA.ogg.b64';
+import { synthB_sfx_b64 } from '@client/synthB.ogg.b64';
+import { synthC_sfx_b64 } from '@client/synthC.ogg.b64';
+import { synthD_sfx_b64 } from '@client/synthD.ogg.b64';
+import { synthE_sfx_b64 } from '@client/synthE.ogg.b64';
+import { shot1_sfx_b64 } from '@client/shot1.ogg.b64';
+import { shot2_sfx_b64 } from '@client/shot2.ogg.b64';
+import { smartbomb_sfx_b64 } from '@client/smartbomb.ogg.b64';
+import { Gamepads, StandardMapping } from '@client/gamepads';
+import { FPS } from '@server/fps';
+import { high_scores_mk } from '@server/high_scores';
+import { game_mk } from '@server/game';
  
+// todo: turn all this into an encapsulating instance.
+// todo: use the server types.
+
 function assert(test: boolean, msg: string = "") {
     if (!test) {
 	console.error("assertion failed!", msg);
@@ -33,34 +38,28 @@ function assert(test: boolean, msg: string = "") {
 // note that this kills Edge fps, but works ok with Firefox, whatevz!!!
 const INVERT_COLORS = false;
 
-// todo: use the server types.
-let server_db_generation: { id: number; db: any; } = { id: 0, db: undefined };
-
-// todo: turn all this into an encapsulating instance.
-
 let inputs: {commands: {[k:string]:boolean}, keys: {[k:string]:boolean}} = {
     commands: {}, keys: {}
 };
-// todo: unfortunately if is_stepping is true at the start, things break. fix it!
 let debugging_state: any = { is_stepping: false, is_drawing: false, is_annotating: false };
 let particles: {[k:string]:AbstractParticleGenerator} = {};
-let socket_ws: any;
 let h5canvas: any;
 let cx2d: any;
 let cxAudio: any;
+let server_db_generation: { id: number; db: any; } = { id: 0, db: undefined };
 let images: any = {};
 // sfx_id resource path - to - { play function } object.
 let sounds: any = {};
 // sfx_id resource path - to - audio buffer source.
 let singletonSounds = new Map<string, any>(); 
 
+const high_scores = high_scores_mk();
+let game_loop = game_mk(high_scores);
 let last_render_msec = 0;
 let game_fps = 0;
 let fps = new FPS((fps) => { game_fps = fps; });
 let tick = 0;
 let currentGamepad: any;
-const server_host: string = "localhost";
-const ws_endpoint: string = `ws://${server_host}:6969`;
 const BG_COLOR: string = "#111133";
 const DEBUG_IMG_BOX_COLOR: string = "rgba(255,0,0,0.5)";
 const client_id = Date.now()
@@ -286,6 +285,14 @@ function rand_mk(seed: number) {
 function nextFrame(/*using global server_db*/) {
     const now = Date.now();
     fps.on_tick();
+
+    game_loop.step();
+    const next_server_db = game_loop.get_db();
+
+    // match: DBShared type from server code.
+    // todo: extract DBShared type into shared file.
+    applyDB(next_server_db);
+
     // requestAnimationFrame() is running at 30fps for me
     // so don't wait a whole nother round if we're close,
     // hence this heuristic of scaling the threshold by 0.9.
@@ -294,6 +301,7 @@ function nextFrame(/*using global server_db*/) {
 	tick++; // just to be 1-based in render().
         render(server_db_generation.db);
     } 
+
     window.requestAnimationFrame(nextFrame);
 }
 
@@ -890,50 +898,10 @@ function sendState() {
             inputs: inputs,
             debugging_state: debugging_state,
         }
-        const json = JSON.stringify(step);
-        sendWS(json);
+	game_loop.merge_client_db(step);
     }
     catch (err) {
         console.error(err);
-    }
-}
-
-function connectWS(endpoint: string, onMessage?: any, onConnected?: any) {
-    if (socket_ws != null) {
-        socket_ws.close()
-    }
-    socket_ws = new WebSocket(endpoint);
-    socket_ws.onmessage = ((event: any) => {
-        // log("onmessage", event.data); overkill.
-        onMessage && onMessage(event);
-    });
-    socket_ws.onopen = ((event: any) => {
-        log("onopen", event);
-        onConnected && onConnected(event);
-    });
-    socket_ws.onclose = () => {
-        log("onclose");
-    };
-    socket_ws.onerror = (event: any) => {
-        log("ERROR", event);
-	alert("Could not talk to the server. To run the game on your local machine, see: https://github.com/raould/sheepgate");
-    };
-}
-
-function sendWS(message: string) {
-    if (socket_ws != null) {
-        try {
-            socket_ws.send(message)
-        }
-        catch (err) {
-        }
-    }
-}
-
-function closeWS() {
-    if (socket_ws != null) {
-        socket_ws.close();
-        socket_ws = undefined;
     }
 }
 
@@ -1344,23 +1312,6 @@ function loadExplosionA(dir: string, base: string, start: number, end: number, p
     }
 }
 
-function onConnectedWS() {
-    sendState(); // kickoff!
-    window.requestAnimationFrame(nextFrame);
-}
-
-function onMessageWS(event: any) {
-    try {
-        // match: DBShared type from server code.
-        // todo: extract DBShared type into shared file.
-        let next_server_db = JSON.parse(event.data);
-        applyDB(next_server_db);
-    }
-    catch (err) {
-        console.error(err);
-    }
-}
-
 function applyCommand(spec: CommandSpec, pressed: boolean) {
     let ik = spec.command;
     inputs.commands[ik] = pressed;
@@ -1479,11 +1430,9 @@ function init() {
     Gamepads.addEventListener("connect", (e:any)=> gamepadHandler(e, true));
     Gamepads.addEventListener("disconnect", (e:any)=> gamepadHandler(e, false));
 
-    connectWS(
-        ws_endpoint,
-        onMessageWS, // comes in at approximately the server fps.
-        onConnectedWS
-    );
+    // kickoff!
+    sendState(); 
+    window.requestAnimationFrame(nextFrame);
 }
 
 window.onload = init;

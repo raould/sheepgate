@@ -1,9 +1,11 @@
+import * as Db from '../db';
 import * as GDB from '../game_db';
 import * as Cdb from '../client_db';
 import * as Gs from '../game_stepper';
 import * as K from '../konfig';
 import * as Cmd from '../commands';
 import * as G from '../geom';
+import * as Gr from '../geom_rnd';
 import * as S from '../sprite';
 import * as Sc from '../scoring';
 import * as Hs from '../high_scores';
@@ -18,7 +20,6 @@ import * as D from '../debug';
 import { DebugGraphics } from '../debug_graphics';
 import * as FS from 'fs';
 import * as OS from 'os';
-import * as Path from 'path';
 import * as _ from 'lodash';
 
 // currently this is less of a classic big Level object that is continually doing things,
@@ -57,8 +58,12 @@ export abstract class AbstractLevel implements Level {
     constructor(private readonly high_score: Hs.HighScore) {
     }
 
+    get_db(): any {
+	return this.db;
+    }
+
     stringify(): string {
-        return GDB.stringify(this.db);
+        return GDB.stringify(this.get_db());
     }
 
     merge_client_db(cdb2: Cdb.ClientDB) {
@@ -90,17 +95,7 @@ export abstract class AbstractLevel implements Level {
     private debug_dump() {
         try {
             const jdb = JSON.stringify(this.db);
-            const tmpdir = OS.tmpdir();
-            const path = Path.join(tmpdir, `game_${Date.now()}.json`);
-            FS.writeFile(
-                path,
-                Buffer.from(jdb),
-                "utf-8",
-                (err) => {
-                    D.log(`debug_dump(): wrote to ${path}`);
-                    err != null && D.log(`ERROR: writeFile() failed. ${err}`);
-                }
-            );
+	    console.error(jdb);
         }
         catch (err) {
             D.log(`ERROR: debug_dump() failed. ${err}`);
@@ -512,7 +507,7 @@ export abstract class AbstractLevel implements Level {
         // which means the explosion needs to expose some timing,
         // or the explosions needs to be the ones to apply the shake?
         if (Object.values(next.shared.items.explosions).some(e => e.rank >= S.Rank.hypermega)) {
-            next.shared.screen_shake = G.v2d_random_inxy(Rnd.singleton, K.GAMEPORT_SHAKE, K.GAMEPORT_SHAKE);
+            next.shared.screen_shake = Gr.v2d_random_inxy(Rnd.singleton, K.GAMEPORT_SHAKE, K.GAMEPORT_SHAKE);
         }
         else {
             next.shared.screen_shake = G.v2d_mk_0();

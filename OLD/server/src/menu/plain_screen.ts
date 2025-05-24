@@ -1,6 +1,7 @@
 import * as M from './menu';
 import * as Mdb from './menu_db';
 import * as Cdb from '../client_db';
+import * as Db from '../db';
 import * as Gs from '../game_stepper';
 import * as G from '../geom';
 import * as K from '../konfig';
@@ -88,8 +89,12 @@ export class PlainScreen implements M.Menu {
         this.elapsed += this.mdb.frame_dt;
     }
 
+    get_db(): any {
+	return this.mdb;
+    }
+
     stringify(): string {
-        const str = Mdb.stringify(this.mdb);
+        const str = Mdb.stringify(this.get_db());
 	// not clearing mdb since it is a static screen with no sfx.
 	return str;
     }

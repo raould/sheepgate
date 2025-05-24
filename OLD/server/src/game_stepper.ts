@@ -1,4 +1,5 @@
 import * as Cdb from './client_db';
+import * as Db from './db';
 import * as U from './util/util';
 import * as D from './debug';
 
@@ -15,5 +16,6 @@ export interface Stepper {
     get_state(): StepperState;
     merge_client_db(cnew: Cdb.ClientDB): void;
     step(): void;
+    get_db(): any;
     stringify(): string;
 }
