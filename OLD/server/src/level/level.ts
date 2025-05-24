@@ -4,6 +4,7 @@ import * as Gs from '../game_stepper';
 import * as K from '../konfig';
 import * as Cmd from '../commands';
 import * as G from '../geom';
+import * as Gr from '../geom_rnd';
 import * as S from '../sprite';
 import * as Sc from '../scoring';
 import * as Hs from '../high_scores';
@@ -512,7 +513,7 @@ export abstract class AbstractLevel implements Level {
         // which means the explosion needs to expose some timing,
         // or the explosions needs to be the ones to apply the shake?
         if (Object.values(next.shared.items.explosions).some(e => e.rank >= S.Rank.hypermega)) {
-            next.shared.screen_shake = G.v2d_random_inxy(Rnd.singleton, K.GAMEPORT_SHAKE, K.GAMEPORT_SHAKE);
+            next.shared.screen_shake = Gr.v2d_random_inxy(Rnd.singleton, K.GAMEPORT_SHAKE, K.GAMEPORT_SHAKE);
         }
         else {
             next.shared.screen_shake = G.v2d_mk_0();

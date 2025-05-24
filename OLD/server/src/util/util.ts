@@ -1,5 +1,4 @@
 import * as D from '../debug';
-import * as Rnd from '../random';
 
 // todo: uh, tests?
 // todo: share this with client, probably.
@@ -90,18 +89,6 @@ export function filter_array<E>(array: Array<E>, fn: (_: E) => boolean): Filtere
         }
     }
     return f;
-}
-
-export function shuffle_array<E>(array: Array<E>, rnd: Rnd.Random = Rnd.singleton): Array<E> {
-    const a2 = array.slice();
-    for (let i = a2.length - 1; i > 0; --i) {
-	const j = Math.floor(rnd.float_0_1() * (i+1));
-	const ti = a2[i];
-	const tj = a2[j];
-	a2[i] = tj;
-	a2[j] = ti;
-    }
-    return a2;
 }
 
 // todo: this is an over simplification in that
