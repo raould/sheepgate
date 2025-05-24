@@ -19,7 +19,6 @@ import * as D from '../debug';
 import { DebugGraphics } from '../debug_graphics';
 import * as FS from 'fs';
 import * as OS from 'os';
-import * as Path from 'path';
 import * as _ from 'lodash';
 
 // currently this is less of a classic big Level object that is continually doing things,
@@ -91,17 +90,7 @@ export abstract class AbstractLevel implements Level {
     private debug_dump() {
         try {
             const jdb = JSON.stringify(this.db);
-            const tmpdir = OS.tmpdir();
-            const path = Path.join(tmpdir, `game_${Date.now()}.json`);
-            FS.writeFile(
-                path,
-                Buffer.from(jdb),
-                "utf-8",
-                (err) => {
-                    D.log(`debug_dump(): wrote to ${path}`);
-                    err != null && D.log(`ERROR: writeFile() failed. ${err}`);
-                }
-            );
+	    console.error(jdb);
         }
         catch (err) {
             D.log(`ERROR: debug_dump() failed. ${err}`);
