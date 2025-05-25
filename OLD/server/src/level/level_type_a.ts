@@ -78,7 +78,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	super(high_score);
 	D.log(`new level_type_a for index1 ${index1}!`);
 	this.state = Gs.StepperState.running;
-        this.reminder_cycle = HCycle.newFromRed(90 / K.DT);
+        this.reminder_cycle = HCycle.newFromRed(90 / K.FRAME_MSEC_DT);
 	const far_spec0 = this.far_spec0_mk();
 	this.db = this.db_mk(far_spec0, score);
 	this.init_bg(far_spec0);
@@ -380,7 +380,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    }
 	}
 	if (U.exists(this.people_reminder_timeout) && this.people_reminder_timeout > 0) {
-	    this.people_reminder_timeout -= K.DT; // todo: the whole DT things is poorly implemented.
+	    this.people_reminder_timeout -= K.FRAME_MSEC_DT; // todo: the whole DT things is poorly implemented.
 	    const reminder: Dr.DrawText = {
 		wrap: false,
 		// hard-coded eye-balled positioning.

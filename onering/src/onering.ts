@@ -24,6 +24,7 @@ import { Gamepads, StandardMapping } from '@client/gamepads';
 import { FPS } from '@server/fps';
 import { high_scores_mk } from '@server/high_scores';
 import { game_mk } from '@server/game';
+import * as K from '@server/konfig';
  
 // todo: turn all this into an encapsulating instance.
 // todo: use the server types.
@@ -63,10 +64,6 @@ let currentGamepad: any;
 const BG_COLOR: string = "#111133";
 const DEBUG_IMG_BOX_COLOR: string = "rgba(255,0,0,0.5)";
 const client_id = Date.now()
-// todo: game breaks when the fps is set to anything other than 30.
-// also requestAnimationFrame() never gives me more than 30 fps anyway?
-const TARGET_FPS = 30;
-const MSEC_PER_FRAME = 1000 / TARGET_FPS;
 log("client_id", client_id);
 
 // todo: 'command' is a bad name beacuse it sounds
@@ -296,7 +293,7 @@ function nextFrame(/*using global server_db*/) {
     // requestAnimationFrame() is running at 30fps for me
     // so don't wait a whole nother round if we're close,
     // hence this heuristic of scaling the threshold by 0.9.
-    if (now - last_render_msec >= MSEC_PER_FRAME*0.9) {
+    if (now - last_render_msec >= MSEC_PER_FRAME) {
         last_render_msec = now;
 	tick++; // just to be 1-based in render().
         render(server_db_generation.db);

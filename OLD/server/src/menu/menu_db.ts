@@ -15,7 +15,7 @@ export interface MenuDB {
 
 export function menudb_mk(bg_color: RGBA): MenuDB {
     return {
-	frame_dt: K.DT,
+	frame_dt: K.FRAME_MSEC_DT,
 	shared: {
 	    kind: "Menu",
             world: {

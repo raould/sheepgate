@@ -360,7 +360,7 @@ export abstract class AbstractLevel implements Level {
         }
 
         // time, stepping the simulation, if it is not paused.
-        next.local.frame_dt = this.is_paused(next) ? 0 : K.DT;
+        next.local.frame_dt = this.is_paused(next) ? 0 : K.FRAME_MSEC_DT;
         next.shared.sim_now += next.local.frame_dt;
         GDB.assert_dbitems(next);
     }
