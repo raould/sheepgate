@@ -366,7 +366,7 @@ function gameport_wrap_rect(rect: any/*G.Rect*/, gameport: any/*gameport*/, worl
 }
 
 function renderSounds(db: any) {
-    db.items.sfx?.forEach((sfx: any) => {
+    db.sfx?.forEach((sfx: any) => {
         const sound = sounds[sfx.sfx_id];
         if (sound != null) {
             sound.play(sfx);
@@ -379,7 +379,7 @@ function renderSounds(db: any) {
     // playing sounds more than once if there are
     // multiple client frames of renderSounds()
     // between server db updates.
-    db.items.sfx = [];
+    db.sfx = [];
 }
 
 function renderSpriteImage(gdb: any, s: any) {
@@ -978,7 +978,7 @@ function applyDB(next_server_db: any) {
     assert(next_server_db != null, "next_server_db");
     if (next_server_db != null) {
 	let server_db = server_db_generation.db;
-	const prevSfx = server_db && server_db.items.sfx;
+	const prevSfx = server_db && server_db.sfx;
 
 	server_db_generation = {
 	    id: server_db_generation.id++,
@@ -989,15 +989,15 @@ function applyDB(next_server_db: any) {
 	// keep accumulating the sfx until a render() happens
 	// which will play, then reset the local db's sfx array
 	if ((prevSfx?.length ?? 0) > 0 && server_db != null) {
-    	    server_db.items.sfx = server_db.items.sfx ?? [];
-    	    server_db.items.sfx.push(...prevSfx);
+    	    server_db.sfx = server_db.sfx ?? [];
+    	    server_db.sfx.push(...prevSfx);
 	}
 
 	// todo: determine which ones are no longer needed by the server_db.
 	// unfortunately the server_db sounds are not a map, nor are they split by singletonness.
 	const nextSingletonSounds = new Map<string, any>(); 
 	if (server_db != null) {
-	    server_db.items.sfx.forEach((sfx: any) => {
+	    server_db.sfx.forEach((sfx: any) => {
 		const sound = singletonSounds.get(sfx.sfx_id);
 		if (sound != null) {
 		    nextSingletonSounds.set(sfx.sfx_id, sound);
