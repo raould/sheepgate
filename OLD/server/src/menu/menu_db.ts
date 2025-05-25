@@ -14,6 +14,7 @@ export interface MenuDB extends DB.DB<DB.World> {
 
 export function menudb_mk(bg_color: RGBA): MenuDB {
     return {
+	kind: "Menu",
         world: {
             screen: K.SCREEN_RECT,
             bounds0: K.SCREEN_RECT.size,
@@ -31,5 +32,5 @@ export function menudb_mk(bg_color: RGBA): MenuDB {
 }
 
 export function stringify(mdb: MenuDB): string {
-    return `{"menu_db": ${U.stringify(mdb)}}`;
+    return U.stringify(mdb);
 }

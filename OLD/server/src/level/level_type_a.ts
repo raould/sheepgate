@@ -400,6 +400,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	// *** warning: note that all of shared round-trips with the client! ***
 	const ground_y = world_size.y - K.GROUND_SIZE.y;
 	const shared: GDB.DBSharedCore = {
+	    kind: "Game",
 	    world: (() => {
 		return {
 		    screen: K.SCREEN_RECT,

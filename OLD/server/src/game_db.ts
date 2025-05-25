@@ -149,7 +149,7 @@ export function stringify(db: GameDB): string {
     if (hide_debug_drawing && d != null) { // ...restore them.
         src.debug_graphics = d;
     }
-    return `{"game_db": ${json}}`;
+    return json;
 }
 
 export type StateModifier = (db: GameDB) => U.O<Gs.StepperState>;
