@@ -95,7 +95,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	// world visibly jumps badly from frame 1 to frame 2.
 	this.step();
 	
-	this.db.shared.items.sfx.push({ sfx_id: K.BEGIN_SFX });
+	this.db.shared.sfx.push({ sfx_id: K.BEGIN_SFX });
     }
 
     private db_mk(far_spec0: FarSpec0[], score: number): GDB.GameDB {
@@ -197,7 +197,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		generations: this.konfig.Es?.count,
 		max_alive: this.konfig.Es?.limit,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		    return this.konfig.Es?.mk(db);
 		}
 	    }
@@ -208,7 +208,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		generations: this.konfig.Em?.count,
 		max_alive: this.konfig.Em?.limit,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		    return this.konfig.Em?.mk(db);
 		}
 	    }
@@ -219,7 +219,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		generations: this.konfig.Ehm?.count,
 		max_alive: this.konfig.Ehm?.limit,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		    return this.konfig.Ehm?.mk(db);
 		}
 	    }
@@ -233,7 +233,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		generations: this.konfig.Eb1?.count,
 		max_alive: this.konfig.Eb1?.limit,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		    return this.konfig.Eb1?.mk(db); // wtf tsc?
 		}
 	    });
@@ -244,7 +244,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		generations: this.konfig.Eb2?.count,
 		max_alive: this.konfig.Eb2?.limit,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		    return this.konfig.Eb2?.mk(db); // wtf tsc?
 		}
 	    });
@@ -255,7 +255,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		generations: this.konfig.Eb3?.count,
 		max_alive: this.konfig.Eb3?.limit,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		    return this.konfig.Eb3?.mk(db); // wtf tsc?
 		}
 	    });
@@ -266,7 +266,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		generations: this.konfig.Eb4?.count,
 		max_alive: this.konfig.Eb4?.limit,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		    return this.konfig.Eb4?.mk(db); // wtf tsc?
 		}
 	    });
@@ -277,7 +277,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		generations: this.konfig.Eb5?.count,
 		max_alive: this.konfig.Eb5?.limit,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		    return this.konfig.Eb5?.mk(db); // wtf tsc?
 		}
 	    });
@@ -288,7 +288,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		generations: this.konfig.Eb6?.count,
 		max_alive: this.konfig.Eb6?.limit,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		    return this.konfig.Eb6?.mk(db); // wtf tsc?
 		}
 	    });
@@ -299,7 +299,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		generations: this.konfig.Eb7?.count,
 		max_alive: this.konfig.Eb7?.limit,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		    return this.konfig.Eb7?.mk(db); // wtf tsc?
 		}
 	    });
@@ -310,7 +310,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		generations: this.konfig.Eb8?.count,
 		max_alive: this.konfig.Eb8?.limit,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.items.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		    return this.konfig.Eb8?.mk(db); // wtf tsc?
 		}
 	    });
@@ -401,6 +401,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	const ground_y = world_size.y - K.GROUND_SIZE.y;
 	const shared: GDB.DBSharedCore = {
 	    kind: "Game",
+	    sfx: [],
 	    world: (() => {
 		return {
 		    screen: K.SCREEN_RECT,
@@ -515,7 +516,6 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		people: {},
 		gems: {},
 		fx: {},
-		sfx: [],
 		particles: {},
 	    }
 	};

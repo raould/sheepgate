@@ -76,7 +76,7 @@ export class HighScoreEntryScreen extends Is.InstructionsScreen {
     }
 
     init_rects() {
-        const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.5, this.mdb.world.bounds0.y * 0.65);
+        const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.65);
         SYMBOL_GRID.forEach((row: string[], rindex: number) => {
             const row_rects: G.Rect[] = [];
             this.rects.push(row_rects);
@@ -173,7 +173,7 @@ export class HighScoreEntryScreen extends Is.InstructionsScreen {
                     fillStyle: RGBA.GRAY,
                     wrap: false,
                 };
-                this.mdb.frame_drawing.texts.push(t);
+                this.mdb.shared.frame_drawing.texts.push(t);
             });
         });
     }
@@ -183,7 +183,7 @@ export class HighScoreEntryScreen extends Is.InstructionsScreen {
             this.rects[this.cursor.y][this.cursor.x],
             CURSOR_PAD
         );
-        this.mdb.frame_drawing.rects.push({
+        this.mdb.shared.frame_drawing.rects.push({
             rect: rect,
             line_width: Rnd.singleton.float_around(2, 1),
             color: RGBA.YELLOW.setAlpha01(Rnd.singleton.float_around(0.8, 0.2)),
@@ -192,7 +192,7 @@ export class HighScoreEntryScreen extends Is.InstructionsScreen {
     }
 
     step_callsign() {
-        const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.5, this.mdb.world.bounds0.y * 0.55);
+        const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.55);
         const measure = Tx.measure_text(this.letters, CALLSIGN_SIZE);
         const h_offset = measure.x / 2;
         const t: Dr.DrawText = {
@@ -202,6 +202,6 @@ export class HighScoreEntryScreen extends Is.InstructionsScreen {
             fillStyle: this.callsign_cycle.current(),
             wrap: false,
         };
-        this.mdb.frame_drawing.texts.push(t);
+        this.mdb.shared.frame_drawing.texts.push(t);
     }
 }

@@ -51,7 +51,7 @@ const MAIN_INSTRUCTIONS = [
 export interface Game {
     merge_client_db(cnew: Cdb.ClientDB): void;
     step(): void;
-    get_db(): any;
+    get_db(): Db.DB<Db.World>;
     stringify(): string;
 }
 
@@ -108,7 +108,7 @@ export function game_mk(high_scores: Hs.HighScores): Game {
             }
         }
 
-	get_db(): any {
+	get_db(): Db.DB<Db.World> {
 	    return this.stepper.get_db();
 	}
 
@@ -144,7 +144,7 @@ class GameWarning implements Gs.Stepper {
         this.stepper.step();
     }
 
-    get_db(): any {
+    get_db(): Db.DB<Db.World> {
 	return this.stepper.get_db();
     }
 
@@ -166,7 +166,7 @@ class GameInstructions implements Gs.Stepper {
 	    animated: true,
 	    bg_color: RGBA.DARK_BLUE,
 	});
-	this.stepper.mdb.items.sfx.push({ sfx_id: K.SYNTH_C_SFX });
+	this.stepper.mdb.shared.sfx.push({ sfx_id: K.SYNTH_C_SFX });
 	this.last = Date.now();
 	this.qr = {
             wrap: false,
@@ -194,11 +194,11 @@ class GameInstructions implements Gs.Stepper {
     step() {
         this.stepper.step();
 	// reaching into mdb like this is gross, yes.
-        this.stepper.mdb.frame_drawing.images.push(this.qr);
-	this.stepper.mdb.items.sfx.push(TRACK1_SFX);
+        this.stepper.mdb.shared.frame_drawing.images.push(this.qr);
+	this.stepper.mdb.shared.sfx.push(TRACK1_SFX);
     }
 
-    get_db(): any {
+    get_db(): Db.DB<Db.World> {
 	return this.stepper.get_db();
     }
 
@@ -247,10 +247,10 @@ class GamePaused implements Gs.Stepper {
     step() {
         this.stepper.step();
 	// reaching into mdb like this is gross, yes.
-        this.stepper.mdb.frame_drawing.images.push(this.qr);
+        this.stepper.mdb.shared.frame_drawing.images.push(this.qr);
     }
 
-    get_db(): any {
+    get_db(): Db.DB<Db.World> {
 	return this.stepper.get_db();
     }
 
@@ -283,7 +283,7 @@ class GameHighScoreEntry implements Gs.Stepper {
         }
     }
 
-    get_db(): any {
+    get_db(): Db.DB<Db.World> {
 	return this.stepper.get_db();
     }
 
@@ -343,7 +343,7 @@ class GameLevels implements Gs.Stepper {
         }
     }
 
-    get_db(): any {
+    get_db(): Db.DB<Db.World> {
 	return this.stepper.get_db();
     }
 

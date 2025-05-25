@@ -77,7 +77,7 @@ export function weapon_mk(spec: EnemyWeaponSpec): S.Weapon {
 			    const is_facing_at = this.direction == at_facing;
 			    const now = db.shared.sim_now;
 			    if (is_facing_src && is_facing_at && (forced||this.clip.maybe_fire(now))) {
-				db.shared.items.sfx.push({ sfx_id: K.SHOT1_SFX });
+				db.shared.sfx.push({ sfx_id: K.SHOT1_SFX });
 				const dbid = GDB.id_mk();
 				return So.shot_mk(db, src, {
 				    lt: lt,

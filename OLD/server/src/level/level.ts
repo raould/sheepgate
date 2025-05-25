@@ -58,12 +58,12 @@ export abstract class AbstractLevel implements Level {
     constructor(private readonly high_score: Hs.HighScore) {
     }
 
-    get_db(): any {
-	return this.db;
+    get_db(): Db.DB<Db.World> {
+	return this.db.shared;
     }
 
     stringify(): string {
-        return GDB.stringify(this.get_db());
+        return GDB.stringify(this.db);
     }
 
     merge_client_db(cdb2: Cdb.ClientDB) {
@@ -342,7 +342,7 @@ export abstract class AbstractLevel implements Level {
             shared: next_shared
         };
         next.local.prev_db = prev;
-        next.shared.items.sfx = [];
+        next.shared.sfx = [];
         return next;
     }
 

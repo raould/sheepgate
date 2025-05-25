@@ -39,7 +39,7 @@ export class LevelInScreens implements Gs.Stepper {
         }
     }
 
-    get_db(): any {
+    get_db(): Db.DB<Db.World> {
 	return this.stepper.get_db();
     }
 
@@ -84,7 +84,7 @@ class LevelWithScreen_StartScreen implements SubState {
         this.start_screen.step();
     }
 
-    get_db(): any {
+    get_db(): Db.DB<Db.World> {
 	return this.start_screen.get_db();
     }
 
@@ -175,7 +175,7 @@ class LevelWithScreen_EndScreen implements SubState {
         this.end_screen.step();
     }
 
-    get_db(): any {
+    get_db(): Db.DB<Db.World> {
 	return this.end_screen.get_db();
     }
 
@@ -212,7 +212,7 @@ class LevelWithScreen_Level implements SubState {
         this.level.step();
     }
 
-    get_db(): any {
+    get_db(): Db.DB<Db.World> {
 	return this.level.get_db();
     }
 

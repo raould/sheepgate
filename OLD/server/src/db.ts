@@ -1,5 +1,6 @@
 import * as G from './geom';
 import * as Dr from './drawing';
+import * as So from './sound';
 import { RGBA } from './color';
 
 // this is supposed to represent the server state being sent to the client.
@@ -29,4 +30,5 @@ export interface DB<W extends World> {
     bg_color: RGBA;
     frame_drawing: Dr.Drawing; // todo: kind of a bad name, actually?
     debug_graphics?: Dr.Drawing[];
+    sfx: So.Sfx[];
 }

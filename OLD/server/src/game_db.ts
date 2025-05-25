@@ -272,7 +272,6 @@ export interface DBSharedItems {
     people: U.Dict<S.Person>;
     gems: U.Dict<S.Gem>;
     fx: U.Dict<S.Sprite>;
-    sfx: So.Sfx[];
     particles: U.Dict<Pr.ParticleGenerator>;
 }
 
@@ -296,7 +295,7 @@ export function debug_dump_items(db: GameDB, msg?: string) {
         `#people=${U.count_dict(db.shared.items.people)}`,
         `#gems=${U.count_dict(db.shared.items.gems)}`,
         `#fx=${U.count_dict(db.shared.items.fx)}`,
-        `#sfx=${U.count_dict(db.shared.items.sfx)}`,
+        `#sfx=${U.count_dict(db.shared.sfx)}`,
     );
 }
 
