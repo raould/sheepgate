@@ -58,7 +58,7 @@ export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: any): S.S
 		    this.resource_id = F.on_facing(this.facing, left_rid, right_rid);
 		    this.lt = G.v2d_set_y(
 			player.lt,
-			player.lt.y + 100 // todo
+			K.GAMEPORT_RECT.size.y - K.PLAYER_SHADOW_SIZE.y * 2
 		    );
 		}
 	    );
