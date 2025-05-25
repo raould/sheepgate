@@ -12,22 +12,23 @@ but if you want to try this monstrosity, do something like:
 This version is client-client, all-in-browser. _Note that all this won't work via a web **server** due to relative paths used in the code. It is for local use only.
 (I did some symlinks on the web server to get it to work.)_
 
+* have a unixy system (i use git bash on windows).
 * have node and npm installed.
-* (cd OLD/server && npm install)
-* (cd OLD/client && npm install)
-* cd onering/
-* npm install
-* npm run build
+* bash ./runme-standalone
 * open onering/index.html in a browser.
 
 # the old client-server style.
 
 This version can be pretty slow when played remotely, especially on a resource constrained (ie free tier) server. Hence the client-client version above.
 
+* have a unixy system (i use git bash on windows).
 * have node and npm installed.
-* execute the runme.sh on a unix-y system (i use git bash on msft windows).
+* bash ./runme-client-server.sh
 
-or more "low level" if the runme script fails :-(
+# the old-old client-server style.
+
+more "low level" if the runme script fails :-(
+
 * build client in bash shell: cd OLD/client && npm i && (npx tsc -w &)
 * build and run server in different bash shell: cd OLD/server && npm i && (npx tsc -w &) && npm run hot
 * browser: open OLD/client/index.html
