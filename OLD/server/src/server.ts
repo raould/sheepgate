@@ -75,7 +75,7 @@ wss.on('connection', (ws) => {
         'message',
         (msg: string) => {
             try {
-		const full = ws2game.size >= K.MAX_CONCURRENT_GAMES;
+		const full = (K.MAX_CONCURRENT_GAMES < 0) ? false : (ws2game.size >= K.MAX_CONCURRENT_GAMES);
 		if (full) {
 		    D.log("full!", ws2game.size, K.MAX_CONCURRENT_GAMES);
 		    const msg = JSON.stringify(Full.full_server_menu_db);

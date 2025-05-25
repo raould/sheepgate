@@ -36,7 +36,8 @@ import { RGBA } from './color';
 // for the actual WORLD size see e.g. level_type_a.ts
 
 // i have no idea what this should usefully be set to.
-export const MAX_CONCURRENT_GAMES = 1;
+// also this appears to be buggy overall.
+export const MAX_CONCURRENT_GAMES = -1; // < 0 is disabled.
 
 // small debounce so previous button mashing might end first.
 export const USER_SKIP_AFTER_MSEC = 500;

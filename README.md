@@ -6,6 +6,22 @@ An exercise in making an homage to Defender with the most over-wraught high-leve
 * for something really impressive, check out this instead: https://keithclark.co.uk/articles/js1k-2015-defender/
 
 but if you want to try this monstrosity, do something like:
+
+# the new onering style.
+
+This version is client-client, all-in-browser. _Note that all this won't work via a web **server** due to relative paths used in the code. It is for local use only.
+(I did some symlinks on the web server to get it to work.)_
+
+* have node and npm installed.
+* cd onering/
+* npm install
+* npm run build
+* open onering/index.html in a browser.
+
+# the old client-server style.
+
+This version can be pretty slow when played remotely, especially on a resource constrained (ie free tier) server. Hence the client-client version above.
+
 * have node and npm installed.
 * execute the runme.sh on a unix-y system (i use git bash on msft windows).
 
