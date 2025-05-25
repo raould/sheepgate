@@ -1105,7 +1105,7 @@ function loadImage(resource: string) {
         console.error(`ERROR: resource <${resource}> loading failed!`);
     }
     // this path is relative to where index.html lives.
-    i.src = `resources/images/${resource}`;
+    i.src = `../OLD/client/resources/images/${resource}`;
 }
 
 function loadImages() {
