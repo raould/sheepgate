@@ -74,7 +74,7 @@ export const FRAME_MSEC_DT = 1000 / FPS; // K
 // so it should ideally be as big as the fully displayable area on the output device.
 export const PLAYER_SIZE = G.v2d_mk(76, 25); // L?
 export const PLAYER_SHADOW_SIZE = G.v2d_mk(76, 10); // L?
-const SCREEN_BOUNDS0 = G.v2d_mk(960, 540); // K
+const SCREEN_BOUNDS0 = G.v2d_mk(1224, 540); // K
 const SCREEN_RECT0 = G.v2d_2_rect(SCREEN_BOUNDS0);
 
 // todo: overscan only sorta works, if it gets too big
