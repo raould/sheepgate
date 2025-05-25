@@ -24,6 +24,8 @@ really really todo, maybe?
 
 * hilariously / inevitably, the 'db' has become a big ball of mud; very confusing.
   the various kinds of DBs are not of compatible types e.g. GDB.GameDB doesn't extend Db.DB<W>?!
+  also the way the client is hard-coded to know the db structure is bad.
+  better if the client was dump and only iterated over a draw list kind of thing.
 
 * note: the files in client/resources/sounds/ are not used at runtime,
   they were just used to generate client/src/*b64*, which is perhaps confusing.

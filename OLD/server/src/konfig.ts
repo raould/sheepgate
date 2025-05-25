@@ -73,6 +73,7 @@ export const FRAME_MSEC_DT = 1000 / FPS; // K
 // note: things like ground sprites are drawn/scaled to fit this width.
 // so it should ideally be as big as the fully displayable area on the output device.
 export const PLAYER_SIZE = G.v2d_mk(76, 25); // L?
+export const PLAYER_SHADOW_SIZE = G.v2d_mk(76, 10); // L?
 const SCREEN_BOUNDS0 = G.v2d_mk(960, 540); // K
 const SCREEN_RECT0 = G.v2d_2_rect(SCREEN_BOUNDS0);
 
@@ -218,7 +219,7 @@ D.assert(
     "wtf"
 );
 
-export const BASE_SIZE = G.v2d_mk(128, 32); // L
+export const BASE_SIZE = G.v2d_mk(128, 32); // L // ugh position is elsewhere.
 // the base shield alpha has to be
 // non-zero because zero means hidden and
 // thus non-interactive, which would prevent transports.

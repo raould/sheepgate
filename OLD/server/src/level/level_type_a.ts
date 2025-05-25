@@ -133,6 +133,14 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    }
 	);
 	Pl.add_shield(this.db, this.db.shared.items.player);
+	this.db.shared.items.player_shadow = Pl.player_shadow_mk(
+	    this.db,
+	    GDB.id_mk(),
+	    {
+		facing: F.Facing.right,
+		lt: lt,
+	    }
+	);
     }
 
     private init_bg(far_spec0: FarSpec0[]) {
@@ -496,6 +504,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    ...dbc,
 	    items: {
 		player: undefined,
+		player_shadow: undefined,
 		warpin: {},
 		enemies: {},
 		shields: {},

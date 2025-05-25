@@ -36,6 +36,44 @@ interface PlayerSpritePrivate extends S.Player {
     step_resource_id(db: GDB.GameDB, delta_acc_x: number): void;
 }
 
+export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: any): S.Sprite {
+    const images = db.uncloned.images;
+    const left_rid = images.lookup("player/p1_s_left.png");
+    const right_rid = images.lookup("player/p1_s_right.png");
+    const shadow = {
+	dbid: dbid,
+	comment: `player-shadow-${dbid}`,
+	lt: spec.lt,
+	size: K.PLAYER_SHADOW_SIZE,
+	vel: G.v2d_mk_0(),
+	acc: G.v2d_mk_0(),
+	alpha: 1,
+	facing: spec.facing,
+	resource_id: F.on_facing(spec.facing, left_rid, right_rid),
+        step(db: GDB.GameDB) {
+	    U.if_let(
+		GDB.get_player(db),
+		player => {
+		    this.facing = player.facing;
+		    this.resource_id = F.on_facing(this.facing, left_rid, right_rid);
+		    this.lt = G.v2d_set_y(
+			player.lt,
+			K.GAMEPORT_RECT.size.y - K.PLAYER_SHADOW_SIZE.y * 2
+		    );
+		}
+	    );
+	},
+        get_lifecycle(_:GDB.GameDB): GDB.Lifecycle {
+            return GDB.Lifecycle.alive;
+        },
+        on_death(_:GDB.GameDB) {},
+        toJSON() {
+            return S.spriteJSON(this);
+        },
+    };
+    return shadow;
+}
+
 export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.Player {
     const p: PlayerSpritePrivate = {
         ...spec,
