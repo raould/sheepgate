@@ -374,7 +374,7 @@ function gameport_wrap_rect(rect: any/*G.Rect*/, gameport: any/*gameport*/, worl
 }
 
 function renderSounds(db: any) {
-    db.items.sfx?.forEach((sfx: any) => {
+    db.sfx?.forEach((sfx: any) => {
         const sound = sounds[sfx.sfx_id];
         if (sound != null) {
             sound.play(sfx);
@@ -387,7 +387,7 @@ function renderSounds(db: any) {
     // playing sounds more than once if there are
     // multiple client frames of renderSounds()
     // between server db updates.
-    db.items.sfx = [];
+    db.sfx = [];
 }
 
 function renderSpriteImage(gdb: any, s: any) {
@@ -534,23 +534,23 @@ function F2D(n: number): number {
     return Math.round((Number.EPSILON+n)*100)/100;
 }
 
-function renderDebug(gdb: any) {
+function renderDebug(db: any) { // either menu or game db.
     if (debugging_state.is_drawing) {
         // these are drawn in world coordinates.
-        const gameport_bounds = gdb.world.gameport.screen_bounds;
+        const gameport_bounds = db.world.gameport.screen_bounds;
         const mwx = gameport_bounds.lt.x + gameport_bounds.size.x/2;
         const mwy = gameport_bounds.lt.y + gameport_bounds.size.y/2;
         cx2d.fillText(`${F2D(mwx)} ${F2D(mwy)}`, mwx-gameport_bounds.lt.x-40, mwy-gameport_bounds.lt.y-10);
-        if (gdb.debug_graphics != null) {
-            gdb.debug_graphics.forEach((g:any) => renderDrawing(gdb, g));
+        if (db.debug_graphics != null) {
+            db.debug_graphics.forEach((g:any) => renderDrawing(db, g));
         }
 
         // these are hard-coded in screen coordinates.
         cx2d.font = "12px mono";
         cx2d.fillStyle = "white";
-        cx2d.fillText(`ticks ${gdb.tick}`, 300, 10);
-        cx2d.fillText(`sim clock ${Math.floor(gdb.sim_now)}`, 300, 30);
-        cx2d.fillText(`sim fps ${F2D(gdb.fps)}`, 300, 50);
+        cx2d.fillText(`ticks ${db.tick}`, 300, 10);
+        cx2d.fillText(`sim clock ${Math.floor(db.sim_now)}`, 300, 30);
+        cx2d.fillText(`sim fps ${F2D(db.fps)}`, 300, 50);
 	// todo: this needs some kind of smoothing, it is often unreadable.
         cx2d.fillText(`client fps ${F2D(game_fps)}`, 300, 70);
         cx2d.fillText(`client fps ${TARGET_FPS} ${game_fps >= TARGET_FPS} ${F2D(Math.abs(game_fps-TARGET_FPS))}`, 300, 90);
@@ -790,12 +790,19 @@ function renderParticles(gdb: any) {
 
 function render(db: any) {
     if (db != null) {    
-        cx2d.fillStyle = db.menu_db?.bg_color || db.game_db?.bg_color || BG_COLOR;
+        cx2d.fillStyle = db.bg_color?.hex ?? BG_COLOR;
         cx2d.fillRect(0, 0, h5canvas.width, h5canvas.height);
 	// painter's algorith, menus should render on top.
 	// note: bifurcating on the type of db here.
-        renderPlaying(db.game_db);
-	renderMenu(db.menu_db);
+	if (db.kind === "Game") {
+            renderPlaying(db);
+	}
+	else if (db.kind === "Menu") {
+	    renderMenu(db);
+	}
+	else {
+	    assert(false, `unsupported db kind '${db.kind}'`);
+	}
     }
 }
 
@@ -908,7 +915,7 @@ function sendState() {
 function applyDB(next_server_db: any) {
     // // just a is_debugging thing: show the first gdb we get.
     // if (next_server_db.tick == 1) {
-    //     log("gdb", next_server_db.game_db);
+    //     log("gdb", next_server_db);
     // }
     
     // the client is mostly dumb and just
@@ -939,8 +946,7 @@ function applyDB(next_server_db: any) {
     assert(next_server_db != null, "next_server_db");
     if (next_server_db != null) {
 	let server_db = server_db_generation.db;
-	const prevMenuSfx = server_db && server_db.menu_db?.items.sfx;
-	const prevGameSfx = server_db && server_db.game_db?.items.sfx;
+	const prevSfx = server_db && server_db.sfx;
 
 	server_db_generation = {
 	    id: server_db_generation.id++,
@@ -950,30 +956,16 @@ function applyDB(next_server_db: any) {
 
 	// keep accumulating the sfx until a render() happens
 	// which will play, then reset the local db's sfx array
-	if ((prevMenuSfx?.length ?? 0) > 0 && server_db.menu_db != null) {
-    	    server_db.menu_db.items.sfx = server_db.menu_db.items.sfx ?? [];
-    	    server_db.menu_db.items.sfx.push(...prevMenuSfx);
+	if ((prevSfx?.length ?? 0) > 0 && server_db != null) {
+    	    server_db.sfx = server_db.sfx ?? [];
+    	    server_db.sfx.push(...prevSfx);
 	}
-	if ((prevGameSfx?.length ?? 0) > 0 && server_db.game_db != null) {
-    	    server_db.game_db.items.sfx = server_db.game_db.items.sfx ?? [];
-    	    server_db.game_db.items.sfx.push(...prevGameSfx);
-	}
-
 
 	// todo: determine which ones are no longer needed by the server_db.
 	// unfortunately the server_db sounds are not a map, nor are they split by singletonness.
 	const nextSingletonSounds = new Map<string, any>(); 
-	if (server_db.game_db != null) {
-	    server_db.game_db.items.sfx.forEach((sfx: any) => {
-		const sound = singletonSounds.get(sfx.sfx_id);
-		if (sound != null) {
-		    nextSingletonSounds.set(sfx.sfx_id, sound);
-		    singletonSounds.delete(sfx.sfx_id);
-		}
-	    });
-	}
-	if (server_db.menu_db != null) {
-	    server_db.menu_db.items.sfx.forEach((sfx: any) => {
+	if (server_db != null) {
+	    server_db.sfx.forEach((sfx: any) => {
 		const sound = singletonSounds.get(sfx.sfx_id);
 		if (sound != null) {
 		    nextSingletonSounds.set(sfx.sfx_id, sound);

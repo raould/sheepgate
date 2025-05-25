@@ -1,6 +1,7 @@
 {
     "scripts": {
-	"build": "webpack"
+	"build": "webpack",
+	"build-watch": "webpack -w"
     },
     "devDependencies": {
 	"ts-loader": "^9.5.2",
