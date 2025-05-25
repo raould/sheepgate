@@ -1,20 +1,21 @@
 {
-	"compilerOptions": {
-		"pretty": false,
-		"sourceMap": true,
-		"target": "ES2017",
-		"esModuleInterop": true,
-		"rootDir": "src",
-		"removeComments": true,
-		"strict": true,
-		"module": "amd",
-		"allowJs": true,
-		"checkJs": false,
-		"rootDir": "src",
-		"outFile": "out/client.js"
-	},
-	"exclude": [
-		"node_modules",
-		"out",
-	]
+    "compilerOptions": {
+	"pretty": false,
+	"sourceMap": true,
+	"target": "ES2017",
+	"esModuleInterop": true,
+	"rootDir": "src",
+	"removeComments": true,
+	"strict": true,
+	"module": "amd",
+	"allowJs": true,
+	"checkJs": false,
+	"rootDir": "src",
+	"outFile": "out/client.js",
+	"typeRoots": []
+    },
+    "exclude": [
+	"node_modules",
+	"out"
+    ]
 }

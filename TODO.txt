@@ -23,6 +23,7 @@ really really todo, maybe?
 +++ show level # in hud.
 
 * hilariously / inevitably, the 'db' has become a big ball of mud; very confusing.
+  the various kinds of DBs are not of compatible types e.g. GDB.GameDB doesn't extend Db.DB<W>?!
 
 * note: the files in client/resources/sounds/ are not used at runtime,
   they were just used to generate client/src/*b64*, which is perhaps confusing.

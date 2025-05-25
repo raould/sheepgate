@@ -1,28 +1,34 @@
 // todo: figure out the living hell that is 
 // packaging for the browser, so that this
 // can be split up & also share code w/ the server.
-import { track1_sfx_b64 } from './track1.ogg.b64';
-import { kcart1_sfx_b64 } from './kcart1.ogg.b64';
-import { thrust_sfx_b64 } from './thrust.ogg.b64';
-import { begin_sfx_b64 } from './begin.ogg.b64';
-import { beamdown_sfx_b64 } from './beamdown.ogg.b64';
-import { beamup_sfx_b64 } from './beamup.ogg.b64';
-import { explosion_sfx_b64 } from './explosion.ogg.b64';
-import { expboom_sfx_b64 } from './expboom.ogg.b64';
-import { gem_collect_sfx_b64 } from './gem_collect.ogg.b64';
-import { player_shoot_sfx_b64 } from './player_shoot.ogg.b64';
-import { warpin_sfx_b64 } from './warpin.ogg.b64';
-import { synthA_sfx_b64 } from './synthA.ogg.b64';
-import { synthB_sfx_b64 } from './synthB.ogg.b64';
-import { synthC_sfx_b64 } from './synthC.ogg.b64';
-import { synthD_sfx_b64 } from './synthD.ogg.b64';
-import { synthE_sfx_b64 } from './synthE.ogg.b64';
-import { shot1_sfx_b64 } from './shot1.ogg.b64';
-import { shot2_sfx_b64 } from './shot2.ogg.b64';
-import { smartbomb_sfx_b64 } from './smartbomb.ogg.b64';
-import { Gamepads, StandardMapping } from './gamepads';
-import { FPS } from './fps';
+import { track1_sfx_b64 } from '@client/track1.ogg.b64';
+import { kcart1_sfx_b64 } from '@client/kcart1.ogg.b64';
+import { thrust_sfx_b64 } from '@client/thrust.ogg.b64';
+import { begin_sfx_b64 } from '@client/begin.ogg.b64';
+import { beamdown_sfx_b64 } from '@client/beamdown.ogg.b64';
+import { beamup_sfx_b64 } from '@client/beamup.ogg.b64';
+import { explosion_sfx_b64 } from '@client/explosion.ogg.b64';
+import { expboom_sfx_b64 } from '@client/expboom.ogg.b64';
+import { gem_collect_sfx_b64 } from '@client/gem_collect.ogg.b64';
+import { player_shoot_sfx_b64 } from '@client/player_shoot.ogg.b64';
+import { warpin_sfx_b64 } from '@client/warpin.ogg.b64';
+import { synthA_sfx_b64 } from '@client/synthA.ogg.b64';
+import { synthB_sfx_b64 } from '@client/synthB.ogg.b64';
+import { synthC_sfx_b64 } from '@client/synthC.ogg.b64';
+import { synthD_sfx_b64 } from '@client/synthD.ogg.b64';
+import { synthE_sfx_b64 } from '@client/synthE.ogg.b64';
+import { shot1_sfx_b64 } from '@client/shot1.ogg.b64';
+import { shot2_sfx_b64 } from '@client/shot2.ogg.b64';
+import { smartbomb_sfx_b64 } from '@client/smartbomb.ogg.b64';
+import { Gamepads, StandardMapping } from '@client/gamepads';
+import { FPS } from '@server/fps';
+import { high_scores_mk } from '@server/high_scores';
+import { game_mk } from '@server/game';
+import * as K from '@server/konfig';
  
+// todo: turn all this into an encapsulating instance.
+// todo: use the server types.
+
 function assert(test: boolean, msg: string = "") {
     if (!test) {
 	console.error("assertion failed!", msg);
@@ -33,41 +39,31 @@ function assert(test: boolean, msg: string = "") {
 // note that this kills Edge fps, but works ok with Firefox, whatevz!!!
 const INVERT_COLORS = false;
 
-// todo: use the server types.
-let server_db_generation: { id: number; db: any; } = { id: 0, db: undefined };
-
-// todo: turn all this into an encapsulating instance.
-
 let inputs: {commands: {[k:string]:boolean}, keys: {[k:string]:boolean}} = {
     commands: {}, keys: {}
 };
-// todo: unfortunately if is_stepping is true at the start, things break. fix it!
 let debugging_state: any = { is_stepping: false, is_drawing: false, is_annotating: false };
 let particles: {[k:string]:AbstractParticleGenerator} = {};
-let socket_ws: any;
 let h5canvas: any;
 let cx2d: any;
 let cxAudio: any;
+let server_db_generation: { id: number; db: any; } = { id: 0, db: undefined };
 let images: any = {};
 // sfx_id resource path - to - { play function } object.
 let sounds: any = {};
 // sfx_id resource path - to - audio buffer source.
 let singletonSounds = new Map<string, any>(); 
 
+const high_scores = high_scores_mk();
+let game_loop = game_mk(high_scores);
 let last_render_msec = 0;
 let game_fps = 0;
 let fps = new FPS((fps) => { game_fps = fps; });
 let tick = 0;
 let currentGamepad: any;
-const server_host: string = "localhost";
-const ws_endpoint: string = `ws://${server_host}:6969`;
 const BG_COLOR: string = "#111133";
 const DEBUG_IMG_BOX_COLOR: string = "rgba(255,0,0,0.5)";
 const client_id = Date.now()
-// todo: game breaks when the fps is set to anything other than 30.
-// also requestAnimationFrame() never gives me more than 30 fps anyway?
-const TARGET_FPS = 30;
-const MSEC_PER_FRAME = 1000 / TARGET_FPS;
 log("client_id", client_id);
 
 // todo: 'command' is a bad name beacuse it sounds
@@ -285,13 +281,16 @@ function rand_mk(seed: number) {
 
 function nextFrame(/*using global server_db*/) {
     const now = Date.now();
-    fps.on_tick();
     // requestAnimationFrame() is running at 30fps for me
     // so don't wait a whole nother round if we're close,
     // hence this heuristic of scaling the threshold by 0.9.
-    if (now - last_render_msec >= MSEC_PER_FRAME*0.9) {
+    if (now - last_render_msec >= K.FRAME_MSEC_DT * 0.9) {
         last_render_msec = now;
 	tick++; // just to be 1-based in render().
+	fps.on_tick();
+	game_loop.step();
+	const next_server_db = game_loop.get_db();
+	applyDB(next_server_db);
         render(server_db_generation.db);
     } 
     window.requestAnimationFrame(nextFrame);
@@ -526,26 +525,26 @@ function F2D(n: number): number {
     return Math.round((Number.EPSILON+n)*100)/100;
 }
 
-function renderDebug(gdb: any) {
+function renderDebug(db: any) { // either menu or game db.
     if (debugging_state.is_drawing) {
         // these are drawn in world coordinates.
-        const gameport_bounds = gdb.world.gameport.screen_bounds;
+        const gameport_bounds = db.world.gameport.screen_bounds;
         const mwx = gameport_bounds.lt.x + gameport_bounds.size.x/2;
         const mwy = gameport_bounds.lt.y + gameport_bounds.size.y/2;
         cx2d.fillText(`${F2D(mwx)} ${F2D(mwy)}`, mwx-gameport_bounds.lt.x-40, mwy-gameport_bounds.lt.y-10);
-        if (gdb.debug_graphics != null) {
-            gdb.debug_graphics.forEach((g:any) => renderDrawing(gdb, g));
+        if (db.debug_graphics != null) {
+            db.debug_graphics.forEach((g:any) => renderDrawing(db, g));
         }
 
         // these are hard-coded in screen coordinates.
         cx2d.font = "12px mono";
         cx2d.fillStyle = "white";
-        cx2d.fillText(`ticks ${gdb.tick}`, 300, 10);
-        cx2d.fillText(`sim clock ${Math.floor(gdb.sim_now)}`, 300, 30);
-        cx2d.fillText(`sim fps ${F2D(gdb.fps)}`, 300, 50);
+        cx2d.fillText(`ticks ${db.tick}`, 300, 10);
+        cx2d.fillText(`sim clock ${Math.floor(db.sim_now)}`, 300, 30);
+        cx2d.fillText(`sim fps ${F2D(db.fps)}`, 300, 50);
 	// todo: this needs some kind of smoothing, it is often unreadable.
         cx2d.fillText(`client fps ${F2D(game_fps)}`, 300, 70);
-        cx2d.fillText(`client fps ${TARGET_FPS} ${game_fps >= TARGET_FPS} ${F2D(Math.abs(game_fps-TARGET_FPS))}`, 300, 90);
+        cx2d.fillText(`client fps ${K.FRAME_MSEC_DT} ${game_fps >= K.FRAME_MSEC_DT} ${F2D(Math.abs(game_fps-K.FRAME_MSEC_DT))}`, 300, 90);
 
         renderLine(4, "#00FF0055", 0, 0, h5canvas.width, h5canvas.height);
         renderLine(4, "#00FF0055", 0, h5canvas.height, h5canvas.width, 0);
@@ -582,7 +581,7 @@ function renderHudDrawing(gdb: any) {
     ) });
     drawing.texts.forEach((dt: any) => {
 	renderText(
-            dt.text, dt.font, dt.fillStyle, dt.lb.x, dt.lb.y
+            dt.text, dt.font, dt.fillStyle.hex, dt.lb.x, dt.lb.y
 	)
     });
     drawing.images.forEach((di: any) => {
@@ -656,9 +655,9 @@ function renderRects(xdb: any, draw_rects: Array<any/*Dr.DrawRect*/>) {
 }
 function renderRect(is_filled: any, line_width: any, color: any, x: any, y: any, w: any, h: any) {
     cx2d.lineWidth = line_width;
-    cx2d.strokeStyle = color;
+    cx2d.strokeStyle = color.hex;
     if (is_filled) {
-        cx2d.fillStyle = color;
+        cx2d.fillStyle = color.hex;
         cx2d.fillRect(x, y, w, h);
     }
     else {
@@ -709,7 +708,7 @@ function renderArc(is_filled: any, line_width: any, color: any, x: any, y: any, 
     cx2d.beginPath();
     cx2d.ellipse(mx, my, xr, yr, 0, r0, r1);
     if (is_filled) {
-        cx2d.fillStyle = color;
+        cx2d.fillStyle = color.hex;
         cx2d.fill();
     }
     else {
@@ -723,14 +722,13 @@ function renderTexts(xdb: any, draw_texts: Array<any/*Dr.DrawText*/>) {
         for (const dt of draw_texts) {
             const wrap = dt.wrap == null ? true : !!dt.wrap;
             const slb = v2sv_wrapped(dt.lb, xdb.world.gameport, xdb.world.bounds0, wrap);
-            renderText(dt.text, dt.font, dt.fillStyle,
-                       slb.x + ss.x, slb.y + ss.y);
+            renderText(dt.text, dt.font, dt.fillStyle, slb.x + ss.x, slb.y + ss.y);
         }
     }
 }
 function renderText(text: any, font: any, fillStyle: any, base_x: any, base_y: any) {
     cx2d.font = font;
-    cx2d.fillStyle = fillStyle;
+    cx2d.fillStyle = fillStyle.hex;
     cx2d.fillText(text, base_x, base_y);
 }
 
@@ -782,7 +780,7 @@ function renderParticles(gdb: any) {
 
 function render(db: any) {
     if (db != null) {    
-        cx2d.fillStyle = db.bg_color || db.bg_color || BG_COLOR;
+        cx2d.fillStyle = db.bg_color?.hex ?? BG_COLOR;
         cx2d.fillRect(0, 0, h5canvas.width, h5canvas.height);
 	// painter's algorith, menus should render on top.
 	// note: bifurcating on the type of db here.
@@ -897,50 +895,10 @@ function sendState() {
             inputs: inputs,
             debugging_state: debugging_state,
         }
-        const json = JSON.stringify(step);
-        sendWS(json);
+	game_loop.merge_client_db(step);
     }
     catch (err) {
         console.error(err);
-    }
-}
-
-function connectWS(endpoint: string, onMessage?: any, onConnected?: any) {
-    if (socket_ws != null) {
-        socket_ws.close()
-    }
-    socket_ws = new WebSocket(endpoint);
-    socket_ws.onmessage = ((event: any) => {
-        // log("onmessage", event.data); overkill.
-        onMessage && onMessage(event);
-    });
-    socket_ws.onopen = ((event: any) => {
-        log("onopen", event);
-        onConnected && onConnected(event);
-    });
-    socket_ws.onclose = () => {
-        log("onclose");
-    };
-    socket_ws.onerror = (event: any) => {
-        log("ERROR", event);
-	alert("Could not talk to the server. To run the game on your local machine, see: https://github.com/raould/sheepgate");
-    };
-}
-
-function sendWS(message: string) {
-    if (socket_ws != null) {
-        try {
-            socket_ws.send(message)
-        }
-        catch (err) {
-        }
-    }
-}
-
-function closeWS() {
-    if (socket_ws != null) {
-        socket_ws.close();
-        socket_ws = undefined;
     }
 }
 
@@ -1129,7 +1087,7 @@ function loadImage(resource: string) {
         console.error(`ERROR: resource <${resource}> loading failed!`);
     }
     // this path is relative to where index.html lives.
-    i.src = `resources/images/${resource}`;
+    i.src = `../OLD/client/resources/images/${resource}`;
 }
 
 function loadImages() {
@@ -1336,23 +1294,6 @@ function loadExplosionA(dir: string, base: string, start: number, end: number, p
     }
 }
 
-function onConnectedWS() {
-    sendState(); // kickoff!
-    window.requestAnimationFrame(nextFrame);
-}
-
-function onMessageWS(event: any) {
-    try {
-        // match: DBShared type from server code.
-        // todo: extract DBShared type into shared file.
-        let next_server_db = JSON.parse(event.data);
-        applyDB(next_server_db);
-    }
-    catch (err) {
-        console.error(err);
-    }
-}
-
 function applyCommand(spec: CommandSpec, pressed: boolean) {
     let ik = spec.command;
     inputs.commands[ik] = pressed;
@@ -1471,11 +1412,9 @@ function init() {
     Gamepads.addEventListener("connect", (e:any)=> gamepadHandler(e, true));
     Gamepads.addEventListener("disconnect", (e:any)=> gamepadHandler(e, false));
 
-    connectWS(
-        ws_endpoint,
-        onMessageWS, // comes in at approximately the server fps.
-        onConnectedWS
-    );
+    // kickoff!
+    sendState(); 
+    window.requestAnimationFrame(nextFrame);
 }
 
 window.onload = init;

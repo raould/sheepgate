@@ -22,7 +22,7 @@ export class HighScoreTableScreen extends Sz.SizzlerScreen {
     step_body() {
         const t_hcycle = new HCycle(this.header_cycle.hsv, this.header_cycle.delta * 3);
         t_hcycle.next();
-        const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.5, this.mdb.world.bounds0.y * 0.3);
+        const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.3);
         const score_width = U.count_digits(this.table.scores[0].score);
         this.table.scores.forEach((high_score: Hs.HighScore, index: number) => {
             const mi = Tx.measure_text(high_score.callsign, 40);
@@ -40,7 +40,7 @@ export class HighScoreTableScreen extends Sz.SizzlerScreen {
                 fillStyle: t_hcycle.current(),
                 wrap: false,
             };            
-            this.mdb.frame_drawing.texts.push(ti);
+            this.mdb.shared.frame_drawing.texts.push(ti);
 
             const hs_offset = 25 - wiggle;
             const ts: Dr.DrawText = {
@@ -50,7 +50,7 @@ export class HighScoreTableScreen extends Sz.SizzlerScreen {
                 fillStyle: t_hcycle.current(),
                 wrap: false,
             };            
-            this.mdb.frame_drawing.texts.push(ts);
+            this.mdb.shared.frame_drawing.texts.push(ts);
 
             t_hcycle.next();
         });

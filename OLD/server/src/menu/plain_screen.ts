@@ -1,6 +1,7 @@
 import * as M from './menu';
 import * as Mdb from './menu_db';
 import * as Cdb from '../client_db';
+import * as Db from '../db';
 import * as Gs from '../game_stepper';
 import * as G from '../geom';
 import * as K from '../konfig';
@@ -34,19 +35,19 @@ export class PlainScreen implements M.Menu {
         this.add_text(
 	    spec.title,
 	    spec.fg_color,
-	    G.v2d_mk(this.mdb.world.bounds0.x * 0.5, this.mdb.world.bounds0.y * 0.2),
+	    G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.2),
 	    60
 	);
         this.add_text(
 	    spec.skip_text, 
 	    spec.fg_color,
-	    G.v2d_mk(this.mdb.world.bounds0.x * 0.5, this.mdb.world.bounds0.y * 0.9),
+	    G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.9),
 	    40
 	);
 
 	const line_height = spec.instructions_size + 5;
 	const iyoff = line_height * spec.instructions.length / 2;
-	const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.5, this.mdb.world.bounds0.y * 0.5 - iyoff);
+	const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.5 - iyoff);
         spec.instructions.forEach((text: string, index: number) => {
             const v_offset = line_height * index;
             this.add_text(
@@ -70,7 +71,7 @@ export class PlainScreen implements M.Menu {
             fillStyle: color,
             wrap: false,
         };
-        this.mdb.frame_drawing.texts.push(t);
+        this.mdb.shared.frame_drawing.texts.push(t);
     }
 
     merge_client_db(cdb2: Cdb.ClientDB): void {
@@ -88,9 +89,11 @@ export class PlainScreen implements M.Menu {
         this.elapsed += this.mdb.frame_dt;
     }
 
+    get_db(): Db.DB<Db.World> {
+	return this.mdb.shared;
+    }
+
     stringify(): string {
-        const str = Mdb.stringify(this.mdb);
-	// not clearing mdb since it is a static screen with no sfx.
-	return str;
+	return U.stringify(this.mdb.shared);
     }
 }

@@ -1,6 +1,7 @@
 import * as M from './menu';
 import * as Mdb from './menu_db';
 import * as Cdb from '../client_db';
+import * as Db from '../db';
 import * as Gs from '../game_stepper';
 import * as G from '../geom';
 import * as K from '../konfig';
@@ -68,7 +69,7 @@ export class SizzlerScreen implements M.Menu {
 	if (U.exists(this.timeout) && this.timeout <= 0) {
 	    this.state = Gs.StepperState.completed;
 	}
-        this.mdb.frame_drawing = Dr.drawing_mk();
+        this.mdb.shared.frame_drawing = Dr.drawing_mk();
         this.header_cycle.next();
         this.body_cycle.next();
         this.step_border();
@@ -97,11 +98,11 @@ export class SizzlerScreen implements M.Menu {
             fillStyle: hcycle.current(),
             wrap: false,
         };
-        this.mdb.frame_drawing.texts.push(t);
+        this.mdb.shared.frame_drawing.texts.push(t);
     }
 
     step_title() {
-        const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.5, this.mdb.world.bounds0.y * 0.2);
+        const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.2);
         this.step_text(this.title, center, 60, this.header_cycle)
     }
 
@@ -109,43 +110,47 @@ export class SizzlerScreen implements M.Menu {
         if (!this.ignore_user_skip &&
 	    U.exists(this.skip_text) &&
 	    (!this.animated || this.elapsed > K.USER_SKIP_AFTER_MSEC)) {
-            const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.5, this.mdb.world.bounds0.y * 0.9);
+            const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.9);
             this.step_text(this.skip_text, center, 40, this.header_cycle);
         }
     }
 
     step_timeout() {
         if (U.exists(this.timeout)) {
-            const center = G.v2d_mk(this.mdb.world.bounds0.x * 0.935, this.mdb.world.bounds0.y * 0.15);
+            const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.935, this.mdb.shared.world.bounds0.y * 0.15);
 	    const msg = String(Math.ceil(this.timeout/1000));
             this.step_text(msg, center, 25, this.header_cycle);
         }
     }
 
     step_border() {
-        this.mdb.frame_drawing.rects.push(
+        this.mdb.shared.frame_drawing.rects.push(
             {
                 wrap: false,
                 color: this.header_cycle.current(),
                 line_width: 4,
-                rect: G.rect_inset(this.mdb.world.screen, G.v2d_mk_nn(10)),
+                rect: G.rect_inset(this.mdb.shared.world.screen, G.v2d_mk_nn(10)),
             }
         );
         const rnd_inner = new Rnd.RandomImpl(this.elapsed);
         Dr.addSizzlerRect(
-            this.mdb.frame_drawing,
+            this.mdb.shared.frame_drawing,
             {
                 wrap: false,
                 color: this.header_cycle.current().setAlpha01(0.7),
                 line_width: 2,
-                rect: G.rect_inset(this.mdb.world.screen, G.v2d_mk_nn(25)),
+                rect: G.rect_inset(this.mdb.shared.world.screen, G.v2d_mk_nn(25)),
             },
             50, 1.5, rnd_inner
         );
     }
 
+    get_db(): Db.DB<Db.World> {
+	return this.mdb.shared;
+    }
+
     stringify(): string {
-        const str = Mdb.stringify(this.mdb);
+        const str = U.stringify(this.mdb.shared);
 	this.mdb = Mdb.menudb_mk(this.bg_color);
 	return str;
     }

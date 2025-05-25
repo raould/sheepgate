@@ -1,5 +1,6 @@
 import * as Gs from '../game_stepper';
 import * as Cdb from '../client_db';
+import * as Db from '../db';
 import * as M from '../menu/menu';
 import * as Lss from './level_start_screen';
 import * as Les from './level_end_screen';
@@ -36,6 +37,10 @@ export class LevelInScreens implements Gs.Stepper {
         if (this.stepper.get_state() != Gs.StepperState.running) {
             this.stepper = this.stepper.get_next_state() || this.stepper;
         }
+    }
+
+    get_db(): Db.DB<Db.World> {
+	return this.stepper.get_db();
     }
 
     stringify(): string {
@@ -77,6 +82,10 @@ class LevelWithScreen_StartScreen implements SubState {
 
     step(): void {
         this.start_screen.step();
+    }
+
+    get_db(): Db.DB<Db.World> {
+	return this.start_screen.get_db();
     }
 
     stringify(): string {
@@ -166,6 +175,10 @@ class LevelWithScreen_EndScreen implements SubState {
         this.end_screen.step();
     }
 
+    get_db(): Db.DB<Db.World> {
+	return this.end_screen.get_db();
+    }
+
     stringify(): string {
         return this.end_screen.stringify();
     }
@@ -197,6 +210,10 @@ class LevelWithScreen_Level implements SubState {
 
     step(): void {
         this.level.step();
+    }
+
+    get_db(): Db.DB<Db.World> {
+	return this.level.get_db();
     }
 
     stringify(): string {

@@ -1,4 +1,4 @@
-import * as DB from './db';
+import * as Db from './db';
 import * as Cdb from './client_db';
 import * as C from './collision';
 import * as S from './sprite';
@@ -149,7 +149,7 @@ export function stringify(db: GameDB): string {
     if (hide_debug_drawing && d != null) { // ...restore them.
         src.debug_graphics = d;
     }
-    return `{"game_db": ${json}}`;
+    return json;
 }
 
 export type StateModifier = (db: GameDB) => U.O<Gs.StepperState>;
@@ -214,7 +214,7 @@ export interface ImageResources {
 }
 
 // *** warning: note that all of 'shared' round-trips with the client! ***
-export interface DBSharedCore extends DB.DB<GameWorld> { // todo: better name.
+export interface DBSharedCore extends Db.DB<GameWorld> { // todo: better name.
     level_index1: number; // 1-based.
     screen_shake: G.V2D;
     tick: number; // increment on each server step, even if the dt was 0.
@@ -228,7 +228,7 @@ export interface DBSharedCore extends DB.DB<GameWorld> { // todo: better name.
 }
 
 // *** warning: note that all of 'shared' round-trips with the client! ***
-export interface GameWorld extends DB.World {
+export interface GameWorld extends Db.World {
     ground_y: number;
     ground_bounds: G.Rect;
     gameport: {
@@ -272,7 +272,6 @@ export interface DBSharedItems {
     people: U.Dict<S.Person>;
     gems: U.Dict<S.Gem>;
     fx: U.Dict<S.Sprite>;
-    sfx: So.Sfx[];
     particles: U.Dict<Pr.ParticleGenerator>;
 }
 
@@ -296,7 +295,7 @@ export function debug_dump_items(db: GameDB, msg?: string) {
         `#people=${U.count_dict(db.shared.items.people)}`,
         `#gems=${U.count_dict(db.shared.items.gems)}`,
         `#fx=${U.count_dict(db.shared.items.fx)}`,
-        `#sfx=${U.count_dict(db.shared.items.sfx)}`,
+        `#sfx=${U.count_dict(db.shared.sfx)}`,
     );
 }
 

@@ -1,4 +1,5 @@
 import * as G from '../geom';
+import * as Gr from '../geom_rnd';
 import * as GDB from '../game_db';
 import * as S from '../sprite';
 import * as U from '../util/util';
@@ -56,7 +57,7 @@ export function safe_lt_vs_player(db: GDB.GameDB, rank: S.Rank, size: G.V2D, rnd
 
 // avoid overlapping with existing enemies.
 export function safe_lt_vs_enemy(db: GDB.GameDB, size: G.V2D, rnd: Rnd.Random, lt: G.V2D | undefined): G.V2D {
-    let slt = lt ?? G.v2d_random_inxy(rnd, db.shared.world.bounds0.x, size.y);
+    let slt = lt ?? Gr.v2d_random_inxy(rnd, db.shared.world.bounds0.x, size.y);
     let padded_scale = G.v2d_scale(K.SHIELD_SCALE, 1.2);
     let hit: U.O<G.Rect>;
     let loop_max = 10;

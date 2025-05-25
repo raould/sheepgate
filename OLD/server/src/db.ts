@@ -1,14 +1,17 @@
 import * as G from './geom';
 import * as Dr from './drawing';
+import * as So from './sound';
 import { RGBA } from './color';
 
+// this is supposed to represent the server state being sent to the client.
+// i think. so the GameDB has-a not is-a one of these, 
 // todo: shouldn't more of these things go into DBshared?!
-// ugh, it is unclear to me statically what is shared with the client :-(
-
 // todo: use in client.ts /rage
 // todo: the db stuff exploded quickly and got hacked up for level
 // vs. menu so it is a big ball of confusing mud. :-(
 // it is unclear which things need to be in only one. or both, etc.
+
+export type DBKind = "Menu" | "Game";
 
 export interface World {
     // the bounds of the whole game world.
@@ -22,8 +25,10 @@ export interface World {
 }
 
 export interface DB<W extends World> {
+    kind: DBKind;
     world: W;
     bg_color: RGBA;
     frame_drawing: Dr.Drawing; // todo: kind of a bad name, actually?
     debug_graphics?: Dr.Drawing[];
+    sfx: So.Sfx[];
 }

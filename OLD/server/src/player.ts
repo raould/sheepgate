@@ -63,7 +63,7 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
             this.step_pos(db, delta_acc_x, delta_vel_y);
             this.step_resource_id(db, delta_acc_x);
 	    if (delta_acc_x != 0) {
-		db.shared.items.sfx.push(thrust_sfx);
+		db.shared.sfx.push(thrust_sfx);
 	    }
         },
         step_pos(db: GDB.GameDB, delta_acc_x: number, delta_vel_y: number) {
@@ -131,7 +131,7 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
                 p => Object.values(p.weapons).forEach(w => {
                     const s = w.shot_mk(db, p, false);
                     if (!!s) {
-                        db.shared.items.sfx.push({ sfx_id: K.PLAYER_SHOOT_SFX });
+                        db.shared.sfx.push({ sfx_id: K.PLAYER_SHOOT_SFX });
                     }
                 })
             );
@@ -190,7 +190,7 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
                                 )
                             );
                             if (!!s) {
-                                db.shared.items.sfx.push({ sfx_id: K.BEAMDOWN_SFX, gain: 0.35 });
+                                db.shared.sfx.push({ sfx_id: K.BEAMDOWN_SFX, gain: 0.35 });
                             }
                         });
                     }
@@ -320,7 +320,7 @@ export function add_shield(db: GDB.GameDB, player: S.Player) {
         on_collide(thiz: S.Shield<S.Player>, db: GDB.GameDB, c: S.CollidableSprite, __: C.Reaction) {
             if (U.has_bits_eq(c.type_flags, Tf.TF.gem)) {
                 thiz.hp = Math.min(thiz.hp_init, thiz.hp + K.GEM_HP_BONUS);
-                db.shared.items.sfx.push({ sfx_id: K.GEM_COLLECT_SFX });
+                db.shared.sfx.push({ sfx_id: K.GEM_COLLECT_SFX });
             }
             // note: the player has an extra hard-coded ability to crash through enemies somewhat.
             if (U.has_bits_eq(c.type_flags, Tf.TF.enemyShield)) {

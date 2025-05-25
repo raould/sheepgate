@@ -35,8 +35,8 @@ export class InstructionsScreen extends Sz.SizzlerScreen {
 	this.line_height = this.size * 1.05;
 	const iyoff = this.line_height * this.instructions.length / 2;
 	this.top = G.v2d_mk(
-	    this.mdb.world.bounds0.x * 0.5,
-	    this.mdb.world.bounds0.y * 0.5 - iyoff + (spec.top_offset_y ?? 0)
+	    this.mdb.shared.world.bounds0.x * 0.5,
+	    this.mdb.shared.world.bounds0.y * 0.5 - iyoff + (spec.top_offset_y ?? 0)
 	);
     }
 
