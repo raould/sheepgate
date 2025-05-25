@@ -281,24 +281,18 @@ function rand_mk(seed: number) {
 
 function nextFrame(/*using global server_db*/) {
     const now = Date.now();
-    fps.on_tick();
-
-    game_loop.step();
-    const next_server_db = game_loop.get_db();
-
-    // match: DBShared type from server code.
-    // todo: extract DBShared type into shared file.
-    applyDB(next_server_db);
-
     // requestAnimationFrame() is running at 30fps for me
     // so don't wait a whole nother round if we're close,
     // hence this heuristic of scaling the threshold by 0.9.
-    if (now - last_render_msec >= MSEC_PER_FRAME) {
+    if (now - last_render_msec >= K.FRAME_MSEC_DT * 0.9) {
         last_render_msec = now;
 	tick++; // just to be 1-based in render().
+	fps.on_tick();
+	game_loop.step();
+	const next_server_db = game_loop.get_db();
+	applyDB(next_server_db);
         render(server_db_generation.db);
     } 
-
     window.requestAnimationFrame(nextFrame);
 }
 
@@ -550,7 +544,7 @@ function renderDebug(db: any) { // either menu or game db.
         cx2d.fillText(`sim fps ${F2D(db.fps)}`, 300, 50);
 	// todo: this needs some kind of smoothing, it is often unreadable.
         cx2d.fillText(`client fps ${F2D(game_fps)}`, 300, 70);
-        cx2d.fillText(`client fps ${TARGET_FPS} ${game_fps >= TARGET_FPS} ${F2D(Math.abs(game_fps-TARGET_FPS))}`, 300, 90);
+        cx2d.fillText(`client fps ${K.FRAME_MSEC_DT} ${game_fps >= K.FRAME_MSEC_DT} ${F2D(Math.abs(game_fps-K.FRAME_MSEC_DT))}`, 300, 90);
 
         renderLine(4, "#00FF0055", 0, 0, h5canvas.width, h5canvas.height);
         renderLine(4, "#00FF0055", 0, h5canvas.height, h5canvas.width, 0);
