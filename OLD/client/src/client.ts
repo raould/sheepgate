@@ -449,6 +449,10 @@ function renderPlayer(gdb: any) {
     if (p != null) {
         renderSprite(gdb, p);
     }
+    const s = gdb.items.player_shadow;
+    if (s != null) {
+	renderSprite(gdb, s);
+    }
 }
 
 function renderPeople(gdb: any) {
@@ -1145,6 +1149,7 @@ function loadImages() {
             loadImage(`player/p1_${anim}_${dir}.png`);
             loadImage(`player/p1_f${anim}_${dir}.png`);
         })
+        loadImage(`player/p1_s_${dir}.png`);
     });
 
     [1,2,3,4].forEach(anim => {

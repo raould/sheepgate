@@ -208,6 +208,12 @@ export abstract class AbstractLevel implements Level {
                 D.assert(GDB.is_in_bounds(next, player), player.comment);
             }
         );
+        U.if_let(
+            GDB.get_player_shadow(next),
+	    shadow => {
+                shadow.step(next);
+            }
+        );
     }
 
     private update_people(next: GDB.GameDB) {

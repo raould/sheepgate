@@ -255,6 +255,7 @@ export interface DBSharedItems {
 
     // only a single-player game thus far.
     player: U.O<S.Player>; 
+    player_shadow: U.O<S.Sprite>; 
 
     // todo: deconflate the fact that in several ways
     // this is an unholy conflation of model & view.
@@ -341,6 +342,10 @@ export function get_sprite(db: GameDB, sid: DBID): U.O<S.Sprite> {
 
 export function get_player(db: GameDB): U.O<S.Player> {
     return db.shared.items.player;
+}
+
+export function get_player_shadow(db: GameDB): U.O<S.Sprite> {
+    return db.shared.items.player_shadow;
 }
 
 export function get_warpin(db: GameDB, wid: DBID): U.O<S.Sprite> {
