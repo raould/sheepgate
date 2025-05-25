@@ -1,12 +1,19 @@
 {
     "scripts": {
-	"build": "webpack",
-	"build-watch": "webpack -w"
+        "build": "webpack",
+        "build-watch": "webpack -w"
     },
     "devDependencies": {
-	"ts-loader": "^9.5.2",
-	"typescript": "^5.8.3",
-	"webpack": "^5.99.9",
-	"webpack-cli": "^6.0.1"
+        "@types/color-convert": "^2.0.4",
+        "@types/seedrandom": "^3.0.8",
+        "@types/lodash": "^4.17.17",
+        "ts-loader": "^9.5.2",
+        "typescript": "^5.8.3",
+        "webpack": "^5.99.9",
+        "webpack-cli": "^6.0.1"
+    },
+    "dependencies": {
+        "color-convert": "^3.1.0",
+        "lodash": "^4.17.21"
     }
 }

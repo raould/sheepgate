@@ -13,6 +13,8 @@ This version is client-client, all-in-browser. _Note that all this won't work vi
 (I did some symlinks on the web server to get it to work.)_
 
 * have node and npm installed.
+* (cd OLD/server && npm install)
+* (cd OLD/client && npm install)
 * cd onering/
 * npm install
 * npm run build
