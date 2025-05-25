@@ -731,7 +731,7 @@ function renderTexts(xdb: any, draw_texts: Array<any/*Dr.DrawText*/>) {
         for (const dt of draw_texts) {
             const wrap = dt.wrap == null ? true : !!dt.wrap;
             const slb = v2sv_wrapped(dt.lb, xdb.world.gameport, xdb.world.bounds0, wrap);
-            renderText(dt.text, dt.font, dt.fillStyle,
+            renderText(dt.text, dt.font, dt.fillStyle.hex,
                        slb.x + ss.x, slb.y + ss.y);
         }
     }
