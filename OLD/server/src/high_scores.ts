@@ -10,7 +10,7 @@ export class HighScore {
 const DEFAULT_HIGH_SCORES = [
     new HighScore("JARVIS", 2084),
     new HighScore("YAK", 2020),
-    new HighScore("MCLEAN", 2000),
+    new HighScore("MACLEAN", 2000),
     new HighScore("ERQ ESQ", 1992),
     new HighScore("QYPDQ", 100),
     new HighScore("D N A", 42),
