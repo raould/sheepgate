@@ -17,9 +17,7 @@ echo "-------------------- DONE BUILDING SERVER"
 # ----------------------------------------
 
 echo "++++++++++++++++++++ BUILDING ONERING..."
-cd onering
-npm i
-npm run build
+(cd onering && npm i && npm run build)
 echo "-------------------- DONE BUILDING ONERING"
 
 # ----------------------------------------
@@ -27,6 +25,6 @@ echo "-------------------- DONE BUILDING ONERING"
 echo ">>>>>>>>>>"
 echo ">>>>>>>>>>"
 echo ">>>>>>>>>> LOAD THIS FILE IN A BROWSER"
-echo ">>>>>>>>>> ${PWD}/index.html"
+echo ">>>>>>>>>> ${PWD}/onering/index.html"
 echo ">>>>>>>>>>"
 echo ">>>>>>>>>>"
