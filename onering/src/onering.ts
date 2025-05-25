@@ -590,7 +590,7 @@ function renderHudDrawing(gdb: any) {
     ) });
     drawing.texts.forEach((dt: any) => {
 	renderText(
-            dt.text, dt.font, dt.fillStyle, dt.lb.x, dt.lb.y
+            dt.text, dt.font, dt.fillStyle.hex, dt.lb.x, dt.lb.y
 	)
     });
     drawing.images.forEach((di: any) => {
@@ -664,9 +664,9 @@ function renderRects(xdb: any, draw_rects: Array<any/*Dr.DrawRect*/>) {
 }
 function renderRect(is_filled: any, line_width: any, color: any, x: any, y: any, w: any, h: any) {
     cx2d.lineWidth = line_width;
-    cx2d.strokeStyle = color;
+    cx2d.strokeStyle = color.hex;
     if (is_filled) {
-        cx2d.fillStyle = color;
+        cx2d.fillStyle = color.hex;
         cx2d.fillRect(x, y, w, h);
     }
     else {
@@ -717,7 +717,7 @@ function renderArc(is_filled: any, line_width: any, color: any, x: any, y: any, 
     cx2d.beginPath();
     cx2d.ellipse(mx, my, xr, yr, 0, r0, r1);
     if (is_filled) {
-        cx2d.fillStyle = color;
+        cx2d.fillStyle = color.hex;
         cx2d.fill();
     }
     else {
@@ -731,14 +731,13 @@ function renderTexts(xdb: any, draw_texts: Array<any/*Dr.DrawText*/>) {
         for (const dt of draw_texts) {
             const wrap = dt.wrap == null ? true : !!dt.wrap;
             const slb = v2sv_wrapped(dt.lb, xdb.world.gameport, xdb.world.bounds0, wrap);
-            renderText(dt.text, dt.font, dt.fillStyle.hex,
-                       slb.x + ss.x, slb.y + ss.y);
+            renderText(dt.text, dt.font, dt.fillStyle, slb.x + ss.x, slb.y + ss.y);
         }
     }
 }
 function renderText(text: any, font: any, fillStyle: any, base_x: any, base_y: any) {
     cx2d.font = font;
-    cx2d.fillStyle = fillStyle;
+    cx2d.fillStyle = fillStyle.hex;
     cx2d.fillText(text, base_x, base_y);
 }
 
