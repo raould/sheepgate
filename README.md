@@ -14,7 +14,7 @@ This version is client-client, all-in-browser. _Note that all this won't work vi
 
 * have a unixy system (i use git bash on windows).
 * have node and npm installed.
-* bash ./runme-standalone
+* bash ./runme-standalone.sh
 * open onering/index.html in a browser.
 
 # the old client-server style.
