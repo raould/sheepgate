@@ -35,7 +35,7 @@ function base_mk(db: GDB.GameDB): U.O<S.Base> {
         // hacky hard coded centeringish of the base in the ground tile, moved up a bit.
         const base_lt = G.v2d_sub(
             G.rect_mt(ground_tile),
-            G.v2d_scale_v2d(K.BASE_SIZE, G.v2d_mk(0.5, 0.3))
+            G.v2d_scale_v2d(K.BASE_SIZE, G.v2d_mk(0.5, 0.6))
         );
         const rect = G.rect_mk(base_lt, K.BASE_SIZE);
 	const beam_down_center = G.v2d_add(

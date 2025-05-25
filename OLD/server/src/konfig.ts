@@ -219,7 +219,7 @@ D.assert(
     "wtf"
 );
 
-export const BASE_SIZE = G.v2d_mk(128, 32); // L
+export const BASE_SIZE = G.v2d_mk(128, 32); // L // ugh position is elsewhere.
 // the base shield alpha has to be
 // non-zero because zero means hidden and
 // thus non-interactive, which would prevent transports.

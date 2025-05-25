@@ -449,6 +449,10 @@ function renderPlayer(gdb: any) {
     if (p != null) {
         renderSprite(gdb, p);
     }
+    // note: player shadow drawn later to be on z-top.
+}
+
+function renderPlayerShadow(gdb: any) {
     const s = gdb.items.player_shadow;
     if (s != null) {
 	renderSprite(gdb, s);
@@ -832,6 +836,7 @@ function renderPlaying(gdb: any) {
     renderFx(gdb);
     renderParticles(gdb);
     renderAllFgDrawings(gdb);
+    renderPlayerShadow(gdb);
     // draw the hud last(ish) so it is z-on-top.
     renderHud(gdb);
     renderDebug(gdb);

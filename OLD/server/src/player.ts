@@ -38,8 +38,8 @@ interface PlayerSpritePrivate extends S.Player {
 
 export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: any): S.Sprite {
     const images = db.uncloned.images;
-    const left_rid = images.lookup("player/p_s_left.png");
-    const right_rid = images.lookup("player/p_s_right.png");
+    const left_rid = images.lookup("player/p1_s_left.png");
+    const right_rid = images.lookup("player/p1_s_right.png");
     const shadow = {
 	dbid: dbid,
 	comment: `player-shadow-${dbid}`,
