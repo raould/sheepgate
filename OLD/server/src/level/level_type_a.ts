@@ -479,7 +479,6 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    prev_db: {} as GDB.GameDB,
 	    frame_dt: 0,
 	    fps_marker: { tick: 0, msec: 0 },
-	    people_beamed_up: 0,
 	    people_rescued: 0,
 	    state_modifiers: [],
 	    ticking_generators: {},
@@ -523,6 +522,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		    beam_down_rect: G.rect_mk_0()
 		},
 		people: {},
+		beaming_buffer: {},
 		gems: {},
 		fx: {},
 		particles: {},

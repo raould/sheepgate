@@ -193,20 +193,26 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
             const vel2 = G.v2d_len2(this.vel);
             const bits = U.has_bits_eq(maybe_base_shield.type_flags, Tf.TF.baseShield);
             if (bits && this.passenger_ids.size > 0 && vel2 <= K.PLAYER_BEAM_MAX_VEL2) {
+		D.log("beam down 1");
                 U.if_let(
                     GDB.get_shield(db, maybe_base_shield.dbid),
                     shield => {
+			D.log("beam down 2");
                         const base = db.shared.items.base;
                         this.beaming_ids = this.passenger_ids;
                         this.passenger_ids = new Set<GDB.DBID>();
                         this.beaming_ids.forEach(pid => {
+			    D.log("beam down 3", pid);
 			    U.if_let(
 				GDB.get_person(db, pid), person => {
+				    D.log("beam down 4");
 				    person.beam_down(
 					db, base.beam_down_rect,
 					/*on_end*/(db: GDB.GameDB) => {
+					    D.log("beam down 5");
                                             U.if_let(
 						GDB.get_player(db), (thiz: S.Player) => {
+						    D.log("beam down 6");
                                                     thiz.beaming_ids.delete(pid);
                                                     db.shared.rescued_count++;
                                                     db.local.scoring.on_event(Sc.Event.rescue);
