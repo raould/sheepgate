@@ -105,16 +105,6 @@ interface PersonPrivate extends S.Person {
     anim: A.ResourceAnimator;
 }
 
-function add_sheep(db: GDB.GameDB, mb: G.V2D, off_x: number, rnd: Rnd.Random) {
-    const offset_x = G.v2d_mk(off_x, rnd.float_range(-2, 2));
-    const lt = G.v2d_sub(
-        G.v2d_add(mb, offset_x),
-        // hard coded hack to look good. todo: ground should have hidden hotspots instead.
-        G.v2d_mk(K.PEOPLE_SIZE.x / 2, K.PEOPLE_SIZE.x * 0.75)
-    );
-    
-}
-
 function add_person(db: GDB.GameDB, mb: G.V2D, off_x: number, rnd: Rnd.Random) {
     const offset_x = G.v2d_mk(off_x, rnd.float_range(-2, 2));
     const lt = G.v2d_sub(
@@ -129,6 +119,24 @@ function add_person(db: GDB.GameDB, mb: G.V2D, off_x: number, rnd: Rnd.Random) {
     // in one instance. however, ascii duplication cannot be entirely avoided.
     const standing_anim = person_standing_anim_mk(db);
     const waving_anim = person_waving_anim_mk(db);
+    GDB.add_sprite_dict_id_mut(
+        db.shared.items.people,
+        (dbid: GDB.DBID): S.Person => waiting_mk(
+	    db, dbid, lt, standing_anim, waving_anim
+	)
+    );
+}
+
+function add_sheep(db: GDB.GameDB, mb: G.V2D, off_x: number, rnd: Rnd.Random) {
+    const offset_x = G.v2d_mk(off_x, rnd.float_range(-2, 2));
+    const lt = G.v2d_sub(
+        G.v2d_add(mb, offset_x),
+        // hard coded hack to look good. todo: ground should have hidden hotspots instead.
+        G.v2d_mk(K.PEOPLE_SIZE.x / 2, K.PEOPLE_SIZE.x * 0.75)
+    );
+    const standing_anim = sheep_standing_anim_mk(db);
+    const waving_anim = sheep_waving_anim_mk(db);
+    // todo: sheep beam up vs. down animations, too.
     GDB.add_sprite_dict_id_mut(
         db.shared.items.people,
         (dbid: GDB.DBID): S.Person => waiting_mk(
@@ -218,6 +226,27 @@ function person_waving_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
         offset_msec: Rnd.singleton.float_range(0, 250),
         frame_msec: Rnd.singleton.float_around(200, 50),
         resource_ids: images.lookup_range_n((n) => `people/waving${n}.png`, 1, 2)
+    };
+    const anim = new A.MultiImageAnimator(db.shared.sim_now, spec);
+    return anim;
+}
+
+function sheep_standing_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
+    const images = db.uncloned.images;
+    const spec: A.SingleImageSpec = {
+        resource_id: images.lookup("people/sheep1.png"),
+    };
+    return new A.SingleImageAnimator(db.shared.sim_now, spec);
+}
+
+function sheep_waving_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
+    const images = db.uncloned.images;
+    const spec: A.MultiImageSpec = {
+        starting_mode: A.MultiImageStartingMode.hold,
+        ending_mode: A.MultiImageEndingMode.loop,
+        offset_msec: Rnd.singleton.float_range(0, 250),
+        frame_msec: Rnd.singleton.float_around(100, 25),
+        resource_ids: images.lookup_range_n((n) => `people/sheep${n}.png`, 1, 3)
     };
     const anim = new A.MultiImageAnimator(db.shared.sim_now, spec);
     return anim;

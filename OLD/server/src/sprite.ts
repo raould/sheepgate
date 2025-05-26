@@ -50,12 +50,9 @@ export interface ImageResource {
     // the resource_id. a few have more than one layer of raster
     // images and use the z_back_to_front_ids instead. currently maybe
     // only explosionB uses the drawing.
-    // match: the client has to draw them in this order.
-    // note/todo: these 3 are in back-to-front z order.
-    // z order e.g 5,4,3,2,1=resource_id,0=drawing.
-    z_back_to_front_ids?: Array<string>;
-    resource_id?: string;
-    drawing?: Dr.Drawing;
+    z_back_to_front_ids?: Array<string>; // z[0] is most 'distant'.
+    resource_id?: string; // on top of z_back_to_front.
+    drawing?: Dr.Drawing; // on top of resource_id.
 }
 
 export interface HitPoints {
