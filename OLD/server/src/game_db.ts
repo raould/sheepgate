@@ -15,6 +15,8 @@ import * as Tkg from './ticking_generator';
 
 // NOTE: a lot of this is mostly for in-levels, see menu/menu_db, it is very confusing.
 
+// fyi "mut" -> "mutating" -> changes the given collection rather than returning a new filtered one.
+
 // todo:
 // THIS NEEDS TO BE SPLIT UP INTO
 // inter-level data vs. intra-level data.
@@ -88,6 +90,14 @@ export function id_mk(): string {
 export function id_mut<T extends Item>(fn: (_: DBID) => U.O<T>) {
     const dbid = id_mk();
     return fn(dbid);
+}
+
+// slightly dangerous in that it is re-using the item's dbid.
+// do not use this unless you must (e.g. beaming), use add_dict_id_mut() et. al.
+export function add_item<T extends Identity>(collection: U.Dict<T>, item: T) {
+    D.assert(U.exists(item.dbid));
+    D.assert(collection[item.dbid] == undefined);
+    collection[item.dbid] = item;
 }
 
 export function add_dict_id_mut<T extends D, D extends Item>(collection: U.Dict<D>, fn: (_: DBID) => U.O<T>): U.O<T> {
@@ -439,7 +449,7 @@ export function reap_items(db: GameDB) {
     // 1) reap player, since there's currently only one, not in a collection.
     const player = get_player(db);
     if (player != null && !keep_fn(db, player.dbid, player)) {
-        db.shared.items.player = undefined;
+        delete db.shared.items.player;
         player.on_death(db);
     }
 
@@ -464,7 +474,8 @@ export function reap_particles(db: GameDB) {
     }
 }
 
-function reap_named<T extends S.Sprite>(db: GameDB, parent: Object, name: string) {
+function reap_named<T extends S.Sprite>(db: GameDB, parent: object, name: string) {
+    D.assert(Object.keys(parent).includes(name), name);
     // @ts-ignore
     const collection = parent[name];
     // @ts-ignore
@@ -478,4 +489,9 @@ function reap_named<T extends S.Sprite>(db: GameDB, parent: Object, name: string
 
 function reap_sprites<T extends S.Sprite>(db: GameDB, collection: U.Dict<T>): U.FilteredDict<T> {
     return U.filter_dict<T>(collection, (dbid, e) => keep_fn(db, dbid, e));
+}
+
+export function reap_item<T extends Identity>(collection: U.Dict<T>, item: T) {
+    D.assert(U.exists(item.dbid));
+    delete collection[item.dbid];
 }

@@ -170,7 +170,8 @@ function waiting_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D, standing_anim: A.
             D.assert(false, "wtf");
         },
         beam_up(db: GDB.GameDB) {
-            this.lifecycle_state = GDB.Lifecycle.dead;
+	    GDB.reap_item(db.shared.items.people, this as S.Person); // 'as' "ugh"!
+	    GDB.add_item(db.shared.items.beaming_buffer, this);
             GDB.add_sprite_dict_id_mut(
                 db.shared.items.fx,
                 (dbid: GDB.DBID): S.Sprite => person_beaming_up_anim_mk(db, dbid, this)
@@ -178,12 +179,17 @@ function waiting_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D, standing_anim: A.
             db.shared.sfx.push({ sfx_id: K.BEAMUP_SFX, gain: 0.35 });
         },
 	beam_down(db: GDB.GameDB, down_rect: G.Rect, on_end: (db: GDB.GameDB) => void) {
+	    this.lifecycle_state = GDB.Lifecycle.dead;
 	    db.shared.sfx.push({ sfx_id: K.BEAMDOWN_SFX, gain: 0.35 });
-                            // const s = GDB.add_sprite_dict_id_mut(
-                            //     db.shared.items.fx,
-                            //     (dbid: GDB.DBID): S.Sprite => Po.people_beaming_down_anim_mk(
-                            //         db,
-                            //         dbid,
+            const s = GDB.add_sprite_dict_id_mut(
+                db.shared.items.fx,
+                (dbid: GDB.DBID): S.Sprite => person_beaming_down_anim_mk(
+                    db,
+                    dbid,
+		    down_rect,
+		    on_end,
+		)
+	    );
 	},
         get_lifecycle(_:GDB.GameDB) {
             return this.lifecycle_state;

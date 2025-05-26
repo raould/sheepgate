@@ -90,8 +90,6 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
         type_flags: Tf.TF.playerShip,
         weapons: weapons_mk(),
         passenger_max: 1,
-        passenger_ids: new Set<GDB.DBID>(),
-        beaming_ids: new Set<GDB.DBID>(),
         lifecycle: GDB.Lifecycle.alive,
         step(db: GDB.GameDB) {
             // regular physics movement for x, heuristic for y.
@@ -176,15 +174,15 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
         },
         maybe_beam_up_person(db: GDB.GameDB, maybe_person: S.CollidableSprite) {
             const vel2 = G.v2d_len2(this.vel);
-            if (vel2 <= K.PLAYER_BEAM_MAX_VEL2 &&                        
+	    const buffer_count = U.count_dict(db.shared.items.beaming_buffer);
+            if (vel2 <= K.PLAYER_BEAM_MAX_VEL2 &&
                 U.has_bits_eq(maybe_person.type_flags, Tf.TF.person) &&
-                this.passenger_ids.size < this.passenger_max) {
+                buffer_count < this.passenger_max) {
                 const pid = maybe_person.dbid;
                 U.if_let(
                     GDB.get_person(db, pid),
                     person => {
                         person.beam_up(db);
-                        this.passenger_ids.add(person.dbid);
                     }
                 );
             }
@@ -192,19 +190,18 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
         maybe_beam_down_to_base(db: GDB.GameDB, maybe_base_shield: S.CollidableSprite) {
             const vel2 = G.v2d_len2(this.vel);
             const bits = U.has_bits_eq(maybe_base_shield.type_flags, Tf.TF.baseShield);
-            if (bits && this.passenger_ids.size > 0 && vel2 <= K.PLAYER_BEAM_MAX_VEL2) {
+            const buffer_ids = Object.keys(db.shared.items.beaming_buffer);
+            if (bits && buffer_ids.length > 0 && vel2 <= K.PLAYER_BEAM_MAX_VEL2) {
 		D.log("beam down 1");
                 U.if_let(
                     GDB.get_shield(db, maybe_base_shield.dbid),
                     shield => {
 			D.log("beam down 2");
                         const base = db.shared.items.base;
-                        this.beaming_ids = this.passenger_ids;
-                        this.passenger_ids = new Set<GDB.DBID>();
-                        this.beaming_ids.forEach(pid => {
+                        buffer_ids.forEach(pid => {
 			    D.log("beam down 3", pid);
 			    U.if_let(
-				GDB.get_person(db, pid), person => {
+				GDB.get_beaming_buffered(db, pid), person => {
 				    D.log("beam down 4");
 				    person.beam_down(
 					db, base.beam_down_rect,
@@ -213,7 +210,6 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
                                             U.if_let(
 						GDB.get_player(db), (thiz: S.Player) => {
 						    D.log("beam down 6");
-                                                    thiz.beaming_ids.delete(pid);
                                                     db.shared.rescued_count++;
                                                     db.local.scoring.on_event(Sc.Event.rescue);
 						    U.if_let(
@@ -224,7 +220,8 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
 						}
 					    )
 					}
-				    )
+				    );
+				    GDB.reap_item(db.shared.items.beaming_buffer, person);
 				}
                             )
 			})

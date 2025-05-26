@@ -336,11 +336,10 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    U.count_dict(next.shared.items.explosions) == 0;
     }
 
-    // once people are either rescued or dead, they won't show up in this count.
+    // people on the ground + people in the beaming buffer.
     private get_people_count(next: GDB.GameDB): number {
-	return (GDB.get_player(next)?.passenger_ids.size ?? 0) +
-	    (GDB.get_player(next)?.beaming_ids.size ?? 0) +
-	    U.count_dict(next.shared.items.people);
+	return U.count_dict(next.shared.items.people) +
+	    U.count_dict(next.shared.items.beaming_buffer);
     }
 
     update_impl(next: GDB.GameDB) {

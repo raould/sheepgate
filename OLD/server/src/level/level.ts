@@ -442,8 +442,7 @@ export abstract class AbstractLevel implements Level {
         const more_enemies = U.count_dict(next.local.enemy_generators) > 0 ||
             U.count_dict(next.shared.items.enemies) > 0 ||
             U.count_dict(next.shared.items.warpin) > 0;
-        const carrying = ((GDB.get_player(next)?.passenger_ids.size ?? 0) +
-            (GDB.get_player(next)?.beaming_ids.size ?? 0)) > 0;
+        const carrying = U.count_dict(next.shared.items.beaming_buffer) > 0;
         const more_people = U.count_dict(next.shared.items.people) > 0;
 
         if (more_enemies) {

@@ -164,9 +164,7 @@ export interface Fighter extends Sprite, Ranked, Facing, Tf.Flagged, Shielded {
 
 export interface Player extends Fighter {
     // note: the player has an extra hard-coded ability to crash through enemies somewhat.
-    passenger_ids: Set<GDB.DBID>;
     passenger_max: number;
-    beaming_ids: Set<GDB.DBID>;
     maybe_shoot(db: GDB.GameDB): void;
     maybe_beam_up_person(db: GDB.GameDB, maybe_person: CollidableSprite): void;
     maybe_beam_down_to_base(db: GDB.GameDB, maybe_base_shield: CollidableSprite): void;
