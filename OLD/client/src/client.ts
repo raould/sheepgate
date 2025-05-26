@@ -1323,6 +1323,8 @@ function loadImages() {
     loadImage("people/tp4.png");
     loadImage("people/tp5.png");
     loadImage("people/skull.png");
+    Array.from({length: 3}, (_v, i) => i+1).forEach(i => loadImage(`people/sheep${i}.png`));
+    Array.from({length: 5}, (_v, i) => i+1).forEach(i => loadImage(`people/sheepT${i}.png`));
     loadImage("empty1.png");
     loadImage("bg/ma_far.png");
     loadImage("bg/mal_far.png");

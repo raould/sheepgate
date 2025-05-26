@@ -196,6 +196,7 @@ export interface Shield<T extends Shielded> extends CollidableSprite {
 
 export interface Person extends CollidableSprite {
     beam_up(db: GDB.GameDB): void;
+    beam_down(db: GDB.GameDB, down_rect: G.Rect, on_end: (db: GDB.GameDB) => void): void;
 }
 
 export enum WeaponType {

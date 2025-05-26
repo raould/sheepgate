@@ -325,19 +325,22 @@ export function assert_dbitems(db: GameDB) {
 
 // match: DBShared.
 // todo: yeah, this is a really lame "database".
-export function get_sprite(db: GameDB, sid: DBID): U.O<S.Sprite> {
-    const p = db.shared.items.player;
-    const w = db.shared.items.warpin[sid];
-    const e = db.shared.items.enemies[sid];
-    const h = db.shared.items.shields[sid];
-    const s = db.shared.items.shots[sid];
-    const x = db.shared.items.explosions[sid];
-    const b = get_base(db, sid);
-    const pp = db.shared.items.people[sid];
-    const gg = db.shared.items.gems[sid];
-    const fx = db.shared.items.fx[sid];
-    const most = (p?.dbid == sid ? p : undefined) || w || e || h || s || x || b || pp || gg || fx;
-    return most;
+export function get_sprite(db: GameDB, sid: U.O<DBID>): U.O<S.Sprite> {
+    if (U.exists(sid)) {
+	const p = db.shared.items.player;
+	const w = db.shared.items.warpin[sid];
+	const e = db.shared.items.enemies[sid];
+	const h = db.shared.items.shields[sid];
+	const s = db.shared.items.shots[sid];
+	const x = db.shared.items.explosions[sid];
+	const b = get_base(db, sid);
+	const pp = db.shared.items.people[sid];
+	const gg = db.shared.items.gems[sid];
+	const fx = db.shared.items.fx[sid];
+	const most = (p?.dbid == sid ? p : undefined) || w || e || h || s || x || b || pp || gg || fx;
+	return most;
+    }
+    return undefined;
 }
 
 export function get_player(db: GameDB): U.O<S.Player> {
@@ -348,50 +351,55 @@ export function get_player_shadow(db: GameDB): U.O<S.Sprite> {
     return db.shared.items.player_shadow;
 }
 
-export function get_warpin(db: GameDB, wid: DBID): U.O<S.Sprite> {
-    return db.shared.items.warpin[wid];
+export function get_warpin(db: GameDB, wid: U.O<DBID>): U.O<S.Sprite> {
+    return U.exists(wid) ? db.shared.items.warpin[wid] : undefined;
 }
 
-export function get_enemy(db: GameDB, eid: DBID): U.O<S.Enemy> {
-    return db.shared.items.enemies[eid];
+export function get_enemy(db: GameDB, eid: U.O<DBID>): U.O<S.Enemy> {
+    return U.exists(eid) ? db.shared.items.enemies[eid] : undefined;
 }
 
-export function get_shield(db: GameDB, sid: DBID): U.O<S.Shield<S.Shielded>> {
-    return db.shared.items.shields[sid];
+export function get_shield(db: GameDB, sid: U.O<DBID>): U.O<S.Shield<S.Shielded>> {
+    return U.exists(sid) ? db.shared.items.shields[sid] : undefined;
 }
 
-export function get_shot(db: GameDB, sid: DBID): U.O<S.Shot> {
-    return db.shared.items.shots[sid];
+export function get_shot(db: GameDB, sid: U.O<DBID>): U.O<S.Shot> {
+    return U.exists(sid) ? db.shared.items.shots[sid] : undefined;
 }
 
-export function get_base(db: GameDB, sid: DBID): U.O<S.Base> {
-    const b = U.if_let(
-        db.shared.items.base,
-        (b) => b.dbid == sid ? db.shared.items.base : undefined
-    );
-    return b;
-}
-
-export function get_fighter(db: GameDB, sid: DBID): U.O<S.Fighter> {
-    const e = db.shared.items.enemies[sid];
-    if (e != null) {
-        return e;
+export function get_base(db: GameDB, sid: U.O<DBID>): U.O<S.Base> {
+    if (U.exists(sid)) {
+	const b = db.shared.items.base;
+	if (b?.dbid === sid) {
+	    return b;
+	}
     }
-    else {
-        return get_player(db);
+    return undefined;
+}
+
+export function get_fighter(db: GameDB, sid: U.O<DBID>): U.O<S.Fighter> {
+    let e: U.O<S.Fighter>;
+    if (U.exists(sid)) {
+	e = db.shared.items.enemies[sid];
     }
+    // this looks bad but the real problem is that the player is a
+    // special case of fighter in the db. :-(
+    if (U.isU(e)) {
+	e = get_player(db);
+    }
+    return e;
 }
 
-export function get_person(db: GameDB, pid: DBID): U.O<S.Person> {
-    return db.shared.items.people[pid];
+export function get_person(db: GameDB, pid: U.O<DBID>): U.O<S.Person> {
+    return U.exists(pid) ? db.shared.items.people[pid] : undefined;
 }
 
-export function get_gem(db: GameDB, pid: DBID): U.O<S.Gem> {
-    return db.shared.items.gems[pid];
+export function get_gem(db: GameDB, pid: U.O<DBID>): U.O<S.Gem> {
+    return U.exists(pid) ? db.shared.items.gems[pid] : undefined;
 }
 
-export function get_fx(db: GameDB, fid: DBID): U.O<S.Sprite> {
-    return db.shared.items.fx[fid];
+export function get_fx(db: GameDB, fid: U.O<DBID>): U.O<S.Sprite> {
+    return U.exists(fid) ? db.shared.items.fx[fid] : undefined;
 }
 
 export function is_in_bounds(db: GameDB, p: G.P2D): boolean {
@@ -403,8 +411,8 @@ export function is_in_bounds(db: GameDB, p: G.P2D): boolean {
     return true;
 }
 
-function keep_fn(db: GameDB, dbid: DBID, e: Aliveness) {
-    return dbid != null && e.get_lifecycle(db) == Lifecycle.alive;
+function keep_fn(db: GameDB, dbid: U.O<DBID>, e: Aliveness) {
+    return U.exists(dbid) && e.get_lifecycle(db) == Lifecycle.alive;
 }
 
 // match: DBLocal.

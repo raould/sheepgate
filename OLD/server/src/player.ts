@@ -191,9 +191,8 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
         },
         maybe_beam_down_to_base(db: GDB.GameDB, maybe_base_shield: S.CollidableSprite) {
             const vel2 = G.v2d_len2(this.vel);
-            if (this.passenger_ids.size > 0 &&
-                vel2 <= K.PLAYER_BEAM_MAX_VEL2 &&
-                U.has_bits_eq(maybe_base_shield.type_flags, Tf.TF.baseShield)) {
+            const bits = U.has_bits_eq(maybe_base_shield.type_flags, Tf.TF.baseShield);
+            if (bits && this.passenger_ids.size > 0 && vel2 <= K.PLAYER_BEAM_MAX_VEL2) {
                 U.if_let(
                     GDB.get_shield(db, maybe_base_shield.dbid),
                     shield => {
@@ -201,40 +200,32 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
                         this.beaming_ids = this.passenger_ids;
                         this.passenger_ids = new Set<GDB.DBID>();
                         this.beaming_ids.forEach(pid => {
-                            const s = GDB.add_sprite_dict_id_mut(
-                                db.shared.items.fx,
-                                (dbid: GDB.DBID): S.Sprite => Po.beaming_down_anim_mk(
-                                    db,
-                                    dbid,
-                                    base.beam_down_rect,
-                                    /*on_end*/(db: GDB.GameDB) => {
-                                        U.if_let(
-                                            GDB.get_player(db),
-                                            (thiz: S.Player) => {
-                                                thiz.beaming_ids.delete(pid);
-                                                db.shared.rescued_count++;
-                                                db.local.scoring.on_event(Sc.Event.rescue);
-						if (this.shield_id != undefined) {
+			    U.if_let(
+				GDB.get_person(db, pid), person => {
+				    person.beam_down(
+					db, base.beam_down_rect,
+					/*on_end*/(db: GDB.GameDB) => {
+                                            U.if_let(
+						GDB.get_player(db), (thiz: S.Player) => {
+                                                    thiz.beaming_ids.delete(pid);
+                                                    db.shared.rescued_count++;
+                                                    db.local.scoring.on_event(Sc.Event.rescue);
 						    U.if_let(
-							GDB.get_shield(db, this.shield_id),
-							player_shield => {
+							GDB.get_shield(db, this.shield_id), player_shield => {
 							    player_shield.hp = K.PLAYER_HP;
 							}
 						    );
 						}
-                                            }
-                                        );
-                                    }
-                                )
-                            );
-                            if (!!s) {
-                                db.shared.sfx.push({ sfx_id: K.BEAMDOWN_SFX, gain: 0.35 });
-                            }
-                        });
-                    }
-                );
-            }
-        }
+					    )
+					}
+				    )
+				}
+                            )
+			})
+		    }
+		)
+	    }
+	},
     }
     return p;
 }

@@ -21,10 +21,11 @@ export function is_zero(n: number): boolean {
 // don't fully grok it. ok, ok, actually i don't wish that, what
 // i wish is that javascript's design and DX didn't suck like that!
 export type O<T> = T | undefined;
+// wtf tsc? this is not actually 'guarding'.
 export function isU(a: any): boolean {
     return a == undefined;
 }
-// wtf tsc?
+// wtf tsc? this is not actually 'guarding'.
 export function exists<T>(val: T | undefined | null): val is T {
     return val !== undefined && val !== null;
 }

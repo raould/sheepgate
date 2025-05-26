@@ -96,13 +96,23 @@ function add_people_cluster(db: GDB.GameDB, g: Gr.Ground, rnd: Rnd.Random): numb
     const dst = rnd.v2d_around(mt, ov);
     // match: konfig.ts, currently hardcoded to have 2 people per cluster.
     add_person(db, dst, 0, rnd);
-    add_person(db, dst, rnd.float_range(-fudge_range, -fudge_range/2), rnd);
+    add_sheep(db, dst, rnd.float_range(-fudge_range, -fudge_range/2), rnd);
     return 2;
 }
 
 interface PersonPrivate extends S.Person {
     lifecycle_state: GDB.Lifecycle;
     anim: A.ResourceAnimator;
+}
+
+function add_sheep(db: GDB.GameDB, mb: G.V2D, off_x: number, rnd: Rnd.Random) {
+    const offset_x = G.v2d_mk(off_x, rnd.float_range(-2, 2));
+    const lt = G.v2d_sub(
+        G.v2d_add(mb, offset_x),
+        // hard coded hack to look good. todo: ground should have hidden hotspots instead.
+        G.v2d_mk(K.PEOPLE_SIZE.x / 2, K.PEOPLE_SIZE.x * 0.75)
+    );
+    
 }
 
 function add_person(db: GDB.GameDB, mb: G.V2D, off_x: number, rnd: Rnd.Random) {
@@ -117,15 +127,17 @@ function add_person(db: GDB.GameDB, mb: G.V2D, off_x: number, rnd: Rnd.Random) {
     // i am trying to split out the stages into their own instances so that
     // each one has more of a single responsibility vs. encoding all the stages
     // in one instance. however, ascii duplication cannot be entirely avoided.
+    const standing_anim = person_standing_anim_mk(db);
+    const waving_anim = person_waving_anim_mk(db);
     GDB.add_sprite_dict_id_mut(
         db.shared.items.people,
-        (dbid: GDB.DBID): S.Person => waiting_mk(db, dbid, lt)
+        (dbid: GDB.DBID): S.Person => waiting_mk(
+	    db, dbid, lt, standing_anim, waving_anim
+	)
     );
 }
 
-function waiting_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Person {
-    const standing_anim = standing_anim_mk(db);
-    const waving_anim = waving_anim_mk(db);
+function waiting_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D, standing_anim: A.ResourceAnimator, waving_anim: A.ResourceAnimator): S.Person {
     const s: PersonPrivate = {
         dbid: dbid,
         comment: `person-${dbid}`,
@@ -161,10 +173,18 @@ function waiting_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Person {
             this.lifecycle_state = GDB.Lifecycle.dead;
             GDB.add_sprite_dict_id_mut(
                 db.shared.items.fx,
-                (dbid: GDB.DBID): S.Sprite => beaming_up_anim_mk(db, dbid, this)
+                (dbid: GDB.DBID): S.Sprite => person_beaming_up_anim_mk(db, dbid, this)
             );
             db.shared.sfx.push({ sfx_id: K.BEAMUP_SFX, gain: 0.35 });
         },
+	beam_down(db: GDB.GameDB, down_rect: G.Rect, on_end: (db: GDB.GameDB) => void) {
+	    db.shared.sfx.push({ sfx_id: K.BEAMDOWN_SFX, gain: 0.35 });
+                            // const s = GDB.add_sprite_dict_id_mut(
+                            //     db.shared.items.fx,
+                            //     (dbid: GDB.DBID): S.Sprite => Po.people_beaming_down_anim_mk(
+                            //         db,
+                            //         dbid,
+	},
         get_lifecycle(_:GDB.GameDB) {
             return this.lifecycle_state;
         },
@@ -176,7 +196,7 @@ function waiting_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Person {
     return s as S.Person;
 }
 
-function standing_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
+function person_standing_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
     const images = db.uncloned.images;
     const spec: A.SingleImageSpec = {
         resource_id: images.lookup("people/standing.png"),
@@ -184,7 +204,7 @@ function standing_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
     return new A.SingleImageAnimator(db.shared.sim_now, spec);
 }
 
-function waving_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
+function person_waving_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
     const images = db.uncloned.images;
     const spec: A.MultiImageSpec = {
         starting_mode: A.MultiImageStartingMode.hold,
@@ -197,7 +217,7 @@ function waving_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
     return anim;
 }
 
-function beaming_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, src: S.Person): S.Sprite {
+function person_beaming_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, src: S.Person): S.Sprite {
     // there's a lot of hard-coded twiddling of values in here to make it look less bad, sorry.
     const images = db.uncloned.images;
     const resources = images.lookup_range_n((n) => `people/tp${n}.png`, 0, 5);
@@ -217,7 +237,7 @@ function beaming_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, src: S.Person): S.Sp
     };
 }
 
-export function beaming_down_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, rect: G.Rect, on_end: GDB.Callback): S.Sprite {
+export function person_beaming_down_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, rect: G.Rect, on_end: GDB.Callback): S.Sprite {
     const images = db.uncloned.images;
     const resources = images.lookup_range_n((n) => `people/tp${n}.png`, 5, 0);
     const spec: A.MultiImageSpec = {
