@@ -3,6 +3,7 @@
 // can be split up & also share code w/ the server.
 import { track1_sfx_b64 } from '@client/track1.ogg.b64';
 import { kcart1_sfx_b64 } from '@client/kcart1.ogg.b64';
+import { hiscore_sfx_b64 } from '@client/hiscore.ogg.b64';
 import { thrust_sfx_b64 } from '@client/thrust.ogg.b64';
 import { begin_sfx_b64 } from '@client/begin.ogg.b64';
 import { beamdown_sfx_b64 } from '@client/beamdown.ogg.b64';
@@ -1072,6 +1073,7 @@ function loadSounds() {
     log("can play ogg?", (new Audio()).canPlayType("audio/ogg; codecs=vorbis"));
     loadSound("track1.ogg", track1_sfx_b64);
     loadSound("kcart1.ogg", kcart1_sfx_b64);
+    loadSound("hiscore.ogg", hiscore_sfx_b64);
     loadSound("thrust.ogg", thrust_sfx_b64);
     loadSound("begin.ogg", begin_sfx_b64);
     loadSound("beamdown.ogg", beamdown_sfx_b64);
