@@ -45,8 +45,8 @@ export function player_weapon_mk(spec: PlayerWeaponSpec): S.Weapon {
 		// todo: such a horrible hack. instead, get sprite image
 		// resource layer working to mark hardpoints.
 		// todo: adjust for ship speed so they don't visually immediately overlap.
-		const lt_sx = -0.1;
-		const lt_sy = 0.5;
+		const lt_sx = 0.1;
+		const lt_sy = 0.3;
 		const lt_middle = F.on_facing(
 		    src.facing,
 		    G.v2d_sub(
