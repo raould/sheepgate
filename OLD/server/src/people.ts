@@ -84,7 +84,7 @@ function populate_random(db: GDB.GameDB, cluster_count: number) {
 }
 
 function add_people_cluster(db: GDB.GameDB, g: Gr.Ground, rnd: Rnd.Random): number {
-    // [todo: do we even have lava any more?]
+    // [todo: do we even have lava any more? ... no]
     // (keeping away from the edges that might have a little sea/lava.
     // todo: ideally we'd check the type of the tile and then adjust
     // for more or less room, but ha ha, whatever! we don't have
@@ -135,7 +135,7 @@ function add_sheep(db: GDB.GameDB, mb: G.V2D, off_x: number, rnd: Rnd.Random) {
     const lt = G.v2d_sub(
         G.v2d_add(mb, offset_x),
         // hard coded hack to look good. todo: ground should have hidden hotspots instead.
-        G.v2d_mk(K.SHEEP_SIZE.x / 2, K.SHEEP_SIZE.x * 0.75)
+        G.v2d_mk(K.SHEEP_SIZE.x / 2, K.SHEEP_SIZE.y * 0.6)
     );
     // todo: sheep beam up vs. down animations, too.
     GDB.add_sprite_dict_id_mut(
@@ -260,7 +260,7 @@ function sheep_waving_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
         ending_mode: A.MultiImageEndingMode.loop,
         offset_msec: Rnd.singleton.float_range(0, 250),
         frame_msec: Rnd.singleton.float_around(100, 25),
-        resource_ids: images.lookup_range_n((n) => `people/sheep${n}.png`, 1, 3)
+        resource_ids: images.lookup_range_n((n) => `people/sheep${n}.png`, 1, 4)
     };
     const anim = new A.MultiImageAnimator(db.shared.sim_now, spec);
     return anim;

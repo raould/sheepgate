@@ -146,6 +146,9 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
         get_lifecycle(_:GDB.GameDB): GDB.Lifecycle {
             return this.lifecycle;
         },
+	// todo: this really kind of sucks as the only way to detect beaming proximity.
+	// means it is pretty fragile/sensitive vs. how it looks on the screen, doesn't allow for much gap,
+	// e.g. is annoying for sheep.
         on_collide(db: GDB.GameDB, c: S.CollidableSprite): void {
             this.maybe_beam_up_person(db, c);
             this.maybe_beam_down_to_base(db, c);
