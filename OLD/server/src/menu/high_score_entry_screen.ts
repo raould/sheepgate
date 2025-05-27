@@ -47,6 +47,12 @@ const INSTRUCTIONS = [
     `CALL SIGN, MAX ${MAX_LETTERS} ASCII.`,
 ];
 
+const MUSIC_SFX = {
+    sfx_id: K.HISCORE_SFX,
+    gain: 0.7,
+    singleton: true,
+};
+
 export class HighScoreEntryScreen extends Is.InstructionsScreen {
     letters: string;
     cursor: G.V2D;
@@ -69,6 +75,7 @@ export class HighScoreEntryScreen extends Is.InstructionsScreen {
         this.callsign_cycle = HCycle.newFromRed();
         this.rects = [];
         this.init_rects();
+	this.mdb.shared.sfx.push(MUSIC_SFX);
     }
 
     get_entry(): Hs.HighScore {
@@ -160,6 +167,7 @@ export class HighScoreEntryScreen extends Is.InstructionsScreen {
         this.step_input_symbols();
         this.step_input_cursor();
         this.step_callsign();
+	this.mdb.shared.sfx.push(MUSIC_SFX);
     }
 
     step_input_symbols() {

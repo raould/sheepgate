@@ -18,7 +18,9 @@ fi
 # ----------------------------------------
 
 echo "++++++++++++++++++++ BUILDING CLIENT..."
-pushd OLD/client/src; npm i; npx tsc; popd
+# TODO: Since I am inlining the SFX data, I hit compilation stack limits.
+# Admittedly this might be a hint to actually stop doing that.
+pushd OLD/client/src; npm i; node --stack-size=4000 ./node_modules/typescript/lib/tsc.js; popd
 echo "-------------------- DONE BUILDING CLIENT"
 
 # ----------------------------------------

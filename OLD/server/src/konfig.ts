@@ -367,6 +367,7 @@ export const ENEMY_RETURN_FIRE_MIN_MSEC = 100; // L
 // but they do have to be like the format `sounds/${resource}`.
 export const TRACK1_SFX = "sounds/track1.ogg";
 export const KCART1_SFX = "sounds/kcart1.ogg";
+export const HISCORE_SFX = "sounds/hiscore.ogg";
 export const BEGIN_SFX = "sounds/begin.ogg";
 export const THRUST_SFX = "sounds/thrust.ogg";
 export const BEAMDOWN_SFX = "sounds/beamdown.ogg";
