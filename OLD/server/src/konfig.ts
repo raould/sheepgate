@@ -72,7 +72,10 @@ export const FRAME_MSEC_DT = 1000 / FPS; // K
 // todo: logical coords instead!? for targeting different display types.
 // note: things like ground sprites are drawn/scaled to fit this width.
 // so it should ideally be as big as the fully displayable area on the output device.
-export const PLAYER_SIZE = G.v2d_mk(76, 25); // L?
+export const PLAYER_SHIP_SIZE = G.v2d_mk(76, 25); // L?
+// note: the cow size should be kinda <= the ship size,
+// because use of the variables below, and elsewhere.
+export const PLAYER_COW_SIZE = G.v2d_scale_i(G.v2d_mk(32, 16), 2.4); // L?
 export const PLAYER_SHADOW_SIZE = G.v2d_mk(76, 10); // L?
 const SCREEN_BOUNDS0 = G.v2d_mk(960, 540); // K
 const SCREEN_RECT0 = G.v2d_2_rect(SCREEN_BOUNDS0);
@@ -150,8 +153,8 @@ export const ENEMY_FIRING_RECT = G.rect_inset(
     ENEMY_FIRING_INSET
 );
 
-export const GAMEPORT_PLAYER_ZONE_WIDTH = PLAYER_SIZE.x * 1;
-export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(PLAYER_SIZE.x * 3);
+export const GAMEPORT_PLAYER_ZONE_WIDTH = PLAYER_SHIP_SIZE.x * 1;
+export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(PLAYER_SHIP_SIZE.x * 3);
 // match: if PLAYER_DELTA_*_ACC changes then these will likely need adjustment.
 // note: the x value is more tricky as it is used in more than one way during GAMEPORT update.
 // that is because when the player ship transitions from being outside the default zone

@@ -66,6 +66,7 @@ export interface Damage {
 
 // explicitly no hit points & isn't S.CollidableSprite.
 export interface Sprite extends GDB.Item, G.P2D, GDB.Aliveness, ImageResource, GDB.Steps, Tf.Flagged {
+    draw_lt?: G.V2D;
     toJSON(): Object;
 }
 
@@ -74,6 +75,7 @@ export interface Sprite extends GDB.Item, G.P2D, GDB.Aliveness, ImageResource, G
 export function spriteJSON(s: Sprite): Object {
     return {
         lt: s.lt,
+	draw_lt: s.draw_lt,
         size: s.size,
         alpha: s.alpha,
         z_back_to_front_ids: s.z_back_to_front_ids,

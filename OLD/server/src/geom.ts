@@ -125,6 +125,12 @@ export function v2d_norm(v: V2D): V2D {
 export function v2d_add(a: V2D, b: V2D): V2D {
     return v2d_mk(a.x + b.x, a.y + b.y);
 }
+export function v2d_add_x(a: V2D, x: number): V2D {
+    return v2d_mk(a.x + x, a.y);
+}
+export function v2d_add_y(a: V2D, y: number): V2D {
+    return v2d_mk(a.x, a.y + y);
+}
 export function v2d_add_mut(a: V2D, b: V2D) {
     a.x += b.x;
     a.y += b.y;

@@ -450,7 +450,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
     }
 
     private uncloned_mk(dbc: GDB.DBSharedCore, index1: number, world_size: G.V2D): any {
-	const collision_spacey_pad = K.PLAYER_SIZE.y * 5; // match: empirical player constraints.
+	const collision_spacey_pad = K.PLAYER_SHIP_SIZE.y * 5; // match: empirical player constraints.
 	const collision_bounds = G.rect_mk(
 	    G.v2d_mk(0, -collision_spacey_pad),
 	    G.v2d_mk(world_size.x, world_size.y + collision_spacey_pad)

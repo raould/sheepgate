@@ -29,17 +29,19 @@ export type PlayerSpec = {
 }
 
 interface PlayerSpritePrivate extends S.Player {
+    lt_wiggle: G.V2D;
     lifecycle: GDB.Lifecycle;
-    ship_anim: A.FacingResourceAnimator;
-    flame_anim: A.FacingResourceAnimator;
+    still_anim: A.FacingResourceAnimator;
+    thrusting_anim: A.FacingResourceAnimator;
     step_pos(db: GDB.GameDB, delta_acc_x: number, delta_vel_y: number): void;
     step_resource_id(db: GDB.GameDB, delta_acc_x: number): void;
 }
 
 export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: any): S.Sprite {
     const images = db.uncloned.images;
-    const left_rid = images.lookup("player/p1_s_left.png");
-    const right_rid = images.lookup("player/p1_s_right.png");
+    // x-backwards from the ship, yes.
+    const left_rid = images.lookup("player/p1_s_right.png");
+    const right_rid = images.lookup("player/p1_s_left.png");
     const shadow = {
 	dbid: dbid,
 	comment: `player-shadow-${dbid}`,
@@ -80,13 +82,14 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
         dbid: dbid,
         comment: `player-${dbid}`,
         lt: spec.lt,
-        size: K.PLAYER_SIZE,
+	lt_wiggle: spec.lt,
+        size: K.PLAYER_COW_SIZE,
         vel: G.v2d_mk_0(),
         acc: G.v2d_mk_0(),
         alpha: 1,
         rank: S.Rank.player,
-        ship_anim: ship_anim_mk(db),
-        flame_anim: flame_anim_mk(db),
+        still_anim: still_anim_mk(db),
+        thrusting_anim: thrusting_anim_mk(db),
         type_flags: Tf.TF.playerShip,
         weapons: weapons_mk(),
         passenger_max: 1,
@@ -125,20 +128,19 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
              // 3) some buffer ie so that your sheild and hp bar don't go off-screen.
              // todo: make it dynamically calculated based on the hp bar position.
             this.lt.y = Math.max(this.lt.y, 25);
+
+	    const oy = Math.sin(db.shared.tick/10) * 3;
+	    this.draw_lt = G.v2d_add_y(this.lt, oy);
         },
         step_resource_id(db: GDB.GameDB, delta_acc_x: number) {
             const facing = F.facing_for_inputs(db.local.client_db.inputs);
             if (facing != null) { this.facing = facing; }
             this.z_back_to_front_ids = [];
             const is_thrusting = Math.abs(delta_acc_x) > Number.EPSILON;
+	    const anim = is_thrusting ? this.thrusting_anim : this.still_anim;
             this.z_back_to_front_ids.push(
-                ...this.ship_anim.z_back_to_front_ids(db, this.facing) || K.EMPTY_IMAGE_RESOURCE_ID
+                ...anim.z_back_to_front_ids(db, this.facing) || K.EMPTY_IMAGE_RESOURCE_ID
             );
-            if (is_thrusting) {
-                this.z_back_to_front_ids.push(
-                    ...this.flame_anim.z_back_to_front_ids(db, this.facing) || K.EMPTY_IMAGE_RESOURCE_ID
-                );
-            }
         },
         set_lifecycle(lifecycle: GDB.Lifecycle) {
             this.lifecycle = lifecycle;
@@ -262,38 +264,32 @@ function weapons_mk(): { [k: string]: S.Weapon } {
     };
 }
 
-function ship_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
+function still_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
     const images = db.uncloned.images;
     return A.facing_animator_mk(
         db.shared.sim_now,
         {
-            frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
-            resource_ids: images.lookup_range_a((a) => `player/p1_${a}_left.png`, ['a', 'b', 'c']),
-            starting_mode: A.MultiImageStartingMode.hold,
-            ending_mode: A.MultiImageEndingMode.loop
+            resource_id: images.lookup("player/cowL.png"),
         },
         {
-            frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
-            resource_ids: images.lookup_range_a((a) => `player/p1_${a}_right.png`, ['a', 'b', 'c']),
-            starting_mode: A.MultiImageStartingMode.hold,
-            ending_mode: A.MultiImageEndingMode.loop
+            resource_id: images.lookup("player/cowR.png"),
         },
     );
 }
 
-function flame_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
+function thrusting_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
     const images = db.uncloned.images;
     return A.facing_animator_mk(
         db.shared.sim_now,
         {
-            frame_msec: K.PLAYER_ANIM_FRAME_MSEC/2,
-            resource_ids: images.lookup_range_a((a) => `player/p1_f${a}_left.png`, ['a', 'b', 'c']),
+            frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
+            resource_ids: images.lookup_range_n((n) => `player/cowLT${n}.png`, 1, 2),
             starting_mode: A.MultiImageStartingMode.hold,
             ending_mode: A.MultiImageEndingMode.loop
         },
         {
-            frame_msec: K.PLAYER_ANIM_FRAME_MSEC/2,
-            resource_ids: images.lookup_range_a((a) => `player/p1_f${a}_right.png`, ['a', 'b', 'c']),
+            frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
+            resource_ids: images.lookup_range_n((n) => `player/cowRT${n}.png`, 1, 2),
             starting_mode: A.MultiImageStartingMode.hold,
             ending_mode: A.MultiImageEndingMode.loop
         },
