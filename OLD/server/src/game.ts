@@ -40,7 +40,7 @@ const WARNING_INSTRUCTIONS = [
 const MAIN_INSTRUCTIONS = [
     " ",
     " ",
-    "RETURN HUMANS TO BASE.",
+    "RETURN CREATURES TO BASE.",
     "DEFEAT ALL ENEMIES.",
     " ",
     "MOVE: WASD / ARROWS / VI",
