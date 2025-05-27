@@ -15,6 +15,8 @@ import * as Tkg from './ticking_generator';
 
 // NOTE: a lot of this is mostly for in-levels, see menu/menu_db, it is very confusing.
 
+// fyi "mut" -> "mutating" -> changes the given collection rather than returning a new filtered one.
+
 // todo:
 // THIS NEEDS TO BE SPLIT UP INTO
 // inter-level data vs. intra-level data.
@@ -88,6 +90,14 @@ export function id_mk(): string {
 export function id_mut<T extends Item>(fn: (_: DBID) => U.O<T>) {
     const dbid = id_mk();
     return fn(dbid);
+}
+
+// slightly dangerous in that it is re-using the item's dbid.
+// do not use this unless you must (e.g. beaming), use add_dict_id_mut() et. al.
+export function add_item<T extends Identity>(collection: U.Dict<T>, item: T) {
+    D.assert(U.exists(item.dbid));
+    D.assert(collection[item.dbid] == undefined);
+    collection[item.dbid] = item;
 }
 
 export function add_dict_id_mut<T extends D, D extends Item>(collection: U.Dict<D>, fn: (_: DBID) => U.O<T>): U.O<T> {
@@ -175,7 +185,6 @@ export interface DBLocal {
     frame_dt: number;
     // help track fps. currently not using 'prev' db fwiw.
     fps_marker: { tick: number, msec: number };
-    people_beamed_up: number,
     people_rescued: number,
     state_modifiers: StateModifier[],
     ticking_generators: U.Dict<Tkg.TickingGenerator<unknown>>,
@@ -271,6 +280,7 @@ export interface DBSharedItems {
     ground: Array<Gr.Ground>;
     base: S.Base;
     people: U.Dict<S.Person>;
+    beaming_buffer: U.Dict<S.Person>;
     gems: U.Dict<S.Gem>;
     fx: U.Dict<S.Sprite>;
     particles: U.Dict<Pr.ParticleGenerator>;
@@ -294,6 +304,7 @@ export function debug_dump_items(db: GameDB, msg?: string) {
         `#ground=${db.shared.items.ground.length}`,
         `base=${db.shared.items.base != null}`,
         `#people=${U.count_dict(db.shared.items.people)}`,
+        `#beaming_buffer=${U.count_dict(db.shared.items.beaming_buffer)}`,
         `#gems=${U.count_dict(db.shared.items.gems)}`,
         `#fx=${U.count_dict(db.shared.items.fx)}`,
         `#sfx=${U.count_dict(db.shared.sfx)}`,
@@ -319,25 +330,30 @@ export function assert_dbitems(db: GameDB) {
     D.assert(Array.isArray(items.ground), () => "ground should be Array type");
     D.assert(items.base != null, () => "missing base");
     D.assert(items.people != null, () => "missing people");
+    D.assert(items.beaming_buffer != null, () => "missing beaming_buffer");
     D.assert(items.gems != null, () => "missing gems");
     D.assert(items.fx != null, () => "missing fx");
 }
 
 // match: DBShared.
 // todo: yeah, this is a really lame "database".
-export function get_sprite(db: GameDB, sid: DBID): U.O<S.Sprite> {
-    const p = db.shared.items.player;
-    const w = db.shared.items.warpin[sid];
-    const e = db.shared.items.enemies[sid];
-    const h = db.shared.items.shields[sid];
-    const s = db.shared.items.shots[sid];
-    const x = db.shared.items.explosions[sid];
-    const b = get_base(db, sid);
-    const pp = db.shared.items.people[sid];
-    const gg = db.shared.items.gems[sid];
-    const fx = db.shared.items.fx[sid];
-    const most = (p?.dbid == sid ? p : undefined) || w || e || h || s || x || b || pp || gg || fx;
-    return most;
+export function get_sprite(db: GameDB, sid: U.O<DBID>): U.O<S.Sprite> {
+    if (U.exists(sid)) {
+	const p = db.shared.items.player;
+	const w = db.shared.items.warpin[sid];
+	const e = db.shared.items.enemies[sid];
+	const h = db.shared.items.shields[sid];
+	const s = db.shared.items.shots[sid];
+	const x = db.shared.items.explosions[sid];
+	const b = get_base(db, sid);
+	const pp = db.shared.items.people[sid];
+	const bb = db.shared.items.beaming_buffer[sid];
+	const gg = db.shared.items.gems[sid];
+	const fx = db.shared.items.fx[sid];
+	const most = (p?.dbid == sid ? p : undefined) || w || e || h || s || x || b || pp || bb || gg || fx;
+	return most;
+    }
+    return undefined;
 }
 
 export function get_player(db: GameDB): U.O<S.Player> {
@@ -348,50 +364,61 @@ export function get_player_shadow(db: GameDB): U.O<S.Sprite> {
     return db.shared.items.player_shadow;
 }
 
-export function get_warpin(db: GameDB, wid: DBID): U.O<S.Sprite> {
-    return db.shared.items.warpin[wid];
+export function get_warpin(db: GameDB, wid: U.O<DBID>): U.O<S.Sprite> {
+    return U.exists(wid) ? db.shared.items.warpin[wid] : undefined;
 }
 
-export function get_enemy(db: GameDB, eid: DBID): U.O<S.Enemy> {
-    return db.shared.items.enemies[eid];
+export function get_enemy(db: GameDB, eid: U.O<DBID>): U.O<S.Enemy> {
+    return U.exists(eid) ? db.shared.items.enemies[eid] : undefined;
 }
 
-export function get_shield(db: GameDB, sid: DBID): U.O<S.Shield<S.Shielded>> {
-    return db.shared.items.shields[sid];
+export function get_shield(db: GameDB, sid: U.O<DBID>): U.O<S.Shield<S.Shielded>> {
+    return U.exists(sid) ? db.shared.items.shields[sid] : undefined;
 }
 
-export function get_shot(db: GameDB, sid: DBID): U.O<S.Shot> {
-    return db.shared.items.shots[sid];
+export function get_shot(db: GameDB, sid: U.O<DBID>): U.O<S.Shot> {
+    return U.exists(sid) ? db.shared.items.shots[sid] : undefined;
 }
 
-export function get_base(db: GameDB, sid: DBID): U.O<S.Base> {
-    const b = U.if_let(
-        db.shared.items.base,
-        (b) => b.dbid == sid ? db.shared.items.base : undefined
-    );
-    return b;
-}
-
-export function get_fighter(db: GameDB, sid: DBID): U.O<S.Fighter> {
-    const e = db.shared.items.enemies[sid];
-    if (e != null) {
-        return e;
+export function get_base(db: GameDB, sid: U.O<DBID>): U.O<S.Base> {
+    if (U.exists(sid)) {
+	const b = db.shared.items.base;
+	if (b?.dbid === sid) {
+	    return b;
+	}
     }
-    else {
-        return get_player(db);
+    return undefined;
+}
+
+export function get_fighter(db: GameDB, sid: U.O<DBID>): U.O<S.Fighter> {
+    let e: U.O<S.Fighter>;
+    if (U.exists(sid)) {
+	e = db.shared.items.enemies[sid];
     }
+    // this looks bad but the real problem is that the player is a
+    // special case of fighter in the db. :-(
+    if (U.isU(e)) {
+	e = get_player(db);
+    }
+    return e;
 }
 
-export function get_person(db: GameDB, pid: DBID): U.O<S.Person> {
-    return db.shared.items.people[pid];
+export function get_person(db: GameDB, pid: U.O<DBID>): U.O<S.Person> {
+    D.log("get_person", pid, db.shared.items.people);
+    return U.exists(pid) ? db.shared.items.people[pid] : undefined;
 }
 
-export function get_gem(db: GameDB, pid: DBID): U.O<S.Gem> {
-    return db.shared.items.gems[pid];
+export function get_beaming_buffered(db: GameDB, pid: U.O<DBID>): U.O<S.Person> {
+    D.log("get_beaming_buffered", pid, db.shared.items.beaming_buffer);
+    return U.exists(pid) ? db.shared.items.beaming_buffer[pid] : undefined;
 }
 
-export function get_fx(db: GameDB, fid: DBID): U.O<S.Sprite> {
-    return db.shared.items.fx[fid];
+export function get_gem(db: GameDB, pid: U.O<DBID>): U.O<S.Gem> {
+    return U.exists(pid) ? db.shared.items.gems[pid] : undefined;
+}
+
+export function get_fx(db: GameDB, fid: U.O<DBID>): U.O<S.Sprite> {
+    return U.exists(fid) ? db.shared.items.fx[fid] : undefined;
 }
 
 export function is_in_bounds(db: GameDB, p: G.P2D): boolean {
@@ -403,8 +430,8 @@ export function is_in_bounds(db: GameDB, p: G.P2D): boolean {
     return true;
 }
 
-function keep_fn(db: GameDB, dbid: DBID, e: Aliveness) {
-    return dbid != null && e.get_lifecycle(db) == Lifecycle.alive;
+function keep_fn(db: GameDB, dbid: U.O<DBID>, e: Aliveness) {
+    return U.exists(dbid) && e.get_lifecycle(db) == Lifecycle.alive;
 }
 
 // match: DBLocal.
@@ -422,7 +449,7 @@ export function reap_items(db: GameDB) {
     // 1) reap player, since there's currently only one, not in a collection.
     const player = get_player(db);
     if (player != null && !keep_fn(db, player.dbid, player)) {
-        db.shared.items.player = undefined;
+        delete db.shared.items.player;
         player.on_death(db);
     }
 
@@ -432,7 +459,7 @@ export function reap_items(db: GameDB) {
     // match: !!! DBSharedItems !!!
     // note that some things are either never reap'd or reap'd differently:
     // player, sky, bgFar, bgNear, ground, base, particles, drawing. 
-    for (const t of ['warpin', 'enemies', 'shields', 'shots', 'explosions', 'fx', 'people', 'gems']) {
+    for (const t of ['warpin', 'enemies', 'shields', 'shots', 'explosions', 'fx', 'people', 'beaming_buffer', 'gems']) {
         reap_named(db, db.shared.items, t);
     }
 }
@@ -447,7 +474,8 @@ export function reap_particles(db: GameDB) {
     }
 }
 
-function reap_named<T extends S.Sprite>(db: GameDB, parent: Object, name: string) {
+function reap_named<T extends S.Sprite>(db: GameDB, parent: object, name: string) {
+    D.assert(Object.keys(parent).includes(name), name);
     // @ts-ignore
     const collection = parent[name];
     // @ts-ignore
@@ -461,4 +489,9 @@ function reap_named<T extends S.Sprite>(db: GameDB, parent: Object, name: string
 
 function reap_sprites<T extends S.Sprite>(db: GameDB, collection: U.Dict<T>): U.FilteredDict<T> {
     return U.filter_dict<T>(collection, (dbid, e) => keep_fn(db, dbid, e));
+}
+
+export function reap_item<T extends Identity>(collection: U.Dict<T>, item: T) {
+    D.assert(U.exists(item.dbid));
+    delete collection[item.dbid];
 }

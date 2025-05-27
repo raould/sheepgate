@@ -21,10 +21,11 @@ export function is_zero(n: number): boolean {
 // don't fully grok it. ok, ok, actually i don't wish that, what
 // i wish is that javascript's design and DX didn't suck like that!
 export type O<T> = T | undefined;
+// wtf tsc? this is not actually 'guarding'.
 export function isU(a: any): boolean {
     return a == undefined;
 }
-// wtf tsc?
+// wtf tsc? this is not actually 'guarding'.
 export function exists<T>(val: T | undefined | null): val is T {
     return val !== undefined && val !== null;
 }
@@ -97,6 +98,7 @@ export function filter_array<E>(array: Array<E>, fn: (_: E) => boolean): Filtere
 // Object.keys() on your dict.
 // but i couldn't find a type like this in typescript
 // so i had to make my own for use in e.g. methods below.
+// note: this is (unfortunately?) not used for an ES6 Map, just a regular JS {}.
 export interface Dict<E> { 
     [key: string]: E;
 }

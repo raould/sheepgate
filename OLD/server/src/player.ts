@@ -29,17 +29,19 @@ export type PlayerSpec = {
 }
 
 interface PlayerSpritePrivate extends S.Player {
+    lt_wiggle: G.V2D;
     lifecycle: GDB.Lifecycle;
-    ship_anim: A.FacingResourceAnimator;
-    flame_anim: A.FacingResourceAnimator;
+    still_anim: A.FacingResourceAnimator;
+    thrusting_anim: A.FacingResourceAnimator;
     step_pos(db: GDB.GameDB, delta_acc_x: number, delta_vel_y: number): void;
     step_resource_id(db: GDB.GameDB, delta_acc_x: number): void;
 }
 
 export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: any): S.Sprite {
     const images = db.uncloned.images;
-    const left_rid = images.lookup("player/p1_s_left.png");
-    const right_rid = images.lookup("player/p1_s_right.png");
+    // x-backwards from the ship, yes.
+    const left_rid = images.lookup("player/p1_s_right.png");
+    const right_rid = images.lookup("player/p1_s_left.png");
     const shadow = {
 	dbid: dbid,
 	comment: `player-shadow-${dbid}`,
@@ -80,18 +82,17 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
         dbid: dbid,
         comment: `player-${dbid}`,
         lt: spec.lt,
-        size: K.PLAYER_SIZE,
+	lt_wiggle: spec.lt,
+        size: K.PLAYER_COW_SIZE,
         vel: G.v2d_mk_0(),
         acc: G.v2d_mk_0(),
         alpha: 1,
         rank: S.Rank.player,
-        ship_anim: ship_anim_mk(db),
-        flame_anim: flame_anim_mk(db),
+        still_anim: still_anim_mk(db),
+        thrusting_anim: thrusting_anim_mk(db),
         type_flags: Tf.TF.playerShip,
         weapons: weapons_mk(),
         passenger_max: 1,
-        passenger_ids: new Set<GDB.DBID>(),
-        beaming_ids: new Set<GDB.DBID>(),
         lifecycle: GDB.Lifecycle.alive,
         step(db: GDB.GameDB) {
             // regular physics movement for x, heuristic for y.
@@ -127,20 +128,19 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
              // 3) some buffer ie so that your sheild and hp bar don't go off-screen.
              // todo: make it dynamically calculated based on the hp bar position.
             this.lt.y = Math.max(this.lt.y, 25);
+
+	    const oy = Math.sin(db.shared.tick/10) * 3;
+	    this.draw_lt = G.v2d_add_y(this.lt, oy);
         },
         step_resource_id(db: GDB.GameDB, delta_acc_x: number) {
             const facing = F.facing_for_inputs(db.local.client_db.inputs);
             if (facing != null) { this.facing = facing; }
             this.z_back_to_front_ids = [];
             const is_thrusting = Math.abs(delta_acc_x) > Number.EPSILON;
+	    const anim = is_thrusting ? this.thrusting_anim : this.still_anim;
             this.z_back_to_front_ids.push(
-                ...this.ship_anim.z_back_to_front_ids(db, this.facing) || K.EMPTY_IMAGE_RESOURCE_ID
+                ...anim.z_back_to_front_ids(db, this.facing) || K.EMPTY_IMAGE_RESOURCE_ID
             );
-            if (is_thrusting) {
-                this.z_back_to_front_ids.push(
-                    ...this.flame_anim.z_back_to_front_ids(db, this.facing) || K.EMPTY_IMAGE_RESOURCE_ID
-                );
-            }
         },
         set_lifecycle(lifecycle: GDB.Lifecycle) {
             this.lifecycle = lifecycle;
@@ -148,6 +148,9 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
         get_lifecycle(_:GDB.GameDB): GDB.Lifecycle {
             return this.lifecycle;
         },
+	// todo: this really kind of sucks as the only way to detect beaming proximity.
+	// means it is pretty fragile/sensitive vs. how it looks on the screen, doesn't allow for much gap,
+	// e.g. is annoying for sheep.
         on_collide(db: GDB.GameDB, c: S.CollidableSprite): void {
             this.maybe_beam_up_person(db, c);
             this.maybe_beam_down_to_base(db, c);
@@ -176,65 +179,61 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
         },
         maybe_beam_up_person(db: GDB.GameDB, maybe_person: S.CollidableSprite) {
             const vel2 = G.v2d_len2(this.vel);
-            if (vel2 <= K.PLAYER_BEAM_MAX_VEL2 &&                        
+	    const buffer_count = U.count_dict(db.shared.items.beaming_buffer);
+            if (vel2 <= K.PLAYER_BEAM_MAX_VEL2 &&
                 U.has_bits_eq(maybe_person.type_flags, Tf.TF.person) &&
-                this.passenger_ids.size < this.passenger_max) {
+                buffer_count < this.passenger_max) {
                 const pid = maybe_person.dbid;
                 U.if_let(
                     GDB.get_person(db, pid),
                     person => {
                         person.beam_up(db);
-                        this.passenger_ids.add(person.dbid);
                     }
                 );
             }
         },
         maybe_beam_down_to_base(db: GDB.GameDB, maybe_base_shield: S.CollidableSprite) {
             const vel2 = G.v2d_len2(this.vel);
-            if (this.passenger_ids.size > 0 &&
-                vel2 <= K.PLAYER_BEAM_MAX_VEL2 &&
-                U.has_bits_eq(maybe_base_shield.type_flags, Tf.TF.baseShield)) {
+            const bits = U.has_bits_eq(maybe_base_shield.type_flags, Tf.TF.baseShield);
+            const buffer_ids = Object.keys(db.shared.items.beaming_buffer);
+            if (bits && buffer_ids.length > 0 && vel2 <= K.PLAYER_BEAM_MAX_VEL2) {
+		D.log("beam down 1");
                 U.if_let(
                     GDB.get_shield(db, maybe_base_shield.dbid),
                     shield => {
+			D.log("beam down 2");
                         const base = db.shared.items.base;
-                        this.beaming_ids = this.passenger_ids;
-                        this.passenger_ids = new Set<GDB.DBID>();
-                        this.beaming_ids.forEach(pid => {
-                            const s = GDB.add_sprite_dict_id_mut(
-                                db.shared.items.fx,
-                                (dbid: GDB.DBID): S.Sprite => Po.beaming_down_anim_mk(
-                                    db,
-                                    dbid,
-                                    base.beam_down_rect,
-                                    /*on_end*/(db: GDB.GameDB) => {
-                                        U.if_let(
-                                            GDB.get_player(db),
-                                            (thiz: S.Player) => {
-                                                thiz.beaming_ids.delete(pid);
-                                                db.shared.rescued_count++;
-                                                db.local.scoring.on_event(Sc.Event.rescue);
-						if (this.shield_id != undefined) {
+                        buffer_ids.forEach(pid => {
+			    D.log("beam down 3", pid);
+			    U.if_let(
+				GDB.get_beaming_buffered(db, pid), person => {
+				    D.log("beam down 4");
+				    person.beam_down(
+					db, base.beam_down_rect,
+					/*on_end*/(db: GDB.GameDB) => {
+					    D.log("beam down 5");
+                                            U.if_let(
+						GDB.get_player(db), (thiz: S.Player) => {
+						    D.log("beam down 6");
+                                                    db.shared.rescued_count++;
+                                                    db.local.scoring.on_event(Sc.Event.rescue);
 						    U.if_let(
-							GDB.get_shield(db, this.shield_id),
-							player_shield => {
+							GDB.get_shield(db, this.shield_id), player_shield => {
 							    player_shield.hp = K.PLAYER_HP;
 							}
 						    );
 						}
-                                            }
-                                        );
-                                    }
-                                )
-                            );
-                            if (!!s) {
-                                db.shared.sfx.push({ sfx_id: K.BEAMDOWN_SFX, gain: 0.35 });
-                            }
-                        });
-                    }
-                );
-            }
-        }
+					    )
+					}
+				    );
+				    GDB.reap_item(db.shared.items.beaming_buffer, person);
+				}
+                            )
+			})
+		    }
+		)
+	    }
+	},
     }
     return p;
 }
@@ -265,38 +264,32 @@ function weapons_mk(): { [k: string]: S.Weapon } {
     };
 }
 
-function ship_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
+function still_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
     const images = db.uncloned.images;
     return A.facing_animator_mk(
         db.shared.sim_now,
         {
-            frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
-            resource_ids: images.lookup_range_a((a) => `player/p1_${a}_left.png`, ['a', 'b', 'c']),
-            starting_mode: A.MultiImageStartingMode.hold,
-            ending_mode: A.MultiImageEndingMode.loop
+            resource_id: images.lookup("player/cowL.png"),
         },
         {
-            frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
-            resource_ids: images.lookup_range_a((a) => `player/p1_${a}_right.png`, ['a', 'b', 'c']),
-            starting_mode: A.MultiImageStartingMode.hold,
-            ending_mode: A.MultiImageEndingMode.loop
+            resource_id: images.lookup("player/cowR.png"),
         },
     );
 }
 
-function flame_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
+function thrusting_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
     const images = db.uncloned.images;
     return A.facing_animator_mk(
         db.shared.sim_now,
         {
-            frame_msec: K.PLAYER_ANIM_FRAME_MSEC/2,
-            resource_ids: images.lookup_range_a((a) => `player/p1_f${a}_left.png`, ['a', 'b', 'c']),
+            frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
+            resource_ids: images.lookup_range_n((n) => `player/cowLT${n}.png`, 1, 2),
             starting_mode: A.MultiImageStartingMode.hold,
             ending_mode: A.MultiImageEndingMode.loop
         },
         {
-            frame_msec: K.PLAYER_ANIM_FRAME_MSEC/2,
-            resource_ids: images.lookup_range_a((a) => `player/p1_f${a}_right.png`, ['a', 'b', 'c']),
+            frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
+            resource_ids: images.lookup_range_n((n) => `player/cowRT${n}.png`, 1, 2),
             starting_mode: A.MultiImageStartingMode.hold,
             ending_mode: A.MultiImageEndingMode.loop
         },

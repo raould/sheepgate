@@ -395,6 +395,8 @@ function renderSpriteImageLayer(gdb: any, s: any, resource_id: string) {
     const world_bounds = gdb.world.bounds0;
     if (resource_id != null && s.alpha > 0) {
         const ss = gdb.screen_shake ?? {x:0, y:0};
+	// allow the rendering position to be different than the physics position.
+	if (s.draw_lt != undefined) { s.lt = s.draw_lt; }
         const wr = v2sr_wrapped(s, gameport, world_bounds, true);
         // todo: skip if the wr is not on the screen at all.
         try {
@@ -404,11 +406,12 @@ function renderSpriteImageLayer(gdb: any, s: any, resource_id: string) {
             }
             const img: any = images[resource_id];
             if (img != null) {
-                cx2d.drawImage(img,
-			       0, 0, img.width, img.height,
-			       Math.floor(wr.lt.x + ss.x), Math.floor(wr.lt.y + ss.y),
-			       Math.floor(wr.size.x), Math.floor(wr.size.y),
-			      );
+                cx2d.drawImage(
+		    img,
+		    0, 0, img.width, img.height,
+		    Math.floor(wr.lt.x + ss.x), Math.floor(wr.lt.y + ss.y),
+		    Math.floor(wr.size.x), Math.floor(wr.size.y),
+		);
             }
 	    else {
 		//console.error(`no image for ${resource_id}`);
@@ -1156,6 +1159,11 @@ function loadImages() {
         })
         loadImage(`player/p1_s_${dir}.png`);
     });
+    ['L', 'R'].forEach(dir => {
+	loadImage(`player/cow${dir}.png`);
+	loadImage(`player/cow${dir}T1.png`);
+	loadImage(`player/cow${dir}T2.png`);
+    });
 
     [1,2,3,4].forEach(anim => {
         loadImage(`ground/base${anim}.png`);
@@ -1323,6 +1331,8 @@ function loadImages() {
     loadImage("people/tp4.png");
     loadImage("people/tp5.png");
     loadImage("people/skull.png");
+    Array.from({length: 4}, (_v, i) => i+1).forEach(i => loadImage(`people/sheep${i}.png`));
+    Array.from({length: 5}, (_v, i) => i+1).forEach(i => loadImage(`people/sheepT${i}.png`));
     loadImage("empty1.png");
     loadImage("bg/ma_far.png");
     loadImage("bg/mal_far.png");

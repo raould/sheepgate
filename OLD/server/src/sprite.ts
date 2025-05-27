@@ -50,12 +50,9 @@ export interface ImageResource {
     // the resource_id. a few have more than one layer of raster
     // images and use the z_back_to_front_ids instead. currently maybe
     // only explosionB uses the drawing.
-    // match: the client has to draw them in this order.
-    // note/todo: these 3 are in back-to-front z order.
-    // z order e.g 5,4,3,2,1=resource_id,0=drawing.
-    z_back_to_front_ids?: Array<string>;
-    resource_id?: string;
-    drawing?: Dr.Drawing;
+    z_back_to_front_ids?: Array<string>; // z[0] is most 'distant'.
+    resource_id?: string; // on top of z_back_to_front.
+    drawing?: Dr.Drawing; // on top of resource_id.
 }
 
 export interface HitPoints {
@@ -69,6 +66,7 @@ export interface Damage {
 
 // explicitly no hit points & isn't S.CollidableSprite.
 export interface Sprite extends GDB.Item, G.P2D, GDB.Aliveness, ImageResource, GDB.Steps, Tf.Flagged {
+    draw_lt?: G.V2D;
     toJSON(): Object;
 }
 
@@ -77,6 +75,7 @@ export interface Sprite extends GDB.Item, G.P2D, GDB.Aliveness, ImageResource, G
 export function spriteJSON(s: Sprite): Object {
     return {
         lt: s.lt,
+	draw_lt: s.draw_lt,
         size: s.size,
         alpha: s.alpha,
         z_back_to_front_ids: s.z_back_to_front_ids,
@@ -164,9 +163,7 @@ export interface Fighter extends Sprite, Ranked, Facing, Tf.Flagged, Shielded {
 
 export interface Player extends Fighter {
     // note: the player has an extra hard-coded ability to crash through enemies somewhat.
-    passenger_ids: Set<GDB.DBID>;
     passenger_max: number;
-    beaming_ids: Set<GDB.DBID>;
     maybe_shoot(db: GDB.GameDB): void;
     maybe_beam_up_person(db: GDB.GameDB, maybe_person: CollidableSprite): void;
     maybe_beam_down_to_base(db: GDB.GameDB, maybe_base_shield: CollidableSprite): void;
@@ -196,6 +193,7 @@ export interface Shield<T extends Shielded> extends CollidableSprite {
 
 export interface Person extends CollidableSprite {
     beam_up(db: GDB.GameDB): void;
+    beam_down(db: GDB.GameDB, down_rect: G.Rect, on_end: (db: GDB.GameDB) => void): void;
 }
 
 export enum WeaponType {

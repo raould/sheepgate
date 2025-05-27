@@ -29,6 +29,10 @@ really really todo, maybe?
   also the way the client is hard-coded to know the db structure is bad.
   better if the client was dump and only iterated over a draw list kind of thing.
 
+* there's lots of misc stuff that started out trying to support more complex things
+  like multiple beam up/downs at once, or the 't' of enemy damage, that ended
+  up not working out or not being fun, yet their vestigial code somewhat remains :-(
+
 * note: the files in client/resources/sounds/ are not used at runtime,
   they were just used to generate client/src/*b64*, which is perhaps confusing.
 
@@ -39,6 +43,8 @@ really really todo, maybe?
 * document which way the (x,y) axes go ffs; i assume +x down, +y.
 * omfg the sprite loading between server+client sucks-sucks so much-much.
   * also i wish animation could do resizing for bounce and stretch.
+
+* funny how sometimes i made a 'spec' type and other times just a lot of arguments.
 
 next-feature-short-list, in no order:
 * ha ha check all the bugs and todo's... bad stuff. see all the code notes below. :-(
@@ -81,6 +87,8 @@ next-feature-short-list, in no order:
 
 * augh i have no idea where in the code i have to use x-wrap()ping
   e.g. the enemy (especially hypermega) spawning?!
+
+* i love how inconsistent i am with things like capitalization.
 
 NOTE:
 * do try to avoid relying on pure red or green, out of some basic accessibility respect.

@@ -152,7 +152,10 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	Gr.bg_mk(this.db, far_spec_images);
 	Gr.ground_mk(this.db, far_spec_images);
 	B.base_add(this.db);
-	Po.populate(this.db, this.konfig.people_cluster_count);
+	Po.populate(
+	    this.db,
+	    Math.min(this.konfig.people_cluster_count, K.CLUSTER_MAX_COUNT)
+	);
     }
 
     far_spec0_mk(): FarSpec0[] {
@@ -336,11 +339,10 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    U.count_dict(next.shared.items.explosions) == 0;
     }
 
-    // once people are either rescued or dead, they won't show up in this count.
+    // people on the ground + people in the beaming buffer.
     private get_people_count(next: GDB.GameDB): number {
-	return (GDB.get_player(next)?.passenger_ids.size ?? 0) +
-	    (GDB.get_player(next)?.beaming_ids.size ?? 0) +
-	    U.count_dict(next.shared.items.people);
+	return U.count_dict(next.shared.items.people) +
+	    U.count_dict(next.shared.items.beaming_buffer);
     }
 
     update_impl(next: GDB.GameDB) {
@@ -448,7 +450,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
     }
 
     private uncloned_mk(dbc: GDB.DBSharedCore, index1: number, world_size: G.V2D): any {
-	const collision_spacey_pad = K.PLAYER_SIZE.y * 5; // match: empirical player constraints.
+	const collision_spacey_pad = K.PLAYER_SHIP_SIZE.y * 5; // match: empirical player constraints.
 	const collision_bounds = G.rect_mk(
 	    G.v2d_mk(0, -collision_spacey_pad),
 	    G.v2d_mk(world_size.x, world_size.y + collision_spacey_pad)
@@ -479,7 +481,6 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    prev_db: {} as GDB.GameDB,
 	    frame_dt: 0,
 	    fps_marker: { tick: 0, msec: 0 },
-	    people_beamed_up: 0,
 	    people_rescued: 0,
 	    state_modifiers: [],
 	    ticking_generators: {},
@@ -523,6 +524,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		    beam_down_rect: G.rect_mk_0()
 		},
 		people: {},
+		beaming_buffer: {},
 		gems: {},
 		fx: {},
 		particles: {},
