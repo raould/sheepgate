@@ -289,7 +289,7 @@ export const PLAYER_DELTA_Y_VEL = 0.20; // K
 
 export const PLAYER_BEAM_MAX_VEL2 = 0.2; // K
 export const PEOPLE_SIZE = G.v2d_mk_nn(32); // K
-export const SHEEP_SIZE = G.v2d_scale_i(G.v2d_mk(20, 26), 1.7); // K
+export const SHEEP_SIZE = G.v2d_scale_i(G.v2d_mk(20, 26), 1.8); // K
 // match: people.ts, currently hardcoded to have 2 people per cluster.
 // even this is too much toing and froing?
 export const CLUSTER_MAX_COUNT = 3; // K // note: match: 3 people per cluster at the moment.
