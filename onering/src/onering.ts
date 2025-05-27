@@ -395,7 +395,9 @@ function renderSpriteImageLayer(gdb: any, s: any, resource_id: string) {
     if (resource_id != null && s.alpha > 0) {
         const ss = gdb.screen_shake ?? {x:0, y:0};
 	// allow the rendering position to be different than the physics position.
-	if (s.draw_lt != undefined) { s.lt = s.draw_lt; }
+	if (s.draw_lt != undefined) {
+	    s = { ...s, lt: s.draw_lt };
+	}
         const wr = v2sr_wrapped(s, gameport, world_bounds, true);
         // todo: skip if the wr is not on the screen at all.
         try {

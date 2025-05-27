@@ -129,7 +129,7 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
              // todo: make it dynamically calculated based on the hp bar position.
             this.lt.y = Math.max(this.lt.y, 25);
 
-	    const oy = Math.sin(db.shared.tick/10) * 1;
+	    const oy = Math.sin(db.shared.tick/10) * 3;
 	    this.draw_lt = G.v2d_add_y(this.lt, oy);
         },
         step_resource_id(db: GDB.GameDB, delta_acc_x: number) {
