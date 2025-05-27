@@ -152,7 +152,10 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	Gr.bg_mk(this.db, far_spec_images);
 	Gr.ground_mk(this.db, far_spec_images);
 	B.base_add(this.db);
-	Po.populate(this.db, this.konfig.people_cluster_count);
+	Po.populate(
+	    this.db,
+	    Math.min(this.konfig.people_cluster_count, K.CLUSTER_MAX_COUNT)
+	);
     }
 
     far_spec0_mk(): FarSpec0[] {
