@@ -16,6 +16,7 @@ export interface InstructionsScreenSpec {
     // this is where it becomes a big ball of mud.
     top_offset_y?: number;
     hide_user_skip_msg?: boolean;
+    ignore_user_skip?: boolean;
 }
 
 export class InstructionsScreen extends Sz.SizzlerScreen {

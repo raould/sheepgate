@@ -21,6 +21,7 @@ export interface SizzlerScreenSpec {
     bg_color: RGBA,
     animated?: boolean, // default is true.
     timeout?: number, // default is never.
+    hide_user_skip_msg?: boolean;
     ignore_user_skip?: boolean, // default is false.
 }
 
@@ -34,6 +35,7 @@ export class SizzlerScreen implements M.Menu {
     body_cycle: HCycle;
     title?: string;
     skip_text: U.O<string>;
+    hide_user_skip_msg: boolean;
     ignore_user_skip: boolean;
     animated: boolean;
 
@@ -44,6 +46,7 @@ export class SizzlerScreen implements M.Menu {
 	this.skip_text = spec.skip_text;
 	this.animated = spec.animated ?? true;
 	this.timeout = spec.timeout;
+	this.hide_user_skip_msg = spec.hide_user_skip_msg ?? false;
 	this.ignore_user_skip = spec.ignore_user_skip ?? false;
         this.state = Gs.StepperState.running;
         this.header_cycle = HCycle.newFromRed(90 / this.mdb.frame_dt);
@@ -109,7 +112,7 @@ export class SizzlerScreen implements M.Menu {
     }
 
     step_user_skip() {
-        if (!this.ignore_user_skip &&
+        if (!this.hide_user_skip_msg &&
 	    U.exists(this.skip_text) &&
 	    (!this.animated || this.elapsed > K.USER_SKIP_AFTER_MSEC)) {
             const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.9);
