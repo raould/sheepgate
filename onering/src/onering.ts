@@ -4,6 +4,7 @@
 import { track1_sfx_b64 } from '@client/track1.ogg.b64';
 import { kcart1_sfx_b64 } from '@client/kcart1.ogg.b64';
 import { hiscore_sfx_b64 } from '@client/hiscore.ogg.b64';
+import { wiggle_sfx_b64 } from '@client/wiggle.ogg.b64';
 import { thrust_sfx_b64 } from '@client/thrust.ogg.b64';
 import { begin_sfx_b64 } from '@client/begin.ogg.b64';
 import { beamdown_sfx_b64 } from '@client/beamdown.ogg.b64';
@@ -21,6 +22,7 @@ import { synthE_sfx_b64 } from '@client/synthE.ogg.b64';
 import { shot1_sfx_b64 } from '@client/shot1.ogg.b64';
 import { shot2_sfx_b64 } from '@client/shot2.ogg.b64';
 import { smartbomb_sfx_b64 } from '@client/smartbomb.ogg.b64';
+import { deffx_sfx_b64 } from '@client/deffx.ogg.b64';
 import { Gamepads, StandardMapping } from '@client/gamepads';
 import { FPS } from '@server/fps';
 import { high_scores_mk } from '@server/high_scores';
@@ -1044,7 +1046,7 @@ function loadSound(resource: string, base64: string) {
 	buffer,
 	(decoded: any) => {
 	    sounds[sfx_id] = {
-		play: (sfx: { sfx_id: string, gain?: number, singleton?: boolean }) => {
+		play: (sfx: { sfx_id: string, gain?: number, playback_rate?: number, singleton?: boolean }) => {
 		    if (!!sfx.singleton && singletonSounds.has(sfx.sfx_id)) {
 			return;
 		    }
@@ -1055,6 +1057,7 @@ function loadSound(resource: string, base64: string) {
 		    sourceNode.buffer = decoded;
 		    sourceNode.connect(gainNode);
 		    sourceNode.loop = !!sfx.singleton;
+		    sourceNode.playbackRate.value = sfx.playback_rate ?? 1;
 		    sourceNode.start();
 		    // the sound was not already playing.
 		    if (!!sfx.singleton && !singletonSounds.has(sfx_id)) {
@@ -1074,6 +1077,7 @@ function loadSounds() {
     loadSound("track1.ogg", track1_sfx_b64);
     loadSound("kcart1.ogg", kcart1_sfx_b64);
     loadSound("hiscore.ogg", hiscore_sfx_b64);
+    loadSound("wiggle.ogg", wiggle_sfx_b64);
     loadSound("thrust.ogg", thrust_sfx_b64);
     loadSound("begin.ogg", begin_sfx_b64);
     loadSound("beamdown.ogg", beamdown_sfx_b64);
@@ -1091,6 +1095,7 @@ function loadSounds() {
     loadSound("shot1.ogg", shot1_sfx_b64);
     loadSound("shot2.ogg", shot2_sfx_b64);
     loadSound("smartbomb.ogg", smartbomb_sfx_b64);
+    loadSound("deffx.ogg", deffx_sfx_b64);
 }
 
 function loadImage(resource: string) {
