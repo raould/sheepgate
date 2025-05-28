@@ -621,13 +621,14 @@ function renderDrawing(xdb: any, drawing: any/*Dr.Drawing*/) {
     if (drawing?.other != null) {
         renderDrawing(xdb, drawing?.other);
     }
+    // todo: probably each and every individual entry should support a z value.
     // match: server expects client to draw rect first.
     renderRects(xdb, drawing?.rects);
     renderLines(xdb, drawing?.lines);
     renderEllipses(xdb, drawing?.ellipses);
     renderArcs(xdb, drawing?.arcs);
-    renderTexts(xdb, drawing?.texts);
     renderImages(xdb, drawing?.images);
+    renderTexts(xdb, drawing?.texts);
 }
 
 function renderLines(gdb: any, draw_lines: Array<any/*Dr.DrawLine*/>) {
@@ -1157,6 +1158,7 @@ function loadImages() {
     // todo: load the graphics from the server, not locally???
     // or at least share this kind of big spec's code with the server.
     
+    loadImage("attract.png");
     loadImage("qr.png");
 
     ['left', 'right'].forEach(dir => {

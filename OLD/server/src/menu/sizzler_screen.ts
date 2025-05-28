@@ -16,7 +16,7 @@ import * as D from '../debug';
 export const MESSAGE_MESC = 350;
 
 export interface SizzlerScreenSpec {
-    title: string,
+    title?: string,
     skip_text?: string,
     bg_color: RGBA,
     animated?: boolean, // default is true.
@@ -32,7 +32,7 @@ export class SizzlerScreen implements M.Menu {
     timeout: U.O<number>;
     header_cycle: HCycle;
     body_cycle: HCycle;
-    title: string;
+    title?: string;
     skip_text: U.O<string>;
     ignore_user_skip: boolean;
     animated: boolean;
@@ -52,7 +52,7 @@ export class SizzlerScreen implements M.Menu {
     }
 
     merge_client_db(cdb2: Cdb.ClientDB): void {
-        if (U.exists(this.skip_text) &&
+        if (this.ignore_user_skip !== true &&
 	    this.elapsed > K.USER_SKIP_AFTER_MSEC &&
 	    !!cdb2.inputs.commands[Cmd.CommandType.fire]) {
             this.state = Gs.StepperState.completed;
@@ -102,8 +102,10 @@ export class SizzlerScreen implements M.Menu {
     }
 
     step_title() {
-        const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.2);
-        this.step_text(this.title, center, 60, this.header_cycle)
+	if (U.exists(this.title)) {
+            const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.2);
+            this.step_text(this.title, center, 60, this.header_cycle)
+	}
     }
 
     step_user_skip() {
