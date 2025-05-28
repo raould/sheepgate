@@ -368,6 +368,7 @@ export const ENEMY_RETURN_FIRE_MIN_MSEC = 100; // L
 export const TRACK1_SFX = "sounds/track1.ogg";
 export const KCART1_SFX = "sounds/kcart1.ogg";
 export const HISCORE_SFX = "sounds/hiscore.ogg";
+export const WIGGLE_SFX = "sounds/wiggle.ogg";
 export const BEGIN_SFX = "sounds/begin.ogg";
 export const THRUST_SFX = "sounds/thrust.ogg";
 export const BEAMDOWN_SFX = "sounds/beamdown.ogg";
@@ -385,6 +386,7 @@ export const SYNTH_E_SFX = "sounds/synthE.ogg";
 export const SHOT1_SFX = "sounds/shot1.ogg";
 export const SHOT2_SFX = "sounds/shot2.ogg";
 export const SMARTBOMB_SFX = "sounds/smartbomb.ogg";
+export const DEFFX_SFX = "sounds/deffx.ogg";
 
 // match: game.ts
 // used to scale things across levels.

@@ -20,13 +20,13 @@ fi
 echo "++++++++++++++++++++ BUILDING CLIENT..."
 # TODO: Since I am inlining the SFX data, I hit compilation stack limits.
 # Admittedly this might be a hint to actually stop doing that.
-pushd OLD/client/src; npm i; node --stack-size=4000 ./node_modules/typescript/lib/tsc.js; popd
+(cd OLD/client/src; npm i; cd ..; node --stack-size=4000 ./node_modules/typescript/lib/tsc.js)
 echo "-------------------- DONE BUILDING CLIENT"
 
 # ----------------------------------------
 
 echo "++++++++++++++++++++ BUILDING SERVER..."
-pushd OLD/server/src; npm i; npx tsc; popd
+(cd OLD/server/src; npm i; npx tsc)
 echo "-------------------- DONE BUILDING SERVER"
 
 # ----------------------------------------

@@ -9,14 +9,22 @@ import * as U from '../util/util';
 import * as _ from 'lodash';
 import { RGBA, HCycle } from '../color';
 
+const MUSIC_SFX = {
+    sfx_id: K.WIGGLE_SFX,
+    gain: 0.5,
+    singleton: true,
+};
+
 export class HighScoreTableScreen extends Sz.SizzlerScreen {
     constructor(private readonly table: Hs.HighScores) {
         super({ title: "HIGH SCORES", skip_text: "PRESS [FIRE] TO CONTINUE", bg_color: RGBA.DARK_BLUE, timeout: 30*1000 });
+	this.mdb.shared.sfx.push(MUSIC_SFX);
     }
 
     step() {
         super.step()
         this.step_body()
+	this.mdb.shared.sfx.push(MUSIC_SFX);
     }
 
     step_body() {
