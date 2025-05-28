@@ -38,8 +38,6 @@ const WARNING_INSTRUCTIONS = [
 
 // the leading blank lines are a hack, yes :-(
 const MAIN_INSTRUCTIONS = [
-    " ",
-    " ",
     "RETURN CREATURES TO BASE.",
     "DEFEAT ALL ENEMIES.",
     " ",
@@ -156,31 +154,42 @@ class GameWarning implements Gs.Stepper {
 class GameInstructions implements Gs.Stepper {
     stepper: Is.InstructionsScreen;
     last: number;
+    attract: any;
     qr: any;
 
     constructor() {
         this.stepper = new Is.InstructionsScreen({
-	    title: "HOW TO PLAY",
 	    instructions: MAIN_INSTRUCTIONS,
 	    size: 35,
 	    animated: true,
 	    bg_color: RGBA.DARK_BLUE,
+	    top_offset_y: 0,
+	    hide_user_skip_msg: true,
 	});
 	this.stepper.mdb.shared.sfx.push({ sfx_id: K.SYNTH_C_SFX });
-	this.last = Date.now();
+	this.attract = {
+	    wrap: false,
+	    image_located: {
+		resource_id: "images/attract.png",
+		rect: K.SCREEN_RECT
+	    },
+	    comment: "attract",
+	};
 	this.qr = {
             wrap: false,
             image_located: {
                 resource_id: "images/qr.png",
                 rect: G.rect_mk(
 		    G.v2d_mk(
-			G.rect_w(K.SCREEN_RECT)*0.85,
-			G.rect_h(K.SCREEN_RECT)*0.75
+			G.rect_w(K.SCREEN_RECT)*0.9,
+			G.rect_h(K.SCREEN_RECT)*0.55
 		    ),
 		    G.v2d_mk(80, 80),
 		),
-            }
+            },
+	    comment: "qr",
 	};
+	this.last = Date.now();
     }
 
     get_state(): Gs.StepperState {
@@ -194,6 +203,7 @@ class GameInstructions implements Gs.Stepper {
     step() {
         this.stepper.step();
 	// reaching into mdb like this is gross, yes.
+        this.stepper.mdb.shared.frame_drawing.images.push(this.attract);
         this.stepper.mdb.shared.frame_drawing.images.push(this.qr);
 	this.stepper.mdb.shared.sfx.push(TRACK1_SFX);
     }

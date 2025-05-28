@@ -68,7 +68,7 @@ export class HighScoreEntryScreen extends Is.InstructionsScreen {
 	    animated: true,
 	    timeout: 120*1000,
 	    top_offset_y: -80,
-	    ignore_user_skip: true,
+	    hide_user_skip_msg: true,
 	});
         this.letters = "";
         this.cursor = G.v2d_mk_0();

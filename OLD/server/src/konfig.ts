@@ -77,9 +77,10 @@ export const PLAYER_SHIP_SIZE = G.v2d_mk(76, 25); // L?
 // because use of the variables below, and elsewhere.
 export const PLAYER_COW_SIZE = G.v2d_scale_i(G.v2d_mk(32, 16), 2.4); // L?
 export const PLAYER_SHADOW_SIZE = G.v2d_mk(76, 10); // L?
+
+// external code should ideally use SCREEN_RECT below
 const SCREEN_BOUNDS0 = G.v2d_mk(960, 540); // K
 const SCREEN_RECT0 = G.v2d_2_rect(SCREEN_BOUNDS0);
-
 // todo: overscan only sorta works, if it gets too big
 // you see rendering popin and other grossness.
 // and it doesn't scale the world rendering down

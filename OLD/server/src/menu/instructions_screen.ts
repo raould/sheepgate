@@ -7,7 +7,7 @@ import * as Rnd from '../random';
 import * as D from '../debug';
 
 export interface InstructionsScreenSpec {
-    title: string,
+    title?: string,
     instructions: string[],
     size: number,
     animated: boolean,
@@ -15,7 +15,7 @@ export interface InstructionsScreenSpec {
     timeout?: number;
     // this is where it becomes a big ball of mud.
     top_offset_y?: number;
-    ignore_user_skip?: boolean;
+    hide_user_skip_msg?: boolean;
 }
 
 export class InstructionsScreen extends Sz.SizzlerScreen {
@@ -28,7 +28,7 @@ export class InstructionsScreen extends Sz.SizzlerScreen {
         super({
 	    ...spec,
 	    title: spec.title,
-	    skip_text: spec.ignore_user_skip ? undefined : "PRESS [FIRE] TO CONTINUE",
+	    skip_text: spec.hide_user_skip_msg ? undefined : "PRESS [FIRE] TO CONTINUE",
 	});
 	this.instructions = spec.instructions;
 	this.size = spec.size;
