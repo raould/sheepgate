@@ -97,8 +97,8 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
         step(db: GDB.GameDB) {
             // regular physics movement for x, heuristic for y.
             // x should match: phys
-            const delta_acc_x = get_player_acc_x(db);
-            const delta_vel_y = get_player_vel_y(db);
+            const delta_acc_x = get_player_acc_x(this, db);
+            const delta_vel_y = get_player_vel_y(this, db);
             this.step_pos(db, delta_acc_x, delta_vel_y);
             this.step_resource_id(db, delta_acc_x);
 	    if (delta_acc_x != 0) {
@@ -296,7 +296,7 @@ function thrusting_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
     );
 }
 
-function get_player_acc_x(db: GDB.GameDB): number {
+function get_player_acc_x(player: S.Player, db: GDB.GameDB): number {
     const commands = db.local.client_db.inputs.commands;
     let x: number = 0;
     if (commands != null) {
@@ -304,6 +304,7 @@ function get_player_acc_x(db: GDB.GameDB): number {
         // the gameport code in window.ts will need adjustment.
         if (!!commands[Cmd.CommandType.left]) { x -= K.PLAYER_DELTA_X_ACC; }
         if (!!commands[Cmd.CommandType.right]) { x += K.PLAYER_DELTA_X_ACC; }
+	if (!!commands[Cmd.CommandType.thrust]) { x += F.f2x(player.facing) * K.PLAYER_DELTA_X_ACC; }
         // debugging printout.
         // if (Object.values(commands).filter(e => !!e).length > 0) {
         //     D.log(x, y, commands);
@@ -315,7 +316,7 @@ function get_player_acc_x(db: GDB.GameDB): number {
 }
 
 // todo: mapping of multiple players to individual control sets.
-function get_player_vel_y(db: GDB.GameDB): number {
+function get_player_vel_y(_player: S.Player, db: GDB.GameDB): number {
     const commands = db.local.client_db.inputs.commands;
     let y: number = 0;
     if (commands != null) {

@@ -1,10 +1,34 @@
+/*
+
+see StandardMapping way below, but
+based on https://gpadtester.com/
+
+a = 0
+b = 1
+x = 2
+y = 3
+
+left shoulder = b4
+right shoulder = b5
+
+left trigger = b6
+right trigger = b7
+
+*/
+
+const DEADZONE_DEFAULT = 0.3;
+const CONNECTION_POLL_MSEC = 1000 * 1;
+
+// note: must call getGamepads() on every poll to force each gamepad object to update for some browsers (i.e. Chrome).
+
 export const Gamepads = (() => {
     class GamepadHandler {
         constructor() {
             if (GamepadHandler._instance) {
                 return GamepadHandler._instance
             }
-            this.gamepads = {}
+	    this.lastConnectionPollMsec = 0;
+            this.gamepads = {};
             this._paused = false
             this._callbacks = {
                 'connect': [],
@@ -31,17 +55,26 @@ export const Gamepads = (() => {
             this._paused = true
         }
     
-        poll() {
-            // must call getGamepads() to force each gamepad object to update for some browsers (Chrome)
-            let gamepads = navigator.getGamepads ? [...navigator.getGamepads()] : []
-            let connectedIndices = []
+	pollInputs() {
+            let gamepads = navigator.getGamepads();
+	    if (gamepads == undefined) { return; }
+            gamepads.forEach(g => {
+                if (g.index in this.gamepads) {
+                    this.gamepads[g.index].update(g);
+		}
+            });
+	}
+
+        // check if any tracked gamepads are now absent/disconnected from the browser's gamepads
+        pollConnections() {
+            let gamepads = navigator.getGamepads();
+	    if (gamepads == undefined) { return; }
+            let connectedIndices = [];
             for (let index in gamepads) {
                 let gamepad = gamepads[index]
                 if (index && gamepad !== null) {
                     if (gamepad.index !== undefined) {
-                        if (gamepad.index in this.gamepads) {
-                            this.gamepads[gamepad.index].update(gamepad)
-                        } else {
+                        if (gamepad.index in this.gamepads == false) {
                             this.gamepads[gamepad.index] = new Gamepad(gamepad)
                             let event = new GamepadConnectionEvent(this.gamepads[gamepad.index], 'connect')
                             event._dispatch(this._callbacks['connect'])
@@ -50,7 +83,6 @@ export const Gamepads = (() => {
                     connectedIndices.push(index)
                 }
             }
-            // check if any tracked gamepads are now absent/disconnected from the browser's gamepads
             for (let index in this.gamepads) {
                 if (!connectedIndices.includes(index)) {
                     this.gamepads[index]._last.connected = false
@@ -73,7 +105,13 @@ export const Gamepads = (() => {
     
         _run() {
             if (this._supported && !this._paused) {
-                this.poll()
+		const now = Date.now();
+		const dt = now - this.lastConnectionPollMsec;
+		if (dt > CONNECTION_POLL_MSEC) {
+		    this.pollConnections();
+		    this.lastConnectionPollMsec = now;
+		}
+                this.pollInputs();
                 requestAnimationFrame(() => this._run(this))
             }
         }
@@ -105,7 +143,7 @@ export const Gamepads = (() => {
         }
     
         get joystickDeadzone() {
-            return this._deadzone || 0.10
+            return this._deadzone || DEADZONE_DEFAULT;
         }
     
         set joystickDeadzone(deadzone) {
@@ -170,14 +208,15 @@ export const Gamepads = (() => {
     
         _compareJoysticks(newAxes, oldAxes) {
             this._callbacks['joystickmove'].forEach((callbacks, indices) => {
-                let newHorizontal = this._applyJoystickDeadzone(newAxes[indices[0]])
-                let newVertical = this._applyJoystickDeadzone(newAxes[indices[1]])
-                let oldHorizontal = this._applyJoystickDeadzone(oldAxes[indices[0]])
-                let oldVertical = this._applyJoystickDeadzone(oldAxes[indices[1]])
+                let newHorizontal = this._applyJoystickDeadzone(newAxes[indices[0]]);
+                let newVertical = this._applyJoystickDeadzone(newAxes[indices[1]]);
+                let oldHorizontal = this._applyJoystickDeadzone(oldAxes[indices[0]]);
+                let oldVertical = this._applyJoystickDeadzone(oldAxes[indices[1]]);
                 if (newHorizontal !== oldHorizontal || newVertical !== oldVertical) {
-                    let event = new GamepadJoystickEvent(this, 'joystickmove', indices[0], indices[1], newHorizontal,
-                                                         newVertical)
-                    event._dispatch(callbacks)
+                    let event = new GamepadJoystickEvent(
+			this, 'joystickmove', indices[0], indices[1], newHorizontal, newVertical
+		    );
+                    event._dispatch(callbacks);
                 }
             })
         }
@@ -319,9 +358,13 @@ export const Gamepads = (() => {
 export const StandardMapping = {
     Button: {
         BUTTON_BOTTOM: 0,
+	A: 0,
         BUTTON_RIGHT: 1,
+	B: 1,
         BUTTON_LEFT: 2,
+	X: 2,
         BUTTON_TOP: 3,
+	Y: 3,
         BUMPER_LEFT: 4,
         BUMPER_RIGHT: 5,
         TRIGGER_LEFT: 6,
