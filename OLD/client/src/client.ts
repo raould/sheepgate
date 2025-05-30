@@ -38,7 +38,7 @@ function f2d(f: number): number {
 
 // so i can have everything in dark mode on my Windows machine.
 // note that this kills Edge fps, but works ok with Firefox, whatevz!!!
-const INVERT_COLORS = true;
+const INVERT_COLORS = false;
 
 // todo: use the server types.
 let server_db_generation: { id: number; db: any; } = { id: 0, db: undefined };

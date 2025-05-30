@@ -58,11 +58,13 @@ export const Gamepads = (() => {
 	pollInputs() {
             let gamepads = navigator.getGamepads();
 	    if (gamepads == undefined) { return; }
-            gamepads.forEach(g => {
-                if (g.index in this.gamepads) {
-                    this.gamepads[g.index].update(g);
+	    for (const key in this.gamepads) {
+		const my_g = this.gamepads[key];
+		const browser_g = gamepads[key];
+		if (browser_g != null) {
+                    my_g.update(browser_g);
 		}
-            });
+	    }
 	}
 
         // check if any tracked gamepads are now absent/disconnected from the browser's gamepads
