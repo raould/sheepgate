@@ -1,3 +1,5 @@
+/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+
 import * as U from './util/util';
 
 // todo: 'command' is a bad name beacuse it sounds
@@ -30,6 +32,7 @@ export enum CommandType {
     debug_win_level = "debug_win_level",
     debug_lose_level = "debug_lose_level",
     debug_smite = "debug_smite",
+    debug_clear_high_scores = "debug_clear_high_scores",
 }
 export const AllCommands = new Set<string>(Object.keys(CommandType));
 function add_spec(assoc: { [k: string]: CommandSpec }, spec: CommandSpec ) {
@@ -54,6 +57,7 @@ add_spec(CommandSpecs, { command: CommandType.debug_toggle_stepping, is_singular
 add_spec(CommandSpecs, { command: CommandType.debug_win_level, is_singular: true });
 add_spec(CommandSpecs, { command: CommandType.debug_lose_level, is_singular: true });
 add_spec(CommandSpecs, { command: CommandType.debug_smite, is_singular: true });
+add_spec(CommandSpecs, { command: CommandType.debug_clear_high_scores, is_singular: true });
 
 // todo: share this (unfortunately) with the client/server, esp. the "is_singular" part.
 // is_singular true means there's no auto-repeat while the key is held down.
@@ -85,4 +89,5 @@ export const key2cmd: { [k: string]: CommandSpec } = {
     "^":        CommandSpecs[CommandType.debug_win_level],
     "&":        CommandSpecs[CommandType.debug_lose_level],
     "*":        CommandSpecs[CommandType.debug_smite],
+    "|":        CommandSpecs[CommandType.debug_clear_high_scores],
 };

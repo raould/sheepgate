@@ -1,3 +1,5 @@
+/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+
 // todo: figure out the living hell that is 
 // packaging for the browser, so that this
 // can be split up & also share code w/ the server.
@@ -102,6 +104,7 @@ enum CommandType {
     debug_win_level = "debug_win_level",
     debug_lose_level = "debug_lose_level",
     debug_smite = "debug_smite",
+    debug_clear_high_scores = "debug_clear_high_scores",
 }
 // todo: share this (unfortunately) with the server, esp. the "is_singular" part.
 // is_singular true means there's no auto-repeat while the key is held down. (wtf?)
@@ -152,6 +155,7 @@ const key2cmd: { [k: string]: CommandSpec } = {
     "^":        { command: CommandType.debug_win_level, is_singular: true },
     "&":        { command: CommandType.debug_lose_level, is_singular: true },
     "*":        { command: CommandType.debug_smite, is_singular: true },
+    "|":        { command: CommandType.debug_clear_high_scores, is_singular: true },
 };
 
 abstract class AbstractParticleGenerator {

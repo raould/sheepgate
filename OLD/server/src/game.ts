@@ -1,3 +1,4 @@
+/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as Is from './menu/instructions_screen';
 import * as Ps from './menu/plain_screen';
 import * as Hse from './menu/high_score_entry_screen';
@@ -80,6 +81,9 @@ export function game_mk(high_scores: Hs.HighScores): Game {
         }
 
         merge_client_db(cnew: Cdb.ClientDB) {
+	    if (!!cnew.inputs.commands[Cmd.CommandType.debug_clear_high_scores]) {
+		Hs.reset_high_scores();
+	    }
             this.stepper.merge_client_db(cnew);
         }
 
@@ -95,13 +99,13 @@ export function game_mk(high_scores: Hs.HighScores): Game {
             else if (this.stepper instanceof GameLevels && this.stepper.get_state() != Gs.StepperState.running) {
                 const score = (this.stepper as GameLevels).get_score();
                 if (high_scores.is_high_score(score)) {
-                    this.stepper = new GameHighScoreEntry(score, high_scores);
+                    this.stepper = new GameHighScore(score, high_scores);
                 }
                 else {
                     this.stepper = new GameWarning();
                 }
             }
-            else if (this.stepper instanceof GameHighScoreEntry && this.stepper.get_state() != Gs.StepperState.running) {
+            else if (this.stepper instanceof GameHighScore && this.stepper.get_state() != Gs.StepperState.running) {
                 this.stepper = new GameWarning();
             }
         }
@@ -269,7 +273,7 @@ class GamePaused implements Gs.Stepper {
     }
 }
 
-class GameHighScoreEntry implements Gs.Stepper {
+class GameHighScore implements Gs.Stepper {
     stepper: Gs.Stepper;
 
     constructor(private score: number, private high_scores: Hs.HighScores) {

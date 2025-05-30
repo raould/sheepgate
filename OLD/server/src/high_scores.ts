@@ -1,7 +1,9 @@
+/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as K from './konfig';
 import * as U from './util/util';
+import * as D from './debug';
 
-// todo: local storage.
+// todo: persistence.
 
 export class HighScore {
     constructor(public readonly callsign: string, public readonly score: number) {}
@@ -26,7 +28,10 @@ export interface HighScores {
     maybe_add_score(score: HighScore): void;
 }
 
-// todo: persistence!
+export function reset_high_scores() {
+    D.error("todo: reset_high_scores()");
+}
+
 // note: the high score table must never be empty.
 export function high_scores_mk(): HighScores {
     return new class _H implements HighScores {
