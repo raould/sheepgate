@@ -41,9 +41,9 @@ const MAIN_INSTRUCTIONS = [
     "RETURN CREATURES TO BASE.",
     "DEFEAT ALL ENEMIES.",
     " ",
-    "MOVE: WASD / ARROWS / VI",
-    "FIRE: SPACE / Z / ENTER",
-    "PAUSE: ESC, P",
+    "MOVE: WASD - ARROWS - VI",
+    "FIRE: SPACE - Z - ENTER",
+    "PAUSE: ESC - P",
 ];
 
 export interface Game {
