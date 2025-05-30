@@ -122,7 +122,7 @@ class GameWarning implements Gs.Stepper {
     constructor() {
         this.stepper = new Ps.PlainScreen({
 	    title: "WARNING",
-	    skip_text: "CONTINUE: SPACE / Z / ENTER",
+	    skip_text: "CONTINUE: SPACE - Z - ENTER",
 	    instructions: WARNING_INSTRUCTIONS,
 	    instructions_size: 30,
 	    fg_color: RGBA.WHITE,
