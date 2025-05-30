@@ -49,7 +49,7 @@ const INSTRUCTIONS = [
 
 const MUSIC_SFX = {
     sfx_id: K.HISCORE_SFX,
-    gain: 0.7,
+    gain: 1,
     singleton: true,
 };
 
