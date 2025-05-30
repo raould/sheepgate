@@ -17,7 +17,6 @@ export interface CommandSpec {
 
 export enum CommandType {
     pause = "pause",
-    high_score = "high_score",
     fire = "fire",
     up = "up",
     down = "down",
@@ -63,8 +62,6 @@ add_spec(CommandSpecs, { command: CommandType.debug_clear_high_scores, is_singul
 // is_singular true means there's no auto-repeat while the key is held down.
 export const key2cmd: { [k: string]: CommandSpec } = {
     Escape:     CommandSpecs[CommandType.pause],
-    h:          CommandSpecs[CommandType.high_score],
-    H:          CommandSpecs[CommandType.high_score],
     // standard gameplay commands.
     " ":        CommandSpecs[CommandType.fire],
     ArrowUp:    CommandSpecs[CommandType.up],

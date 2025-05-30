@@ -26,6 +26,7 @@ import { shot2_sfx_b64 } from './shot2.ogg.b64';
 import { smartbomb_sfx_b64 } from './smartbomb.ogg.b64';
 import { deffx_sfx_b64 } from './deffx.ogg.b64';
 import { Gamepads, StandardMapping } from './gamepads';
+//import { HSLS } from './high_score_local_storage';
 import { FPS } from './fps';
  
 function assert(test: boolean, msg: string = "") {
@@ -89,7 +90,6 @@ interface CommandSpec {
 }
 enum CommandType {
     pause = "pause",
-    high_score = "high_score",
     fire = "fire",
     up = "up",
     down = "down",
@@ -109,7 +109,6 @@ enum CommandType {
 // todo: share this (unfortunately) with the server, esp. the "is_singular" part.
 // is_singular true means there's no auto-repeat while the key is held down. (wtf?)
 const PauseSpec: CommandSpec = { command: CommandType.pause, is_singular: true };
-const HighScoreSpec: CommandSpec = { command: CommandType.high_score, is_singular: true };
 const FireSpec: CommandSpec = { command: CommandType.fire, is_singular: false };
 const UpSpec: CommandSpec = { command: CommandType.up, is_singular: false };
 const DownSpec: CommandSpec = { command: CommandType.down, is_singular: false };
