@@ -1458,9 +1458,8 @@ function ButtonChange(event: any, pressed: boolean) {
     else if (event.index === 14) { applyCommand(LeftSpec, pressed); }
     else if (event.index === 15) { applyCommand(RightSpec, pressed); }
 
-    else if (event.index === StandardMapping.Button.A) { applyCommand(ThrustSpec, pressed); }
-    else if (event.index === StandardMapping.Button.X) { applyCommand(ThrustSpec, pressed); }
-    else if (event.index === StandardMapping.Button.X) { applyCommand(ThrustSpec, pressed); }
+    else if (event.index === StandardMapping.Button.B) { applyCommand(ThrustSpec, pressed); }
+    else if (event.index === StandardMapping.Button.Y) { applyCommand(ThrustSpec, pressed); }
     else if (event.index === StandardMapping.Button.TRIGGER_LEFT) { applyCommand(ThrustSpec, pressed); }
     else if (event.index === StandardMapping.Button.TRIGGER_RIGHT) { applyCommand(ThrustSpec, pressed); }
 

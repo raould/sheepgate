@@ -134,6 +134,7 @@ const key2cmd: { [k: string]: CommandSpec } = {
     D:          RightSpec,
     l:          RightSpec,
     L:          RightSpec,
+    Shift:      ThrustSpec,
     // secret debugging stuff.
     ".":        { command: CommandType.debug_step_frame, is_singular: true },
     "!":        { command: CommandType.debug_dump_state, is_singular: true },
@@ -899,7 +900,6 @@ function onKey(event: any, is_keydown: boolean) {
 	    // to sendState() again for it to work right?!
             if (spec.is_singular) {
                 delete inputs.commands[ik];
-                log("  is_singular delete", inputs.commands[ik]);
             }
         }
     }
@@ -1391,14 +1391,14 @@ function ButtonChange(event: any, pressed: boolean) {
     if (pressed && (event.index === 16 || event.index === 8 || event.index === 9)) {
 	applyCommand(PauseSpec, pressed);
     }
+
     else if (event.index === 12) { applyCommand(UpSpec, pressed); }
     else if (event.index === 13) { applyCommand(DownSpec, pressed); }
     else if (event.index === 14) { applyCommand(LeftSpec, pressed); }
     else if (event.index === 15) { applyCommand(RightSpec, pressed); }
 
-    else if (event.index === StandardMapping.Button.A) { applyCommand(ThrustSpec, pressed); }
-    else if (event.index === StandardMapping.Button.X) { applyCommand(ThrustSpec, pressed); }
-    else if (event.index === StandardMapping.Button.X) { applyCommand(ThrustSpec, pressed); }
+    else if (event.index === StandardMapping.Button.B) { applyCommand(ThrustSpec, pressed); }
+    else if (event.index === StandardMapping.Button.Y) { applyCommand(ThrustSpec, pressed); }
     else if (event.index === StandardMapping.Button.TRIGGER_LEFT) { applyCommand(ThrustSpec, pressed); }
     else if (event.index === StandardMapping.Button.TRIGGER_RIGHT) { applyCommand(ThrustSpec, pressed); }
 
