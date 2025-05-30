@@ -72,7 +72,7 @@ export abstract class AbstractLevel implements Level {
             this.db.local.client_db = cdb2;
         }
         else if (cdb.client_id === cdb2.client_id) {
-            Object.values(Cmd.key2cmd).forEach(
+            Object.values(Cmd.CommandSpecs).forEach(
                 (s: Cmd.CommandSpec) => {
                     if (s.is_singular) {
                         cdb.inputs.commands[s.command] =

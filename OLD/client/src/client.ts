@@ -31,10 +31,14 @@ function assert(test: boolean, msg: string = "") {
 	console.error("assertion failed!", msg);
     }
 }
+const f2d_pow = Math.pow(10, 2);
+function f2d(f: number): number {
+    return Math.floor(f * f2d_pow)/f2d_pow;
+}
 
 // so i can have everything in dark mode on my Windows machine.
 // note that this kills Edge fps, but works ok with Firefox, whatevz!!!
-const INVERT_COLORS = false;
+const INVERT_COLORS = true;
 
 // todo: use the server types.
 let server_db_generation: { id: number; db: any; } = { id: 0, db: undefined };
@@ -89,6 +93,7 @@ enum CommandType {
     down = "down",
     left = "left",
     right = "right",
+    thrust = "thrust",
     debug_toggle_graphics = "debug_toggle_graphics",
     debug_toggle_annotations = "debug_toggle_annotations",
     debug_toggle_stepping = "debug_toggle_stepping",
@@ -107,6 +112,7 @@ const UpSpec: CommandSpec = { command: CommandType.up, is_singular: false };
 const DownSpec: CommandSpec = { command: CommandType.down, is_singular: false };
 const LeftSpec: CommandSpec = { command: CommandType.left, is_singular: false };
 const RightSpec: CommandSpec = { command: CommandType.right, is_singular: false };
+const ThrustSpec: CommandSpec = { command: CommandType.thrust, is_singular: false };
 const key2cmd: { [k: string]: CommandSpec } = {
     // standard gameplay commands.
     Escape:     PauseSpec,
@@ -136,6 +142,7 @@ const key2cmd: { [k: string]: CommandSpec } = {
     D:          RightSpec,
     l:          RightSpec,
     L:          RightSpec,
+    Shift:      ThrustSpec,
     // secret debugging stuff.
     ".":        { command: CommandType.debug_step_frame, is_singular: true },
     "!":        { command: CommandType.debug_dump_state, is_singular: true },
@@ -897,7 +904,6 @@ function onKey(event: any, is_keydown: boolean) {
 	    // to sendState() again for it to work right?!
             if (spec.is_singular) {
                 delete inputs.commands[ik];
-                log("  is_singular delete", inputs.commands[ik]);
             }
         }
     }
@@ -1398,56 +1404,47 @@ let gStickDown: boolean = false;
 let gStickLeft: boolean = false;
 let gStickRight: boolean = false;
 function JoystickMove(event: any) {
-    if (event.verticalValue < -0.5) {
-	if (!gStickUp) {
-	    gStickUp = true;
-	    applyCommand(UpSpec, true);
-	}
-    }
-    else if (event.verticalValue <= 0) {
+    if (event.verticalValue > 0 && !gStickDown) {
 	if (gStickUp) {
 	    gStickUp = false;
 	    applyCommand(UpSpec, false);
 	}
+	gStickDown = true;
+	applyCommand(DownSpec, true);
     }
-
-    if (event.verticalValue > 0.5) {
-	if (!gStickDown) {
-	    gStickDown = true;
-	    applyCommand(DownSpec, true);
-	}
-    }
-    else if (event.verticalValue >= 0) {
+    if (event.verticalValue < 0 && !gStickUp) {
 	if (gStickDown) {
 	    gStickDown = false;
 	    applyCommand(DownSpec, false);
 	}
+	gStickUp = true;
+	applyCommand(UpSpec, true);
     }
-
-    if (event.horizontalValue < -0.5) {
-	if (!gStickLeft) {
-	    gStickLeft = true;
-	    applyCommand(LeftSpec, true);
-	}
+    if (event.verticalValue === 0) {
+	gStickUp = gStickDown = false;
+	applyCommand(UpSpec, false);
+	applyCommand(DownSpec, false);
     }
-    else if (event.horizontalValue <= 0) {
+    if (event.horizontalValue > 0 && !gStickRight) {
 	if (gStickLeft) {
 	    gStickLeft = false;
 	    applyCommand(LeftSpec, false);
 	}
+	gStickRight = true;
+	applyCommand(RightSpec, true);
     }
-
-    if (event.horizontalValue > 0.5) {
-	if (!gStickRight) {
-	    gStickRight = true;
-	    applyCommand(RightSpec, true);
-	}
-    }
-    else if (event.horizontalValue >= 0) {
+    if (event.horizontalValue < 0 && !gStickLeft) {
 	if (gStickRight) {
 	    gStickRight = false;
 	    applyCommand(RightSpec, false);
 	}
+	gStickLeft = true;
+	applyCommand(LeftSpec, true);
+    }
+    if (event.horizontalValue === 0) {
+	gStickLeft = gStickRight = false;
+	applyCommand(LeftSpec, false);
+	applyCommand(RightSpec, false);
     }
 }
 
@@ -1455,13 +1452,18 @@ function ButtonChange(event: any, pressed: boolean) {
     if (pressed && (event.index === 16 || event.index === 8 || event.index === 9)) {
 	applyCommand(PauseSpec, pressed);
     }
+
     else if (event.index === 12) { applyCommand(UpSpec, pressed); }
     else if (event.index === 13) { applyCommand(DownSpec, pressed); }
     else if (event.index === 14) { applyCommand(LeftSpec, pressed); }
     else if (event.index === 15) { applyCommand(RightSpec, pressed); }
-    else {
-	applyCommand(FireSpec, pressed);
-    }
+
+    else if (event.index === StandardMapping.Button.B) { applyCommand(ThrustSpec, pressed); }
+    else if (event.index === StandardMapping.Button.Y) { applyCommand(ThrustSpec, pressed); }
+    else if (event.index === StandardMapping.Button.TRIGGER_LEFT) { applyCommand(ThrustSpec, pressed); }
+    else if (event.index === StandardMapping.Button.TRIGGER_RIGHT) { applyCommand(ThrustSpec, pressed); }
+
+    else { applyCommand(FireSpec, pressed); }
 }
 
 function gamepadHandler(event: any, connecting: boolean) {
