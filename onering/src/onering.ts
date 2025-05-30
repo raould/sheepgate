@@ -597,7 +597,7 @@ function renderHudDrawing(gdb: any) {
     ) });
     drawing.texts.forEach((dt: any) => {
 	renderText(
-            dt.text, dt.font, dt.fillStyle.hex, dt.lb.x, dt.lb.y
+            dt.text, dt.font, dt.fillStyle, dt.lb.x, dt.lb.y
 	)
     });
     drawing.images.forEach((di: any) => {
@@ -651,7 +651,7 @@ function renderLines(gdb: any, draw_lines: Array<any/*Dr.DrawLine*/>) {
 function renderLine(line_width: any, color: any, x0: any, y0: any, x1: any, y1: any) {
     cx2d.beginPath();
     cx2d.lineWidth = line_width;
-    cx2d.strokeStyle = color;
+    cx2d.strokeStyle = color.hex;
     cx2d.moveTo(x0, y0);
     cx2d.lineTo(x1, y1);
     cx2d.stroke();
@@ -721,7 +721,7 @@ function renderArc(is_filled: any, line_width: any, color: any, x: any, y: any, 
     const mx = x + xr;
     const my = y + yr;
     cx2d.lineWidth = line_width;
-    cx2d.strokeStyle = color;
+    cx2d.strokeStyle = color.hex;
     cx2d.beginPath();
     cx2d.ellipse(mx, my, xr, yr, 0, r0, r1);
     if (is_filled) {
