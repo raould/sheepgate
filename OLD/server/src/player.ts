@@ -302,9 +302,9 @@ function get_player_acc_x(player: S.Player, db: GDB.GameDB): number {
     if (commands != null) {
         // match: if the PLAYER_DELTA_*_ACC changes then likely
         // the gameport code in window.ts will need adjustment.
-        if (!!commands[Cmd.CommandType.left]) { x -= K.PLAYER_DELTA_X_ACC; }
-        if (!!commands[Cmd.CommandType.right]) { x += K.PLAYER_DELTA_X_ACC; }
 	if (!!commands[Cmd.CommandType.thrust]) { x += F.f2x(player.facing) * K.PLAYER_DELTA_X_ACC; }
+        else if (!!commands[Cmd.CommandType.left]) { x -= K.PLAYER_DELTA_X_ACC; }
+	else if (!!commands[Cmd.CommandType.right]) { x += K.PLAYER_DELTA_X_ACC; }
         // debugging printout.
         // if (Object.values(commands).filter(e => !!e).length > 0) {
         //     D.log(x, y, commands);

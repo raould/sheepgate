@@ -1,0 +1,9 @@
+/* match: server/src/konfig.ts */
+@font-face {
+    font-family: 'gamefont';
+    src: url('./OLD/client/resources/fonts/slaugh.woff2');
+}
+@font-face {
+    font-family: 'menufont';
+    src: url('./OLD/client/resources/fonts/fs-regulate.woff2');
+}
