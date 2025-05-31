@@ -178,7 +178,7 @@ export class DecendAndGoSine implements FlightPattern {
 	);
 	this.mid_y = y ?? rnd_y;
 	this.period_factor = Rnd.singleton.float_around(2000, 250);
-	this.sinY = (size.y*2) / 2.1;
+	this.sinY = size.y;
         this.signX = Rnd.singleton.boolean() ? -1 : 1;
         this.acc_mag = acc_mag;
     }
@@ -191,6 +191,8 @@ export class DecendAndGoSine implements FlightPattern {
 	    smid.x + this.signX * 100,
 	    this.mid_y + sin_y
 	);
+        const delta_acc = calculate_acc(G.rect_mid(src), this.target, this.acc_mag, db.local.frame_dt);
+
 	DebugGraphics.add_point(
 	    DebugGraphics.get_frame(),
 	    this.target,
@@ -205,7 +207,17 @@ export class DecendAndGoSine implements FlightPattern {
 		p1: this.target,
 	    }
 	);
-        const delta_acc = calculate_acc(G.rect_mid(src), this.target, this.acc_mag, db.local.frame_dt);
+	DebugGraphics.add_DrawLine(
+	    DebugGraphics.get_frame(),
+	    {
+		wrap: true,
+		color: RGBA.YELLOW,
+		line_width: 1,
+		p0: { x: 0, y: this.mid_y },
+		p1: { x: K.SCREEN_BOUNDS0.x, y: this.mid_y }
+	    }
+	);
+
         return delta_acc;
     }
 }

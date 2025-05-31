@@ -60,12 +60,12 @@ export const FPS = 30; // K
 export const FRAME_MSEC_DT = 1000 / FPS; // K
 
 // todo: match: the size of the game world is runtime
-// calculated, and i want to change it to be like stargate
+// calculated, and i want it to be like stargate
 // where the whole vertical area is always visible, there's
-// no vertical scrolling since that was a bad thing about
-// minter's jaguar defender.
-// a nuance is if i want to do some aquatron levels, then
-// we'll probably-maybe need y scrolling.
+// no vertical scrolling since that was something i
+// never could get the hang of minter's jaguar defender.
+// (a nuance is if i want to do some aquatron levels, then
+// we'll probably-maybe need y scrolling.)
 
 // match: client canvas etc.
 // these are currently in pixels.
@@ -79,7 +79,7 @@ export const PLAYER_COW_SIZE = G.v2d_scale_i(G.v2d_mk(32, 16), 2.4); // L?
 export const PLAYER_SHADOW_SIZE = G.v2d_mk(76, 10); // L?
 
 // external code should ideally use SCREEN_RECT below
-const SCREEN_BOUNDS0 = G.v2d_mk(960, 540); // K
+export const SCREEN_BOUNDS0 = G.v2d_mk(960, 540); // K
 const SCREEN_RECT0 = G.v2d_2_rect(SCREEN_BOUNDS0);
 // todo: overscan only sorta works, if it gets too big
 // you see rendering popin and other grossness.
