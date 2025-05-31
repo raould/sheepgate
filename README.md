@@ -35,4 +35,5 @@ more "low level" if the runme script fails :-(
 * build and run server in different bash shell: cd OLD/server && npm i && (npx tsc -w &) && npm run hot
 * browser: open OLD/client/index.html
 
-![screenshot](./screenshot.png)
+[<img src="screenshot.png">](http://18.190.219.255/)
+
