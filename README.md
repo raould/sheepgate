@@ -3,6 +3,8 @@ eventually, sheep and gates!
 
 [Play the game here](http://18.190.219.255/)
 
+A [Desafortunados Games](https://duckduckgo.com/?q=desafortunados+games+pn0gstr0m+sheepgate+mzzl+nbf0) production.
+
 An exercise in making an homage to Defender with the most over-wraught high-level-language constructs this side of Haskell. The code truly is an abomination, a result from trying an experiment in design (client-sever; internal database; etc.) to see where it might lead. (TODO: at least maybe try to use promises.)
 
 * for something really impressive, check out this instead: https://keithclark.co.uk/articles/js1k-2015-defender/
