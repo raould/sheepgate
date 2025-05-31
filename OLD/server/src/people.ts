@@ -308,7 +308,7 @@ export function person_beam_down_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, rect: G
 function sheep_beam_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, src: S.Person): S.Sprite {
     // there's a lot of hard-coded twiddling of values in here to make it look less bad, sorry.
     const images = db.uncloned.images;
-    const resources = images.lookup_range_n((n) => `people/sheepT${n}.png`, 1, 5);
+    const resources = images.lookup_range_n((n) => `people/sheepT${n}.png`, 1, 10);
     const spec: A.MultiImageSpec = {
         offset_msec: Rnd.singleton.float_range(0, 250),
         starting_mode: A.MultiImageStartingMode.hold,
