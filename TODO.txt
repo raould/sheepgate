@@ -95,13 +95,10 @@ NOTE:
 
 DO THESE NOW/NEXT:
 
-+ hud proximity warning makers.
-+ add some livestock. :-)
-!!!+ enemies should shoot when shot.
-+ people/livestock should not be too close to the base, duh.
-+ enemy shots already can intersect people, so make people killable?
-* a better way to do the bloody screen state machine.
++ hud proximity warning markers for the hypermega.
++ enemy shots already can intersect people, so make people killable? :(
 
+-7) a better way to do the bloody screen state machine.
 -6) ugh isn't "!!" technically dangerous?
 -5) the basic vs. adv enemy generators are not good, i would like the adv to no start until most/all basic are spawned.
     * i hacked it by having no buf on Rank.Small concurrency limit.

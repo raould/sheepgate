@@ -473,6 +473,10 @@ export abstract class AbstractLevel implements Level {
     }
 
     protected update_alerts(next: GDB.GameDB) {
+	this.update_health_alert(next);
+    }
+
+    private update_health_alert(next: GDB.GameDB) {
         U.if_let(
             GDB.get_player(next),
             player => {

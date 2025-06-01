@@ -186,7 +186,6 @@ export interface DBLocal {
     frame_dt: number;
     // help track fps. currently not using 'prev' db fwiw.
     fps_marker: { tick: number, msec: number };
-    people_rescued: number,
     state_modifiers: StateModifier[],
     ticking_generators: U.Dict<Tkg.TickingGenerator<unknown>>,
     // note: the generators should be running from the start
@@ -230,7 +229,6 @@ export interface DBSharedCore extends Db.DB<GameWorld> { // todo: better name.
     tick: number; // increment on each server step, even if the dt was 0.
     sim_now: number;
     fps: number;
-    rescued_count: number;
     hud_drawing: Dr.Drawing;
     permanent_bg_drawing: Dr.Drawing;
     permanent_fg_drawing: Dr.Drawing;

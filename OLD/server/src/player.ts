@@ -216,7 +216,6 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
                                             U.if_let(
 						GDB.get_player(db), (thiz: S.Player) => {
 						    D.log("beam down 6");
-                                                    db.shared.rescued_count++;
                                                     db.local.scoring.on_event(Sc.Event.rescue);
 						    U.if_let(
 							GDB.get_shield(db, this.shield_id), player_shield => {

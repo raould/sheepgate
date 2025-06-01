@@ -331,7 +331,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	Ebg.add_generators(this.db, basics);
     }
 
-    private are_all_tasks_done(next: GDB.GameDB): boolean {
+    private are_all_enemies_done(next: GDB.GameDB): boolean {
 	// note: this isn't totally correct e.g. if you hack a level
 	// to only have 1 Rank.small and you shoot it, this still doesn't trigger?!
 	return U.count_dict(next.local.enemy_generators) == 0 &&
@@ -374,18 +374,16 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		}
 	    }
 	    // all tasks accomplished?
-	    else if (this.are_all_tasks_done(next)) {
-		if (this.get_people_count(next) == 0) {
-		    this.state = next.shared.rescued_count == 0 ? Gs.StepperState.lost : Gs.StepperState.completed;
-		    return;
-		}
+	    else if (this.are_all_enemies_done(next) && this.get_people_count(next) == 0) {
+		this.state = Gs.StepperState.completed;
+		return;
 	    }
 	}
     }
 
     protected update_alerts(next: GDB.GameDB) {
 	super.update_alerts(next);
-	if (this.are_all_tasks_done(next) && this.get_people_count(next) > 0) {
+	if (this.are_all_enemies_done(next) && this.get_people_count(next) > 0) {
     	    if (U.isU(this.people_reminder_timeout)) {
 		this.people_reminder_timeout = K.PEOPLE_REMINDER_TIMEOUT;
 	    }
@@ -440,7 +438,6 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    tick: 0,
 	    sim_now: 0,
 	    fps: 0,
-	    rescued_count: 0,
 	    debug_graphics: DebugGraphics.get_graphics(),
 	    hud_drawing: Dr.drawing_mk(),
 	    frame_drawing: Dr.drawing_mk(),
@@ -482,7 +479,6 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    prev_db: {} as GDB.GameDB,
 	    frame_dt: 0,
 	    fps_marker: { tick: 0, msec: 0 },
-	    people_rescued: 0,
 	    state_modifiers: [],
 	    ticking_generators: {},
 	    enemy_generators: {},
