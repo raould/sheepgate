@@ -42,6 +42,8 @@ function assert(test: boolean, msg: string = "") {
 // note that this kills Edge fps, but works ok with Firefox, whatevz!!!
 const INVERT_COLORS = false;
 
+const STORAGE_KEY = "_sheepgate";
+
 let inputs: {commands: {[k:string]:boolean}, keys: {[k:string]:boolean}} = {
     commands: {}, keys: {}
 };
@@ -59,6 +61,7 @@ let singletonSounds = new Map<string, any>();
 
 const high_scores = high_scores_mk();
 let game_loop = game_mk(high_scores);
+
 let last_render_msec = 0;
 let game_fps = 0;
 let fps = new FPS((fps) => { game_fps = fps; });
@@ -821,6 +824,15 @@ function renderMenu(mdb: any) {
 	renderSounds(mdb);
 	renderDrawing(mdb, mdb.frame_drawing);
 	renderDebug(mdb);
+	updateLocalStorage(mdb);
+    }
+}
+
+function updateLocalStorage(mdb: any) {
+    const json = mdb.local_storage_json;
+    if (json != null && localStorage != undefined) {
+	log("updateLocalStorage", STORAGE_KEY, json);
+	localStorage.setItem(STORAGE_KEY, json);
     }
 }
 
@@ -905,7 +917,7 @@ function onKey(event: any, is_keydown: boolean) {
     }
 }
 
-function sendState() {
+function sendState(storage_json?: string | undefined) {
     try {
         // todo: match/share type with server side.
         // note that the server side is going to have
@@ -915,6 +927,10 @@ function sendState() {
             inputs: inputs,
             debugging_state: debugging_state,
         }
+	if (storage_json != undefined) {
+	    // @ts-expect-error syntaxhell
+	    step["storage_json"] = storage_json;
+	}
 	game_loop.merge_client_db(step);
     }
     catch (err) {
@@ -1442,7 +1458,12 @@ function init() {
     Gamepads.addEventListener("disconnect", (e:any)=> gamepadHandler(e, false));
 
     // kickoff!
-    sendState(); 
+    let json: string | undefined = undefined;
+    if (localStorage != undefined) {
+	// ?? undefined to avoid tsc hell with null.
+	json = localStorage.getItem(STORAGE_KEY) ?? undefined;
+    }
+    sendState(json);
     window.requestAnimationFrame(nextFrame);
 }
 

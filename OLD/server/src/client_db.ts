@@ -7,4 +7,5 @@ export interface ClientDB {
     client_id: number;
     inputs: Cmd.Inputs;
     debugging_state: { is_stepping: boolean, is_drawing: boolean };
+    storage_json?: string | undefined;
 }

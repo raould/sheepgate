@@ -31,4 +31,5 @@ export interface DB<W extends World> {
     frame_drawing: Dr.Drawing; // todo: kind of a bad name, actually?
     debug_graphics?: Dr.Drawing[];
     sfx: So.Sfx[];
+    local_storage_json?: string;
 }

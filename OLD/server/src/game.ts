@@ -81,6 +81,10 @@ export function game_mk(high_scores: Hs.HighScores): Game {
 
         merge_client_db(cnew: Cdb.ClientDB) {
             this.stepper.merge_client_db(cnew);
+	    if (cnew.storage_json != undefined) {
+		D.log("storage_json", cnew.storage_json);
+		high_scores.set_scores_from_json(cnew.storage_json);
+	    }
         }
 
         // todo: this would all be better done as a state machine / graph type of thing.
@@ -98,12 +102,15 @@ export function game_mk(high_scores: Hs.HighScores): Game {
                     this.stepper = new GameHighScoreEntry(score, high_scores);
                 }
                 else {
-                    this.stepper = new GameWarning();
+                    this.stepper = new GameHighScoreTable(high_scores, false);
                 }
             }
             else if (this.stepper instanceof GameHighScoreEntry && this.stepper.get_state() != Gs.StepperState.running) {
-                this.stepper = new GameWarning();
+                this.stepper = new GameHighScoreTable(high_scores, true);
             }
+	    else if (this.stepper instanceof GameHighScoreTable && this.stepper.get_state() != Gs.StepperState.running) {
+		this.stepper = new GameWarning();
+	    }
         }
 
 	get_db(): Db.DB<Db.World> {
@@ -289,8 +296,35 @@ class GameHighScoreEntry implements Gs.Stepper {
         if (this.stepper instanceof Hse.HighScoreEntryScreen && this.stepper.get_state() != Gs.StepperState.running) {
             const high_score = (this.stepper as Hse.HighScoreEntryScreen).get_entry();
             this.high_scores.maybe_add_score(high_score);
-            this.stepper = new Hst.HighScoreTableScreen(this.high_scores);
         }
+    }
+
+    get_db(): Db.DB<Db.World> {
+	return this.stepper.get_db();
+    }
+
+    stringify(): string {
+        return this.stepper.stringify();
+    }
+}
+
+class GameHighScoreTable implements Gs.Stepper {
+    stepper: Gs.Stepper;
+
+    constructor(private high_scores: Hs.HighScores, emit_table: boolean) {
+        this.stepper = new Hst.HighScoreTableScreen(high_scores, emit_table);
+    }
+
+    get_state(): Gs.StepperState {
+        return this.stepper.get_state();
+    }
+
+    merge_client_db(cnew: Cdb.ClientDB) {
+        this.stepper.merge_client_db(cnew);
+    }
+
+    step() {
+        this.stepper.step();
     }
 
     get_db(): Db.DB<Db.World> {
