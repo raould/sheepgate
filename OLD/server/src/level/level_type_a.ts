@@ -383,13 +383,16 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 
     protected update_alerts(next: GDB.GameDB) {
 	super.update_alerts(next);
-	if (this.are_all_enemies_done(next) && this.get_people_count(next) > 0) {
-    	    if (U.isU(this.people_reminder_timeout)) {
-		this.people_reminder_timeout = K.PEOPLE_REMINDER_TIMEOUT;
-	    }
+	this.update_rescue_alert(next);
+    }
+
+    private update_rescue_alert(next: GDB.GameDB) {
+	if (this.are_all_enemies_done(next) &&
+	    this.get_people_count(next) > 0 &&
+    	    U.isU(this.people_reminder_timeout)) {
+	    this.people_reminder_timeout = K.PEOPLE_REMINDER_TIMEOUT;
 	}
-	if (U.exists(this.people_reminder_timeout) && this.people_reminder_timeout > 0) {
-	    this.people_reminder_timeout -= K.FRAME_MSEC_DT; // todo: the whole DT things is poorly implemented.
+	if ((this.people_reminder_timeout ?? 0) > 0) {
 	    const reminder: Dr.DrawText = {
 		wrap: false,
 		// hard-coded eye-balled positioning.
@@ -402,6 +405,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		comment: "save-people-reminder",
 	    };
 	    next.shared.hud_drawing.texts.push(reminder);
+	    this.people_reminder_timeout -= K.FRAME_MSEC_DT; // todo: the whole DT things is poorly implemented.
 	}
     }
 
