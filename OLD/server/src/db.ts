@@ -1,3 +1,4 @@
+/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as G from './geom';
 import * as Dr from './drawing';
 import * as So from './sound';
@@ -31,4 +32,5 @@ export interface DB<W extends World> {
     frame_drawing: Dr.Drawing; // todo: kind of a bad name, actually?
     debug_graphics?: Dr.Drawing[];
     sfx: So.Sfx[];
+    local_storage_json?: string;
 }

@@ -1,3 +1,4 @@
+/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 // todo: figure out the living hell that is 
 // packaging for the browser, so that this
 // can be split up & also share code w/ the server.
@@ -39,6 +40,8 @@ function f2d(f: number): number {
 // so i can have everything in dark mode on my Windows machine.
 // note that this kills Edge fps, but works ok with Firefox, whatevz!!!
 const INVERT_COLORS = false;
+
+const STORAGE_KEY = "_sheepgate";
 
 // todo: use the server types.
 let server_db_generation: { id: number; db: any; } = { id: 0, db: undefined };
@@ -825,6 +828,15 @@ function renderMenu(mdb: any) {
 	renderSounds(mdb);
 	renderDrawing(mdb, mdb.frame_drawing);
 	renderDebug(mdb);
+	updateLocalStorage(mdb);
+    }
+}
+
+function updateLocalStorage(mdb: any) {
+    const json = mdb.local_storage_json;
+    if (json != null && localStorage != undefined) {
+	log("updateLocalStorage", STORAGE_KEY, json);
+	localStorage.setItem(STORAGE_KEY, json);
     }
 }
 
@@ -909,7 +921,7 @@ function onKey(event: any, is_keydown: boolean) {
     }
 }
 
-function sendState() {
+function sendState(storage_json?: string | undefined) {
     try {
         // todo: match/share type with server side.
         // note that the server side is going to have
@@ -919,6 +931,10 @@ function sendState() {
             inputs: inputs,
             debugging_state: debugging_state,
         }
+	if (storage_json != undefined) {
+	    // @ts-expect-error syntaxhell
+	    step["storage_json"] = storage_json;
+	}
         const json = JSON.stringify(step);
         sendWS(json);
     }
@@ -1372,7 +1388,13 @@ function loadExplosionA(dir: string, base: string, start: number, end: number, p
 }
 
 function onConnectedWS() {
-    sendState(); // kickoff!
+    let json: string | undefined = undefined;
+    if (localStorage != undefined) {
+	// ?? undefined to avoid tsc hell with null.
+	json = localStorage.getItem(STORAGE_KEY) ?? undefined;
+    }
+    // kickoff!
+    sendState(json);
     window.requestAnimationFrame(nextFrame);
 }
 

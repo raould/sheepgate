@@ -1,3 +1,4 @@
+/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as Sz from './sizzler_screen';
 import * as G from '../geom';
 import * as K from '../konfig';
@@ -5,6 +6,7 @@ import * as Hs from '../high_scores';
 import * as Dr from '../drawing';
 import * as Tx from '../util/text';
 import * as A from '../animation';
+import * as D from '../debug';
 import * as U from '../util/util';
 import * as _ from 'lodash';
 import { RGBA, HCycle } from '../color';
@@ -16,9 +18,13 @@ const MUSIC_SFX = {
 };
 
 export class HighScoreTableScreen extends Sz.SizzlerScreen {
-    constructor(private readonly table: Hs.HighScores) {
+    constructor(private readonly table: Hs.HighScores, emit_table: boolean = false) {
         super({ title: "HIGH SCORES", skip_text: "PRESS [FIRE] TO CONTINUE", bg_color: RGBA.DARK_BLUE, timeout: 30*1000 });
 	this.mdb.shared.sfx.push(MUSIC_SFX);
+	D.log("emit_table?", emit_table);
+	if (emit_table) {
+	    this.mdb.shared.local_storage_json = table.toJSON()
+	}
     }
 
     step() {

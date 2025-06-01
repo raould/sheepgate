@@ -1,3 +1,4 @@
+/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as M from './menu';
 import * as Mdb from './menu_db';
 import * as Cdb from '../client_db';
