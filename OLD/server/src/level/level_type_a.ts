@@ -392,7 +392,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
     	    U.isU(this.people_reminder_timeout)) {
 	    this.people_reminder_timeout = K.PEOPLE_REMINDER_TIMEOUT;
 	}
-	if ((this.people_reminder_timeout ?? 0) > 0) {
+	if (U.exists(this.people_reminder_timeout) && this.people_reminder_timeout > 0) {
 	    const reminder: Dr.DrawText = {
 		wrap: false,
 		// hard-coded eye-balled positioning.
@@ -488,6 +488,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    enemy_generators: {},
 	    player_zone_width: K.GAMEPORT_PLAYER_ZONE_WIDTH,
 	    scoring: Sc.scoring_mk(score, e2s),
+	    toasts: {},
 	    hud: {
 		left: K.HUD_LEFT_RECT,
 		right: K.HUD_RIGHT_RECT,

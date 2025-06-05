@@ -66,6 +66,7 @@ export interface Damage {
 }
 
 // explicitly no hit points & isn't S.CollidableSprite.
+// todo: it is confusing that step() isn't in any of these interfaces.
 export interface Sprite extends GDB.Item, G.P2D, GDB.Aliveness, ImageResource, GDB.Steps, Tf.Flagged {
     draw_lt?: G.V2D;
     toJSON(): Object;
