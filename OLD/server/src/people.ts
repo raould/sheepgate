@@ -218,7 +218,7 @@ function waiting_mk(
 		db,
 		{
 		    lb: G.v2d_add(G.rect_lt(down_rect), G.v2d_mk(-20, -100)), // yay hard-coded magic values!
-		    msg: Rnd.singleton.boolean() ? "NICE" : "W00T",
+		    msg: Rnd.singleton.boolean() ? "NICE!" : "ACE!",
 		    lifetime: 1000,
 		}
 	    );

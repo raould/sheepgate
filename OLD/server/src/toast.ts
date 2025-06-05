@@ -34,7 +34,7 @@ export function add_toast(db: GDB.GameDB, spec: ToastSpec) {
 		step(db: GDB.GameDB) {
 		    if (this.lifetime > 0) {
 			this.lifetime -= db.local.frame_dt;
-			this.lb.y -= 3; // yay hard-coded magic values!
+			this.lb.y -= 2; // yay hard-coded magic values!
 		    }
 		},
 		to_drawing(): Dr.DrawText {
