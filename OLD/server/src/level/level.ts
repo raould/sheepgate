@@ -380,6 +380,7 @@ export abstract class AbstractLevel implements Level {
 	    next.shared.hud_drawing.texts.push(
 		toast.to_drawing()
 	    );
+	    toast.step(next);
 	});
     }
 

@@ -24,6 +24,7 @@ import * as Sc from '../scoring';
 import * as Hs from '../high_scores';
 import * as U from '../util/util';
 import * as D from '../debug';
+import * as T from '../toast'; // todo: remove after debugging.
 import { RGBA, HCycle } from '../color';
 import { DebugGraphics } from '../debug_graphics';
 import * as _ from 'lodash';
@@ -97,6 +98,16 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	this.step();
 	
 	this.db.shared.sfx.push({ sfx_id: K.BEGIN_SFX });
+
+	// todo: remove after debugging.
+	T.add_toast(
+	    this.db,
+	    {
+		lb: G.v2d_mk(100, 100),
+		msg: "TEST",
+		lifetime: 1000,
+	    }
+	);
     }
 
     private db_mk(far_spec0: FarSpec0[], score: number): GDB.GameDB {
