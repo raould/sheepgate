@@ -217,7 +217,7 @@ function waiting_mk(
 	    T.add_toast(
 		db,
 		{
-		    lb: G.rect_lt(down_rect),
+		    lb: G.v2d_add(G.rect_lt(down_rect), G.v2d_mk(-20, -100)), // yay hard-coded magic values!
 		    msg: Rnd.singleton.boolean() ? "NICE" : "W00T",
 		    lifetime: 1000,
 		}

@@ -136,6 +136,7 @@ export function v2d_add_mut(a: V2D, b: V2D) {
     a.x += b.x;
     a.y += b.y;
 }
+// why no sub_x and sub_y? whatevz.
 export function v2d_sub(a: V2D, b: V2D): V2D {
     return v2d_mk(a.x - b.x, a.y - b.y);
 }

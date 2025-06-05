@@ -34,6 +34,7 @@ export function add_toast(db: GDB.GameDB, spec: ToastSpec) {
 		step(db: GDB.GameDB) {
 		    if (this.lifetime > 0) {
 			this.lifetime -= db.local.frame_dt;
+			this.lb.y -= 3; // yay hard-coded magic values!
 		    }
 		},
 		to_drawing(): Dr.DrawText {
@@ -41,8 +42,8 @@ export function add_toast(db: GDB.GameDB, spec: ToastSpec) {
 			text: this.msg,
 			wrap: true,
 			lb: this.lb,
-			font: `20px ${K.MENU_FONT}`,
-			fillStyle: RGBA.WHITE.setAlpha01(
+			font: `40px ${K.MENU_FONT}`,
+			fillStyle: RGBA.GREEN.setAlpha01(
 			    U.t01(0, spec.lifetime, this.lifetime)
 			),
 		    };
