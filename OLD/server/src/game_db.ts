@@ -12,6 +12,7 @@ import * as Dr from './drawing';
 import * as Gr from './ground';
 import * as Sc from './scoring';
 import * as Gs from './game_stepper';
+import { Toast } from './toast';
 import * as Tkg from './ticking_generator';
 
 // NOTE: a lot of this is mostly for in-levels, see menu/menu_db, it is very confusing.
@@ -66,7 +67,7 @@ export interface Aliveness {
     // note: for a Sprite, aliveness is (most often) based on time.
     // for a(n) HpSprite, aliveness is based on hp > 0.
     get_lifecycle(db: GameDB): Lifecycle;
-    on_death(db: GameDB): void;
+    on_death?(db: GameDB): void;
 }
 
 // steps in the sense of physics simulation.
@@ -75,8 +76,9 @@ export interface Steps {
 }
 
 // todo: see if narrowing the type with Item<T> would be useful.
-export interface Item extends Identity, Comment, Aliveness {
+export interface Item extends Identity, Comment, Aliveness { // todo: step()?
 }
+
 // todo: should be in the db type/instance so that each db can have its own numbering space. whatever.
 var next_db_id: number = 0;
 
@@ -199,6 +201,7 @@ export interface DBLocal {
     player_zone_width: number;
     // todo: support multiple players, one Scoring per each.
     scoring: Sc.Scoring;
+    toasts: U.Dict<Toast>, 
     hud: {
         left: G.Rect,
         right: G.Rect,
@@ -224,14 +227,19 @@ export interface ImageResources {
 
 // *** warning: note that all of 'shared' round-trips with the client! ***
 export interface DBSharedCore extends Db.DB<GameWorld> { // todo: better name.
+    // note: inherited stuff like frame_drawing.
+
     level_index1: number; // 1-based.
     screen_shake: G.V2D;
     tick: number; // increment on each server step, even if the dt was 0.
     sim_now: number;
-    fps: number;
-    hud_drawing: Dr.Drawing;
+    fps: number;    
+    hud_drawing: Dr.Drawing; // match: these are always in screen space!
+
+    // somebody want to tell me exactly how these work? lifetime? coordinate system?
     permanent_bg_drawing: Dr.Drawing;
     permanent_fg_drawing: Dr.Drawing;
+
     // DBSharedCore is then extended to DBShared with 'items'.
 }
 
@@ -449,7 +457,7 @@ export function reap_items(db: GameDB) {
     const player = get_player(db);
     if (player != null && !keep_fn(db, player.dbid, player)) {
         delete db.shared.items.player;
-        player.on_death(db);
+        player.on_death?.(db);
     }
 
     // 2) reap everything else, since they are in sprite collections.
@@ -482,7 +490,7 @@ function reap_named<T extends S.Sprite>(db: GameDB, parent: object, name: string
     // @ts-ignore
     parent[name] = f.kept;
     for (const r of Object.values(f.removed)) {
-        r.on_death(db);
+        r.on_death?.(db);
     }
 }
 

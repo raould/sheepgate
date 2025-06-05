@@ -98,6 +98,8 @@ DO THESE NOW/NEXT:
 + hud proximity warning markers for the hypermega.
 + enemy shots already can intersect people, so make people killable? :(
 
+-9) info in the level either needs to go in the db (ie scoring) or the level needs to be passed into step()s.
+-8) add Toasts for: the Rescue reminder; pts up saving people.
 -7) a better way to do the bloody screen state machine.
 -6) ugh isn't "!!" technically dangerous?
 -5) the basic vs. adv enemy generators are not good, i would like the adv to no start until most/all basic are spawned.

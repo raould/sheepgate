@@ -165,6 +165,7 @@ export abstract class AbstractLevel implements Level {
         // has to be based on all the preceeding update calls above.
         this.update_impl(next);
 
+	this.update_toasts(next);
         this.update_hud(next);
         this.update_screen_shake(next);
         next.shared.debug_graphics = DebugGraphics.get_graphics();
@@ -373,6 +374,15 @@ export abstract class AbstractLevel implements Level {
     }
 
     // todo: a lot of these update_x() routines could be moved out to other files to clean up here.
+
+    private update_toasts(next: GDB.GameDB) {
+	Object.values(next.local.toasts).forEach(toast => {
+	    next.shared.frame_drawing.texts.push(
+		toast.to_drawing()
+	    );
+	    toast.step(next);
+	});
+    }
 
     protected update_hud(next: GDB.GameDB) {
         this.clear_hud(next);

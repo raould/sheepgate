@@ -136,6 +136,7 @@ export function v2d_add_mut(a: V2D, b: V2D) {
     a.x += b.x;
     a.y += b.y;
 }
+// why no sub_x and sub_y? whatevz.
 export function v2d_sub(a: V2D, b: V2D): V2D {
     return v2d_mk(a.x - b.x, a.y - b.y);
 }
@@ -429,7 +430,7 @@ export function rect_lt(r: Rect): V2D { return v2d_mk(rect_l(r), rect_t(r)); }
 export function rect_rt(r: Rect): V2D { return v2d_mk(rect_r(r), rect_t(r)); }
 export function rect_lb(r: Rect): V2D { return v2d_mk(rect_l(r), rect_b(r)); }
 export function rect_rb(r: Rect): V2D { return v2d_mk(rect_r(r), rect_b(r)); }
-// mid
+// mid, funny how random the order of (x/h,y/v) naming is in all these :-(
 export function rect_mt(r: Rect): V2D { return v2d_set_y(rect_mid(r), rect_t(r)); }
 export function rect_mb(r: Rect): V2D { return v2d_set_y(rect_mid(r), rect_b(r)); }
 export function rect_lm(r: Rect): V2D { return v2d_set_x(rect_mid(r), rect_l(r)); }

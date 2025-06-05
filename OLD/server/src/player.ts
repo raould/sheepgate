@@ -80,7 +80,7 @@ export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: any): S.S
 export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.Player {
     const p: PlayerSpritePrivate = {
         ...spec,
-        dbid: dbid,
+        dbid,
         comment: `player-${dbid}`,
         lt: spec.lt,
 	lt_wiggle: spec.lt,

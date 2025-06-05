@@ -11,6 +11,7 @@ import * as A from './animation';
 import * as U from './util/util';
 import * as Ur from './util/util_rnd';
 import * as K from './konfig';
+import * as T from './toast';
 
 // note: K.PEOPLE_MAX_COUNT is enforced below (hopefully)
 // so the scaling up across level progression doesn't too crazy.
@@ -204,7 +205,7 @@ function waiting_mk(
 	beam_down(db: GDB.GameDB, down_rect: G.Rect, on_end: (db: GDB.GameDB) => void) {
 	    this.lifecycle_state = GDB.Lifecycle.dead;
 	    db.shared.sfx.push({ sfx_id: K.BEAMDOWN_SFX, gain: 0.35 });
-            const s = GDB.add_sprite_dict_id_mut(
+            GDB.add_sprite_dict_id_mut(
                 db.shared.items.fx,
                 (dbid: GDB.DBID): S.Sprite => beam_down_anim_mk(
                     db,
@@ -212,6 +213,14 @@ function waiting_mk(
 		    down_rect,
 		    on_end,
 		)
+	    );
+	    T.add_toast(
+		db,
+		{
+		    lb: G.v2d_add(G.rect_lt(down_rect), G.v2d_mk(-20, -100)), // yay hard-coded magic values!
+		    msg: Rnd.singleton.boolean() ? "NICE!" : "ACE!",
+		    lifetime: 1000,
+		}
 	    );
 	},
         get_lifecycle(_:GDB.GameDB) {
