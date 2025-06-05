@@ -201,7 +201,7 @@ export interface DBLocal {
     player_zone_width: number;
     // todo: support multiple players, one Scoring per each.
     scoring: Sc.Scoring;
-    toasts: U.Dict<Toast>,
+    toasts: U.Dict<Toast>, 
     hud: {
         left: G.Rect,
         right: G.Rect,
@@ -227,14 +227,19 @@ export interface ImageResources {
 
 // *** warning: note that all of 'shared' round-trips with the client! ***
 export interface DBSharedCore extends Db.DB<GameWorld> { // todo: better name.
+    // note: inherited stuff like frame_drawing.
+
     level_index1: number; // 1-based.
     screen_shake: G.V2D;
     tick: number; // increment on each server step, even if the dt was 0.
     sim_now: number;
-    fps: number;
-    hud_drawing: Dr.Drawing;
+    fps: number;    
+    hud_drawing: Dr.Drawing; // match: these are always in screen space!
+
+    // somebody want to tell me exactly how these work? lifetime? coordinate system?
     permanent_bg_drawing: Dr.Drawing;
     permanent_fg_drawing: Dr.Drawing;
+
     // DBSharedCore is then extended to DBShared with 'items'.
 }
 

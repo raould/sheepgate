@@ -581,7 +581,7 @@ function renderHud(gdb: any) {
 }
 
 function renderHudDrawing(gdb: any) {
-    // note: the radar and other HUD items are drawn
+    // note / match: the radar and other HUD items are drawn
     // in screen space, not in game world space.
     // so "wrap" is always ignored. :-\
     const drawing = gdb.hud_drawing;

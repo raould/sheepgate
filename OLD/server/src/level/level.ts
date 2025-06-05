@@ -377,7 +377,7 @@ export abstract class AbstractLevel implements Level {
 
     private update_toasts(next: GDB.GameDB) {
 	Object.values(next.local.toasts).forEach(toast => {
-	    next.shared.hud_drawing.texts.push(
+	    next.shared.frame_drawing.texts.push(
 		toast.to_drawing()
 	    );
 	    toast.step(next);
