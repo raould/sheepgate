@@ -316,7 +316,7 @@ export abstract class AbstractLevel implements Level {
 
     private clear_single_shot_commands(next: GDB.GameDB) {
         const commands = next.local.client_db.inputs.commands;
-        Object.values(Cmd.key2cmd).forEach(
+        Object.values(Cmd.CommandSpecs).forEach(
             (s: Cmd.CommandSpec) => {
                 if (s.is_singular) {
                     delete commands[s.command];
