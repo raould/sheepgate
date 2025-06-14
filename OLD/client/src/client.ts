@@ -76,7 +76,7 @@ const DEBUG_IMG_BOX_COLOR: string = "rgba(255,0,0,0.5)";
 const client_id = Date.now()
 // todo: game breaks when the fps is set to anything other than 30.
 // also requestAnimationFrame() never gives me more than 30 fps anyway?
-const TARGET_FPS = 30;
+const TARGET_FPS = 60;
 const MSEC_PER_FRAME = 1000 / TARGET_FPS;
 log("client_id", client_id);
 

@@ -57,7 +57,7 @@ export const INVALID_CLIENT_ID = Number.NEGATIVE_INFINITY;  // K
 // note/todo: so far everything has been hacked to look
 // good (i use that term very loosely) based on FPS=30 value.
 // todo: game breaks when the fps is set to anything other than 30. :-(
-export const FPS = 30; // K
+export const FPS = 60; // K
 export const FRAME_MSEC_DT = 1000 / FPS; // K
 
 // todo: match: the size of the game world is runtime
@@ -164,7 +164,7 @@ export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(PLAYER_SHIP_SIZE.x * 3);
 // so the value used to reduce the size of the zone after reversing is used for stepping inside
 // the zone, too. got that? :-\
 // note: the dynamics here aren't as good as real stargate, either :-(
-export const GAMEPORT_PLAYER_ZONE_STEP_X = 10;
+export const GAMEPORT_PLAYER_ZONE_STEP_X = 5;
 // the algorithm for y step is different than for x step because there's no
 // flexible zone height actually used for y, only width for x. i prefer the
 // feeling of how y works, but haven't figured out how to get it back for x
@@ -263,13 +263,13 @@ export const SHIELD_HP_COLOR = GOOD_COLOR;
 
 // pixels/dt? pixels/sec? i dunno!
 export const PLAYER_SHOT_DAMAGE = 5; // W
-export const PLAYER_SHOT_SPEED = 1; // W // note that enemies use a scaled version of this. :-\
+export const PLAYER_SHOT_SPEED = 0.5; // W // note that enemies use a scaled version of this. :-\
 export const PLAYER_SHOT_LIFE_MSEC = 500; // W
 export const PLAYER_SHOT_SIZE = G.v2d_mk(30, 5); // W // note: it gets dynamically altered during lifetime.
 export const PLAYER_WEAPON_CLIP_COOLDOWN_MSEC = 300; // W
 export const PLAYER_WEAPON_SHOT_COOLDOWN_MSEC = 50; // W
 export const PLAYER_WEAPON_SHOT_COUNT = 3; // W
-export const BULLET_SHOT_SPEED = 0.7; // W // note that enemies use a scaled version of this. :-\
+export const BULLET_SHOT_SPEED = 0.3; // W // note that enemies use a scaled version of this. :-\
 export const BULLET_SHOT_LIFE_MSEC = 3000; // W
 export const BULLET_SHOT_SIZE = G.v2d_mk(44, 3); // W
 export const BALL_SHOT_SIZE = G.v2d_mk(6, 6); // W
@@ -315,11 +315,11 @@ export const SHIELD_HIT_ANIM_RADIUS = 0.1; // arbitrary hack. // K? // L?
 // match: explosion particle generator is an 8-way.
 export const EXPLOSION_PARTICLE_COUNT = 8 * 2; // K
 export const EXPLOSION_PARTICLE_DURATION_MSEC = 300; // K
-export const EXPLOSION_PARTICLE_SPEED = 0.5; // units? K
+export const EXPLOSION_PARTICLE_SPEED = 0.3; // units? K
 // match: shield hit particle generator is an ellipse.
 export const SHIELD_HIT_PARTICLE_COUNT = 10; // K
 export const SHIELD_HIT_PARTICLE_DURATION_MSEC = 200; // K
-export const SHIELD_HIT_PARTICLE_SPEED = 0.15; // units? K
+export const SHIELD_HIT_PARTICLE_SPEED = 0.07; // units? K
 
 // empty means you wanted it to not be there,
 // missing means it wasn't found and is a bug.
