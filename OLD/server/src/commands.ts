@@ -55,35 +55,3 @@ add_spec(CommandSpecs, { command: CommandType.debug_toggle_stepping, is_singular
 add_spec(CommandSpecs, { command: CommandType.debug_win_level, is_singular: true });
 add_spec(CommandSpecs, { command: CommandType.debug_lose_level, is_singular: true });
 add_spec(CommandSpecs, { command: CommandType.debug_smite, is_singular: true });
-
-// todo: share this (unfortunately) with the client/server, esp. the "is_singular" part.
-// is_singular true means there's no auto-repeat while the key is held down.
-export const key2cmd: { [k: string]: CommandSpec } = {
-    Escape:     CommandSpecs[CommandType.pause],
-    h:          CommandSpecs[CommandType.high_score],
-    H:          CommandSpecs[CommandType.high_score],
-    // standard gameplay commands.
-    " ":        CommandSpecs[CommandType.fire],
-    ArrowUp:    CommandSpecs[CommandType.up],
-    w:          CommandSpecs[CommandType.up],
-    W:          CommandSpecs[CommandType.up],
-    ArrowDown:  CommandSpecs[CommandType.down],
-    s:          CommandSpecs[CommandType.down],
-    S:          CommandSpecs[CommandType.down],
-    ArrowLeft:  CommandSpecs[CommandType.left],
-    a:          CommandSpecs[CommandType.left],
-    A:          CommandSpecs[CommandType.left],
-    ArrowRight: CommandSpecs[CommandType.right],
-    d:          CommandSpecs[CommandType.right],
-    D:          CommandSpecs[CommandType.right],
-    Shift:      CommandSpecs[CommandType.thrust],
-    // secret debugging stuff.
-    ".":        CommandSpecs[CommandType.debug_step_frame],
-    "!":        CommandSpecs[CommandType.debug_dump_state],
-    b:          CommandSpecs[CommandType.debug_toggle_graphics],
-    n:          CommandSpecs[CommandType.debug_toggle_annotations],
-    "/":        CommandSpecs[CommandType.debug_toggle_stepping],
-    "^":        CommandSpecs[CommandType.debug_win_level],
-    "&":        CommandSpecs[CommandType.debug_lose_level],
-    "*":        CommandSpecs[CommandType.debug_smite],
-};

@@ -116,11 +116,11 @@ const DownSpec: CommandSpec = { command: CommandType.down, is_singular: false };
 const LeftSpec: CommandSpec = { command: CommandType.left, is_singular: false };
 const RightSpec: CommandSpec = { command: CommandType.right, is_singular: false };
 const ThrustSpec: CommandSpec = { command: CommandType.thrust, is_singular: false };
-const key2cmd: { [k: string]: CommandSpec } = {
+const key2cmd_default: { [k: string]: CommandSpec } = {
     // standard gameplay commands.
     Escape:     PauseSpec,
-    p:     	PauseSpec,
-    P:     	PauseSpec,
+    p:          PauseSpec,
+    P:          PauseSpec,
     " ":        FireSpec,
     z:          FireSpec,
     Z:          FireSpec,
@@ -128,8 +128,8 @@ const key2cmd: { [k: string]: CommandSpec } = {
     ArrowUp:    UpSpec,
     w:          UpSpec,
     W:          UpSpec,
-    k:		UpSpec,
-    K:		UpSpec,
+    k:          UpSpec,
+    K:          UpSpec,
     ArrowDown:  DownSpec,
     s:          DownSpec,
     S:          DownSpec,
@@ -156,6 +156,58 @@ const key2cmd: { [k: string]: CommandSpec } = {
     "&":        { command: CommandType.debug_lose_level, is_singular: true },
     "*":        { command: CommandType.debug_smite, is_singular: true },
 };
+const key2cmd_hotrod: { [k: string]: CommandSpec } = {
+    Escape:     PauseSpec,
+    p:          PauseSpec,
+    P:          PauseSpec,
+    // 1P, 2P buttons:
+    1: FireSpec,
+    2: FireSpec,
+    // side buttons.
+    3: FireSpec,
+    4: FireSpec,
+    // left joystick:
+    ArrowUp:    UpSpec,
+    ArrowDown:  DownSpec,
+    ArrowLeft:  LeftSpec,
+    ArrowRight: RightSpec,
+    // right joystick:
+    r: UpSpec,
+    R: UpSpec,
+    d: LeftSpec,
+    D: LeftSpec,
+    g: RightSpec,
+    G: RightSpec,
+    f: DownSpec,
+    F: DownSpec,
+    // left buttons:
+    Control: FireSpec,
+    Alt: FireSpec,
+    " ": FireSpec,
+    c: FireSpec,
+    C: FireSpec,
+    Shift: FireSpec,
+    z: FireSpec,
+    Z: FireSpec,
+    x: FireSpec,
+    X: FireSpec,
+    // right buttons:
+    a: FireSpec,
+    A: FireSpec,
+    s: FireSpec,
+    S: FireSpec,
+    q: FireSpec,
+    Q: FireSpec,
+    w: FireSpec,
+    W: FireSpec,
+    e: FireSpec,
+    E: FireSpec,
+    "[": FireSpec,
+    "]": FireSpec,
+    "{": FireSpec,
+    "}": FireSpec,
+}
+const key2cmd = key2cmd_default;
 
 abstract class AbstractParticleGenerator {
     // "o" means "offset" because we're keeping the particles
