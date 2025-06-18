@@ -170,45 +170,53 @@ export function scale_spec(level: number, rank: S.Rank, directions: F.Facing, sw
 // fyi: 'basic', 'small', here are enemy Rank, not the size of the bullet.
 // note: these are max values, see Eu.level_scale_{up,down}().
 
-const ENEMY_BASIC_SHOT_DAMAGE = K.PLAYER_HP / 10; // L, W
-D.assert(ENEMY_BASIC_SHOT_DAMAGE >= 0.1);
-const ENEMY_BASIC_SHOT_SPEED = 0.08; // L, W
-const ENEMY_BASIC_SHOT_SIZE = K.BALL_SHOT_SIZE;
-const ENEMY_BASIC_SHOT_LIFE_MSEC = 2*1000; // L, W
-const ENEMY_BASIC_WEAPON_CLIP_COOLDOWN_MSEC = 20*1000; // L, W
-const ENEMY_BASIC_WEAPON_SHOT_COOLDOWN_MSEC = 10*1000; // L, W
-const ENEMY_BASIC_WEAPON_SHOT_COUNT = 1; // L, W
+const BASIC_SPEC = {
+    ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 10, // L, W
+    ENEMY_SHOT_SPEED: K.d2s(0.08), // L, W
+    ENEMY_SHOT_SIZE: K.BALL_SHOT_SIZE,
+    ENEMY_SHOT_LIFE_MSEC: 2*1000, // L, W
+    ENEMY_WEAPON_CLIP_COOLDOWN_MSEC: 20*1000, // L, W
+    ENEMY_WEAPON_SHOT_COOLDOWN_MSEC: 10*1000, // L, W
+    ENEMY_WEAPON_SHOT_COUNT: 1, // L, W
+};
+D.assert(BASIC_SPEC.ENEMY_SHOT_DAMAGE >= 0.1);
 
-const ENEMY_SMALL_SHOT_DAMAGE = K.PLAYER_HP / 5; // L, W
-D.assert(ENEMY_SMALL_SHOT_DAMAGE >= 0.1);
-const ENEMY_SMALL_SHOT_SPEED = 0.10; // L, W
-const ENEMY_SMALL_SHOT_SIZE = K.BALL_SHOT_SIZE;
-const ENEMY_SMALL_SHOT_LIFE_MSEC = 3*1000; // L, W
-const ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC = 9*1000; // L, W
-const ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC = 1*1000; // L, W
-const ENEMY_SMALL_WEAPON_SHOT_COUNT = 3; // L, W
+const SMALL_SPEC = {
+    ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 5, // L, W
+    ENEMY_SHOT_SPEED: K.d2s(0.1), // L, W
+    ENEMY_SHOT_SIZE: K.BALL_SHOT_SIZE,
+    ENEMY_SHOT_LIFE_MSEC: 3*1000, // L, W
+    ENEMY_WEAPON_CLIP_COOLDOWN_MSEC: 9*1000, // L, W
+    ENEMY_WEAPON_SHOT_COOLDOWN_MSEC: 1*1000, // L, W
+    ENEMY_WEAPON_SHOT_COUNT: 3, // L, W
+};
+D.assert(SMALL_SPEC.ENEMY_SHOT_DAMAGE >= 0.1);
 
-const ENEMY_MEGA_SHOT_DAMAGE = K.PLAYER_HP / 4; // L, W
-D.assert(ENEMY_MEGA_SHOT_DAMAGE >= 0.1);
-const ENEMY_MEGA_SHOT_SPEED = 0.10; // L, W
-const ENEMY_MEGA_SHOT_SIZE = K.BALL_SHOT_SIZE;
-const ENEMY_MEGA_SHOT_LIFE_MSEC = 3*1000; // L, W
-const ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC = 8*1000; // L, W
-const ENEMY_MEGA_WEAPON_SHOT_COOLDOWN_MSEC = 250; // L, W
-const ENEMY_MEGA_WEAPON_SHOT_COUNT = 3; // L, W
+const MEGA_SPEC = {
+    ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 4, // L, W
+    ENEMY_SHOT_SPEED: K.d2s(0.1), // L, W
+    ENEMY_SHOT_SIZE: K.BALL_SHOT_SIZE,
+    ENEMY_SHOT_LIFE_MSEC: 3*1000, // L, W
+    ENEMY_WEAPON_CLIP_COOLDOWN_MSEC: 8*1000, // L, W
+    ENEMY_WEAPON_SHOT_COOLDOWN_MSEC: 250, // L, W
+    ENEMY_WEAPON_SHOT_COUNT: 3, // L, W
+};
+D.assert(MEGA_SPEC.ENEMY_SHOT_DAMAGE >= 0.1);
 
-const ENEMY_HYPERMEGA_SHOT_DAMAGE = K.PLAYER_HP / 3; // L, W
-D.assert(ENEMY_HYPERMEGA_SHOT_DAMAGE >= 0.1);
-const ENEMY_HYPERMEGA_SHOT_SPEED = 0.15; // L, W
-const ENEMY_HYPERMEGA_SHOT_SIZE = G.v2d_scale_i(K.BALL_SHOT_SIZE, 2); // bigger.
-const ENEMY_HYPERMEGA_SHOT_LIFE_MSEC = 3*1000; // L, W
-const ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC = 2*1000; // L, W
-const ENEMY_HYPERMEGA_WEAPON_SHOT_COOLDOWN_MSEC = 500; // L, W
-const ENEMY_HYPERMEGA_WEAPON_SHOT_COUNT = 4; // L, W
+const HYPERMEGA_SPEC = {
+    ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 3, // L, W
+    ENEMY_SHOT_SPEED: K.d2s(0.15), // L, W
+    ENEMY_SHOT_SIZE: G.v2d_scale_i(K.BALL_SHOT_SIZE, 2), // bigger!
+    ENEMY_SHOT_LIFE_MSEC: 3*1000, // L, W
+    ENEMY_WEAPON_CLIP_COOLDOWN_MSEC: 2*1000, // L, W
+    ENEMY_WEAPON_SHOT_COOLDOWN_MSEC: 500, // L, W
+    ENEMY_WEAPON_SHOT_COUNT: 4, // L, W
+};
+D.assert(HYPERMEGA_SPEC.ENEMY_SHOT_DAMAGE >= 0.1);
 
 // todo: meta-build these boilerplate-hell functions? sheesh.
 
-function enemy_basic_spec(level: number, direction: F.Facing, swivel: boolean): EnemyWeaponSpec {
+function enemy_from_spec(level: number, direction: F.Facing, swivel: boolean, spec: any): EnemyWeaponSpec {
     return {
 	direction: direction,
 	swivel: swivel,
@@ -216,126 +224,45 @@ function enemy_basic_spec(level: number, direction: F.Facing, swivel: boolean): 
             reload_spec: {
                 duration_msec: Eu.level_scale_down(
 		    level,
-		    ENEMY_BASIC_WEAPON_CLIP_COOLDOWN_MSEC * 2,
-		    ENEMY_BASIC_WEAPON_CLIP_COOLDOWN_MSEC
+		    spec.ENEMY_WEAPON_CLIP_COOLDOWN_MSEC * 2,
+		    spec.ENEMY_WEAPON_CLIP_COOLDOWN_MSEC
 		),
                 on_reload: () => { },
             },
             shot_spec: {
-		duration_msec: ENEMY_BASIC_WEAPON_SHOT_COOLDOWN_MSEC,
+		duration_msec: spec.ENEMY_WEAPON_SHOT_COOLDOWN_MSEC,
 	    },
             count: Math.ceil(Eu.level_scale_up(
 		level,
 		1,
-		ENEMY_BASIC_WEAPON_SHOT_COUNT,
+		spec.ENEMY_WEAPON_SHOT_COUNT,
 	    )),
         },
         shot_damage: Eu.level_scale_up(
 	    level,
-	    ENEMY_BASIC_SHOT_DAMAGE / 2,
-	    ENEMY_BASIC_SHOT_DAMAGE,
+	    spec.ENEMY_SHOT_DAMAGE / 2,
+	    spec.ENEMY_SHOT_DAMAGE,
 	),
-        shot_speed: ENEMY_BASIC_SHOT_SPEED,
-        shot_size: ENEMY_BASIC_SHOT_SIZE,
-        shot_life_msec: ENEMY_BASIC_SHOT_LIFE_MSEC,
+        shot_speed: spec.ENEMY_SHOT_SPEED,
+        shot_size: spec.ENEMY_SHOT_SIZE,
+        shot_life_msec: spec.ENEMY_SHOT_LIFE_MSEC,
         in_cmask: C.CMask.enemyShot,
         from_cmask: C.CMask.player | C.CMask.base,
     }
+}
+
+function enemy_basic_spec(level: number, direction: F.Facing, swivel: boolean): EnemyWeaponSpec {
+    return enemy_from_spec(level, direction, swivel, BASIC_SPEC);
 }
 
 function enemy_small_spec(level: number, direction: F.Facing, swivel: boolean): EnemyWeaponSpec {
-    return {
-	direction: direction,
-	swivel: swivel,
-        clip_spec: {
-            reload_spec: {
-                duration_msec: Eu.level_scale_down(
-		    level,
-		    ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC * 2,
-		    ENEMY_SMALL_WEAPON_CLIP_COOLDOWN_MSEC
-		),
-                on_reload: () => { },
-            },
-            shot_spec: {
-		duration_msec: ENEMY_SMALL_WEAPON_SHOT_COOLDOWN_MSEC,
-	    },
-            count: Math.ceil(Eu.level_scale_up(
-		level,
-		1,
-		ENEMY_SMALL_WEAPON_SHOT_COUNT,
-	    )),
-        },
-        shot_damage: Eu.level_scale_up(
-	    level,
-	    ENEMY_SMALL_SHOT_DAMAGE / 2,
-	    ENEMY_SMALL_SHOT_DAMAGE,
-	),
-        shot_speed: ENEMY_SMALL_SHOT_SPEED,
-        shot_size: ENEMY_SMALL_SHOT_SIZE,
-        shot_life_msec: ENEMY_SMALL_SHOT_LIFE_MSEC,
-        in_cmask: C.CMask.enemyShot,
-        from_cmask: C.CMask.player | C.CMask.base,
-    }
+    return enemy_from_spec(level, direction, swivel, SMALL_SPEC);
 }
 
 function enemy_mega_spec(level: number, direction: F.Facing, swivel: boolean): EnemyWeaponSpec {
-    return {
-	direction: direction,
-	swivel: swivel,
-        clip_spec: {
-            reload_spec: {
-                duration_msec: Eu.level_scale_down(
-		    level,
-                    ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC * 2,
-                    ENEMY_MEGA_WEAPON_CLIP_COOLDOWN_MSEC
-		),
-                on_reload: () => { },
-            },
-            shot_spec: {
-                duration_msec: ENEMY_MEGA_WEAPON_SHOT_COOLDOWN_MSEC,
-            },
-            count: Math.ceil(Eu.level_scale_up(
-		level,
-		1,
-		ENEMY_MEGA_WEAPON_SHOT_COUNT,
-	    )),
-        },
-        shot_damage: ENEMY_MEGA_SHOT_DAMAGE,
-        shot_speed: ENEMY_MEGA_SHOT_SPEED,
-        shot_size: ENEMY_MEGA_SHOT_SIZE,
-        shot_life_msec: ENEMY_MEGA_SHOT_LIFE_MSEC,
-        in_cmask: C.CMask.enemyShot,
-        from_cmask: C.CMask.player | C.CMask.base,
-    }
+    return enemy_from_spec(level, direction, swivel, MEGA_SPEC);
 }
 
 function enemy_hypermega_spec(level: number, direction: F.Facing, swivel: boolean): EnemyWeaponSpec {
-    return {
-	direction: direction,
-	swivel: swivel,
-        clip_spec: {
-            reload_spec: {
-                duration_msec: Eu.level_scale_down(
-		    level,
-                    ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC * 2,
-                    ENEMY_HYPERMEGA_WEAPON_CLIP_COOLDOWN_MSEC
-		),
-                on_reload: () => { },
-            },
-            shot_spec: {
-                duration_msec: ENEMY_HYPERMEGA_WEAPON_SHOT_COOLDOWN_MSEC,
-            },
-            count: Math.ceil(Eu.level_scale_up(
-		level,
-		1,
-		ENEMY_HYPERMEGA_WEAPON_SHOT_COUNT,
-	    )),
-        },
-        shot_damage: ENEMY_HYPERMEGA_SHOT_DAMAGE,
-        shot_speed: ENEMY_HYPERMEGA_SHOT_SPEED,
-        shot_size: ENEMY_HYPERMEGA_SHOT_SIZE,
-        shot_life_msec: ENEMY_HYPERMEGA_SHOT_LIFE_MSEC,
-        in_cmask: C.CMask.enemyShot,
-        from_cmask: C.CMask.player | C.CMask.base,
-    }
+    return enemy_from_spec(level, direction, swivel, HYPERMEGA_SPEC);
 }
