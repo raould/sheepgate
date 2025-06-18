@@ -134,8 +134,8 @@ export class SizzlerScreen implements M.Menu {
             {
                 wrap: false,
                 color: this.header_cycle.current(),
-                line_width: 4,
-                rect: G.rect_inset(this.mdb.shared.world.screen, G.v2d_mk_nn(10)),
+                line_width: K.d2si(4),
+                rect: G.rect_inset(this.mdb.shared.world.screen, K.vd2si(G.v2d_mk_nn(10))),
             }
         );
         const rnd_inner = new Rnd.RandomImpl(this.elapsed);
@@ -144,10 +144,10 @@ export class SizzlerScreen implements M.Menu {
             {
                 wrap: false,
                 color: this.header_cycle.current().setAlpha01(0.7),
-                line_width: 2,
-                rect: G.rect_inset(this.mdb.shared.world.screen, G.v2d_mk_nn(25)),
+                line_width: K.d2si(2),
+                rect: G.rect_inset(this.mdb.shared.world.screen, K.vd2si(G.v2d_mk_nn(25))),
             },
-            50, 1.5, rnd_inner
+            50, K.d2s(1.5), rnd_inner
         );
     }
 

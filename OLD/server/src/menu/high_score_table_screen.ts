@@ -11,6 +11,8 @@ import * as U from '../util/util';
 import * as _ from 'lodash';
 import { RGBA, HCycle } from '../color';
 
+const FONT_SIZE = K.d2si(40);
+
 const MUSIC_SFX = {
     sfx_id: K.WIGGLE_SFX,
     gain: 0.5,
@@ -39,8 +41,8 @@ export class HighScoreTableScreen extends Sz.SizzlerScreen {
         const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.3);
         const score_width = U.count_digits(this.table.scores[0].score);
         this.table.scores.forEach((high_score: Hs.HighScore, index: number) => {
-            const mi = Tx.measure_text(high_score.callsign, 40);
-            const ms = Tx.measure_text(String(high_score.score), 40);
+            const mi = Tx.measure_text(high_score.callsign, FONT_SIZE);
+            const ms = Tx.measure_text(String(high_score.score), FONT_SIZE);
             const v_offset = (Math.max(mi.y, ms.y) + 5) * index;
 
             const t = ((this.elapsed / (this.mdb.frame_dt*100)) + ((10-index)/10)) % 1;
@@ -50,7 +52,7 @@ export class HighScoreTableScreen extends Sz.SizzlerScreen {
             const ti: Dr.DrawText = {
                 lb: G.v2d_add(center, G.v2d_mk(hi_offset, v_offset)),
                 text: high_score.callsign,
-                font: `40px ${K.MENU_FONT}`,
+                font: `${FONT_SIZE}px ${K.MENU_FONT}`,
                 fillStyle: t_hcycle.current(),
                 wrap: false,
             };            
@@ -60,7 +62,7 @@ export class HighScoreTableScreen extends Sz.SizzlerScreen {
             const ts: Dr.DrawText = {
                 lb: G.v2d_add(center, G.v2d_mk(hs_offset, v_offset)),
                 text: _.padStart(high_score.score.toString(), score_width, '0'),
-                font: `40px ${K.MENU_FONT}`,
+                font: `${FONT_SIZE}px ${K.MENU_FONT}`,
                 fillStyle: t_hcycle.current(),
                 wrap: false,
             };            

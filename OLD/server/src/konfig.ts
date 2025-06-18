@@ -4,6 +4,10 @@ import * as Uf from './util/util_feq';
 import * as G from './geom';
 import { RGBA } from './color';
 
+// todo: what would be better is to have types for the different
+// kinds of values, and to have all this in a dict, and then
+// map all the dict values through scaling that is custom per type.
+
 // todo: d2s doesn't really give good results in every case :-(
 
 // todo: split out the 'L' values
@@ -226,8 +230,8 @@ export const CLOUD_ALPHA = 0.1; // L
 // a) so we can try to avoid floating point error 'seams' between sprites.
 // b) so we can get the parallax working, and across the world-wrap boundary.
 export const TILE_WIDTH = d2si(256); // L
-export const BG_FAR_BG_SIZE = vd2si(G.v2d_mk(TILE_WIDTH, 260)); // L
-export const BG_NEAR_BG_SIZE = vd2si(G.v2d_mk(TILE_WIDTH, 80)); // L
+export const BG_FAR_BG_SIZE = G.v2d_mk(TILE_WIDTH, d2si(260)); // L
+export const BG_NEAR_BG_SIZE = G.v2d_mk(TILE_WIDTH, d2si(80)); // L
 // match: ground_y
 // match: BG_LAYER_SCALE
 // match: TILE_WIDTH so that they line up in parallax.
@@ -235,12 +239,9 @@ export const BG_NEAR_BG_SIZE = vd2si(G.v2d_mk(TILE_WIDTH, 80)); // L
 // thus far, there must be BG_LAYER_SCALE*BG_LAYER_SCALE ground tiles for every single far bg tile.
 // thus far, there must be BG_LAYER_SCALE ground tiles for every single near bg tile.
 export const GROUND_SIZE = G.v2d_mk(TILE_WIDTH, d2si(40)); // L
-D.assert(
-    BG_NEAR_BG_SIZE.x == TILE_WIDTH &&
-    BG_NEAR_BG_SIZE.x == TILE_WIDTH &&
-    GROUND_SIZE.x == TILE_WIDTH,
-    "wtf"
-);
+D.assert_eqeq(BG_NEAR_BG_SIZE.x, TILE_WIDTH);
+D.assert_eqeq(BG_NEAR_BG_SIZE.x, TILE_WIDTH);
+D.assert_eqeq(GROUND_SIZE.x, TILE_WIDTH);
 
 export const BASE_SIZE = vd2si(G.v2d_mk(128, 32)); // L // ugh position is elsewhere.
 // the base shield alpha has to be

@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 
 // todo: utterly horrible hackiness herein to approximately/guess measure.
 
-const MEASURE_SCALE_HACK = 11 / 30;
+const MEASURE_SCALE_HACK = 11 / 30; // empirical.
 
 export function measure_text(text: string, font_size: number): G.V2D {
     const h = text.length * MEASURE_SCALE_HACK * font_size;

@@ -46,7 +46,7 @@ export class PlainScreen implements M.Menu {
 	    40
 	);
 
-	const line_height = spec.instructions_size + 5;
+	const line_height = spec.instructions_size + K.d2si(5);
 	const iyoff = line_height * spec.instructions.length / 2;
 	const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.5 - iyoff);
         spec.instructions.forEach((text: string, index: number) => {
