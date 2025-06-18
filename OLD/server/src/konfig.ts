@@ -1,5 +1,6 @@
 /* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as D from './debug';
+import * as Uf from './util/util_feq';
 import * as G from './geom';
 import { RGBA } from './color';
 
@@ -43,12 +44,6 @@ export const MAX_CONCURRENT_GAMES = -1; // < 0 is disabled.
 // small debounce so previous button mashing might end first.
 export const USER_SKIP_AFTER_MSEC = 500;
 
-// match: client/font.css
-// todo: figure out how the hell to measure strings.
-export const GAME_FONT = 'gamefont'; // K
-export const MENU_FONT = 'menufont'; // K
-export const SCORE_FONT = `20px ${GAME_FONT}`;
-export const HUD_MESSAGE_FONT = `12px ${GAME_FONT}`;
 export const MAX_HIGH_SCORE_COUNT = 8;
 
 export const WS_PORT = 6969; // K
@@ -68,27 +63,45 @@ export const FRAME_MSEC_DT = 1000 / FPS; // K
 // (a nuance is if i want to do some aquatron levels, then
 // we'll probably-maybe need y scrolling.)
 
-// match: client canvas etc.
-// these are currently in pixels.
-// todo: logical coords instead!? for targeting different display types.
-// note: things like ground sprites are drawn/scaled to fit this width.
-// so it should ideally be as big as the fully displayable area on the output device.
-export const PLAYER_SHIP_SIZE = G.v2d_mk(76, 25); // L?
-// note: the cow size should be kinda <= the ship size,
-// because use of the variables below, and elsewhere.
-export const PLAYER_COW_SIZE = G.v2d_scale_i(G.v2d_mk(32, 16), 2.4); // L?
-export const PLAYER_SHADOW_SIZE = G.v2d_mk(76, 10); // L?
-
 // external code should ideally use SCREEN_RECT below
-export const SCREEN_BOUNDS0 = G.v2d_mk(960, 540); // K
+export const DESIGN_SIZE = G.v2d_mk(960, 540); // K
+export const SCREEN_BOUNDS0 = G.v2d_mk(2560, 1440); // K
+const DESIGN_ASPECT = G.v2d_aspect(DESIGN_SIZE);
+const SCREEN_ASPECT = G.v2d_aspect(SCREEN_BOUNDS0);
+D.assert(Uf.eqf(DESIGN_ASPECT, SCREEN_ASPECT));
+// 'design scale' to 'screen scale'.
+export const D2S = SCREEN_BOUNDS0.x / DESIGN_SIZE.x;
+export function d2s(d: number): number {
+    return d * D2S;
+}
+export function vd2s(ds: G.V2D): G.V2D {
+    return G.v2d_scale(ds, D2S);
+}
 const SCREEN_RECT0 = G.v2d_2_rect(SCREEN_BOUNDS0);
 // todo: overscan only sorta works, if it gets too big
 // you see rendering popin and other grossness.
 // and it doesn't scale the world rendering down
 // so things like sizzlers overlap the title text.
 // todo: ideally would scale and be user configurable, for TVs.
-const OVERSCAN_INSET = G.v2d_mk(5, 5); // K
+const OVERSCAN_INSET = vd2s(G.v2d_mk(5, 5)); // K
 export const SCREEN_RECT = G.rect_inset(SCREEN_RECT0, OVERSCAN_INSET);
+
+// match: client/font.css
+// todo: figure out how the hell to measure strings.
+export const GAME_FONT = 'gamefont'; // K
+export const MENU_FONT = 'menufont'; // K
+export const SCORE_FONT = `${d2s(20)}px ${GAME_FONT}`;
+export const HUD_MESSAGE_FONT = `${d2s(12)}px ${GAME_FONT}`;
+// match: client canvas etc.
+// these are currently in pixels.
+// todo: logical coords instead!? for targeting different display types.
+// note: things like ground sprites are drawn/scaled to fit this width.
+// so it should ideally be as big as the fully displayable area on the output device.
+export const PLAYER_SHIP_SIZE = vd2s(G.v2d_mk(76, 25)); // L?
+// note: the cow size should be kinda <= the ship size,
+// because use of the variables below, and elsewhere.
+export const PLAYER_COW_SIZE = vd2s(G.v2d_scale_i(G.v2d_mk(32, 16), 2.4)); // L?
+export const PLAYER_SHADOW_SIZE = vd2s(G.v2d_mk(76, 10)); // L?
 
 // todo: all the screen -> hud/gameport would be better done with 2d 3x3 matricies.
 
