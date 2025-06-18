@@ -4,6 +4,8 @@ import * as Uf from './util/util_feq';
 import * as G from './geom';
 import { RGBA } from './color';
 
+// todo: d2s doesn't really give good results in every case :-(
+
 // todo: split out the 'L' values
 // into per-level konfigurations,
 // and/or support levels overriding them.
@@ -52,7 +54,7 @@ export const INVALID_CLIENT_ID = Number.NEGATIVE_INFINITY;  // K
 // note/todo: so far everything has been hacked to look
 // good (i use that term very loosely) based on FPS=30 value.
 // todo: game breaks when the fps is set to anything other than 30. :-(
-export const FPS = 30; // K
+export const FPS = 60; // K
 export const FRAME_MSEC_DT = 1000 / FPS; // K
 
 // todo: match: the size of the game world is runtime
@@ -185,12 +187,7 @@ export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(PLAYER_SHIP_SIZE.x * 3);
 // so the value used to reduce the size of the zone after reversing is used for stepping inside
 // the zone, too. got that? :-\
 // note: the dynamics here aren't as good as real stargate, either :-(
-export const GAMEPORT_PLAYER_ZONE_STEP_X = d2si(10);
-// the algorithm for y step is different than for x step because there's no
-// flexible zone height actually used for y, only width for x. i prefer the
-// feeling of how y works, but haven't figured out how to get it back for x
-// and keep the zone stuff at the same time.
-export const GAMEPORT_PLAYER_ZONE_SCALE_Y = d2s(0.2);
+export const GAMEPORT_PLAYER_ZONE_STEP_X = d2si(8);
 export const GAMEPORT_SHAKE = d2si(4); // K
 
 export const OFF_SCREEN = G.v2d_mk_nn(-Number.MAX_SAFE_INTEGER);
@@ -303,12 +300,11 @@ export const EXPLOSIONB_MSEC = 1250; // K
 
 // pixels/dt? pixels/sec? i dunno!
 export const DRAG_ACC = vd2s(G.v2d_mk(-0.0025, -0.005)); // L
-
 // match: if the PLAYER_DELTA_*_ACC changes then likely
 // the gameport zone code will need adjustment.
 // pixels/dt? pixels/sec? i dunno!
-export const PLAYER_DELTA_X_ACC = d2s(0.0015); // K
-export const PLAYER_DELTA_Y_VEL = d2s(0.20); // K
+export const PLAYER_DELTA_X_ACC = d2s(0.002); // K
+export const PLAYER_DELTA_Y_VEL = d2s(0.2); // K
 
 export const PLAYER_BEAM_MAX_VEL2 = d2s(0.2); // K
 export const PEOPLE_SIZE = vd2si(G.v2d_mk_nn(32)); // K
