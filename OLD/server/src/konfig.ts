@@ -65,43 +65,51 @@ export const FRAME_MSEC_DT = 1000 / FPS; // K
 
 // external code should ideally use SCREEN_RECT below
 export const DESIGN_SIZE = G.v2d_mk(960, 540); // K
-export const SCREEN_BOUNDS0 = G.v2d_mk(2560, 1440); // K
-const DESIGN_ASPECT = G.v2d_aspect(DESIGN_SIZE);
-const SCREEN_ASPECT = G.v2d_aspect(SCREEN_BOUNDS0);
-D.assert(Uf.eqf(DESIGN_ASPECT, SCREEN_ASPECT));
-// 'design scale' to 'screen scale'.
-export const D2S = SCREEN_BOUNDS0.x / DESIGN_SIZE.x;
+// TODO: want to get up closer to 4K.
+export const D2S = 2;
 export function d2s(d: number): number {
     return d * D2S;
+}
+export function d2si(d: number): number {
+    return Math.round(d * D2S);
 }
 export function vd2s(ds: G.V2D): G.V2D {
     return G.v2d_scale(ds, D2S);
 }
+export function vd2si(ds: G.V2D): G.V2D {
+    return G.v2d_scale_i(ds, D2S);
+}
+export const SCREEN_BOUNDS0 = vd2si(DESIGN_SIZE);
+const DESIGN_ASPECT = G.v2d_aspect(DESIGN_SIZE);
+const SCREEN_ASPECT = G.v2d_aspect(SCREEN_BOUNDS0);
+D.assert(Uf.eqf(DESIGN_ASPECT, SCREEN_ASPECT));
+// 'design scale' to 'screen scale'.
+D.assert(D2S > 1);
 const SCREEN_RECT0 = G.v2d_2_rect(SCREEN_BOUNDS0);
 // todo: overscan only sorta works, if it gets too big
 // you see rendering popin and other grossness.
 // and it doesn't scale the world rendering down
 // so things like sizzlers overlap the title text.
 // todo: ideally would scale and be user configurable, for TVs.
-const OVERSCAN_INSET = vd2s(G.v2d_mk(5, 5)); // K
+const OVERSCAN_INSET = vd2si(G.v2d_mk(5, 5)); // K
 export const SCREEN_RECT = G.rect_inset(SCREEN_RECT0, OVERSCAN_INSET);
 
 // match: client/font.css
 // todo: figure out how the hell to measure strings.
 export const GAME_FONT = 'gamefont'; // K
 export const MENU_FONT = 'menufont'; // K
-export const SCORE_FONT = `${d2s(20)}px ${GAME_FONT}`;
-export const HUD_MESSAGE_FONT = `${d2s(12)}px ${GAME_FONT}`;
+export const SCORE_FONT = `${d2si(20)}px ${GAME_FONT}`;
+export const HUD_MESSAGE_FONT = `${d2si(12)}px ${GAME_FONT}`;
 // match: client canvas etc.
 // these are currently in pixels.
 // todo: logical coords instead!? for targeting different display types.
 // note: things like ground sprites are drawn/scaled to fit this width.
 // so it should ideally be as big as the fully displayable area on the output device.
-export const PLAYER_SHIP_SIZE = vd2s(G.v2d_mk(76, 25)); // L?
+export const PLAYER_SHIP_SIZE = vd2si(G.v2d_mk(76, 25)); // L?
 // note: the cow size should be kinda <= the ship size,
 // because use of the variables below, and elsewhere.
-export const PLAYER_COW_SIZE = vd2s(G.v2d_scale_i(G.v2d_mk(32, 16), 2.4)); // L?
-export const PLAYER_SHADOW_SIZE = vd2s(G.v2d_mk(76, 10)); // L?
+export const PLAYER_COW_SIZE = vd2si(G.v2d_scale_i(G.v2d_mk(32, 16), 2.4)); // L?
+export const PLAYER_SHADOW_SIZE = vd2si(G.v2d_mk(76, 10)); // L?
 
 // todo: all the screen -> hud/gameport would be better done with 2d 3x3 matricies.
 
@@ -111,12 +119,12 @@ export const PLAYER_SHADOW_SIZE = vd2s(G.v2d_mk(76, 10)); // L?
 // note that the hud styling means the visual hud is inset.
 // **** TODO: some day support right justified text.
 // **** TODO: this is a buggy broken poor man's attempt at layout.
-const HUD_HEIGHT = 75;
+const HUD_HEIGHT = d2si(75);
 export const HUDPORT_RECT = G.rect_mk(
     G.v2d_sub(G.rect_lb(SCREEN_RECT), G.v2d_mk_0y(HUD_HEIGHT)),
     G.v2d_mk(G.rect_w(SCREEN_RECT), HUD_HEIGHT)
 );
-export const HUD_OUTLINE_WIDTH = 2;
+export const HUD_OUTLINE_WIDTH = d2si(2);
 const HUD_INSET = G.v2d_mk(20, HUD_OUTLINE_WIDTH+1);
 export const HUD_VISIBLE_RECT = G.rect_inset(
     HUDPORT_RECT,
@@ -124,7 +132,7 @@ export const HUD_VISIBLE_RECT = G.rect_inset(
 );
 
 // radar is centered in the HUD and has to leave room for other hud information on the sides.
-const RADAR_HUD_INSET = G.v2d_mk_x0(175);
+const RADAR_HUD_INSET = vd2si(G.v2d_mk_x0(175));
 export const RADAR_RECT = G.rect_inset(HUD_VISIBLE_RECT, RADAR_HUD_INSET);
 D.assert_fn(G.rect_w(RADAR_RECT), G.rect_w(HUD_VISIBLE_RECT), (a,b)=>a<=b);
 D.assert_fn(G.rect_b(RADAR_RECT),G.rect_b(HUD_VISIBLE_RECT), (a,b)=>a==b);
@@ -162,7 +170,7 @@ D.assert(G.rect_w(HUDPORT_RECT) == G.rect_w(GAMEPORT_RECT));
 D.assert(G.rect_h(SCREEN_RECT) - (G.rect_h(HUDPORT_RECT) + G.rect_h(GAMEPORT_RECT)) <= 0.01);
 
 // apparently trying to avoid having enemies shoot when too close to the sides.
-export const ENEMY_FIRING_INSET = G.v2d_mk(20, 0);
+export const ENEMY_FIRING_INSET = vd2si(G.v2d_mk(20, 0));
 export const ENEMY_FIRING_RECT = G.rect_inset(
     GAMEPORT_RECT,
     ENEMY_FIRING_INSET
@@ -177,13 +185,13 @@ export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(PLAYER_SHIP_SIZE.x * 3);
 // so the value used to reduce the size of the zone after reversing is used for stepping inside
 // the zone, too. got that? :-\
 // note: the dynamics here aren't as good as real stargate, either :-(
-export const GAMEPORT_PLAYER_ZONE_STEP_X = 10;
+export const GAMEPORT_PLAYER_ZONE_STEP_X = d2si(10);
 // the algorithm for y step is different than for x step because there's no
 // flexible zone height actually used for y, only width for x. i prefer the
 // feeling of how y works, but haven't figured out how to get it back for x
 // and keep the zone stuff at the same time.
-export const GAMEPORT_PLAYER_ZONE_SCALE_Y = 0.2;
-export const GAMEPORT_SHAKE = 4; // K
+export const GAMEPORT_PLAYER_ZONE_SCALE_Y = d2s(0.2);
+export const GAMEPORT_SHAKE = d2si(4); // K
 
 export const OFF_SCREEN = G.v2d_mk_nn(-Number.MAX_SAFE_INTEGER);
 
@@ -194,10 +202,10 @@ export const RADAR_OUTLINE_COLOR = RGBA.new01(1, 0, 0); // K
 export const RADAR_RECT_MIN_SIZE = G.v2d_mk_nn(4);
 export const DANGER_HPT_THRESHOLD = 0.5; // K
 export const DANGER_COLOR = RGBA.MAGENTA.setAlpha01(0.5); // K
-export const DANGER_RECT_WIDTH = 10; // K
+export const DANGER_RECT_WIDTH = d2si(10); // K
 export const DANGER_LEFT_RECT = G.rect_mk_lt(G.rect_lt(SCREEN_RECT0), G.v2d_set_x(SCREEN_RECT0.size, DANGER_RECT_WIDTH)); // K
 export const DANGER_RIGHT_RECT = G.rect_mk_rt(G.rect_rt(SCREEN_RECT0), G.v2d_set_x(SCREEN_RECT0.size, DANGER_RECT_WIDTH)); // K
-export const DANGER_IMAGE_SIZE = G.v2d_scale_i(G.v2d_mk(140, 26), 1.5); // K
+export const DANGER_IMAGE_SIZE = vd2si(G.v2d_scale_i(G.v2d_mk(140, 26), 1.5)); // K
 export const DANGER_IMAGE_LOCATED = { // K
     wrap: false,
     comment: "danger",
@@ -214,15 +222,15 @@ export const DANGER_IMAGE_LOCATED = { // K
     }
 };
 
-export const CLOUD_SIZE = G.v2d_mk(80, 20); // L
+export const CLOUD_SIZE = vd2si(G.v2d_mk(80, 20)); // L
 export const CLOUD_ALPHA = 0.1; // L
 
 // match: enforce bg's width and world be integer multiples of each other,
 // a) so we can try to avoid floating point error 'seams' between sprites.
 // b) so we can get the parallax working, and across the world-wrap boundary.
-export const TILE_WIDTH = 256; // L
-export const BG_FAR_BG_SIZE = G.v2d_mk(TILE_WIDTH, 260); // L
-export const BG_NEAR_BG_SIZE = G.v2d_mk(TILE_WIDTH, 80); // L
+export const TILE_WIDTH = d2si(256); // L
+export const BG_FAR_BG_SIZE = vd2si(G.v2d_mk(TILE_WIDTH, 260)); // L
+export const BG_NEAR_BG_SIZE = vd2si(G.v2d_mk(TILE_WIDTH, 80)); // L
 // match: ground_y
 // match: BG_LAYER_SCALE
 // match: TILE_WIDTH so that they line up in parallax.
