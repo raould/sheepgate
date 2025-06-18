@@ -148,7 +148,7 @@ class LevelWithScreen_EndScreen implements SubState {
         this.end_screen = new Les.LevelEndScreen({
             title: `LEVEL ${index1} ${won ? "WON!" : "LOST!"}`,
 	    instructions: won ? [wonPhrase] : [lostPhrase],
-	    size: 80,
+	    size: K.d2si(80),
 	    animated: true,
             bg_color: won ? RGBA.BLACK : LOST_COLOR,
         });

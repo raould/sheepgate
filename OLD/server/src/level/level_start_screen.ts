@@ -6,6 +6,8 @@ import * as K from '../konfig';
 import * as Dr from '../drawing';
 import { RGBA, HCycle } from '../color';
 
+const FONT_SIZE = K.d2si(40);
+
 export class LevelStartScreen extends Sz.SizzlerScreen {
     constructor(
 	title: string,
@@ -25,7 +27,7 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
 
     step_enemies() {
         // surprise! this is a horrible hard-coded mess.
-        const x_spacing = 150;
+        const x_spacing = K.d2si(150);
         const x_start = G.rect_w(this.mdb.shared.world.screen) / 2 - x_spacing;
         const y = G.rect_h(this.mdb.shared.world.screen) * 0.7;
         const specs: [S.ImageSized, string][] = [[this.es, "LIGHT"], [this.em, "MEGA"], [this.ehm, "HYPERMEGA"]];
@@ -37,7 +39,7 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
             const t: Dr.DrawText = {
                 lb: txy,
                 text: this.step_string(name),
-                font: `40px ${K.MENU_FONT}`,
+                font: `${FONT_SIZE}px ${K.MENU_FONT}`,
                 fillStyle: this.body_cycle.current(),
                 wrap: false,
             };

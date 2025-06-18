@@ -50,8 +50,8 @@ export class SizzlerScreen implements M.Menu {
 	this.hide_user_skip_msg = spec.hide_user_skip_msg ?? false;
 	this.ignore_user_skip = spec.ignore_user_skip ?? false;
         this.state = Gs.StepperState.running;
-        this.header_cycle = HCycle.newFromRed(90 / this.mdb.frame_dt);
-        this.body_cycle = new HCycle(this.header_cycle.hsv, 180 / this.mdb.frame_dt);
+        this.header_cycle = HCycle.newFromRed(35 / this.mdb.frame_dt);
+        this.body_cycle = new HCycle(this.header_cycle.hsv, 90 / this.mdb.frame_dt);
         this.elapsed = 0;
     }
 

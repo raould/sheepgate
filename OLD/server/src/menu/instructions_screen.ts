@@ -57,7 +57,7 @@ export class InstructionsScreen extends Sz.SizzlerScreen {
                 this.size,
                 hcycle
             );
-            hcycle.skip(-45);
+            hcycle.skip(-22);
         });
     }
 }

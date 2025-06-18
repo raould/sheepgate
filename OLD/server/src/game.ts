@@ -132,7 +132,7 @@ class GameWarning implements Gs.Stepper {
 	    title: "WARNING",
 	    skip_text: "CONTINUE: SPACE - Z - ENTER",
 	    instructions: WARNING_INSTRUCTIONS,
-	    instructions_size: 30,
+	    instructions_size: K.d2si(30),
 	    fg_color: RGBA.WHITE,
 	    bg_color: RGBA.DARK_MAGENTA,
 	});
@@ -168,7 +168,7 @@ class GameInstructions implements Gs.Stepper {
     constructor() {
         this.stepper = new Is.InstructionsScreen({
 	    instructions: MAIN_INSTRUCTIONS,
-	    size: 35,
+	    size: K.d2si(35),
 	    animated: true,
 	    bg_color: RGBA.DARK_BLUE,
 	    top_offset_y: 0,
@@ -192,7 +192,7 @@ class GameInstructions implements Gs.Stepper {
 			G.rect_w(K.SCREEN_RECT)*0.9,
 			G.rect_h(K.SCREEN_RECT)*0.55
 		    ),
-		    G.v2d_mk(80, 80),
+		    K.vd2si(G.v2d_mk(80, 80)),
 		),
             },
 	    comment: "qr",
@@ -234,7 +234,7 @@ class GamePaused implements Gs.Stepper {
         this.stepper = new Is.InstructionsScreen({
 	    title: "GAME PAUSED",
 	    instructions: MAIN_INSTRUCTIONS,
-	    size: 35,
+	    size: K.d2si(35),
 	    animated: false,
 	    bg_color: RGBA.DARK_BLUE,
 	});
@@ -248,7 +248,7 @@ class GamePaused implements Gs.Stepper {
 			G.rect_w(K.SCREEN_RECT)*0.85,
 			G.rect_h(K.SCREEN_RECT)*0.75
 		    ),
-		    G.v2d_mk(80, 80),
+		    K.vd2si(G.v2d_mk(80, 80)),
 		),
             }
 	};
