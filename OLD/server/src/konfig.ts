@@ -237,7 +237,7 @@ export const BG_NEAR_BG_SIZE = vd2si(G.v2d_mk(TILE_WIDTH, 80)); // L
 // todo: some different scale of TILE_WIDTH?
 // thus far, there must be BG_LAYER_SCALE*BG_LAYER_SCALE ground tiles for every single far bg tile.
 // thus far, there must be BG_LAYER_SCALE ground tiles for every single near bg tile.
-export const GROUND_SIZE = G.v2d_mk(TILE_WIDTH, 40); // L
+export const GROUND_SIZE = G.v2d_mk(TILE_WIDTH, d2si(40)); // L
 D.assert(
     BG_NEAR_BG_SIZE.x == TILE_WIDTH &&
     BG_NEAR_BG_SIZE.x == TILE_WIDTH &&
@@ -245,7 +245,7 @@ D.assert(
     "wtf"
 );
 
-export const BASE_SIZE = G.v2d_mk(128, 32); // L // ugh position is elsewhere.
+export const BASE_SIZE = vd2si(G.v2d_mk(128, 32)); // L // ugh position is elsewhere.
 // the base shield alpha has to be
 // non-zero because zero means hidden and
 // thus non-interactive, which would prevent transports.
@@ -276,24 +276,24 @@ export const PLAYER_COLOR = RGBA.new0255(255, 255, 128);
 export const SHIELD_ALPHA = 0.2; // K? // L?
 // todo: this maybe will need to be per-kind-of-sprite probably?
 export const SHIELD_SCALE = G.v2d_mk(1.5, 1.5); // K? // L?
-export const SHIELD_BAR_WIDTH = 65;
-export const SHIELD_BAR_HEIGHT = 2;
-export const SHIELD_BAR_OFFSET_Y = 10;
+export const SHIELD_BAR_WIDTH = d2si(65);
+export const SHIELD_BAR_HEIGHT = d2si(2);
+export const SHIELD_BAR_OFFSET_Y = d2si(10);
 export const SHIELD_DAMAGE_COLOR = BAD_COLOR;
 export const SHIELD_HP_COLOR = GOOD_COLOR;
 
 // pixels/dt? pixels/sec? i dunno!
 export const PLAYER_SHOT_DAMAGE = 5; // W
-export const PLAYER_SHOT_SPEED = 1; // W // note that enemies use a scaled version of this. :-\
+export const PLAYER_SHOT_SPEED = d2si(1); // W // note that enemies use a scaled version of this. :-\
 export const PLAYER_SHOT_LIFE_MSEC = 500; // W
-export const PLAYER_SHOT_SIZE = G.v2d_mk(30, 5); // W // note: it gets dynamically altered during lifetime.
+export const PLAYER_SHOT_SIZE = vd2si(G.v2d_mk(30, 5)); // W // note: it gets dynamically altered during lifetime.
 export const PLAYER_WEAPON_CLIP_COOLDOWN_MSEC = 300; // W
 export const PLAYER_WEAPON_SHOT_COOLDOWN_MSEC = 50; // W
 export const PLAYER_WEAPON_SHOT_COUNT = 3; // W
-export const BULLET_SHOT_SPEED = 0.7; // W // note that enemies use a scaled version of this. :-\
+export const BULLET_SHOT_SPEED = d2s(0.7); // W // note that enemies use a scaled version of this. :-\
 export const BULLET_SHOT_LIFE_MSEC = 3000; // W
-export const BULLET_SHOT_SIZE = G.v2d_mk(44, 3); // W
-export const BALL_SHOT_SIZE = G.v2d_mk(6, 6); // W
+export const BULLET_SHOT_SIZE = vd2si(G.v2d_mk(44, 3)); // W
+export const BALL_SHOT_SIZE = vd2si(G.v2d_mk(6, 6)); // W
 
 // todo: explosions should have slightly different timings
 // so they don't appear in lock-step e.g. when things crash
@@ -302,28 +302,33 @@ export const EXPLOSIONA_MSEC = 1000; // K
 export const EXPLOSIONB_MSEC = 1250; // K
 
 // pixels/dt? pixels/sec? i dunno!
-export const DRAG_ACC = G.v2d_mk(-0.0025, -0.005); // L
+export const DRAG_ACC = vd2s(G.v2d_mk(-0.0025, -0.005)); // L
 
 // match: if the PLAYER_DELTA_*_ACC changes then likely
 // the gameport zone code will need adjustment.
 // pixels/dt? pixels/sec? i dunno!
-export const PLAYER_DELTA_X_ACC = 0.0015; // K
-export const PLAYER_DELTA_Y_VEL = 0.20; // K
+export const PLAYER_DELTA_X_ACC = d2s(0.0015); // K
+export const PLAYER_DELTA_Y_VEL = d2s(0.20); // K
 
-export const PLAYER_BEAM_MAX_VEL2 = 0.2; // K
-export const PEOPLE_SIZE = G.v2d_mk_nn(32); // K
-export const SHEEP_SIZE = G.v2d_scale_v2d_i(G.v2d_mk(20, 26), G.v2d_mk(2.2, 1.8)); // K
+export const PLAYER_BEAM_MAX_VEL2 = d2s(0.2); // K
+export const PEOPLE_SIZE = vd2si(G.v2d_mk_nn(32)); // K
+export const SHEEP_SIZE = vd2si(
+    G.v2d_scale_v2d_i(
+	G.v2d_mk(20, 26),
+	G.v2d_mk(2.2, 1.8)
+    )
+); // K
 // match: people.ts, currently hardcoded to have 2 people per cluster.
 // even this is too much toing and froing?
 export const CLUSTER_MAX_COUNT = 3; // K // note: match: 3 people per cluster at the moment.
 export const PEOPLE_REMINDER_TIMEOUT = 3 * 1000; // K
 
-export const GEM_SIZE = G.v2d_mk_nn(13);
+export const GEM_SIZE = vd2si(G.v2d_mk_nn(13));
 export const GEM_HP_BONUS = 3; // keep it smallish.
 
 // todo: !!!! too many collision buckets as this gets bigger !!!!
 // note: avoid floating point error causing bins to not fully abut.
-export const MIN_BIN_SIZE = 10; // K
+export const MIN_BIN_SIZE = d2si(10); // K
 export const MAX_BIN_X_COUNT = 10; // K
 export const MAX_BIN_Y_COUNT = 10; // K // todo: make this smaller, like 5.
 
@@ -331,16 +336,16 @@ export const MAX_BIN_Y_COUNT = 10; // K // todo: make this smaller, like 5.
 export const PLAYER_ANIM_FRAME_MSEC = 1000 / 5; // K.
 
 export const SHIELD_HIT_ANIM_MSEC = 0.5 * 1000; // K? // L?
-export const SHIELD_HIT_ANIM_RADIUS = 0.1; // arbitrary hack. // K? // L?
+export const SHIELD_HIT_ANIM_RADIUS = d2s(0.1); // arbitrary hack. // K? // L?
 
 // match: explosion particle generator is an 8-way.
 export const EXPLOSION_PARTICLE_COUNT = 8 * 2; // K
 export const EXPLOSION_PARTICLE_DURATION_MSEC = 300; // K
-export const EXPLOSION_PARTICLE_SPEED = 0.5; // units? K
+export const EXPLOSION_PARTICLE_SPEED = d2s(0.5); // units? K
 // match: shield hit particle generator is an ellipse.
 export const SHIELD_HIT_PARTICLE_COUNT = 10; // K
 export const SHIELD_HIT_PARTICLE_DURATION_MSEC = 200; // K
-export const SHIELD_HIT_PARTICLE_SPEED = 0.15; // units? K
+export const SHIELD_HIT_PARTICLE_SPEED = d2s(0.15); // units? K
 
 // empty means you wanted it to not be there,
 // missing means it wasn't found and is a bug.
@@ -348,7 +353,7 @@ export const SHIELD_HIT_PARTICLE_SPEED = 0.15; // units? K
 export const EMPTY_IMAGE_RESOURCE_ID = "empty1.png"; // K
 export const MISSING_IMAGE_RESOURCE_ID = "missing.png"; // K
 
-export const SCORE_POS = G.v2d_mk(100, 20); // K
+export const SCORE_POS = vd2si(G.v2d_mk(100, 20)); // K
 
 export const TELEPORT_ANIM_FRAME_MSEC = 100; // K
 
