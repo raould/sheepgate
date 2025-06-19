@@ -22,6 +22,7 @@ export function add_toast(db: GDB.GameDB, spec: ToastSpec) {
     GDB.add_dict_id_mut(
 	db.local.toasts,
 	(dbid: GDB.DBID) => {
+	    const font = `${K.d2si(40)}px ${K.MENU_FONT}`;
 	    const t: Toast = {
 		dbid,
 		comment: `toast-${dbid}`,
@@ -42,7 +43,7 @@ export function add_toast(db: GDB.GameDB, spec: ToastSpec) {
 			text: this.msg,
 			wrap: true,
 			lb: this.lb,
-			font: `40px ${K.MENU_FONT}`,
+			font,
 			fillStyle: RGBA.GREEN.setAlpha01(
 			    U.t01(0, spec.lifetime, this.lifetime)
 			),
