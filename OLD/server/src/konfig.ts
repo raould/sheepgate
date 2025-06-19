@@ -69,7 +69,7 @@ export const FRAME_MSEC_DT = 1000 / FPS; // K
 // external code should ideally use SCREEN_RECT below
 export const DESIGN_SIZE = G.v2d_mk(960, 540); // K
 // TODO: want to get up closer to 4K.
-export const D2S = 2;
+export const D2S = 1;
 export function d2s(d: number): number {
     return d * D2S;
 }
@@ -301,7 +301,7 @@ export const DRAG_ACC = vd2s(G.v2d_mk(-0.0025, -0.005)); // L
 // match: if the PLAYER_DELTA_*_ACC changes then likely
 // the gameport zone code will need adjustment.
 // pixels/dt? pixels/sec? i dunno!
-export const PLAYER_DELTA_X_ACC = d2s(0.0025); // K
+export const PLAYER_DELTA_X_ACC = d2s(0.002); // K
 export const PLAYER_DELTA_Y_VEL = d2s(0.2); // K
 
 export const PLAYER_BEAM_MAX_VEL2 = d2s(0.2); // K
