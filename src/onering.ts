@@ -1137,6 +1137,7 @@ function loadImages() {
     // todo: load the graphics from the server, not locally???
     // or at least share this kind of big spec's code with the server.
     
+    loadImage("sgbg.png");
     loadImage("attract.png");
     loadImage("qr.png");
 
@@ -1441,6 +1442,7 @@ function gamepadHandler(event: any, connecting: boolean) {
 
 function init() {
     h5canvas = document.getElementById("canvas");
+
     // @ts-ignore
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     try { cxAudio = new AudioContext(); } catch(e) { console.error(e); }
