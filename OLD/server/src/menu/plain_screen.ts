@@ -40,13 +40,13 @@ export class PlainScreen implements M.Menu {
 	    spec.title,
 	    spec.fg_color,
 	    G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.2),
-	    60
+	    K.d2si(60)
 	);
         this.add_text(
 	    spec.skip_text, 
 	    spec.fg_color,
 	    G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.9),
-	    40
+	    K.d2si(40)
 	);
 
 	const line_height = spec.instructions_size + K.d2si(5);

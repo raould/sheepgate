@@ -141,7 +141,7 @@ D.assert_fn(G.rect_w(RADAR_RECT), G.rect_w(HUD_VISIBLE_RECT), (a,b)=>a<=b);
 D.assert_fn(G.rect_b(RADAR_RECT),G.rect_b(HUD_VISIBLE_RECT), (a,b)=>a==b);
 export const RADAR_MID = G.rect_mid(RADAR_RECT);
 // hacky fudge arbitrary inset so the blips don't go under the border vertically, so much.
-export const RADAR_SAFE_RECT = G.rect_inset(RADAR_RECT, G.v2d_mk_0y(10));
+export const RADAR_SAFE_RECT = G.rect_inset(RADAR_RECT, G.v2d_mk_0y(d2si(10)));
 
 const HUD_SIDE_SIZE = G.v2d_scale_v2d(
     G.v2d_sub(
@@ -188,7 +188,7 @@ export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(PLAYER_SHIP_SIZE.x * 3);
 // so the value used to reduce the size of the zone after reversing is used for stepping inside
 // the zone, too. got that? :-\
 // note: the dynamics here aren't as good as real stargate, either :-(
-export const GAMEPORT_PLAYER_ZONE_STEP_X = d2si(8);
+export const GAMEPORT_PLAYER_ZONE_STEP_X = d2si(15);
 export const GAMEPORT_SHAKE = d2si(4); // K
 
 export const OFF_SCREEN = G.v2d_mk_nn(-Number.MAX_SAFE_INTEGER);
@@ -301,7 +301,7 @@ export const DRAG_ACC = vd2s(G.v2d_mk(-0.0025, -0.005)); // L
 // match: if the PLAYER_DELTA_*_ACC changes then likely
 // the gameport zone code will need adjustment.
 // pixels/dt? pixels/sec? i dunno!
-export const PLAYER_DELTA_X_ACC = d2s(0.002); // K
+export const PLAYER_DELTA_X_ACC = d2s(0.0025); // K
 export const PLAYER_DELTA_Y_VEL = d2s(0.2); // K
 
 export const PLAYER_BEAM_MAX_VEL2 = d2s(0.2); // K

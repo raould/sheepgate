@@ -30,8 +30,8 @@ const TRACK1_SFX = { sfx_id: K.TRACK1_SFX, gain: 0.3, singleton: true };
 const WARNING_INSTRUCTIONS = [
     " ",
     " ",
-    "=== WARNING: THIS GAME HAS FLASHING EFFECTS ===",
-    "Photosensitivity/epilepsy/seizures: a very small",
+    "========= THIS GAME HAS FLASHING EFFECTS =========",
+    "Photosensitivity - epilepsy - seizures: a very small",
     "percentage of individuals may experience",
     "epileptic seizures or blackouts when exposed to",
     "certain light patterns or flashing lights.",
