@@ -58,7 +58,7 @@ export const INVALID_CLIENT_ID = Number.NEGATIVE_INFINITY;  // K
 // note/todo: so far everything has been hacked to look
 // good (i use that term very loosely) based on FPS=30 value.
 // todo: game breaks when the fps is set to anything other than 30. :-(
-export const FPS = 60; // K
+export const FPS = 30; // K
 export const FRAME_MSEC_DT = 1000 / FPS; // K
 
 // todo: match: the size of the game world is runtime
@@ -72,7 +72,7 @@ export const FRAME_MSEC_DT = 1000 / FPS; // K
 // external code should ideally use SCREEN_RECT below
 export const DESIGN_SIZE = G.v2d_mk(960, 540); // K
 // TODO: want to get up closer to 4K.
-export const D2S = 2;
+export const D2S = 1;
 export function d2s(d: number): number {
     return d * D2S;
 }
@@ -90,7 +90,7 @@ const DESIGN_ASPECT = G.v2d_aspect(DESIGN_SIZE);
 const SCREEN_ASPECT = G.v2d_aspect(SCREEN_BOUNDS0);
 D.assert(Uf.eqf(DESIGN_ASPECT, SCREEN_ASPECT));
 // 'design scale' to 'screen scale'.
-D.assert(D2S > 1);
+D.assert(D2S >= 1);
 const SCREEN_RECT0 = G.v2d_2_rect(SCREEN_BOUNDS0);
 // todo: overscan only sorta works, if it gets too big
 // you see rendering popin and other grossness.

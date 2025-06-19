@@ -76,7 +76,7 @@ const DEBUG_IMG_BOX_COLOR: string = "rgba(255,0,0,0.5)";
 const client_id = Date.now()
 // todo: game breaks when the fps is set to anything other than 30.
 // also requestAnimationFrame() never gives me more than 30 fps anyway?
-const TARGET_FPS = 60;
+const TARGET_FPS = 30;
 const MSEC_PER_FRAME = 1000 / TARGET_FPS;
 log("client_id", client_id);
 
@@ -1232,6 +1232,7 @@ function loadImages() {
     // todo: load the graphics from the server, not locally???
     // or at least share this kind of big spec's code with the server.
     
+    loadImage("sgbg.png");
     loadImage("attract.png");
     loadImage("qr.png");
 

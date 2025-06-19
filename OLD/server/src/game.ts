@@ -125,17 +125,26 @@ export function game_mk(high_scores: Hs.HighScores): Game {
 }
 
 class GameWarning implements Gs.Stepper {
-    stepper: Gs.Stepper;
+    stepper: Ps.PlainScreen;
+    attract: any;
 
     constructor() {
         this.stepper = new Ps.PlainScreen({
 	    title: "WARNING",
 	    skip_text: "CONTINUE: SPACE - Z - ENTER",
 	    instructions: WARNING_INSTRUCTIONS,
-	    instructions_size: K.d2si(30),
+	    instructions_size: K.d2si(40),
 	    fg_color: RGBA.WHITE,
 	    bg_color: RGBA.DARK_MAGENTA,
 	});
+	this.attract = {
+	    wrap: false,
+	    image_located: {
+		resource_id: "images/sgbg.png",
+		rect: K.SCREEN_RECT
+	    },
+	    comment: "attract",
+	};
     }
 
     get_state(): Gs.StepperState {
@@ -148,6 +157,7 @@ class GameWarning implements Gs.Stepper {
 
     step() {
         this.stepper.step();
+        this.stepper.mdb.shared.frame_drawing.images.push(this.attract);
     }
 
     get_db(): Db.DB<Db.World> {
@@ -162,27 +172,18 @@ class GameWarning implements Gs.Stepper {
 class GameInstructions implements Gs.Stepper {
     stepper: Is.InstructionsScreen;
     last: number;
-    attract: any;
     qr: any;
 
     constructor() {
         this.stepper = new Is.InstructionsScreen({
+	    title: "HOW TO PLAY",
 	    instructions: MAIN_INSTRUCTIONS,
 	    size: K.d2si(35),
 	    animated: true,
 	    bg_color: RGBA.DARK_BLUE,
 	    top_offset_y: 0,
-	    hide_user_skip_msg: true,
 	});
 	this.stepper.mdb.shared.sfx.push({ sfx_id: K.SYNTH_C_SFX });
-	this.attract = {
-	    wrap: false,
-	    image_located: {
-		resource_id: "images/attract.png",
-		rect: K.SCREEN_RECT
-	    },
-	    comment: "attract",
-	};
 	this.qr = {
             wrap: false,
             image_located: {
@@ -211,7 +212,6 @@ class GameInstructions implements Gs.Stepper {
     step() {
         this.stepper.step();
 	// reaching into mdb like this is gross, yes.
-        this.stepper.mdb.shared.frame_drawing.images.push(this.attract);
         this.stepper.mdb.shared.frame_drawing.images.push(this.qr);
 	this.stepper.mdb.shared.sfx.push(TRACK1_SFX);
     }

@@ -9,6 +9,8 @@ import { RGBA, HCycle } from '../color';
 const FONT_SIZE = K.d2si(40);
 
 export class LevelStartScreen extends Sz.SizzlerScreen {
+    attract: any;
+
     constructor(
 	title: string,
 	skip_text: string,
@@ -18,10 +20,19 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
 	bg_color: RGBA) {
         super({ title, skip_text, bg_color, timeout: 10*1000 });
 	this.mdb.shared.sfx.push({ sfx_id: K.SYNTH_D_SFX });
+	this.attract = {
+	    wrap: false,
+	    image_located: {
+		resource_id: "images/attract.png",
+		rect: K.SCREEN_RECT
+	    },
+	    comment: "attract",
+	};
     }
 
     step() {
         super.step();
+        this.mdb.shared.frame_drawing.images.push(this.attract);
         this.step_enemies();
     }
 
