@@ -70,34 +70,42 @@ export function addSizzlerLine(drawing: Drawing, drawLine: DrawLine, segment_cou
 
 export function addSizzlerRect(drawing: Drawing, drawRect: DrawRect, segment_count: number, sizzle_width: number, rnd: Rnd.Random=_rnd) {
     const defs = { color: drawRect.color, line_width: drawRect.line_width ?? 1, wrap: drawRect.wrap };
-    addSizzlerLine(drawing,
-        {
-            ...defs,
-            p0: G.rect_lt(drawRect.rect),
-            p1: G.rect_rt(drawRect.rect),
-        },
-    segment_count, sizzle_width, rnd);
-    addSizzlerLine(drawing,
-        {
-            ...defs,
-            p0: G.rect_rt(drawRect.rect),
-            p1: G.rect_rb(drawRect.rect),
-        },
-    segment_count, sizzle_width, rnd);
-    addSizzlerLine(drawing,
-        {
-            ...defs,
-            p0: G.rect_rb(drawRect.rect),
-            p1: G.rect_lb(drawRect.rect),
-        },
-    segment_count, sizzle_width, rnd);
-    addSizzlerLine(drawing,
-        {
-            ...defs,
-            p0: G.rect_lb(drawRect.rect),
-            p1: G.rect_lt(drawRect.rect),
-        },
-    segment_count, sizzle_width, rnd);
+    addSizzlerLine(
+	drawing,
+	{
+	    ...defs,
+	    p0: G.rect_lt(drawRect.rect),
+	    p1: G.rect_rt(drawRect.rect),
+	},
+	segment_count, sizzle_width, rnd
+    );
+    addSizzlerLine(
+	drawing,
+	{
+	    ...defs,
+	    p0: G.rect_rt(drawRect.rect),
+	    p1: G.rect_rb(drawRect.rect),
+	},
+	segment_count, sizzle_width, rnd
+    );
+    addSizzlerLine(
+	drawing,
+	{
+	    ...defs,
+	    p0: G.rect_rb(drawRect.rect),
+	    p1: G.rect_lb(drawRect.rect),
+	},
+	segment_count, sizzle_width, rnd
+    );
+    addSizzlerLine(
+	drawing,
+	{
+	    ...defs,
+	    p0: G.rect_lb(drawRect.rect),
+	    p1: G.rect_lt(drawRect.rect),
+	},
+	segment_count, sizzle_width, rnd
+    );
 }
 
 // this is where structural typing sucks: vs. DrawEllipse.

@@ -55,7 +55,7 @@ export const INVALID_CLIENT_ID = Number.NEGATIVE_INFINITY;  // K
 // note/todo: so far everything has been hacked to look
 // good (i use that term very loosely) based on FPS=30 value.
 // todo: game breaks when the fps is set to anything other than 30. :-(
-export const FPS = 30; // K
+export const FPS = 60; // K
 export const FRAME_MSEC_DT = 1000 / FPS; // K
 
 // todo: match: the size of the game world is runtime
