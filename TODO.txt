@@ -24,8 +24,6 @@ really really todo, maybe?
 +++ per-level high scores?
 +++ show level # in hud.
 
-* !!! server loop is always slow and making the laptop laggy now on "anyk" branch, even at 30fps. !!!
-
 * hilariously / inevitably, the 'db' has become a big ball of mud; very confusing.
   the various kinds of DBs are not of compatible types e.g. GDB.GameDB doesn't extend Db.DB<W>?!
   also the way the client is hard-coded to know the db structure is bad.
@@ -91,6 +89,8 @@ next-feature-short-list, in no order:
   e.g. the enemy (especially hypermega) spawning?!
 
 * i love how inconsistent i am with things like capitalization.
+
+* the menu screens code has become a big ball of bad mud.
 
 NOTE:
 * do try to avoid relying on pure red or green, out of some basic accessibility respect.

@@ -42,6 +42,7 @@ const MAIN_INSTRUCTIONS = [
     "RETURN CREATURES TO BASE.",
     "DEFEAT ALL ENEMIES.",
     " ",
+    " ",
     "MOVE: WASD - ARROWS - VI",
     "FIRE: SPACE - Z - ENTER",
     "PAUSE: ESC - P",
@@ -92,7 +93,7 @@ export function game_mk(high_scores: Hs.HighScores): Game {
 	step() {
             this.stepper.step();
             if (this.stepper instanceof GameWarning && this.stepper.get_state() != Gs.StepperState.running) {
-                this.stepper = new GameInstructions();
+                this.stepper = new GameInstructions("HOW TO PLAY");
 	    }
             else if (this.stepper instanceof GameInstructions && this.stepper.get_state() != Gs.StepperState.running) {
                 this.stepper = new GameLevels(high_scores.get_high_score());
@@ -126,7 +127,6 @@ export function game_mk(high_scores: Hs.HighScores): Game {
 
 class GameWarning implements Gs.Stepper {
     stepper: Ps.PlainScreen;
-    attract: any;
 
     constructor() {
         this.stepper = new Ps.PlainScreen({
@@ -137,14 +137,6 @@ class GameWarning implements Gs.Stepper {
 	    fg_color: RGBA.WHITE,
 	    bg_color: RGBA.DARK_MAGENTA,
 	});
-	this.attract = {
-	    wrap: false,
-	    image_located: {
-		resource_id: "images/sgbg.png",
-		rect: K.SCREEN_RECT
-	    },
-	    comment: "attract",
-	};
     }
 
     get_state(): Gs.StepperState {
@@ -157,7 +149,6 @@ class GameWarning implements Gs.Stepper {
 
     step() {
         this.stepper.step();
-        this.stepper.mdb.shared.frame_drawing.images.push(this.attract);
     }
 
     get_db(): Db.DB<Db.World> {
@@ -174,14 +165,14 @@ class GameInstructions implements Gs.Stepper {
     last: number;
     qr: any;
 
-    constructor() {
+    constructor(title: string) {
         this.stepper = new Is.InstructionsScreen({
-	    title: "HOW TO PLAY",
+	    title,
 	    instructions: MAIN_INSTRUCTIONS,
 	    size: K.d2si(35),
 	    animated: true,
 	    bg_color: RGBA.DARK_BLUE,
-	    top_offset_y: 0,
+	    top_offset_y: K.d2si(40),
 	});
 	this.stepper.mdb.shared.sfx.push({ sfx_id: K.SYNTH_C_SFX });
 	this.qr = {
@@ -190,8 +181,8 @@ class GameInstructions implements Gs.Stepper {
                 resource_id: "images/qr.png",
                 rect: G.rect_mk(
 		    G.v2d_mk(
-			G.rect_w(K.SCREEN_RECT)*0.9,
-			G.rect_h(K.SCREEN_RECT)*0.55
+			G.rect_w(K.SCREEN_RECT)*0.85,
+			G.rect_h(K.SCREEN_RECT)*0.75
 		    ),
 		    K.vd2si(G.v2d_mk(80, 80)),
 		),
@@ -214,58 +205,6 @@ class GameInstructions implements Gs.Stepper {
 	// reaching into mdb like this is gross, yes.
         this.stepper.mdb.shared.frame_drawing.images.push(this.qr);
 	this.stepper.mdb.shared.sfx.push(TRACK1_SFX);
-    }
-
-    get_db(): Db.DB<Db.World> {
-	return this.stepper.get_db();
-    }
-
-    stringify(): string {
-        return this.stepper.stringify();
-    }
-}
-
-class GamePaused implements Gs.Stepper {
-    stepper: Is.InstructionsScreen;
-    last: number;
-    qr: any;
-
-    constructor() {
-        this.stepper = new Is.InstructionsScreen({
-	    title: "GAME PAUSED",
-	    instructions: MAIN_INSTRUCTIONS,
-	    size: K.d2si(35),
-	    animated: false,
-	    bg_color: RGBA.DARK_BLUE,
-	});
-	this.last = Date.now();
-	this.qr = {
-            wrap: false,
-            image_located: {
-                resource_id: "images/qr.png",
-                rect: G.rect_mk(
-		    G.v2d_mk(
-			G.rect_w(K.SCREEN_RECT)*0.85,
-			G.rect_h(K.SCREEN_RECT)*0.75
-		    ),
-		    K.vd2si(G.v2d_mk(80, 80)),
-		),
-            }
-	};
-    }
-
-    get_state(): Gs.StepperState {
-        return this.stepper.get_state();
-    }
-
-    merge_client_db(cnew: Cdb.ClientDB) {
-        this.stepper.merge_client_db(cnew);
-    }
-
-    step() {
-        this.stepper.step();
-	// reaching into mdb like this is gross, yes.
-        this.stepper.mdb.shared.frame_drawing.images.push(this.qr);
     }
 
     get_db(): Db.DB<Db.World> {
@@ -365,7 +304,7 @@ class GameLevels implements Gs.Stepper {
             }
             else {
                 this.paused = this.stepper;
-                this.stepper = new GamePaused();
+                this.stepper = new GameInstructions("PAUSED");
             }
         }
     }

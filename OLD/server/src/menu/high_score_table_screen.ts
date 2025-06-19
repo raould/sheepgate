@@ -21,7 +21,13 @@ const MUSIC_SFX = {
 
 export class HighScoreTableScreen extends Sz.SizzlerScreen {
     constructor(private readonly table: Hs.HighScores, emit_table: boolean = false) {
-        super({ title: "HIGH SCORES", skip_text: "PRESS [FIRE] TO CONTINUE", bg_color: RGBA.DARK_BLUE, timeout: 30*1000 });
+        super({
+	    title: "HIGH SCORES",
+	    skip_text: K.USER_SKIP_TEXT,
+	    user_skip_after_msec: 1000,
+	    bg_color: RGBA.DARK_BLUE,
+	    timeout: 30*1000
+	});
 	this.mdb.shared.sfx.push(MUSIC_SFX);
 	D.log("emit_table?", emit_table);
 	if (emit_table) {
@@ -36,7 +42,7 @@ export class HighScoreTableScreen extends Sz.SizzlerScreen {
     }
 
     step_body() {
-        const t_hcycle = new HCycle(this.header_cycle.hsv, this.header_cycle.delta * 3);
+        const t_hcycle = new HCycle(this.header_cycle.hsv, this.header_cycle.delta * -10);
         t_hcycle.next();
         const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.3);
         const score_width = U.count_digits(this.table.scores[0].score);

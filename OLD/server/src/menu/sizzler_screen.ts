@@ -19,6 +19,7 @@ export const MESSAGE_MESC = 350;
 export interface SizzlerScreenSpec {
     title?: string,
     skip_text?: string,
+    user_skip_after_msec?: number, // default is 0.
     bg_color: RGBA,
     animated?: boolean, // default is true.
     timeout?: number, // default is never.
@@ -36,6 +37,7 @@ export class SizzlerScreen implements M.Menu {
     body_cycle: HCycle;
     title?: string;
     skip_text: U.O<string>;
+    user_skip_after_msec: number;
     hide_user_skip_msg: boolean;
     ignore_user_skip: boolean;
     animated: boolean;
@@ -45,6 +47,7 @@ export class SizzlerScreen implements M.Menu {
 	this.mdb = Mdb.menudb_mk(this.bg_color);
 	this.title = spec.title;
 	this.skip_text = spec.skip_text;
+	this.user_skip_after_msec = spec.user_skip_after_msec ?? 0;
 	this.animated = spec.animated ?? true;
 	this.timeout = spec.timeout;
 	this.hide_user_skip_msg = spec.hide_user_skip_msg ?? false;
@@ -57,7 +60,7 @@ export class SizzlerScreen implements M.Menu {
 
     merge_client_db(cdb2: Cdb.ClientDB): void {
         if (this.ignore_user_skip !== true &&
-	    this.elapsed > K.USER_SKIP_AFTER_MSEC &&
+	    this.elapsed > this.user_skip_after_msec &&
 	    !!cdb2.inputs.commands[Cmd.CommandType.fire]) {
             this.state = Gs.StepperState.completed;
         }
@@ -108,16 +111,16 @@ export class SizzlerScreen implements M.Menu {
     step_title() {
 	if (U.exists(this.title)) {
             const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.2);
-            this.step_text(this.title, center, 60, this.header_cycle)
+            this.step_text(this.title, center, K.d2si(60), this.header_cycle)
 	}
     }
 
     step_user_skip() {
         if (!this.hide_user_skip_msg &&
 	    U.exists(this.skip_text) &&
-	    (!this.animated || this.elapsed > K.USER_SKIP_AFTER_MSEC)) {
+	    (!this.animated || this.elapsed > this.user_skip_after_msec)) {
             const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.9);
-            this.step_text(this.skip_text, center, 40, this.header_cycle);
+            this.step_text(this.skip_text, center, K.d2si(40), this.header_cycle);
         }
     }
 
@@ -125,7 +128,7 @@ export class SizzlerScreen implements M.Menu {
         if (U.exists(this.timeout)) {
             const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.935, this.mdb.shared.world.bounds0.y * 0.15);
 	    const msg = String(Math.ceil(this.timeout/1000));
-            this.step_text(msg, center, 25, this.header_cycle);
+            this.step_text(msg, center, K.d2si(25), this.header_cycle);
         }
     }
 

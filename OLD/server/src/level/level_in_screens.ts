@@ -16,7 +16,7 @@ interface SubState extends Gs.Stepper {
     get_next_state(): U.O<SubState>;
 }
 
-const LOST_COLOR = RGBA.lerpRGBA(RGBA.RED, RGBA.BLACK, 0.7);
+const LOST_COLOR = RGBA.lerpRGBA(RGBA.RED, RGBA.BLACK, 0.25);
 
 // todo: change this to use the State Pattern.
 export class LevelInScreens implements Gs.Stepper {
@@ -60,7 +60,7 @@ class LevelWithScreen_StartScreen implements SubState {
         const hypermega = level.hypermega_snapshot;
         this.start_screen = new Lss.LevelStartScreen(
             `LEVEL ${index1} START!`,
-            `PRESS [FIRE] TO LAUNCH`,
+	    K.USER_SKIP_TEXT,
             small,
             mega,
             hypermega,

@@ -29,6 +29,8 @@ export interface DB<W extends World> {
     kind: DBKind;
     world: W;
     bg_color: RGBA;
+    tick: number; // increment on each server step, even if the dt was 0.
+    sim_now: number;
     frame_drawing: Dr.Drawing; // todo: kind of a bad name, actually?
     debug_graphics?: Dr.Drawing[];
     sfx: So.Sfx[];

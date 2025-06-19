@@ -47,9 +47,6 @@ import { RGBA } from './color';
 // also this appears to be buggy overall.
 export const MAX_CONCURRENT_GAMES = -1; // < 0 is disabled.
 
-// small debounce so previous button mashing might end first.
-export const USER_SKIP_AFTER_MSEC = 500;
-
 export const MAX_HIGH_SCORE_COUNT = 8;
 
 export const WS_PORT = 6969; // K
@@ -72,7 +69,7 @@ export const FRAME_MSEC_DT = 1000 / FPS; // K
 // external code should ideally use SCREEN_RECT below
 export const DESIGN_SIZE = G.v2d_mk(960, 540); // K
 // TODO: want to get up closer to 4K.
-export const D2S = 1;
+export const D2S = 2;
 export function d2s(d: number): number {
     return d * D2S;
 }
@@ -416,3 +413,5 @@ export const DEFFX_SFX = "sounds/deffx.ogg";
 // match: game.ts
 // used to scale things across levels.
 export const LEVEL_TEMPLATE_COUNT = 7;
+
+export const USER_SKIP_TEXT = "PRESS [FIRE] TO CONTINUE";

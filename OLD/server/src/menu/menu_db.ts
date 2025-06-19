@@ -14,7 +14,13 @@ export interface MenuDB {
     shared: Db.DB<Db.World>;
 }
 
+// lordy this is so bad.
+let tick = 0;
+let sim_now = 0;
+
 export function menudb_mk(bg_color: RGBA): MenuDB {
+    ++tick;
+    sim_now += K.FRAME_MSEC_DT;
     return {
 	frame_dt: K.FRAME_MSEC_DT,
 	shared: {
@@ -28,6 +34,8 @@ export function menudb_mk(bg_color: RGBA): MenuDB {
 		},
             },
             bg_color: bg_color,
+	    tick,
+	    sim_now,
             frame_drawing: Dr.drawing_mk(),
             debug_graphics: [],
 	    sfx: [],

@@ -231,8 +231,6 @@ export interface DBSharedCore extends Db.DB<GameWorld> { // todo: better name.
 
     level_index1: number; // 1-based.
     screen_shake: G.V2D;
-    tick: number; // increment on each server step, even if the dt was 0.
-    sim_now: number;
     fps: number;    
     hud_drawing: Dr.Drawing; // match: these are always in screen space!
 

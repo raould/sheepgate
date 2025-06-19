@@ -16,7 +16,7 @@ let DEFAULT_HIGH_SCORES = [
     new HighScore("ERQ ESQ", 1992),
     new HighScore("QYPDQ", 100),
     new HighScore("D N A", 42),
-    new HighScore("SPAMSPAM", 3),
+    new HighScore("SPAM", 3),
     new HighScore("JN0T", 1)
 ];
 

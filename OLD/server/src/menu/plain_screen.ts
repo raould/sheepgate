@@ -17,6 +17,7 @@ import { RGBA } from '../color';
 export interface PlainScreenSpec {
     title: string,
     skip_text: string,
+    user_skip_after_msec?: number, // default is 0.
     instructions: string[],
     instructions_size: number;
     fg_color: RGBA,
@@ -28,9 +29,11 @@ export class PlainScreen implements M.Menu {
     mdb: Mdb.MenuDB;
     state: Gs.StepperState;
     elapsed: number;
-
+    user_skip_after_msec: number;
+    
     constructor(spec: PlainScreenSpec) {
 	this.bg_color = spec.bg_color;
+	this.user_skip_after_msec = spec.user_skip_after_msec ?? 0;
         this.mdb = Mdb.menudb_mk(this.bg_color);
 
         this.add_text(
@@ -76,8 +79,7 @@ export class PlainScreen implements M.Menu {
     }
 
     merge_client_db(cdb2: Cdb.ClientDB): void {
-        if (this.elapsed > K.USER_SKIP_AFTER_MSEC &&
-	    !!cdb2.inputs.commands[Cmd.CommandType.fire]) {
+        if (this.elapsed > this.user_skip_after_msec && !!cdb2.inputs.commands[Cmd.CommandType.fire]) {
             this.state = Gs.StepperState.completed;
         }
     }
