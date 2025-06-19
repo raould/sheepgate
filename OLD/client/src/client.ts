@@ -1559,6 +1559,7 @@ function gamepadHandler(event: any, connecting: boolean) {
 
 function init() {
     h5canvas = document.getElementById("canvas");
+
     // @ts-ignore
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     try { cxAudio = new AudioContext(); } catch(e) { console.error(e); }
