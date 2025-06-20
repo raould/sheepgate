@@ -149,6 +149,58 @@ const key2cmd: { [k: string]: CommandSpec } = {
     "&":        { command: CommandType.debug_lose_level, is_singular: true },
     "*":        { command: CommandType.debug_smite, is_singular: true },
 };
+const key2cmd_hotrod: { [k: string]: CommandSpec } = {
+    Escape:     PauseSpec,
+    p:          PauseSpec,
+    P:          PauseSpec,
+    // 1P, 2P buttons:
+    1: FireSpec,
+    2: FireSpec,
+    // side buttons.
+    3: FireSpec,
+    4: FireSpec,
+    // left joystick:
+    ArrowUp:    UpSpec,
+    ArrowDown:  DownSpec,
+    ArrowLeft:  LeftSpec,
+    ArrowRight: RightSpec,
+    // right joystick:
+    r: UpSpec,
+    R: UpSpec,
+    d: LeftSpec,
+    D: LeftSpec,
+    g: RightSpec,
+    G: RightSpec,
+    f: DownSpec,
+    F: DownSpec,
+    // left buttons:
+    Control: FireSpec,
+    Alt: FireSpec,
+    " ": FireSpec,
+    c: FireSpec,
+    C: FireSpec,
+    Shift: FireSpec,
+    z: FireSpec,
+    Z: FireSpec,
+    x: FireSpec,
+    X: FireSpec,
+    // right buttons:
+    a: FireSpec,
+    A: FireSpec,
+    s: FireSpec,
+    S: FireSpec,
+    q: FireSpec,
+    Q: FireSpec,
+    w: FireSpec,
+    W: FireSpec,
+    e: FireSpec,
+    E: FireSpec,
+    "[": FireSpec,
+    "]": FireSpec,
+    "{": FireSpec,
+    "}": FireSpec,
+}
+const key2cmd = key2cmd_default;
 
 abstract class AbstractParticleGenerator {
     // "o" means "offset" because we're keeping the particles
