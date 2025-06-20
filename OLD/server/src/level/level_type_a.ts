@@ -340,10 +340,11 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    U.count_dict(next.shared.items.explosions) == 0;
     }
 
-    // people on the ground + people in the beaming buffer.
+    // people on the ground + people in the ship.
     private get_people_count(next: GDB.GameDB): number {
-	return U.count_dict(next.shared.items.people) +
-	    U.count_dict(next.shared.items.beaming_buffer);
+	const pc = U.count_dict(next.shared.items.people);
+	const ppc = GDB.get_beaming_count(next);
+	return pc + ppc;
     }
 
     update_impl(next: GDB.GameDB) {
@@ -526,7 +527,6 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		    beam_down_rect: G.rect_mk_0()
 		},
 		people: {},
-		beaming_buffer: {},
 		gems: {},
 		fx: {},
 		particles: {},

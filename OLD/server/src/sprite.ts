@@ -165,7 +165,6 @@ export interface Fighter extends Sprite, Ranked, Facing, Tf.Flagged, Shielded {
 
 export interface Player extends Fighter {
     // note: the player has an extra hard-coded ability to crash through enemies somewhat.
-    passenger_max: number;
     maybe_shoot(db: GDB.GameDB): void;
     maybe_beam_up_person(db: GDB.GameDB, maybe_person: CollidableSprite): void;
     maybe_beam_down_to_base(db: GDB.GameDB, maybe_base_shield: CollidableSprite): void;
@@ -193,7 +192,14 @@ export interface Shield<T extends Shielded> extends CollidableSprite {
     // also see fighter_shield.ShieldWrappingSpec.
 }
 
+export enum BeamingState {
+    not_beaming,
+    beaming_up, // also, in the pattern buffer.
+    beaming_down
+};
+
 export interface Person extends CollidableSprite {
+    beaming_state: BeamingState;
     beam_up(db: GDB.GameDB): void;
     beam_down(db: GDB.GameDB, down_rect: G.Rect, on_end: (db: GDB.GameDB) => void): void;
 }
