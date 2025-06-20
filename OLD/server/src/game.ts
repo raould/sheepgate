@@ -164,9 +164,7 @@ class GameInstructions implements Gs.Stepper {
     stepper: Is.InstructionsScreen;
     last: number;
     qr: any;
-    player: any;
-    enemy: any;
-
+    
     constructor(title: string) {
         this.stepper = new Is.InstructionsScreen({
 	    title,
@@ -191,35 +189,41 @@ class GameInstructions implements Gs.Stepper {
             },
 	    comment: "qr",
 	};
-	this.player = {
+	this.last = Date.now();
+    }
+
+    player_mk() {
+	const x = G.rect_w(K.SCREEN_RECT)*0.1;
+	const y = G.rect_h(K.SCREEN_RECT)*0.2;
+	const yo = Math.sin((this.stepper.mdb.shared.tick + x)/40) * K.d2s(5);
+	return {
             wrap: false,
             image_located: {
                 resource_id: "images/player/cowR.png",
                 rect: G.rect_mk(
-		    G.v2d_mk(
-			G.rect_w(K.SCREEN_RECT)*0.1,
-			G.rect_h(K.SCREEN_RECT)*0.2
-		    ),
+		    G.v2d_mk(x, y + yo),
 		    K.PLAYER_COW_SIZE,
 		),
             },
 	    comment: "player",
 	};
-	this.enemy = {
+    }
+
+    enemy_mk() {
+	const x = G.rect_w(K.SCREEN_RECT)*0.85;
+	const y = G.rect_h(K.SCREEN_RECT)*0.2;
+	const yo = Math.sin((this.stepper.mdb.shared.tick + x)/20) * K.d2s(5);
+	return {
             wrap: false,
             image_located: {
                 resource_id: "images/enemies/basic1/sph1.png",
                 rect: G.rect_mk(
-		    G.v2d_mk(
-			G.rect_w(K.SCREEN_RECT)*0.85,
-			G.rect_h(K.SCREEN_RECT)*0.2
-		    ),
+		    G.v2d_mk(x, y + yo),
 		    K.vd2s(G.v2d_mk(28, 28)),
 		),
             },
 	    comment: "player",
 	};
-	this.last = Date.now();
     }
 
     get_state(): Gs.StepperState {
@@ -234,8 +238,8 @@ class GameInstructions implements Gs.Stepper {
         this.stepper.step();
 	// reaching into mdb like this is gross, yes.
         this.stepper.mdb.shared.frame_drawing.images.push(this.qr);
-        this.stepper.mdb.shared.frame_drawing.images.push(this.player);
-        this.stepper.mdb.shared.frame_drawing.images.push(this.enemy);
+        this.stepper.mdb.shared.frame_drawing.images.push(this.player_mk());
+        this.stepper.mdb.shared.frame_drawing.images.push(this.enemy_mk());
 	this.stepper.mdb.shared.sfx.push(TRACK1_SFX);
     }
 

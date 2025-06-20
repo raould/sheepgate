@@ -66,7 +66,7 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
 
 	    // ---------- images ----------
 	    const x = x_start + x_spacing*i;
-	    const yo = Math.sin((this.mdb.shared.tick + x)/10) * K.d2s(3);
+	    const yo = Math.sin((this.mdb.shared.tick + x)/30) * K.d2s(3);
 	    const offset = K.vd2s(G.v2d_mk(0, 110));
             const ixy = G.v2d_sub(
 		G.v2d_mk(x, y + yo),

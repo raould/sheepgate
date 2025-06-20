@@ -298,7 +298,7 @@ export const DRAG_ACC = vd2s(G.v2d_mk(-0.0025, -0.005)); // L
 // match: if the PLAYER_DELTA_*_ACC changes then likely
 // the gameport zone code will need adjustment.
 // pixels/dt? pixels/sec? i dunno!
-export const PLAYER_DELTA_X_ACC = d2s(0.002); // K
+export const PLAYER_DELTA_X_ACC = d2s(0.0015); // K
 export const PLAYER_DELTA_Y_VEL = d2s(0.2); // K
 
 export const PLAYER_BEAM_MAX_VEL2 = d2s(0.2); // K

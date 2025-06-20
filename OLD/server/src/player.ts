@@ -125,13 +125,13 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
             this.lt.y = Math.min(db.shared.world.bounds0.y - this.size.y, this.lt.y);
             const max_y = Gr.p2d_max_ys(db, this);
             // 2.b) adjust vertical, todo: -20 is a fudge (!) to give some space between ship and ground things.
-            this.lt.y = Math.min(this.lt.y, max_y - this.size.y - 20);
+            this.lt.y = Math.min(this.lt.y, max_y - this.size.y - K.d2s(20));
 
              // 3) some buffer ie so that your sheild and hp bar don't go off-screen.
              // todo: make it dynamically calculated based on the hp bar position.
-            this.lt.y = Math.max(this.lt.y, 25);
+            this.lt.y = Math.max(this.lt.y, K.d2s(25));
 
-	    const oy = Math.sin(db.shared.tick/10) * 3;
+	    const oy = Math.sin(db.shared.tick/20) * K.d2s(3);
 	    this.draw_lt = G.v2d_add_y(this.lt, oy);
         },
         step_resource_id(db: GDB.GameDB, delta_acc_x: number) {
