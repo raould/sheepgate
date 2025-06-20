@@ -123,7 +123,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	D.assert(!!b);
 	const lt = G.v2d_mk(
 	    this.db.shared.items.base.lt.x,
-	    K.GAMEPORT_RECT.lt.y + K.GAMEPORT_RECT.size.y * 0.65,
+	    K.GAMEPORT_RECT.lt.y + K.GAMEPORT_RECT.size.y * 0.60,
 	);
 	this.db.shared.items.player = Pl.player_mk(
 	    this.db,
