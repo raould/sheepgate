@@ -221,7 +221,6 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
 					/*on_end*/(db: GDB.GameDB) => {
                                             U.if_let(
 						GDB.get_player(db), (thiz: S.Player) => {
-						    GDB.reap_item(db.shared.items.beaming_buffer, person);
                                                     db.local.scoring.on_event(Sc.Event.rescue);
 						    U.if_let(
 							GDB.get_shield(db, this.shield_id), player_shield => {

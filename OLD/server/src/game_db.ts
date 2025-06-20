@@ -409,12 +409,10 @@ export function get_fighter(db: GameDB, sid: U.O<DBID>): U.O<S.Fighter> {
 }
 
 export function get_person(db: GameDB, pid: U.O<DBID>): U.O<S.Person> {
-    D.log("get_person", pid, db.shared.items.people);
     return U.exists(pid) ? db.shared.items.people[pid] : undefined;
 }
 
 export function get_beaming_buffered(db: GameDB, pid: U.O<DBID>): U.O<S.Person> {
-    D.log("get_beaming_buffered", pid, db.shared.items.beaming_buffer);
     return U.exists(pid) ? db.shared.items.beaming_buffer[pid] : undefined;
 }
 

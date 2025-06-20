@@ -111,7 +111,7 @@ const DownSpec: CommandSpec = { command: CommandType.down, is_singular: false };
 const LeftSpec: CommandSpec = { command: CommandType.left, is_singular: false };
 const RightSpec: CommandSpec = { command: CommandType.right, is_singular: false };
 const ThrustSpec: CommandSpec = { command: CommandType.thrust, is_singular: false };
-const key2cmd: { [k: string]: CommandSpec } = {
+const key2cmd_default: { [k: string]: CommandSpec } = {
     // standard gameplay commands.
     Escape:     PauseSpec,
     p:     	PauseSpec,

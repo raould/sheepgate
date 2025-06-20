@@ -203,8 +203,8 @@ function waiting_mk(
             db.shared.sfx.push({ sfx_id: K.BEAMUP_SFX, gain: 0.35 });
         },
 	beam_down(db: GDB.GameDB, down_rect: G.Rect, on_end: (db: GDB.GameDB) => void) {
-	    this.lifecycle_state = GDB.Lifecycle.dead;
 	    db.shared.sfx.push({ sfx_id: K.BEAMDOWN_SFX, gain: 0.35 });
+	    this.lifecycle_state = GDB.Lifecycle.dead;
             GDB.add_sprite_dict_id_mut(
                 db.shared.items.fx,
                 (dbid: GDB.DBID): S.Sprite => beam_down_anim_mk(

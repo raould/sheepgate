@@ -374,7 +374,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		}
 	    }
 	    // all tasks accomplished?
-	    else if (this.are_all_enemies_done(next) && this.get_people_count(next) == 0) {
+	    else if (this.get_people_count(next) == 0 && this.are_all_enemies_done(next)) {
 		this.state = Gs.StepperState.completed;
 		return;
 	    }
