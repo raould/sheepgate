@@ -14,7 +14,7 @@ import * as Rnd from '../random';
 import { RGBA, HCycle } from '../color';
 import * as D from '../debug';
 
-export const MESSAGE_MESC = 350;
+export const MESSAGE_MESC = 500;
 
 export interface SizzlerScreenSpec {
     title?: string,
