@@ -486,7 +486,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    state_modifiers: [],
 	    ticking_generators: {},
 	    enemy_generators: {},
-	    player_zone_width: K.GAMEPORT_PLAYER_ZONE_WIDTH,
+	    player_zone_width: K.GAMEPORT_PLAYER_ZONE_MIN_WIDTH,
 	    scoring: Sc.scoring_mk(score, e2s),
 	    toasts: {},
 	    hud: {

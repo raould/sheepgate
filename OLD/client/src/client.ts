@@ -74,8 +74,6 @@ const ws_endpoint: string = `ws://${server_host}:6969`;
 const BG_COLOR: string = "#111133";
 const DEBUG_IMG_BOX_COLOR: string = "rgba(255,0,0,0.5)";
 const client_id = Date.now()
-// todo: game breaks when the fps is set to anything other than 30.
-// also requestAnimationFrame() never gives me more than 30 fps anyway?
 const TARGET_FPS = 60;
 const MSEC_PER_FRAME = 1000 / TARGET_FPS;
 log("client_id", client_id);
@@ -859,7 +857,7 @@ function renderParticles(gdb: any) {
 
 function render(db: any) {
     if (db != null) {    
-        cx2d.fillStyle = db.bg_color || db.bg_color || BG_COLOR;
+        cx2d.fillStyle = db.bg_color ?? BG_COLOR;
         cx2d.fillRect(0, 0, h5canvas.width, h5canvas.height);
 	// painter's algorith, menus should render on top.
 	// note: bifurcating on the type of db here.

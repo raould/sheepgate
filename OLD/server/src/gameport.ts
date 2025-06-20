@@ -81,16 +81,17 @@ function step_x(db: GDB.GameDB, p: S.Player) {
 
     // step toward them in the zone, so they move
     // 'back' away from the 'leading' toward the 'target' edge.
-    const sign = F.on_facing(p.facing, -1, 1);
+    const sign = F.f2x(p.facing);
     const diff_x = pm.x - target.x;
     const ahead = U.sign(diff_x) == sign;
-    if (ahead) {
-        const step_x = Math.min(Math.abs(diff_x / 2), K.GAMEPORT_PLAYER_ZONE_STEP_X) * sign;
-        G.rect_move_mut(
-            db.shared.world.gameport.world_bounds,
-            G.v2d_mk_x0(step_x)
-        );
-    }
+    // if (ahead) {
+    // 	const dtsf = K.GAMEPORT_PLAYER_ZONE_STEP_X * db.local.frame_dt;
+    //     const step_x = Math.min(Math.abs(diff_x / 2), dtsf) * sign;
+    //     G.rect_move_mut(
+    //         db.shared.world.gameport.world_bounds,
+    //         G.v2d_mk_x0(step_x)
+    //     );
+    // }
 }
 
 function player_to_zone(db: GDB.GameDB, player: S.Player, gameport: G.Rect): [G.V2D/*target*/, G.V2D/*leading*/] {
@@ -120,9 +121,10 @@ function set_player_zone_width(db: GDB.GameDB, p0: S.Player, p1: S.Player) {
 }
 
 function step_player_zone_width(db: GDB.GameDB) {
-    db.local.player_zone_width =
-        Math.max(
-            db.local.player_zone_width - K.GAMEPORT_PLAYER_ZONE_STEP_X,
-            K.GAMEPORT_PLAYER_ZONE_WIDTH
-        );
+    const dtsf = K.GAMEPORT_PLAYER_ZONE_STEP_X * db.local.frame_dt;
+    const pzw2 = db.local.player_zone_width - dtsf;
+    db.local.player_zone_width = Math.max(
+        pzw2,
+        K.GAMEPORT_PLAYER_ZONE_MIN_WIDTH
+    );
 }

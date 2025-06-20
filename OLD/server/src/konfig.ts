@@ -52,9 +52,6 @@ export const MAX_HIGH_SCORE_COUNT = 8;
 export const WS_PORT = 6969; // K
 export const INVALID_CLIENT_ID = Number.NEGATIVE_INFINITY;  // K
 
-// note/todo: so far everything has been hacked to look
-// good (i use that term very loosely) based on FPS=30 value.
-// todo: game breaks when the fps is set to anything other than 30. :-(
 export const FPS = 60; // K
 export const FRAME_MSEC_DT = 1000 / FPS; // K
 
@@ -179,7 +176,7 @@ export const ENEMY_FIRING_RECT = G.rect_inset(
     ENEMY_FIRING_INSET
 );
 
-export const GAMEPORT_PLAYER_ZONE_WIDTH = PLAYER_SHIP_SIZE.x * 1;
+export const GAMEPORT_PLAYER_ZONE_MIN_WIDTH = PLAYER_SHIP_SIZE.x * 1;
 export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(PLAYER_SHIP_SIZE.x * 3);
 // match: if PLAYER_DELTA_*_ACC changes then these will likely need adjustment.
 // note: the x value is more tricky as it is used in more than one way during GAMEPORT update.
@@ -188,7 +185,7 @@ export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(PLAYER_SHIP_SIZE.x * 3);
 // so the value used to reduce the size of the zone after reversing is used for stepping inside
 // the zone, too. got that? :-\
 // note: the dynamics here aren't as good as real stargate, either :-(
-export const GAMEPORT_PLAYER_ZONE_STEP_X = d2si(15);
+export const GAMEPORT_PLAYER_ZONE_STEP_X = d2s(0.3); // K but must be per-dt, not per-frame.
 export const GAMEPORT_SHAKE = d2si(4); // K
 
 export const OFF_SCREEN = G.v2d_mk_nn(-Number.MAX_SAFE_INTEGER);
