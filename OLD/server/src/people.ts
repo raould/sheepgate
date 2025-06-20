@@ -187,8 +187,8 @@ function waiting_mk(
 		U.if_let(
                     GDB.get_player(db),
                     (player: S.Player) => {
-			const d = player.lt.x - this.lt.x;
-			this.anim = d < 200 ? waving_anim : standing_anim;
+			const d = Math.abs(player.lt.x - this.lt.x);
+			this.anim = d < (this.size.x*4) ? waving_anim : standing_anim;
                     }
 		);
 	    }
