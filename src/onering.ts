@@ -13,7 +13,9 @@ import { beamup_sfx_b64 } from '@client/beamup.ogg.b64';
 import { explosion_sfx_b64 } from '@client/explosion.ogg.b64';
 import { expboom_sfx_b64 } from '@client/expboom.ogg.b64';
 import { gem_collect_sfx_b64 } from '@client/gem_collect.ogg.b64';
-import { player_shoot_sfx_b64 } from '@client/player_shoot.ogg.b64';
+import { player_shoot0_sfx_b64 } from '@client/player_shoot0.ogg.b64';
+import { player_shoot1_sfx_b64 } from '@client/player_shoot1.ogg.b64';
+import { player_shoot2_sfx_b64 } from '@client/player_shoot2.ogg.b64';
 import { warpin_sfx_b64 } from '@client/warpin.ogg.b64';
 import { synthA_sfx_b64 } from '@client/synthA.ogg.b64';
 import { synthB_sfx_b64 } from '@client/synthB.ogg.b64';
@@ -109,7 +111,7 @@ const DownSpec: CommandSpec = { command: CommandType.down, is_singular: false };
 const LeftSpec: CommandSpec = { command: CommandType.left, is_singular: false };
 const RightSpec: CommandSpec = { command: CommandType.right, is_singular: false };
 const ThrustSpec: CommandSpec = { command: CommandType.thrust, is_singular: false };
-const key2cmd: { [k: string]: CommandSpec } = {
+const key2cmd_default: { [k: string]: CommandSpec } = {
     // standard gameplay commands.
     Escape:     PauseSpec,
     p:     	PauseSpec,
@@ -149,6 +151,58 @@ const key2cmd: { [k: string]: CommandSpec } = {
     "&":        { command: CommandType.debug_lose_level, is_singular: true },
     "*":        { command: CommandType.debug_smite, is_singular: true },
 };
+const key2cmd_hotrod: { [k: string]: CommandSpec } = {
+    Escape:     PauseSpec,
+    p:          PauseSpec,
+    P:          PauseSpec,
+    // 1P, 2P buttons:
+    1: FireSpec,
+    2: FireSpec,
+    // side buttons.
+    3: FireSpec,
+    4: FireSpec,
+    // left joystick:
+    ArrowUp:    UpSpec,
+    ArrowDown:  DownSpec,
+    ArrowLeft:  LeftSpec,
+    ArrowRight: RightSpec,
+    // right joystick:
+    r: UpSpec,
+    R: UpSpec,
+    d: LeftSpec,
+    D: LeftSpec,
+    g: RightSpec,
+    G: RightSpec,
+    f: DownSpec,
+    F: DownSpec,
+    // left buttons:
+    Control: FireSpec,
+    Alt: FireSpec,
+    " ": FireSpec,
+    c: FireSpec,
+    C: FireSpec,
+    Shift: FireSpec,
+    z: FireSpec,
+    Z: FireSpec,
+    x: FireSpec,
+    X: FireSpec,
+    // right buttons:
+    a: FireSpec,
+    A: FireSpec,
+    s: FireSpec,
+    S: FireSpec,
+    q: FireSpec,
+    Q: FireSpec,
+    w: FireSpec,
+    W: FireSpec,
+    e: FireSpec,
+    E: FireSpec,
+    "[": FireSpec,
+    "]": FireSpec,
+    "{": FireSpec,
+    "}": FireSpec,
+}
+const key2cmd = key2cmd_default;
 
 abstract class AbstractParticleGenerator {
     // "o" means "offset" because we're keeping the particles
@@ -1105,7 +1159,9 @@ function loadSounds() {
     loadSound("explosion.ogg", explosion_sfx_b64);
     loadSound("expboom.ogg", expboom_sfx_b64);
     loadSound("gem_collect.ogg", gem_collect_sfx_b64);
-    loadSound("player_shoot.ogg", player_shoot_sfx_b64);
+    loadSound("player_shoot0.ogg", player_shoot0_sfx_b64);
+    loadSound("player_shoot1.ogg", player_shoot1_sfx_b64);
+    loadSound("player_shoot2.ogg", player_shoot2_sfx_b64);
     loadSound("warpin.ogg", warpin_sfx_b64);
     loadSound("synthA.ogg", synthA_sfx_b64);
     loadSound("synthB.ogg", synthB_sfx_b64);
@@ -1137,6 +1193,7 @@ function loadImages() {
     // todo: load the graphics from the server, not locally???
     // or at least share this kind of big spec's code with the server.
     
+    loadImage("sgbg.png");
     loadImage("attract.png");
     loadImage("qr.png");
 
@@ -1441,6 +1498,7 @@ function gamepadHandler(event: any, connecting: boolean) {
 
 function init() {
     h5canvas = document.getElementById("canvas");
+
     // @ts-ignore
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     try { cxAudio = new AudioContext(); } catch(e) { console.error(e); }

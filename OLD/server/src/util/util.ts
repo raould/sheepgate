@@ -98,9 +98,11 @@ export function filter_array<E>(array: Array<E>, fn: (_: E) => boolean): Filtere
 // and you'd have to use things like
 // Object.keys() on your dict.
 // but i couldn't find a type like this in typescript
+// that had a genetic parameter,
 // so i had to make my own for use in e.g. methods below.
+// it all sucks, apologies.
 // note: this is (unfortunately?) not used for an ES6 Map, just a regular JS {}.
-export interface Dict<E> { 
+export interface Dict<E> {
     [key: string]: E;
 }
 

@@ -13,7 +13,9 @@ import { beamup_sfx_b64 } from './beamup.ogg.b64';
 import { explosion_sfx_b64 } from './explosion.ogg.b64';
 import { expboom_sfx_b64 } from './expboom.ogg.b64';
 import { gem_collect_sfx_b64 } from './gem_collect.ogg.b64';
-import { player_shoot_sfx_b64 } from './player_shoot.ogg.b64';
+import { player_shoot0_sfx_b64 } from './player_shoot0.ogg.b64';
+import { player_shoot1_sfx_b64 } from './player_shoot1.ogg.b64';
+import { player_shoot2_sfx_b64 } from './player_shoot2.ogg.b64';
 import { warpin_sfx_b64 } from './warpin.ogg.b64';
 import { synthA_sfx_b64 } from './synthA.ogg.b64';
 import { synthB_sfx_b64 } from './synthB.ogg.b64';
@@ -74,9 +76,7 @@ const ws_endpoint: string = `ws://${server_host}:6969`;
 const BG_COLOR: string = "#111133";
 const DEBUG_IMG_BOX_COLOR: string = "rgba(255,0,0,0.5)";
 const client_id = Date.now()
-// todo: game breaks when the fps is set to anything other than 30.
-// also requestAnimationFrame() never gives me more than 30 fps anyway?
-const TARGET_FPS = 30;
+const TARGET_FPS = 60;
 const MSEC_PER_FRAME = 1000 / TARGET_FPS;
 log("client_id", client_id);
 
@@ -859,7 +859,7 @@ function renderParticles(gdb: any) {
 
 function render(db: any) {
     if (db != null) {    
-        cx2d.fillStyle = db.bg_color || db.bg_color || BG_COLOR;
+        cx2d.fillStyle = db.bg_color ?? BG_COLOR;
         cx2d.fillRect(0, 0, h5canvas.width, h5canvas.height);
 	// painter's algorith, menus should render on top.
 	// note: bifurcating on the type of db here.
@@ -1200,7 +1200,9 @@ function loadSounds() {
     loadSound("explosion.ogg", explosion_sfx_b64);
     loadSound("expboom.ogg", expboom_sfx_b64);
     loadSound("gem_collect.ogg", gem_collect_sfx_b64);
-    loadSound("player_shoot.ogg", player_shoot_sfx_b64);
+    loadSound("player_shoot0.ogg", player_shoot0_sfx_b64);
+    loadSound("player_shoot1.ogg", player_shoot1_sfx_b64);
+    loadSound("player_shoot2.ogg", player_shoot2_sfx_b64);
     loadSound("warpin.ogg", warpin_sfx_b64);
     loadSound("synthA.ogg", synthA_sfx_b64);
     loadSound("synthB.ogg", synthB_sfx_b64);
@@ -1232,6 +1234,7 @@ function loadImages() {
     // todo: load the graphics from the server, not locally???
     // or at least share this kind of big spec's code with the server.
     
+    loadImage("sgbg.png");
     loadImage("attract.png");
     loadImage("qr.png");
 
@@ -1559,6 +1562,7 @@ function gamepadHandler(event: any, connecting: boolean) {
 
 function init() {
     h5canvas = document.getElementById("canvas");
+
     // @ts-ignore
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     try { cxAudio = new AudioContext(); } catch(e) { console.error(e); }

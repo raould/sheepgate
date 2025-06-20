@@ -169,6 +169,9 @@ export function v2d_scale_v2d_i(v: V2D, s: V2D): V2D {
 export function v2d_dot(a: V2D, b: V2D): number {
     return a.x * b.x + a.y * b.y;
 }
+export function v2d_aspect(v: V2D): number {
+    return v.x / v.y;
+}
 export function v2d_clip(v: V2D, min: V2D, max: V2D): V2D {
     return v2d_mk(
         U.clip(v.x, min.x, max.x),
@@ -253,72 +256,6 @@ export function bounds2bounds(src: V2D, dst: V2D): V2D {
         dst.x / src.x,
         dst.y / src.y
     );
-}
-
-// ---------- P2D: particle 2d.
-// yes, using is-a which might be... bad. sorry.
-export interface P2D extends Rect {
-    vel: V2D;
-    acc: V2D;
-    mass?: number;
-}
-export function p2d_toS(p: U.O<P2D>): string {
-    if (p == undefined) {
-	return "P2D(undefined)";
-    }
-    return `P2D(lt:${v2d_toS(p.lt)},sz:${v2d_toS(p.size)},v:${v2d_toS(p.vel)},a:${v2d_toS(p.acc)})`;
-}
-export function p2d_mk(r: Rect, vel: V2D, acc: V2D) {
-    return {
-        ...r,
-        vel: vel,
-        acc: acc
-    };
-}
-export function p2d_0(): P2D {
-    return p2d_mk(rect_mk_0(), v2d_mk_0(), v2d_mk_0());
-}
-export function p2d_set(src: P2D, dst: P2D) {
-    rect_set(src, dst);
-    v2d_set(src.vel, dst.vel);
-    v2d_set(src.acc, dst.acc);
-}
-export function p2d_clone(p: P2D): P2D {
-    return p2d_mk(
-        rect_clone(p),
-        v2d_clone(p.vel),
-        v2d_clone(p.acc)
-    )
-}
-export function p2d_0_mut(it: P2D) {
-    v2d_0_mut(it.lt);
-    v2d_0_mut(it.vel);
-    v2d_0_mut(it.acc);
-}
-export function p2d_vel_corner(p: P2D, bounds0: V2D): V2D {
-    let x = v2d_smells_left(p.vel) ? rect_l(p) : rect_r(p);
-    let y = v2d_smells_up(p.vel) ? rect_t(p) : rect_b(p);
-    return v2d_mk(wrap_x(x, bounds0), y);
-}
-export function p2d_add(a: P2D, b: P2D): P2D {
-    const e2 = p2d_clone(a);
-    v2d_add_mut(e2.lt, b.lt);
-    v2d_add_mut(e2.vel, b.vel);
-    v2d_add_mut(e2.acc, b.acc);
-    return e2;
-}
-export function p2d_add_mut(a: P2D, b: P2D) {
-    v2d_add_mut(a.lt, b.lt);
-    v2d_add_mut(a.vel, b.vel);
-    v2d_add_mut(a.acc, b.acc);
-}
-export function p2d_reverse_mut(p: P2D) {
-    v2d_set(v2d_scale(p.acc, -1), p.acc);
-    v2d_set(v2d_scale(p.vel, -1), p.vel);
-}
-export function p2d_reverse_x_mut(p: P2D) {
-    p.acc.x = -p.acc.x;
-    p.vel.x = -p.vel.x;
 }
 
 // ---------- Rect: rectangle 2d.
@@ -722,4 +659,70 @@ export function v2d_quadrant(p: V2D, anchor?: U.O<V2D>): Quadrant {
     else {
         return Quadrant.rb;
     }
+}
+
+// ---------- P2D: particle 2d.
+// yes, using is-a which might be... bad. sorry.
+export interface P2D extends Rect {
+    vel: V2D;
+    acc: V2D;
+    mass?: number;
+}
+export function p2d_toS(p: U.O<P2D>): string {
+    if (p == undefined) {
+	return "P2D(undefined)";
+    }
+    return `P2D(lt:${v2d_toS(p.lt)},sz:${v2d_toS(p.size)},v:${v2d_toS(p.vel)},a:${v2d_toS(p.acc)})`;
+}
+export function p2d_mk(r: Rect, vel: V2D, acc: V2D) {
+    return {
+        ...r,
+        vel: vel,
+        acc: acc
+    };
+}
+export function p2d_0(): P2D {
+    return p2d_mk(rect_mk_0(), v2d_mk_0(), v2d_mk_0());
+}
+export function p2d_set(src: P2D, dst: P2D) {
+    rect_set(src, dst);
+    v2d_set(src.vel, dst.vel);
+    v2d_set(src.acc, dst.acc);
+}
+export function p2d_clone(p: P2D): P2D {
+    return p2d_mk(
+        rect_clone(p),
+        v2d_clone(p.vel),
+        v2d_clone(p.acc)
+    )
+}
+export function p2d_0_mut(it: P2D) {
+    v2d_0_mut(it.lt);
+    v2d_0_mut(it.vel);
+    v2d_0_mut(it.acc);
+}
+export function p2d_vel_corner(p: P2D, bounds0: V2D): V2D {
+    let x = v2d_smells_left(p.vel) ? rect_l(p) : rect_r(p);
+    let y = v2d_smells_up(p.vel) ? rect_t(p) : rect_b(p);
+    return v2d_mk(wrap_x(x, bounds0), y);
+}
+export function p2d_add(a: P2D, b: P2D): P2D {
+    const e2 = p2d_clone(a);
+    v2d_add_mut(e2.lt, b.lt);
+    v2d_add_mut(e2.vel, b.vel);
+    v2d_add_mut(e2.acc, b.acc);
+    return e2;
+}
+export function p2d_add_mut(a: P2D, b: P2D) {
+    v2d_add_mut(a.lt, b.lt);
+    v2d_add_mut(a.vel, b.vel);
+    v2d_add_mut(a.acc, b.acc);
+}
+export function p2d_reverse_mut(p: P2D) {
+    v2d_set(v2d_scale(p.acc, -1), p.acc);
+    v2d_set(v2d_scale(p.vel, -1), p.vel);
+}
+export function p2d_reverse_x_mut(p: P2D) {
+    p.acc.x = -p.acc.x;
+    p.vel.x = -p.vel.x;
 }

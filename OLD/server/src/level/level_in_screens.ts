@@ -1,4 +1,5 @@
 /* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+import * as K from '../konfig';
 import * as Gs from '../game_stepper';
 import * as Cdb from '../client_db';
 import * as Db from '../db';
@@ -15,7 +16,7 @@ interface SubState extends Gs.Stepper {
     get_next_state(): U.O<SubState>;
 }
 
-const LOST_COLOR = RGBA.lerpRGBA(RGBA.RED, RGBA.BLACK, 0.7);
+const LOST_COLOR = RGBA.lerpRGBA(RGBA.RED, RGBA.BLACK, 0.25);
 
 // todo: change this to use the State Pattern.
 export class LevelInScreens implements Gs.Stepper {
@@ -59,7 +60,7 @@ class LevelWithScreen_StartScreen implements SubState {
         const hypermega = level.hypermega_snapshot;
         this.start_screen = new Lss.LevelStartScreen(
             `LEVEL ${index1} START!`,
-            `PRESS [FIRE] TO LAUNCH`,
+	    K.USER_SKIP_TEXT,
             small,
             mega,
             hypermega,
@@ -148,7 +149,7 @@ class LevelWithScreen_EndScreen implements SubState {
         this.end_screen = new Les.LevelEndScreen({
             title: `LEVEL ${index1} ${won ? "WON!" : "LOST!"}`,
 	    instructions: won ? [wonPhrase] : [lostPhrase],
-	    size: 80,
+	    size: K.d2si(80),
 	    animated: true,
             bg_color: won ? RGBA.BLACK : LOST_COLOR,
         });

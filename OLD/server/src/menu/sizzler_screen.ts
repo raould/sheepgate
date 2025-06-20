@@ -14,11 +14,12 @@ import * as Rnd from '../random';
 import { RGBA, HCycle } from '../color';
 import * as D from '../debug';
 
-export const MESSAGE_MESC = 350;
+export const MESSAGE_MESC = 500;
 
 export interface SizzlerScreenSpec {
     title?: string,
     skip_text?: string,
+    user_skip_after_msec?: number, // default is 0.
     bg_color: RGBA,
     animated?: boolean, // default is true.
     timeout?: number, // default is never.
@@ -36,6 +37,7 @@ export class SizzlerScreen implements M.Menu {
     body_cycle: HCycle;
     title?: string;
     skip_text: U.O<string>;
+    user_skip_after_msec: number;
     hide_user_skip_msg: boolean;
     ignore_user_skip: boolean;
     animated: boolean;
@@ -45,19 +47,20 @@ export class SizzlerScreen implements M.Menu {
 	this.mdb = Mdb.menudb_mk(this.bg_color);
 	this.title = spec.title;
 	this.skip_text = spec.skip_text;
+	this.user_skip_after_msec = spec.user_skip_after_msec ?? 0;
 	this.animated = spec.animated ?? true;
 	this.timeout = spec.timeout;
 	this.hide_user_skip_msg = spec.hide_user_skip_msg ?? false;
 	this.ignore_user_skip = spec.ignore_user_skip ?? false;
         this.state = Gs.StepperState.running;
-        this.header_cycle = HCycle.newFromRed(90 / this.mdb.frame_dt);
-        this.body_cycle = new HCycle(this.header_cycle.hsv, 180 / this.mdb.frame_dt);
+        this.header_cycle = HCycle.newFromRed(35 / this.mdb.frame_dt);
+        this.body_cycle = new HCycle(this.header_cycle.hsv, 90 / this.mdb.frame_dt);
         this.elapsed = 0;
     }
 
     merge_client_db(cdb2: Cdb.ClientDB): void {
         if (this.ignore_user_skip !== true &&
-	    this.elapsed > K.USER_SKIP_AFTER_MSEC &&
+	    this.elapsed > this.user_skip_after_msec &&
 	    !!cdb2.inputs.commands[Cmd.CommandType.fire]) {
             this.state = Gs.StepperState.completed;
         }
@@ -108,16 +111,16 @@ export class SizzlerScreen implements M.Menu {
     step_title() {
 	if (U.exists(this.title)) {
             const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.2);
-            this.step_text(this.title, center, 60, this.header_cycle)
+            this.step_text(this.title, center, K.d2si(60), this.header_cycle)
 	}
     }
 
     step_user_skip() {
         if (!this.hide_user_skip_msg &&
 	    U.exists(this.skip_text) &&
-	    (!this.animated || this.elapsed > K.USER_SKIP_AFTER_MSEC)) {
+	    (!this.animated || this.elapsed > this.user_skip_after_msec)) {
             const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.9);
-            this.step_text(this.skip_text, center, 40, this.header_cycle);
+            this.step_text(this.skip_text, center, K.d2si(40), this.header_cycle);
         }
     }
 
@@ -125,7 +128,7 @@ export class SizzlerScreen implements M.Menu {
         if (U.exists(this.timeout)) {
             const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.935, this.mdb.shared.world.bounds0.y * 0.15);
 	    const msg = String(Math.ceil(this.timeout/1000));
-            this.step_text(msg, center, 25, this.header_cycle);
+            this.step_text(msg, center, K.d2si(25), this.header_cycle);
         }
     }
 
@@ -134,8 +137,8 @@ export class SizzlerScreen implements M.Menu {
             {
                 wrap: false,
                 color: this.header_cycle.current(),
-                line_width: 4,
-                rect: G.rect_inset(this.mdb.shared.world.screen, G.v2d_mk_nn(10)),
+                line_width: K.d2si(4),
+                rect: G.rect_inset(this.mdb.shared.world.screen, K.vd2si(G.v2d_mk_nn(10))),
             }
         );
         const rnd_inner = new Rnd.RandomImpl(this.elapsed);
@@ -144,19 +147,22 @@ export class SizzlerScreen implements M.Menu {
             {
                 wrap: false,
                 color: this.header_cycle.current().setAlpha01(0.7),
-                line_width: 2,
-                rect: G.rect_inset(this.mdb.shared.world.screen, G.v2d_mk_nn(25)),
+                line_width: K.d2si(2),
+                rect: G.rect_inset(this.mdb.shared.world.screen, K.vd2si(G.v2d_mk_nn(25))),
             },
-            50, 1.5, rnd_inner
+            50, K.d2s(1.5), rnd_inner
         );
     }
 
+    // the menu db api is bad news.
+
     get_db(): Db.DB<Db.World> {
-	return this.mdb.shared;
+	return Mdb.next_frame(this.mdb).shared;
     }
 
     stringify(): string {
         const str = U.stringify(this.mdb.shared);
+	// menu doesn't have mutable state to copy forward.
 	this.mdb = Mdb.menudb_mk(this.bg_color);
 	return str;
     }

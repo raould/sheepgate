@@ -231,8 +231,6 @@ export interface DBSharedCore extends Db.DB<GameWorld> { // todo: better name.
 
     level_index1: number; // 1-based.
     screen_shake: G.V2D;
-    tick: number; // increment on each server step, even if the dt was 0.
-    sim_now: number;
     fps: number;    
     hud_drawing: Dr.Drawing; // match: these are always in screen space!
 
@@ -287,7 +285,6 @@ export interface DBSharedItems {
     ground: Array<Gr.Ground>;
     base: S.Base;
     people: U.Dict<S.Person>;
-    beaming_buffer: U.Dict<S.Person>;
     gems: U.Dict<S.Gem>;
     fx: U.Dict<S.Sprite>;
     particles: U.Dict<Pr.ParticleGenerator>;
@@ -311,7 +308,6 @@ export function debug_dump_items(db: GameDB, msg?: string) {
         `#ground=${db.shared.items.ground.length}`,
         `base=${db.shared.items.base != null}`,
         `#people=${U.count_dict(db.shared.items.people)}`,
-        `#beaming_buffer=${U.count_dict(db.shared.items.beaming_buffer)}`,
         `#gems=${U.count_dict(db.shared.items.gems)}`,
         `#fx=${U.count_dict(db.shared.items.fx)}`,
         `#sfx=${U.count_dict(db.shared.sfx)}`,
@@ -337,7 +333,6 @@ export function assert_dbitems(db: GameDB) {
     D.assert(Array.isArray(items.ground), () => "ground should be Array type");
     D.assert(items.base != null, () => "missing base");
     D.assert(items.people != null, () => "missing people");
-    D.assert(items.beaming_buffer != null, () => "missing beaming_buffer");
     D.assert(items.gems != null, () => "missing gems");
     D.assert(items.fx != null, () => "missing fx");
 }
@@ -354,10 +349,9 @@ export function get_sprite(db: GameDB, sid: U.O<DBID>): U.O<S.Sprite> {
 	const x = db.shared.items.explosions[sid];
 	const b = get_base(db, sid);
 	const pp = db.shared.items.people[sid];
-	const bb = db.shared.items.beaming_buffer[sid];
 	const gg = db.shared.items.gems[sid];
 	const fx = db.shared.items.fx[sid];
-	const most = (p?.dbid == sid ? p : undefined) || w || e || h || s || x || b || pp || bb || gg || fx;
+	const most = (p?.dbid == sid ? p : undefined) || w || e || h || s || x || b || pp || gg || fx;
 	return most;
     }
     return undefined;
@@ -411,13 +405,31 @@ export function get_fighter(db: GameDB, sid: U.O<DBID>): U.O<S.Fighter> {
 }
 
 export function get_person(db: GameDB, pid: U.O<DBID>): U.O<S.Person> {
-    D.log("get_person", pid, db.shared.items.people);
     return U.exists(pid) ? db.shared.items.people[pid] : undefined;
 }
 
-export function get_beaming_buffered(db: GameDB, pid: U.O<DBID>): U.O<S.Person> {
-    D.log("get_beaming_buffered", pid, db.shared.items.beaming_buffer);
-    return U.exists(pid) ? db.shared.items.beaming_buffer[pid] : undefined;
+export function get_person_waiting(db: GameDB, pid: U.O<DBID>): U.O<S.Person> {
+    const p =  U.exists(pid) ? db.shared.items.people[pid] : undefined;
+    if (p == undefined) { return p; }
+    return p.beaming_state == S.BeamingState.not_beaming ? p : undefined;
+}
+
+export function get_person_beaming(db: GameDB, pid: U.O<DBID>): U.O<S.Person> {
+    const p =  U.exists(pid) ? db.shared.items.people[pid] : undefined;
+    if (p == undefined) { return p; }
+    return p.beaming_state != S.BeamingState.not_beaming ? p : undefined;
+}
+
+export function get_beamers(db: GameDB): Array<S.Person> {
+    return Object.values(db.shared.items.people).filter(p => p.beaming_state != S.BeamingState.not_beaming);
+}
+
+export function get_beaming_count(db: GameDB): number {
+    let count = 0;
+    Object.values(db.shared.items.people).forEach((p) => {
+	if (p.beaming_state != S.BeamingState.not_beaming) { ++count; }
+    });
+    return count;
 }
 
 export function get_gem(db: GameDB, pid: U.O<DBID>): U.O<S.Gem> {
@@ -466,7 +478,7 @@ export function reap_items(db: GameDB) {
     // match: !!! DBSharedItems !!!
     // note that some things are either never reap'd or reap'd differently:
     // player, sky, bgFar, bgNear, ground, base, particles, drawing. 
-    for (const t of ['warpin', 'enemies', 'shields', 'shots', 'explosions', 'fx', 'people', 'beaming_buffer', 'gems']) {
+    for (const t of ['warpin', 'enemies', 'shields', 'shots', 'explosions', 'fx', 'people', 'gems']) {
         reap_named(db, db.shared.items, t);
     }
 }

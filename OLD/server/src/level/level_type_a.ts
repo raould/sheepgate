@@ -123,7 +123,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	D.assert(!!b);
 	const lt = G.v2d_mk(
 	    this.db.shared.items.base.lt.x,
-	    K.GAMEPORT_RECT.lt.y + K.GAMEPORT_RECT.size.y * 0.65,
+	    K.GAMEPORT_RECT.lt.y + K.GAMEPORT_RECT.size.y * 0.60,
 	);
 	this.db.shared.items.player = Pl.player_mk(
 	    this.db,
@@ -340,10 +340,11 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    U.count_dict(next.shared.items.explosions) == 0;
     }
 
-    // people on the ground + people in the beaming buffer.
+    // people on the ground + people in the ship.
     private get_people_count(next: GDB.GameDB): number {
-	return U.count_dict(next.shared.items.people) +
-	    U.count_dict(next.shared.items.beaming_buffer);
+	const pc = U.count_dict(next.shared.items.people);
+	const ppc = GDB.get_beaming_count(next);
+	return pc + ppc;
     }
 
     update_impl(next: GDB.GameDB) {
@@ -374,7 +375,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		}
 	    }
 	    // all tasks accomplished?
-	    else if (this.are_all_enemies_done(next) && this.get_people_count(next) == 0) {
+	    else if (this.get_people_count(next) == 0 && this.are_all_enemies_done(next)) {
 		this.state = Gs.StepperState.completed;
 		return;
 	    }
@@ -486,7 +487,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    state_modifiers: [],
 	    ticking_generators: {},
 	    enemy_generators: {},
-	    player_zone_width: K.GAMEPORT_PLAYER_ZONE_WIDTH,
+	    player_zone_width: K.GAMEPORT_PLAYER_ZONE_MIN_WIDTH,
 	    scoring: Sc.scoring_mk(score, e2s),
 	    toasts: {},
 	    hud: {
@@ -526,7 +527,6 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		    beam_down_rect: G.rect_mk_0()
 		},
 		people: {},
-		beaming_buffer: {},
 		gems: {},
 		fx: {},
 		particles: {},

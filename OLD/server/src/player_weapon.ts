@@ -1,4 +1,5 @@
 /* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+import * as K from './konfig';
 import * as GDB from './game_db';
 import * as G from './geom';
 import * as S from './sprite';
@@ -117,7 +118,8 @@ export function player_weapon_mk(spec: PlayerWeaponSpec): S.Weapon {
 			shot => {
 			    // todo: blah, hardcoded magic.
 			    shot.alpha = 0.8 + 0.2 * U.clip01(shot.life_msec / spec.shot_life_msec);
-			    const size2 = G.v2d_scale_v2d(shot.size, G.v2d_mk(1.3, 1));
+			    // todo: there is an x-wrap bug when the x scalng is large. :-(
+			    const size2 = G.v2d_scale_v2d(shot.size, G.v2d_mk(1.1, 1));
 			    shot.lt = F.on_facing(
 				shot.facing,
 				G.v2d_sub(

@@ -14,10 +14,11 @@ export interface InstructionsScreenSpec {
     animated: boolean,
     bg_color: RGBA;
     timeout?: number;
-    // this is where it becomes a big ball of mud.
+    // this is where it becomes a(n even) big(ger) ball of mud.
     top_offset_y?: number;
     hide_user_skip_msg?: boolean;
     ignore_user_skip?: boolean;
+    user_skip_after_msec?: number, // default is 0.
 }
 
 export class InstructionsScreen extends Sz.SizzlerScreen {
@@ -30,7 +31,7 @@ export class InstructionsScreen extends Sz.SizzlerScreen {
         super({
 	    ...spec,
 	    title: spec.title,
-	    skip_text: spec.hide_user_skip_msg ? undefined : "PRESS [FIRE] TO CONTINUE",
+	    skip_text: spec.hide_user_skip_msg ? undefined : K.USER_SKIP_TEXT,
 	});
 	this.instructions = spec.instructions;
 	this.size = spec.size;
@@ -57,7 +58,7 @@ export class InstructionsScreen extends Sz.SizzlerScreen {
                 this.size,
                 hcycle
             );
-            hcycle.skip(-45);
+            hcycle.skip(-22);
         });
     }
 }

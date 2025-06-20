@@ -105,7 +105,7 @@ function add_people_cluster(db: GDB.GameDB, g: Gr.Ground, rnd: Rnd.Random): numb
 
 interface PersonPrivate extends S.Person {
     lifecycle_state: GDB.Lifecycle;
-    anim: A.ResourceAnimator;
+    anim: A.ResourceAnimator | undefined;
 }
 
 function add_person(db: GDB.GameDB, mb: G.V2D, off_x: number, rnd: Rnd.Random) {
@@ -172,6 +172,7 @@ function waiting_mk(
         hp_init: 1,
         hp: 1,
         damage: 0,
+	beaming_state: S.BeamingState.not_beaming,
         type_flags: Tf.TF.person,
         in_cmask: C.CMask.people,
         // todo: some day can people be shot?
@@ -180,22 +181,25 @@ function waiting_mk(
         anim: standing_anim,
         lifecycle_state: GDB.Lifecycle.alive,
         step(db: GDB.GameDB) {
-            U.if_let(
-                GDB.get_player(db),
-                (player: S.Player) => {
-                    const d = Math.pow(player.lt.x - this.lt.x, 2);
-                    this.anim = d < (200**2) ? waving_anim : standing_anim;
-                }
-            );
-            this.z_back_to_front_ids = this.anim.z_back_to_front_ids(db);
+	    if (this.beaming_state != S.BeamingState.not_beaming) {
+		this.anim = undefined;
+	    } else {
+		U.if_let(
+                    GDB.get_player(db),
+                    (player: S.Player) => {
+			const d = Math.abs(player.lt.x - this.lt.x);
+			this.anim = d < (this.size.x*4) ? waving_anim : standing_anim;
+                    }
+		);
+	    }
+            this.z_back_to_front_ids = this.anim?.z_back_to_front_ids(db);
         },
         collide(db: GDB.GameDB, dsts: Set<S.CollidableSprite>) {
             // todo: some day can people be shot?
             D.assert(false, "wtf");
         },
         beam_up(db: GDB.GameDB) {
-	    GDB.reap_item(db.shared.items.people, this as S.Person); // 'as' "ugh"!
-	    GDB.add_item(db.shared.items.beaming_buffer, this);
+	    this.beaming_state = S.BeamingState.beaming_up;
             GDB.add_sprite_dict_id_mut(
                 db.shared.items.fx,
                 (dbid: GDB.DBID): S.Sprite => beam_up_anim_mk(db, dbid, this)
@@ -203,7 +207,7 @@ function waiting_mk(
             db.shared.sfx.push({ sfx_id: K.BEAMUP_SFX, gain: 0.35 });
         },
 	beam_down(db: GDB.GameDB, down_rect: G.Rect, on_end: (db: GDB.GameDB) => void) {
-	    this.lifecycle_state = GDB.Lifecycle.dead;
+	    this.beaming_state = S.BeamingState.beaming_down;
 	    db.shared.sfx.push({ sfx_id: K.BEAMDOWN_SFX, gain: 0.35 });
             GDB.add_sprite_dict_id_mut(
                 db.shared.items.fx,
@@ -211,7 +215,15 @@ function waiting_mk(
                     db,
                     dbid,
 		    down_rect,
-		    on_end,
+		    (db: GDB.GameDB) => {
+			on_end(db);
+			U.if_let(
+			    GDB.get_person(db, this.dbid),
+			    (person: S.Person) => {
+				(person as PersonPrivate).lifecycle_state = GDB.Lifecycle.dead;
+			    }
+			);
+		    }
 		)
 	    );
 	    T.add_toast(

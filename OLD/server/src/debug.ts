@@ -58,18 +58,29 @@ export function log_once(key: string, ...args: any) {
 }
 
 function msgs2strs(...msgs: any): string {
-    if (msgs?.length ?? 0 === 0) {
+    if (msgs == undefined) {
+	return "";
+    }
+    else if (msgs.length === 0) {
         return "";
     }
     else {
-        return msgs.flatMap((m: any) => m instanceof Function ? m() : m)
+        return msgs.flatMap((m: any) => {
+	    if (m instanceof Function) {
+		return String(m());
+	    }
+	    else {
+		return String(m);
+	    }
+	});
     }
 }
 
 export function assert_fail(...msgs: any) {
+    const strs = msgs2strs(msgs);
     log_stamp(
         "ASSERTION FAILED:",
-        ...msgs2strs(msgs),
+	...strs,
         "\n",
         new Error().stack
     );
@@ -77,7 +88,7 @@ export function assert_fail(...msgs: any) {
 
 export function assert(test: boolean, ...msgs: any) {
     if (!test) {
-        assert_fail(msgs);
+        assert_fail(...msgs);
     }
 }
 

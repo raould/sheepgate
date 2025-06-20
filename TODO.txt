@@ -53,13 +53,13 @@ next-feature-short-list, in no order:
   but i am not going to fix that ever.
 
 * increase fps.
-  * crap, if the fps >= 40 then the sizzlers freeze wth?
-  * the client isn't running at the target fps.
+  * there are still some values that are frame-based, not time-based.
+
 * do not spawn enemies on top of the player!
-* maybe things should move slower e.g. player ship?
+
 * see 7.1 below; have a watchdog at least?
 
-* the whole screen thing is just aweful because there are too
+* the whole screen thing is just awful because there are too
   many varieties that are similar but different.
 
 * things often need more than one dimension of sorting / categorization,
@@ -89,6 +89,8 @@ next-feature-short-list, in no order:
   e.g. the enemy (especially hypermega) spawning?!
 
 * i love how inconsistent i am with things like capitalization.
+
+* the menu screens code has become a big ball of bad mud.
 
 NOTE:
 * do try to avoid relying on pure red or green, out of some basic accessibility respect.

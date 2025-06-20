@@ -34,13 +34,13 @@ const ACTION_ROW = SYMBOL_GRID.length-1;
 const SPC_RC = G.v2d_mk(0, ACTION_ROW);
 const DEL_RC = G.v2d_mk(1, ACTION_ROW);
 const END_RC = G.v2d_mk(2, ACTION_ROW);
-const CURSOR_PAD = G.v2d_mk(5, 9);
-const SYMBOL_RECT_SIZE = G.v2d_mk(15, 25);
-const SYMBOL_SIZE = 40;
-const SYMBOL_H_SPACING = 30;
-const SYMBOL_V_SPACING = 14;
-const CALLSIGN_SIZE = 70;
-const INSTRUCTIONS_SIZE = 25;
+const CURSOR_PAD = K.vd2si(G.v2d_mk(5, 9));
+const SYMBOL_RECT_SIZE = K.vd2si(G.v2d_mk(15, 25));
+const SYMBOL_SIZE = K.d2si(40);
+const SYMBOL_H_SPACING = K.d2si(30);
+const SYMBOL_V_SPACING = K.d2si(14);
+const CALLSIGN_SIZE = K.d2si(70);
+const INSTRUCTIONS_SIZE = K.d2si(25);
 
 const INSTRUCTIONS = [
     "YOUR NAME GONNA BE IN LIGHTS.",
@@ -195,7 +195,7 @@ export class HighScoreEntryScreen extends Is.InstructionsScreen {
         );
         this.mdb.shared.frame_drawing.rects.push({
             rect: rect,
-            line_width: Rnd.singleton.float_around(2, 1),
+            line_width: K.d2s(Rnd.singleton.float_around(2, 1)),
             color: RGBA.YELLOW.setAlpha01(Rnd.singleton.float_around(0.8, 0.2)),
             wrap: false
         });

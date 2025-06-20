@@ -30,8 +30,8 @@ const TRACK1_SFX = { sfx_id: K.TRACK1_SFX, gain: 0.3, singleton: true };
 const WARNING_INSTRUCTIONS = [
     " ",
     " ",
-    "=== WARNING: THIS GAME HAS FLASHING EFFECTS ===",
-    "Photosensitivity/epilepsy/seizures: a very small",
+    "========= THIS GAME HAS FLASHING EFFECTS =========",
+    "Photosensitivity - epilepsy - seizures: a very small",
     "percentage of individuals may experience",
     "epileptic seizures or blackouts when exposed to",
     "certain light patterns or flashing lights.",
@@ -41,6 +41,7 @@ const WARNING_INSTRUCTIONS = [
 const MAIN_INSTRUCTIONS = [
     "RETURN CREATURES TO BASE.",
     "DEFEAT ALL ENEMIES.",
+    " ",
     " ",
     "MOVE: WASD - ARROWS - VI",
     "FIRE: SPACE - Z - ENTER",
@@ -92,7 +93,7 @@ export function game_mk(high_scores: Hs.HighScores): Game {
 	step() {
             this.stepper.step();
             if (this.stepper instanceof GameWarning && this.stepper.get_state() != Gs.StepperState.running) {
-                this.stepper = new GameInstructions();
+                this.stepper = new GameInstructions("HOW TO PLAY");
 	    }
             else if (this.stepper instanceof GameInstructions && this.stepper.get_state() != Gs.StepperState.running) {
                 this.stepper = new GameLevels(high_scores.get_high_score());
@@ -125,14 +126,14 @@ export function game_mk(high_scores: Hs.HighScores): Game {
 }
 
 class GameWarning implements Gs.Stepper {
-    stepper: Gs.Stepper;
+    stepper: Ps.PlainScreen;
 
     constructor() {
         this.stepper = new Ps.PlainScreen({
 	    title: "WARNING",
 	    skip_text: "CONTINUE: SPACE - Z - ENTER",
 	    instructions: WARNING_INSTRUCTIONS,
-	    instructions_size: 30,
+	    instructions_size: K.d2si(40),
 	    fg_color: RGBA.WHITE,
 	    bg_color: RGBA.DARK_MAGENTA,
 	});
@@ -162,27 +163,18 @@ class GameWarning implements Gs.Stepper {
 class GameInstructions implements Gs.Stepper {
     stepper: Is.InstructionsScreen;
     last: number;
-    attract: any;
     qr: any;
-
-    constructor() {
+    
+    constructor(title: string) {
         this.stepper = new Is.InstructionsScreen({
+	    title,
 	    instructions: MAIN_INSTRUCTIONS,
-	    size: 35,
+	    size: K.d2si(35),
 	    animated: true,
 	    bg_color: RGBA.DARK_BLUE,
-	    top_offset_y: 0,
-	    hide_user_skip_msg: true,
+	    top_offset_y: K.d2si(40),
 	});
 	this.stepper.mdb.shared.sfx.push({ sfx_id: K.SYNTH_C_SFX });
-	this.attract = {
-	    wrap: false,
-	    image_located: {
-		resource_id: "images/attract.png",
-		rect: K.SCREEN_RECT
-	    },
-	    comment: "attract",
-	};
 	this.qr = {
             wrap: false,
             image_located: {
@@ -190,9 +182,9 @@ class GameInstructions implements Gs.Stepper {
                 rect: G.rect_mk(
 		    G.v2d_mk(
 			G.rect_w(K.SCREEN_RECT)*0.9,
-			G.rect_h(K.SCREEN_RECT)*0.55
+			G.rect_h(K.SCREEN_RECT)*0.81
 		    ),
-		    G.v2d_mk(80, 80),
+		    K.vd2si(G.v2d_mk(60, 60)),
 		),
             },
 	    comment: "qr",
@@ -200,57 +192,37 @@ class GameInstructions implements Gs.Stepper {
 	this.last = Date.now();
     }
 
-    get_state(): Gs.StepperState {
-        return this.stepper.get_state();
-    }
-
-    merge_client_db(cnew: Cdb.ClientDB) {
-        this.stepper.merge_client_db(cnew);
-    }
-
-    step() {
-        this.stepper.step();
-	// reaching into mdb like this is gross, yes.
-        this.stepper.mdb.shared.frame_drawing.images.push(this.attract);
-        this.stepper.mdb.shared.frame_drawing.images.push(this.qr);
-	this.stepper.mdb.shared.sfx.push(TRACK1_SFX);
-    }
-
-    get_db(): Db.DB<Db.World> {
-	return this.stepper.get_db();
-    }
-
-    stringify(): string {
-        return this.stepper.stringify();
-    }
-}
-
-class GamePaused implements Gs.Stepper {
-    stepper: Is.InstructionsScreen;
-    last: number;
-    qr: any;
-
-    constructor() {
-        this.stepper = new Is.InstructionsScreen({
-	    title: "GAME PAUSED",
-	    instructions: MAIN_INSTRUCTIONS,
-	    size: 35,
-	    animated: false,
-	    bg_color: RGBA.DARK_BLUE,
-	});
-	this.last = Date.now();
-	this.qr = {
+    player_mk() {
+	const x = G.rect_w(K.SCREEN_RECT)*0.1;
+	const y = G.rect_h(K.SCREEN_RECT)*0.2;
+	const yo = Math.sin((this.stepper.mdb.shared.tick + x)/40) * K.d2s(5);
+	return {
             wrap: false,
             image_located: {
-                resource_id: "images/qr.png",
+                resource_id: "images/player/cowR.png",
                 rect: G.rect_mk(
-		    G.v2d_mk(
-			G.rect_w(K.SCREEN_RECT)*0.85,
-			G.rect_h(K.SCREEN_RECT)*0.75
-		    ),
-		    G.v2d_mk(80, 80),
+		    G.v2d_mk(x, y + yo),
+		    K.PLAYER_COW_SIZE,
 		),
-            }
+            },
+	    comment: "player",
+	};
+    }
+
+    enemy_mk() {
+	const x = G.rect_w(K.SCREEN_RECT)*0.85;
+	const y = G.rect_h(K.SCREEN_RECT)*0.2;
+	const yo = Math.sin((this.stepper.mdb.shared.tick + x)/20) * K.d2s(5);
+	return {
+            wrap: false,
+            image_located: {
+                resource_id: "images/enemies/basic1/sph1.png",
+                rect: G.rect_mk(
+		    G.v2d_mk(x, y + yo),
+		    K.vd2s(G.v2d_mk(28, 28)),
+		),
+            },
+	    comment: "player",
 	};
     }
 
@@ -266,6 +238,9 @@ class GamePaused implements Gs.Stepper {
         this.stepper.step();
 	// reaching into mdb like this is gross, yes.
         this.stepper.mdb.shared.frame_drawing.images.push(this.qr);
+        this.stepper.mdb.shared.frame_drawing.images.push(this.player_mk());
+        this.stepper.mdb.shared.frame_drawing.images.push(this.enemy_mk());
+	this.stepper.mdb.shared.sfx.push(TRACK1_SFX);
     }
 
     get_db(): Db.DB<Db.World> {
@@ -365,7 +340,7 @@ class GameLevels implements Gs.Stepper {
             }
             else {
                 this.paused = this.stepper;
-                this.stepper = new GamePaused();
+                this.stepper = new GameInstructions("PAUSED");
             }
         }
     }

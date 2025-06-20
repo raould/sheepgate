@@ -14,8 +14,12 @@ export interface MenuDB {
     shared: Db.DB<Db.World>;
 }
 
+// lordy this is so bad.
+let menu_tick = 0;
+let menu_sim_now = 0;
+
 export function menudb_mk(bg_color: RGBA): MenuDB {
-    return {
+    return next_frame({
 	frame_dt: K.FRAME_MSEC_DT,
 	shared: {
 	    kind: "Menu",
@@ -28,9 +32,18 @@ export function menudb_mk(bg_color: RGBA): MenuDB {
 		},
             },
             bg_color: bg_color,
+	    tick: 0,
+	    sim_now: 0,
             frame_drawing: Dr.drawing_mk(),
             debug_graphics: [],
 	    sfx: [],
 	}
-    };
+    });
+}
+
+export function next_frame(mdb: MenuDB): MenuDB {
+    mdb.shared.tick = menu_tick++;
+    menu_sim_now += K.FRAME_MSEC_DT;
+    mdb.shared.sim_now = menu_sim_now;
+    return mdb;
 }

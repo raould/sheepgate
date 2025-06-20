@@ -4,8 +4,10 @@ import * as Dr from './drawing';
 import * as So from './sound';
 import { RGBA } from './color';
 
+// todo: oh look, more bad naming.
 // this is supposed to represent the server state being sent to the client.
-// i think. so the GameDB has-a not is-a one of these, 
+// i think. so the GameDB and MenuDB has-a, not is-a, one of these.
+
 // todo: shouldn't more of these things go into DBshared?!
 // todo: use in client.ts /rage
 // todo: the db stuff exploded quickly and got hacked up for level
@@ -29,6 +31,8 @@ export interface DB<W extends World> {
     kind: DBKind;
     world: W;
     bg_color: RGBA;
+    tick: number; // increment on each server step, even if the dt was 0.
+    sim_now: number;
     frame_drawing: Dr.Drawing; // todo: kind of a bad name, actually?
     debug_graphics?: Dr.Drawing[];
     sfx: So.Sfx[];

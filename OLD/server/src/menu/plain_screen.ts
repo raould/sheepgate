@@ -17,6 +17,7 @@ import { RGBA } from '../color';
 export interface PlainScreenSpec {
     title: string,
     skip_text: string,
+    user_skip_after_msec?: number, // default is 0.
     instructions: string[],
     instructions_size: number;
     fg_color: RGBA,
@@ -28,25 +29,27 @@ export class PlainScreen implements M.Menu {
     mdb: Mdb.MenuDB;
     state: Gs.StepperState;
     elapsed: number;
-
+    user_skip_after_msec: number;
+    
     constructor(spec: PlainScreenSpec) {
 	this.bg_color = spec.bg_color;
+	this.user_skip_after_msec = spec.user_skip_after_msec ?? 0;
         this.mdb = Mdb.menudb_mk(this.bg_color);
 
         this.add_text(
 	    spec.title,
 	    spec.fg_color,
 	    G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.2),
-	    60
+	    K.d2si(60)
 	);
         this.add_text(
 	    spec.skip_text, 
 	    spec.fg_color,
 	    G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.9),
-	    40
+	    K.d2si(40)
 	);
 
-	const line_height = spec.instructions_size + 5;
+	const line_height = spec.instructions_size + K.d2si(5);
 	const iyoff = line_height * spec.instructions.length / 2;
 	const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.5 - iyoff);
         spec.instructions.forEach((text: string, index: number) => {
@@ -76,8 +79,7 @@ export class PlainScreen implements M.Menu {
     }
 
     merge_client_db(cdb2: Cdb.ClientDB): void {
-        if (this.elapsed > K.USER_SKIP_AFTER_MSEC &&
-	    !!cdb2.inputs.commands[Cmd.CommandType.fire]) {
+        if (this.elapsed > this.user_skip_after_msec && !!cdb2.inputs.commands[Cmd.CommandType.fire]) {
             this.state = Gs.StepperState.completed;
         }
     }
@@ -90,8 +92,10 @@ export class PlainScreen implements M.Menu {
         this.elapsed += this.mdb.frame_dt;
     }
 
+    // the menu db api is bad news.
+
     get_db(): Db.DB<Db.World> {
-	return this.mdb.shared;
+	return Mdb.next_frame(this.mdb).shared;
     }
 
     stringify(): string {
