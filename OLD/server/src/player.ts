@@ -17,6 +17,7 @@ import * as K from './konfig';
 import * as Sc from './scoring';
 import * as D from './debug';
 import * as So from './sound';
+import * as Rnd from './random';
 
 const thrust_sfx: So.Sfx = {
     sfx_id: K.THRUST_SFX,
@@ -173,7 +174,17 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
                 p => Object.values(p.weapons).forEach(w => {
                     const s = w.shot_mk(db, p, false);
                     if (!!s) {
-                        db.shared.sfx.push({ sfx_id: K.PLAYER_SHOOT_SFX });
+			const sfx_id = Rnd.singleton.choose(
+			    K.PLAYER_SHOOT0_SFX,
+			    K.PLAYER_SHOOT1_SFX,
+			    K.PLAYER_SHOOT2_SFX
+			);
+			if (!!sfx_id) {
+                            db.shared.sfx.push({
+				gain: 0.5,
+				sfx_id,
+			    })
+			}
                     }
                 })
             );
@@ -198,24 +209,19 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
             const bits = U.has_bits_eq(maybe_base_shield.type_flags, Tf.TF.baseShield);
             const buffer_ids = Object.keys(db.shared.items.beaming_buffer);
             if (bits && buffer_ids.length > 0 && vel2 <= K.PLAYER_BEAM_MAX_VEL2) {
-		D.log("beam down 1");
                 U.if_let(
                     GDB.get_shield(db, maybe_base_shield.dbid),
                     shield => {
-			D.log("beam down 2");
                         const base = db.shared.items.base;
                         buffer_ids.forEach(pid => {
-			    D.log("beam down 3", pid);
 			    U.if_let(
 				GDB.get_beaming_buffered(db, pid), person => {
-				    D.log("beam down 4");
 				    person.beam_down(
 					db, base.beam_down_rect,
 					/*on_end*/(db: GDB.GameDB) => {
-					    D.log("beam down 5");
                                             U.if_let(
 						GDB.get_player(db), (thiz: S.Player) => {
-						    D.log("beam down 6");
+						    GDB.reap_item(db.shared.items.beaming_buffer, person);
                                                     db.local.scoring.on_event(Sc.Event.rescue);
 						    U.if_let(
 							GDB.get_shield(db, this.shield_id), player_shield => {
@@ -226,7 +232,6 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
 					    )
 					}
 				    );
-				    GDB.reap_item(db.shared.items.beaming_buffer, person);
 				}
                             )
 			})
