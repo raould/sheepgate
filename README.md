@@ -1,7 +1,7 @@
 # sheepgate
 eventually, sheep and gates!
 
-[Play the game here](http://18.190.219.255/)
+[Play the game here](http://18.190.219.255/) on Desktop (or mobile if you have a game controller).
 
 A [Desafortunados Games](https://duckduckgo.com/?q=desafortunados+games+pn0gstr0m+sheepgate+mzzl+nbf0) production.
 
