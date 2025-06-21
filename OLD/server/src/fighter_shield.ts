@@ -33,6 +33,7 @@ export interface ShieldWrappingSpec extends C.Masked, C.Ignores {
 
 interface ShieldPrivate extends S.Shield<S.Fighter> {
     visible: boolean;
+    wrapped_dbid: GDB.DBID;
     pull_rect(db: GDB.GameDB): void;
     step_anim(db: GDB.GameDB): void;
     step_bar(db: GDB.GameDB): void;
@@ -56,7 +57,7 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
                 get_wrapped(db: GDB.GameDB): U.O<S.Fighter> {
                     return GDB.get_fighter(db, this.wrapped_dbid);
                 },
-                comment: spec.comment,
+                comment: `${spec.comment}/${spec.fighter.comment}`,
                 ...G.rect_clone(spec.fighter),
 		visible,
                 vel: G.v2d_mk_0(),

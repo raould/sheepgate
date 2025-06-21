@@ -34,7 +34,7 @@ export interface EnemySpec {
     hardpoint_right?: (r: G.Rect) => G.V2D,
 }
 
-function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec, container: U.Dict<S.Enemy>): U.O<S.Warpin> {
+function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec, get_container: (db: GDB.GameDB) => U.Dict<S.Enemy>): U.O<S.Warpin> {
     if (!!spec.lt) {
 	DebugGraphics.add_DrawEllipse(
 	    DebugGraphics.get_permanent(),
@@ -58,7 +58,7 @@ function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: Enemy
             on_end: (db: GDB.GameDB) => {
                 const images = db.uncloned.images;
                 const sprite: U.O<EnemyPrivate> = GDB.add_sprite_dict_id_mut(
-                    container,
+                    get_container(db),
                     (dbid: GDB.DBID): U.O<EnemyPrivate> => sprite_mk(db, rect, spec)
                 );
                 if (sprite != null) {
@@ -70,11 +70,11 @@ function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: Enemy
 }
 
 export function warpin_mk_enemy(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec): U.O<S.Warpin> {
-    return warpin_mk(db, size, resource_id, spec, db.shared.items.enemies);
+    return warpin_mk(db, size, resource_id, spec, (db: GDB.GameDB) => { return db.shared.items.enemies; });
 }
 
 export function warpin_mk_munchie(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec): U.O<S.Warpin> {
-    return warpin_mk(db, size, resource_id, spec, db.shared.items.munchies);
+    return warpin_mk(db, size, resource_id, spec, (db: GDB.GameDB) => { return db.shared.items.munchies; });
 }
 
 interface EnemyPrivate extends S.Enemy {

@@ -26,10 +26,16 @@ really really todo, maybe?
 
 * pause keys are broken in key2cmd_hotrod?!
 
+* the idea is that the db exists for the current frame, gets cloned into a 'next' frame db,
+  everything mutates that from the "read only" current frame db, and then the next db
+  gets swapped in; rinse; repeat.
+
+* this means if you use the wrong db, the resulting bugs can be very, very strange.
+
 * hilariously / inevitably, the 'db' has become a big ball of mud; very confusing.
   the various kinds of DBs are not of compatible types e.g. GDB.GameDB doesn't extend Db.DB<W>?!
   also the way the client is hard-coded to know the db structure is bad.
-  better if the client was dump and only iterated over a draw list kind of thing.
+  better if the client was dumb and only iterated over a draw list kind of thing.
 
 * there's lots of misc stuff that started out trying to support more complex things
   like multiple beam up/downs at once, or the 't' of enemy damage, that ended
