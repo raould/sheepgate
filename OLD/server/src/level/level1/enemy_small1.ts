@@ -34,7 +34,7 @@ const Small: Lemk.EnemyMk = {
             flight_pattern: flight_pattern,
             gem_count: K.ENEMY_SMALL_GEM_COUNT
 	};
-	return Emk.warpin_mk(
+	return Emk.warpin_mk_enemy(
             db,
             SIZE,
     	    WARPIN_RESOURCE_ID,

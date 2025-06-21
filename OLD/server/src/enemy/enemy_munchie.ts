@@ -5,6 +5,7 @@ import * as G from '../geom';
 import * as A from '../animation';
 import * as U from '../util/util';
 import * as F from '../facing';
+import * as Ebw from './enemy_ball_weapon';
 import * as Fp from './flight_patterns';
 import * as Emk from './enemy_mk';
 import * as Lemk from '../level/enemy_mk';
@@ -21,8 +22,11 @@ const Munchie: Lemk.EnemyMk = {
 	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
 	// todo: fix up all this weapon stuff, everywhere, just shoot me.
 	// 1 weapon that swivels so there's only one clip to avoid too many shots. :-(
-	const weapons = {}
-	const flight_pattern = new Fp.BuzzPlayer(db, G.v2d_mk(0.0005, 0.0003));
+	const [ews] = Ebw.scale_specs(db.shared.level_index1, S.Rank.small, true);
+	const weapons = {
+            'w': Ebw.weapon_mk(ews),
+	};
+	const flight_pattern = new Fp.BuzzPlayer(db, G.v2d_mk(0.001, 0.0003));
 	const spec: Emk.EnemySpec = {
             anim: anim,
             rank: S.Rank.basic,
@@ -32,7 +36,7 @@ const Munchie: Lemk.EnemyMk = {
             flight_pattern: flight_pattern,
             gem_count: K.ENEMY_MUNCHIE_GEM_COUNT,
 	};
-	return Emk.warpin_mk(
+	return Emk.warpin_mk_munchie(
             db,
             SIZE,
     	    WARPIN_RESOURCE_ID,

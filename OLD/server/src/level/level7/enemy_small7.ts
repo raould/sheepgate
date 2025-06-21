@@ -31,7 +31,7 @@ const Small: Lemk.EnemyMk = {
             G.v2d_scale(acc_base, 0.5)
 	);
 	const flight_pattern = new Fp.DecendAndGoSine(db, SIZE, 0.0005);
-	return Emk.warpin_mk(
+	return Emk.warpin_mk_enemy(
             db,
             SIZE,
     	    WARPIN_RESOURCE_ID,

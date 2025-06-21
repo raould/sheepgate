@@ -21,18 +21,10 @@ import * as D from '../debug';
 import { DebugGraphics } from '../debug_graphics';
 import * as FS from 'fs';
 import * as OS from 'os';
-import Em from '../enemy/enemy_munchie';
 import * as _ from 'lodash';
 
-// currently this is less of a classic big Level object that is continually doing things,
-// instead it "just" adds new sprites etc. as they die off.
-// the level can also replace itself in the db with the next level instance.
-// there's a few different aspects of levels:
-// 1) intra-level things like generating more waves of enemies.
-// 2) iter-level ui which is like a different db entirely,
-//    and different client ui likewise.
-// 3) beyond that: pause, and game over ui - maybe still encoded as 'levels'?
-// mostly just doing (1) for now, infinitely generating some enemies...
+// generic stuff to "step" a level.
+// see: level_type_a.ts for the actual gameplay.
 
 export interface Level extends Gs.Stepper {
     small_snapshot: S.ImageSized;
@@ -257,12 +249,6 @@ export abstract class AbstractLevel implements Level {
             m.step(next);
             D.assert(GDB.is_in_bounds(next, m), m.comment);
         });
-	if (Rnd.singleton.boolean(0.01)) {
-	    const m = Em.warpin_mk(next);
-	    if (U.exists(m)) {
-		GDB.add_item(next.shared.items.warpin, m);
-	    }
-	}
     }
 
     private update_explosions(next: GDB.GameDB) {

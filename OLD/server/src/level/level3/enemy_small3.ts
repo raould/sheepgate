@@ -26,7 +26,7 @@ const Small: Lemk.EnemyMk = {
             'wr': Ebw.weapon_mk(ewsr),
 	};
 	const flight_pattern = new Fp.DescendAndGoStraight(db, SIZE, 0.0002);
-	return Emk.warpin_mk(
+	return Emk.warpin_mk_enemy(
             db,
             SIZE,
     	    WARPIN_RESOURCE_ID,
