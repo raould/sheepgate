@@ -12,7 +12,7 @@ import * as K from '../konfig';
 import * as Rnd from '../random';
 
 // match: sprite animation.
-const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(8, 8), 2));
+const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(8, 8), 3));
 const WARPIN_RESOURCE_ID = "enemies/munchies/mr.png";
 const Munchie: Lemk.EnemyMk = {
     SIZE,
@@ -22,7 +22,7 @@ const Munchie: Lemk.EnemyMk = {
 	// todo: fix up all this weapon stuff, everywhere, just shoot me.
 	// 1 weapon that swivels so there's only one clip to avoid too many shots. :-(
 	const weapons = {}
-	const flight_pattern = new Fp.BuzzPlayer(db, G.v2d_mk(1, 1));
+	const flight_pattern = new Fp.BuzzPlayer(db, G.v2d_mk(0.0005, 0.0003));
 	const spec: Emk.EnemySpec = {
             anim: anim,
             rank: S.Rank.basic,

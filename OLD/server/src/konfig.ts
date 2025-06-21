@@ -353,8 +353,8 @@ export const WARPIN_TOTAL_MSEC = 500; // K
 // note/todo: not much time yet spent on real game balance for these (or any) values.
 
 // harass the player when all enemies are gone but there are still people to rescue.
-export const ENEMY_MUNCHIE_HP = PLAYER_SHOT_DAMAGE * 2; // L
-export const ENEMY_MUNCHIE_DAMAGE = Math.floor(PLAYER_HP/3); // L
+export const ENEMY_MUNCHIE_HP = PLAYER_SHOT_DAMAGE; // L
+export const ENEMY_MUNCHIE_DAMAGE = Math.floor(PLAYER_HP/4); // L
 export const ENEMY_MUNCHIE_GEM_COUNT = 0; // L
 
 // basic enemies should be one-shots, that's why they are basic.

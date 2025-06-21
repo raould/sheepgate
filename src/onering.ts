@@ -202,7 +202,7 @@ const key2cmd_hotrod: { [k: string]: CommandSpec } = {
     "{": FireSpec,
     "}": FireSpec,
 }
-const key2cmd = key2cmd_hotrod;
+const key2cmd = key2cmd_default;
 
 abstract class AbstractParticleGenerator {
     // "o" means "offset" because we're keeping the particles
