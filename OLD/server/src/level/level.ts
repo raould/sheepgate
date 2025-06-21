@@ -451,9 +451,9 @@ export abstract class AbstractLevel implements Level {
     }
 
     private update_stats(next: GDB.GameDB) {
-        const more_enemies = U.count_dict(next.local.enemy_generators) > 0 ||
-            U.count_dict(next.shared.items.enemies) > 0 ||
-            U.count_dict(next.shared.items.warpin) > 0;
+        const more_enemies =
+	      U.count_dict(next.local.enemy_generators) > 0 ||
+              U.count_dict(next.shared.items.enemies) > 0;
         const carrying = GDB.get_beaming_count(next);
         const more_people = U.count_dict(next.shared.items.people) > 0;
 

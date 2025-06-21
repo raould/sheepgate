@@ -389,10 +389,16 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		    return;
 		}
 		// harass the player while they try to finish picking up people.
-		else if (this.index1 > 0 && Rnd.singleton.boolean(0.1)) {
-		    const m = Em.warpin_mk(next);
-		    if (U.exists(m)) {
-			GDB.add_item(next.shared.items.warpin, m);
+		else if (this.index1 > 1) {
+		    const count = U.count_dict(next.shared.items.munchies);
+		    if (count < K.MUNCHIES_MAX + Math.floor(this.index1 / 5)) {
+			const chance = 0.002 + (this.index1 * 0.0005);
+			if (Rnd.singleton.boolean(chance)) {
+			    const m = Em.warpin_mk(next);
+			    if (U.exists(m)) {
+				GDB.add_item(next.shared.items.warpin, m);
+			    }
+			}
 		    }
 		}
 	    }
