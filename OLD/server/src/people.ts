@@ -27,14 +27,14 @@ import * as T from './toast';
 
 export function populate(db: GDB.GameDB, cluster_count: number) {
     if (db.shared.level_index1 == 1) {
-        populate_next_to_base(db, cluster_count);
+        populate_near_base(db, cluster_count);
     }
     else {
         populate_random(db, cluster_count);
     }
 }
 
-function populate_next_to_base(db: GDB.GameDB, cluster_count: number) {
+function populate_near_base(db: GDB.GameDB, cluster_count: number) {
     const rnd = new Rnd.RandomImpl(db.shared.level_index1); // some per-level determinism.
     const gs = db.shared.items.ground;
     const base = db.shared.items.base;
@@ -72,11 +72,14 @@ function populate_random(db: GDB.GameDB, cluster_count: number) {
     while (cluster_count > 0) {
         const g = rnd.array_item(grounds);
         if (g != null && g.ground_type == Gr.GroundType.land) {
-	    const df = U.t10(0, db.shared.world.bounds0.x, Math.abs(g.lt.x - base.lt.x));
-	    const roll = Rnd.singleton.boolean(df);
-	    if (roll) {
-		population_count += add_people_cluster(db, g, rnd);
-		cluster_count--;
+	    const d = Math.abs(g.lt.x - base.lt.x);
+	    if (d > K.TILE_WIDTH * 2) { // not too close.
+		const df = U.t10(0, db.shared.world.bounds0.x, d);
+		const roll = rnd.boolean(df);
+		if (roll) {
+		    population_count += add_people_cluster(db, g, rnd);
+		    cluster_count--;
+		}
 	    }
         }
     }
@@ -94,7 +97,7 @@ function add_people_cluster(db: GDB.GameDB, g: Gr.Ground, rnd: Rnd.Random): numb
     const ov = G.v2d_mk(fudge_range, 0);
     const dst = rnd.v2d_around(mt, ov);
     add_person(db, dst, 0, rnd);
-    if (Rnd.singleton.boolean()) {
+    if (rnd.boolean()) {
 	add_sheep(db, dst, rnd.float_range(-fudge_range, -fudge_range/2), rnd);
     } else {
 	add_sheep(db, dst, rnd.float_range(fudge_range, fudge_range/2), rnd);

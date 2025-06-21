@@ -13,23 +13,23 @@ export interface Random {
     // to help avoid things like division by zero errors.
 
     // either true or false.
-    boolean(chance: number /*=0.5*/): boolean;
+    boolean(chance?: number /*=0.5*/): boolean;
 
     // either -1 or 1.
     sign(): number;
 
      // [0,1) like javascript.
-    float_0_1(non_zero?:boolean): number;
+    float_0_1(non_zero?: boolean): number;
 
      // [-1,1).
-    float_neg1_1(non_zero?:boolean): number;
+    float_neg1_1(non_zero?: boolean): number;
 
      // [min,max).
-    float_range(min: number, max: number, non_zero?:boolean): number;
-    int_range(min: number, max: number, non_zero?:boolean): number;
+    float_range(min: number, max: number, non_zero?: boolean): number;
+    int_range(min: number, max: number, non_zero?: boolean): number;
 
     // [center-half_bound,center+half_bound).
-    float_around(center: number, half_bound: number, non_zero?:boolean): number;
+    float_around(center: number, half_bound: number, non_zero?: boolean): number;
 
     choose<T>(...ts: T[]): U.O<T>;
 
@@ -44,7 +44,7 @@ export interface Random {
     v2d_inside_rect(rect: G.Rect): G.V2D;
 
     // n values in [min, max).
-    generate_n_float_range(count: number, min: number, max: number, non_zero?:boolean): number[];
+    generate_n_float_range(count: number, min: number, max: number, non_zero?: boolean): number[];
 }
 
 function return_non_zero(n: number, non_zero: boolean, sign: number): number {
@@ -122,7 +122,7 @@ export class RandomImpl implements Random {
             this.float_range(G.rect_t(r), G.rect_b(r))
         );
     }
-    generate_n_float_range(count: number, min: number, max: number, non_zero?:boolean): number[] {
+    generate_n_float_range(count: number, min: number, max: number, non_zero: boolean=false): number[] {
         return Array.from({length: count}, e => this.float_range(min, max, non_zero));
     }
 }
