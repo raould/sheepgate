@@ -16,6 +16,25 @@ export interface EnemyGeneratorSpec {
     tick_msec?: number;
 }
 
+interface EnemyGenerationCounts {
+    generated: number;
+    generations: number;
+}
+
+interface EnemyGenerationState {
+    small: EnemyGenerationCounts;
+    mega: EnemyGenerationCounts;
+    hypermega: EnemyGenerationCounts;
+    basic1: EnemyGenerationCounts;
+    basic2: EnemyGenerationCounts;
+}
+
+export interface AddGeneratorsSpec {
+    small?: EnemyGeneratorSpec;
+    mega?: EnemyGeneratorSpec;
+    hypermega?: EnemyGeneratorSpec;
+}
+
 // todo: ugly, but basic 1 and 2 are hard-coded to spawn along with the hypermega.
 const basic1: EnemyGeneratorSpec = {
     generations: 2,
@@ -38,25 +57,6 @@ const basic2: EnemyGeneratorSpec = {
     tick_msec: 2,
 };
 
-interface EnemyGenerationCounts {
-    generated: number;
-    generations: number;
-}
-
-interface EnemyGenerationState {
-    small: EnemyGenerationCounts;
-    mega: EnemyGenerationCounts;
-    hypermega: EnemyGenerationCounts;
-    basic1: EnemyGenerationCounts;
-    basic2: EnemyGenerationCounts;
-}
-
-export interface AddGeneratorsSpec {
-    small?: EnemyGeneratorSpec;
-    mega?: EnemyGeneratorSpec;
-    hypermega?: EnemyGeneratorSpec;
-}
-
 export function add_generators(
     db: GDB.GameDB,
     spec: AddGeneratorsSpec
@@ -71,8 +71,10 @@ export function add_generators(
     add_generator(db, state, spec.small, should_generate_small, (s) => { s.small.generated++; });
     add_generator(db, state, spec.mega, should_generate_mega, (s) => { s.mega.generated++; });
     add_generator(db, state, spec.hypermega, should_generate_hypermega, (s) => { s.hypermega.generated++; });
-    add_generator(db, state, basic1, should_generate_basic1, (s) => { s.basic1.generated++ });
-    add_generator(db, state, basic2, should_generate_basic2, (s) => { s.basic2.generated++ });
+    if (spec.hypermega?.generations ?? 0 > 0) {
+	add_generator(db, state, basic1, should_generate_basic1, (s) => { s.basic1.generated++ });
+	add_generator(db, state, basic2, should_generate_basic2, (s) => { s.basic2.generated++ });
+    }
 }
 
 type TestFn = (db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState) => boolean;

@@ -551,6 +551,12 @@ function renderEnemies(gdb: any) {
     }
 }
 
+function renderMunchies(gdb: any) {
+    for (const m of Object.values(gdb.items.munchies)) {
+        renderSprite(gdb, m);
+    }
+}
+
 function renderShields(gdb: any) {
     for (const s of Object.values(gdb.items.shields)) {
         renderSprite(gdb, s);
@@ -908,6 +914,7 @@ function renderPlaying(gdb: any) {
     renderGems(gdb);
     renderWarpin(gdb);
     renderEnemies(gdb);
+    renderMunchies(gdb);
     renderExplosions(gdb);
     renderShots(gdb);
     renderFx(gdb);

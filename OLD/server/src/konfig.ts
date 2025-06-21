@@ -311,7 +311,7 @@ export const SHEEP_SIZE = vd2si(
 ); // K
 // match: people.ts, currently hardcoded to have 2 people per cluster.
 // even this is too much toing and froing?
-export const CLUSTER_COUNT_MAX = 3; // K // note: match: max # of clusters, but they can be of different sizes.
+export const CLUSTER_COUNT_MAX = 4; // K
 export const PEOPLE_REMINDER_TIMEOUT = 3 * 1000; // K
 
 export const GEM_SIZE = vd2si(G.v2d_mk_nn(13));

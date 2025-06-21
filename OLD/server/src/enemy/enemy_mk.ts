@@ -52,7 +52,7 @@ function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: Enemy
         db,
         {
             duration_msec: K.WARPIN_TOTAL_MSEC,
-            rect: rect,
+            rect,
             resource_id: db.uncloned.images.lookup(resource_id),
             rank: spec.rank,
             on_end: (db: GDB.GameDB) => {
