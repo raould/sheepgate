@@ -155,7 +155,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	B.base_add(this.db);
 	Po.populate(
 	    this.db,
-	    Math.min(this.konfig.people_cluster_count, K.CLUSTER_MAX_COUNT)
+	    this.konfig.people_cluster_count
 	);
     }
 
@@ -426,7 +426,6 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 			G.v2d_mk(world_size.x, ground_y)
 		    ),			
 		    gameport: {
-			// todo: i wish i understood the use of world_bounds.
 			world_bounds: {
 			    // match: lt gets updated by gameport_step().
 			    lt: G.v2d_mk_0(),

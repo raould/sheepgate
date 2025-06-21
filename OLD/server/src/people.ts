@@ -23,6 +23,8 @@ import * as T from './toast';
    in dropzone/choplifter style.
 */
 
+// note: this whole way of populating is almost completely and utterly precisely what i don't want to do.
+
 export function populate(db: GDB.GameDB, cluster_count: number) {
     if (db.shared.level_index1 == 1) {
         populate_next_to_base(db, cluster_count);
@@ -42,11 +44,12 @@ function populate_next_to_base(db: GDB.GameDB, cluster_count: number) {
     // put them close but not too close to the base.
     const index = gs.findIndex(g => G.rects_are_overlapping(base, g)) + 2;
     D.assert(index >= 0);
+    let population_count = 0;
     let remaining = cluster_count;
     while (remaining > 0) {
         const g = U.element_looped(gs, index);
         if (g?.ground_type == Gr.GroundType.land) {
-            add_people_cluster(db, g, rnd);
+            population_count += add_people_cluster(db, g, rnd);
             remaining--;
         }
     }   
@@ -54,32 +57,26 @@ function populate_next_to_base(db: GDB.GameDB, cluster_count: number) {
 
 function populate_random(db: GDB.GameDB, cluster_count: number) {
     const rnd = new Rnd.RandomImpl(db.shared.level_index1); // some per-level determinism.
+    // funny how sometimes i don't bother to check for undefined.
     const gs = db.shared.items.ground;
     const base = db.shared.items.base;
     const index = gs.findIndex(g => G.rects_are_overlapping(base, g)) + 2;
     D.assert(!!base);
     D.assert(index >= 0);
     D.assert(cluster_count <= gs.length);
-    const grounds = Ur.shuffle_array(gs, rnd)
+    const grounds = gs
           .filter(g => g.ground_type == Gr.GroundType.land)
           .filter(g => !G.rects_are_overlapping(base, g));
     let population_count = 0;
+    // try to prefer putting the people not too far from the base.
     while (cluster_count > 0) {
         const g = rnd.array_item(grounds);
         if (g != null && g.ground_type == Gr.GroundType.land) {
-	    // just not right next to the base, please.
-	    const dx = Math.abs(G.rect_l(g) - G.rect_l(base));
-	    // yes, the *2 below assumes there are enough tiles.
-	    const ok = dx > K.GROUND_SIZE.x * 2;
-	    D.log(dx, ok);
-	    if (ok) {
-		const d = Math.abs(base.lt.x - g.lt.x)
-		const f = U.clip(U.t10(0, db.shared.world.bounds0.x/2, d), 0.01, 1);
-		const populate = rnd.boolean(f);
-		if (populate) {
-		    population_count += add_people_cluster(db, g, rnd);
-		    cluster_count--;
-		}
+	    const df = U.t10(0, db.shared.world.bounds0.x, Math.abs(g.lt.x - base.lt.x));
+	    const roll = Rnd.singleton.boolean(df);
+	    if (roll) {
+		population_count += add_people_cluster(db, g, rnd);
+		cluster_count--;
 	    }
         }
     }
@@ -96,10 +93,12 @@ function add_people_cluster(db: GDB.GameDB, g: Gr.Ground, rnd: Rnd.Random): numb
     const fudge_range = g.size.x * 0.4;
     const ov = G.v2d_mk(fudge_range, 0);
     const dst = rnd.v2d_around(mt, ov);
-    // 2:1 ratio, match: K.CLUSTER_MAX_COUNT assumes 3 per cluster.
     add_person(db, dst, 0, rnd);
-    add_sheep(db, dst, rnd.float_range(-fudge_range, -fudge_range/2), rnd);
-    add_sheep(db, dst, rnd.float_range(fudge_range, fudge_range/2), rnd);
+    if (Rnd.singleton.boolean()) {
+	add_sheep(db, dst, rnd.float_range(-fudge_range, -fudge_range/2), rnd);
+    } else {
+	add_sheep(db, dst, rnd.float_range(fudge_range, fudge_range/2), rnd);
+    }
     return 2;
 }
 

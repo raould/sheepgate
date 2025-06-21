@@ -16,7 +16,14 @@ import { RGBA } from './color';
 
 export type DBKind = "Menu" | "Game";
 
+// note: the names here are terrible and the info they are
+// trying to encode should be done as types instead.
+// i.e.
+// i think "gameport.world_bounds" means "gameport.bounds_in_world: WorldCoords"
+// vs. "gameport.screen_bounds" means "gameport.bounds_in_screen: ScreenCoords"
+
 export interface World {
+    // todo: also, types to differentiate point vs. vector vs. dimensions, etc.
     // the bounds of the whole game world.
     bounds0: G.V2D;
     // display device pixels, inset due to overscan / look-and-feel.
