@@ -1214,6 +1214,9 @@ function loadImages() {
         loadImage(`ground/base${anim}.png`);
     });
     
+    loadImage("enemies/munchies/mr.png");
+    loadImage("enemies/munchies/ml.png");
+
     [1,2,3].forEach(anim => {
 	loadImage(`enemies/basic1/sph${anim}.png`);
     });

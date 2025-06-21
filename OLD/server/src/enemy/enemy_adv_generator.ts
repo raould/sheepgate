@@ -11,7 +11,7 @@ export interface EnemyGeneratorSpec {
     generations: number;
     max_alive: number;
     comment: string;
-    warpin: (db: GDB.GameDB, dbid: GDB.DBID) => U.O<S.Warpin>;
+    warpin: (db: GDB.GameDB) => U.O<S.Warpin>;
     delay_msec?: number;
     tick_msec?: number;
 }
@@ -21,7 +21,7 @@ const basic1: EnemyGeneratorSpec = {
     generations: 2,
     max_alive: 2,
     comment: `enemy-b1-from-adv`,
-    warpin: (db: GDB.GameDB, dbid: GDB.DBID): U.O<S.Warpin> => {
+    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
 	return Eb1.warpin_mk(db);
     },
     delay_msec: 1,
@@ -31,7 +31,7 @@ const basic2: EnemyGeneratorSpec = {
     generations: 2,
     max_alive: 2,
     comment: `enemy-b2-from-adv`,
-    warpin: (db: GDB.GameDB, dbid: GDB.DBID): U.O<S.Warpin> => {
+    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
 	return Eb2.warpin_mk(db);
     },
     delay_msec: 1,
@@ -159,10 +159,9 @@ function should_generate_basic2(db: GDB.GameDB, spec: EnemyGeneratorSpec, state:
 }
 
 function add_enemy(db: GDB.GameDB, spec: EnemyGeneratorSpec): U.O<S.Warpin> {
-    const e = GDB.add_dict_id_mut(
-        db.shared.items.warpin,
-        (dbid: GDB.DBID): U.O<S.Warpin> => spec.warpin(db, dbid)
-    );
+    const e = spec.warpin(db);
+    if (U.exists(e)) {
+	GDB.add_item(db.shared.items.warpin, e);
+    }
     return e;
 }
-

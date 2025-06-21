@@ -510,6 +510,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		player_shadow: undefined,
 		warpin: {},
 		enemies: {},
+		munchies: {},
 		shields: {},
 		shots: {},
 		explosions: {},

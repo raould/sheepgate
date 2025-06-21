@@ -21,6 +21,7 @@ import * as D from '../debug';
 import { DebugGraphics } from '../debug_graphics';
 import * as FS from 'fs';
 import * as OS from 'os';
+import Em from '../enemy/enemy_munchie';
 import * as _ from 'lodash';
 
 // currently this is less of a classic big Level object that is continually doing things,
@@ -143,6 +144,7 @@ export abstract class AbstractLevel implements Level {
         this.update_viewport(next);
         this.update_warpins(next);
         this.update_enemies(next);
+	this.update_munchies(next)
         this.update_explosions(next);
         this.update_sky(next);
         this.update_ground(next);
@@ -248,6 +250,19 @@ export abstract class AbstractLevel implements Level {
             e.step(next);
             D.assert(GDB.is_in_bounds(next, e), e.comment);
         });
+    }
+
+    private update_munchies(next: GDB.GameDB) {
+        Object.values(next.shared.items.munchies).forEach(m => {
+            m.step(next);
+            D.assert(GDB.is_in_bounds(next, m), m.comment);
+        });
+	if (Rnd.singleton.boolean(0.01)) {
+	    const m = Em.warpin_mk(next);
+	    if (U.exists(m)) {
+		GDB.add_item(next.shared.items.warpin, m);
+	    }
+	}
     }
 
     private update_explosions(next: GDB.GameDB) {
