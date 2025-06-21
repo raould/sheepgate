@@ -52,8 +52,9 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
 	    }
             const s: ShieldPrivate = {
                 dbid: dbid,
+		wrapped_dbid: spec.fighter.dbid,
                 get_wrapped(db: GDB.GameDB): U.O<S.Fighter> {
-                    return GDB.get_fighter(db, spec.fighter.dbid);
+                    return GDB.get_fighter(db, this.wrapped_dbid);
                 },
                 comment: spec.comment,
                 ...G.rect_clone(spec.fighter),

@@ -60,20 +60,30 @@ export function safe_lt_vs_player(db: GDB.GameDB, rank: S.Rank, size: G.V2D, rnd
 export function safe_lt_vs_enemy(db: GDB.GameDB, size: G.V2D, rnd: Rnd.Random, lt: G.V2D | undefined): G.V2D {
     let slt = lt ?? Gr.v2d_random_inxy(rnd, db.shared.world.bounds0.x, size.y);
     let padded_scale = G.v2d_scale(K.SHIELD_SCALE, 1.2);
-    let hit: U.O<G.Rect>;
+    let hit_e: U.O<G.Rect>;
+    let hit_m: U.O<G.Rect>;
     let loop_max = 10;
+
     do {
         let r = G.rect_mk(slt, size);
-        hit = Object.values(db.shared.items.enemies).find(e => {
+        hit_e = Object.values(db.shared.items.enemies).find(e => {
             let padded = G.rect_scale_mid_v2d(e, padded_scale);
             let are = G.rects_are_overlapping_wrapH(r, padded, db.shared.world.bounds0);
             return are ? padded : undefined;
         });
-        if (hit != null) {
-            // move horizontally to avoid the hit.
-            slt = G.v2d_add(slt, G.v2d_x0(hit.size));
+        if (hit_e != undefined) {
+            slt = G.v2d_add(slt, G.v2d_x0(hit_e.size));
+        }
+
+        hit_m = Object.values(db.shared.items.munchies).find(e => {
+            let padded = G.rect_scale_mid_v2d(e, padded_scale);
+            let are = G.rects_are_overlapping_wrapH(r, padded, db.shared.world.bounds0);
+            return are ? padded : undefined;
+        });
+        if (hit_m != undefined) {
+            slt = G.v2d_add(slt, G.v2d_x0(hit_m.size));
         }
         --loop_max;
-    } while (hit != null && loop_max > 0);
+    } while ((hit_e != undefined || hit_m != undefined) && loop_max > 0);
     return slt;
 }
