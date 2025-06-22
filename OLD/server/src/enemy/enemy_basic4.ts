@@ -29,7 +29,7 @@ const Basic4: Lemk.EnemyMk = {
 	const flight_pattern = new Fp.DecendAndGoSine(
 	    db,
 	    SIZE,
-	    Rnd.singleton.float_around(0.0008, 0.0001),
+	    Rnd.singleton.v2d_around(G.v2d_mk_nn(0.0008), G.v2d_mk_nn(0.0001)),
 	    db.shared.world.gameport.world_bounds.size.y * 0.3
 	);
 	const spec: Emk.EnemySpec = {

@@ -17,7 +17,10 @@ const WARPIN_RESOURCE_ID = "enemies/swarmers/sprite_20.png";
 
 export function spec_mk(db: GDB.GameDB): Emk.EnemySpec {
     const anim = new A.AnimatorDimensions(anims_spec_mk(db));
-    const acc = Rnd.singleton.float_range(0.0001, 0.0004);
+    const acc = G.v2d_mk(
+	Rnd.singleton.float_range(0.0003, 0.0007),
+	Rnd.singleton.float_range(0.0001, 0.0004)
+    );
     const flight_pattern = new Fp.TargetPlayer(db, 500, acc);
     return {
         anim: anim,

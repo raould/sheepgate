@@ -19,7 +19,7 @@ export const SIZE = K.vd2s(G.v2d_mk(20, 20));
 export function smartbomb_mk(db: GDB.GameDB, lt: G.V2D): U.O<S.Enemy> {
     const anim = new A.AnimatorDimensions(anims_spec_mk(db));
     // todo: the acc here should come from the per-level konfig. :-\
-    const flight_pattern = new Fp.TargetPlayer(db, 500, 0.0005);
+    const flight_pattern = new Fp.TargetPlayer(db, 500, G.v2d_mk_nn(0.0005));
     const rect = G.rect_mk(lt, SIZE);
     const spec = {
         lt: lt,

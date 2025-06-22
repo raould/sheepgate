@@ -29,7 +29,8 @@ const Basic2: Lemk.EnemyMk = {
 	const flight_pattern = new Fp.DecendAndGoSine(
 	    db,
 	    SIZE,
-	    Rnd.singleton.float_around(0.0005, 0.00005));
+	    Rnd.singleton.v2d_around(G.v2d_mk_nn(0.0005), G.v2d_mk_nn(0.00005))
+	);
 	const spec: Emk.EnemySpec = {
             anim: anim,
             rank: S.Rank.basic,

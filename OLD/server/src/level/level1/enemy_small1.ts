@@ -24,7 +24,11 @@ const Small: Lemk.EnemyMk = {
             'wl': Ebw.weapon_mk(ewsl),
             'wr': Ebw.weapon_mk(ewsr),
 	};
-	const flight_pattern = new Fp.DecendAndGoSine(db, SIZE, 0.0005);
+	const flight_pattern = new Fp.DecendAndGoSine(
+	    db,
+	    SIZE,
+	    G.v2d_mk_nn(0.0005)
+	);
 	const spec: Emk.EnemySpec = {
             anim: anim,
             rank: S.Rank.small,
