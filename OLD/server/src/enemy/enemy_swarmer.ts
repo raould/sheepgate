@@ -12,7 +12,7 @@ import * as Lemk from '../level/enemy_mk';
 import * as K from '../konfig';
 import * as Rnd from '../random';
 
-const FLYING_SFX = { sfx_id: K.SWARMER_SFX, gain: 0.15, playback_rate: 2, singleton: true };
+const FLYING_SFX = { sfx_id: K.SWARMER_SFX, gain: 0.1, playback_rate: 2, singleton: true };
 export const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(8, 8), 1));
 const WARPIN_RESOURCE_ID = "enemies/swarmers/sprite_20.png";
 

@@ -11,7 +11,7 @@ import * as Fp from '../enemy/flight_patterns';
 import * as Emk from '../enemy/enemy_mk';
 import * as K from '../konfig';
 
-const FLYING_SFX = { sfx_id: K.SMARTBOMB_SFX, gain: 0.15, playback_rate: 1.5, singleton: true };
+const FLYING_SFX = { sfx_id: K.SMARTBOMB_SFX, gain: 0.1, playback_rate: 1.5, singleton: true };
 // match: sprite animation.
 export const SIZE = K.vd2s(G.v2d_mk(20, 20));
 
