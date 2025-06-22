@@ -5,6 +5,7 @@ import * as G from '../geom';
 import * as A from '../animation';
 import * as U from '../util/util';
 import * as F from '../facing';
+import * as Es from './enemy_swarmer';
 import * as Ebw from './enemy_ball_weapon';
 import * as Fp from './flight_patterns';
 import * as Emk from './enemy_mk';
@@ -13,33 +14,35 @@ import * as K from '../konfig';
 import * as Rnd from '../random';
 
 // match: sprite animation.
-const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(8, 8), 4));
-const WARPIN_RESOURCE_ID = "enemies/basic7/eb1.png";
-const Basic7: Lemk.EnemyMk = {
+const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(16, 16), 1));
+const WARPIN_RESOURCE_ID = "enemies/pods/sprite_1.png";
+const Pod: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
 	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
-	// todo: fix up all this weapon stuff, everywhere, just shoot me.
-	// 1 weapon that swivels so there's only one clip to avoid too many shots. :-(
-	const [ews] = Ebw.scale_specs(db.shared.level_index1, S.Rank.basic, true);
-	const weapons = {
-            'w': Ebw.weapon_mk(ews),
-	};
-	const flight_pattern = new Fp.DecendAndGoSine(
-	    db,
-	    SIZE,
-	    Rnd.singleton.v2d_around(G.v2d_mk_nn(0.0003), G.v2d_mk_nn(0.0001)),
-	    db.shared.world.gameport.world_bounds.size.y * 0.3
-	);
+	const flight_pattern = new Fp.BuzzPlayer(db, G.v2d_mk(0.0001, 0.0001));
 	const spec: Emk.EnemySpec = {
             anim: anim,
             rank: S.Rank.basic,
-            hp_init: K.ENEMY_BASIC_HP,
-            damage: K.ENEMY_BASIC_DAMAGE,
-            weapons: weapons,
+            hp_init: K.ENEMY_POD_HP,
+            damage: K.ENEMY_POD_DAMAGE,
+            weapons: {},
             flight_pattern: flight_pattern,
-            gem_count: K.ENEMY_BASIC_GEM_COUNT,
+            gem_count: 0,
+	    on_death: (db: GDB.GameDB, self: S.Enemy) => {
+		for (let i = 0; i < Rnd.singleton.int_around(K.ENEMY_POD_SWARMER_COUNT * 2, K.ENEMY_POD_SWARMER_COUNT); ++i) {
+		    Emk.add_enemy(
+			db,
+			Es.spec_mk(db),
+			G.rect_move(
+			    G.rect_mk(self.lt, Es.SIZE),
+			    G.v2d_mk(i * 16, Rnd.singleton.float_around(0, i*16))
+			),
+			(db: GDB.GameDB) => db.shared.items.enemies
+		    );
+		}
+	    },
 	};
 	return Emk.warpin_mk_enemy(
             db,
@@ -49,10 +52,11 @@ const Basic7: Lemk.EnemyMk = {
 	);
     }
 }
-export default Basic7;
+export default Pod;
 
 function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     const frames: A.DimensionsFrame[] = [
+        // enemy doesn't show any thrusters.
         ...t2a_facing_mk(db, true, F.Facing.left),
         ...t2a_facing_mk(db, true, F.Facing.right),
         ...t2a_facing_mk(db, false, F.Facing.left),
@@ -76,10 +80,10 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
                 {
 		    frame_msec: 40,
 		    resource_ids: [
-                        ...images.lookup_range_n(n => `enemies/basic7/eb${n}.png`, 1, 5)
+                        ...images.lookup_range_n(n => `enemies/pods/sprite_${n}.png`, 0, 3)
 		    ],
 		    starting_mode: A.MultiImageStartingMode.hold,
-		    ending_mode: A.MultiImageEndingMode.bounce,
+		    ending_mode: A.MultiImageEndingMode.loop
                 }
 	    )
         });

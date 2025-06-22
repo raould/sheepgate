@@ -314,7 +314,7 @@ export const SHEEP_SIZE = vd2si(
 export const CLUSTER_COUNT_MAX = 4; // K
 export const PEOPLE_REMINDER_TIMEOUT = 3 * 1000; // K
 
-export const GEM_SIZE = vd2si(G.v2d_mk_nn(13));
+export const GEM_SIZE = vd2si(G.v2d_mk_nn(8));
 export const GEM_HP_BONUS = 3; // keep it smallish.
 
 // todo: !!!! too many collision buckets as this gets bigger !!!!
@@ -352,12 +352,6 @@ export const WARPIN_TOTAL_MSEC = 500; // K
 
 // note/todo: not much time yet spent on real game balance for these (or any) values.
 
-// harass the player when all enemies are gone but there are still people to rescue.
-export const MUNCHIES_MAX = 2; // L, is adjusted per level.
-export const ENEMY_MUNCHIE_HP = PLAYER_SHOT_DAMAGE; // L
-export const ENEMY_MUNCHIE_DAMAGE = Math.floor(PLAYER_HP/4); // L
-export const ENEMY_MUNCHIE_GEM_COUNT = 0; // L
-
 // basic enemies should be one-shots, that's why they are basic.
 // they also should not drop any gems, that's why they are basic.
 // they should also not show their hp meter to reduce chartjunk.
@@ -383,6 +377,19 @@ export const ENEMY_HYPERMEGA_DAMAGE = PLAYER_HP; // L
 // level until/before they can be picked up by the player.
 export const ENEMY_HYPERMEGA_GEM_COUNT = 0;
 D.assert(ENEMY_HYPERMEGA_DAMAGE >= 1);
+
+export const ENEMY_POD_HP = PLAYER_SHOT_DAMAGE; // L
+export const ENEMY_POD_DAMAGE = Math.floor(PLAYER_HP/4); // L
+export const ENEMY_POD_SWARMER_COUNT = 3; // L
+
+export const ENEMY_SWARMER_HP = PLAYER_SHOT_DAMAGE; // L
+export const ENEMY_SWARMER_DAMAGE = Math.floor(PLAYER_HP/6); // L
+
+// harass the player when all enemies are gone but there are still people to rescue.
+export const MUNCHIES_MAX = 2; // L, is adjusted per level.
+export const ENEMY_MUNCHIE_HP = PLAYER_SHOT_DAMAGE; // L
+export const ENEMY_MUNCHIE_DAMAGE = Math.floor(PLAYER_HP/4); // L
+export const ENEMY_MUNCHIE_GEM_COUNT = 0; // L
 
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L
 export const ENEMY_RETURN_FIRE_MIN_MSEC = 100; // L
@@ -413,6 +420,7 @@ export const SYNTH_E_SFX = "sounds/synthE.ogg";
 export const SHOT1_SFX = "sounds/shot1.ogg";
 export const SHOT2_SFX = "sounds/shot2.ogg";
 export const SMARTBOMB_SFX = "sounds/smartbomb.ogg";
+export const SWARMER_SFX = "sounds/swarmer.ogg";
 export const DEFFX_SFX = "sounds/deffx.ogg";
 
 // match: game.ts

@@ -30,15 +30,16 @@ export interface Random {
 
     // [center-half_bound,center+half_bound).
     float_around(center: number, half_bound: number, non_zero?: boolean): number;
+    // [center-half_bound,center+half_bound).
+    int_around(center: number, half_bound: number, non_zero?: boolean): number;
+    // [min,max).
+    v2d_around(center: G.V2D, bounds: G.V2D): G.V2D;
 
     choose<T>(...ts: T[]): U.O<T>;
 
     array_item<T>(items: T[]): U.O<T>;
 
     dict_item<T>(items: U.Dict<T>): U.O<T>;
-
-    // [min,max).
-    v2d_around(center: G.V2D, bounds: G.V2D): G.V2D;
 
     // [min, max).
     v2d_inside_rect(rect: G.Rect): G.V2D;
@@ -93,6 +94,9 @@ export class RandomImpl implements Random {
     float_around(center: number, half_bound: number, non_zero:boolean=false): number {
         const n = this.float_neg1_1() * half_bound + center;
         return return_non_zero(n, non_zero, Math.sign(n));
+    }
+    int_around(center: number, half_bound: number, non_zero:boolean=false): number {
+	return Math.round(this.float_around(center, half_bound, non_zero));
     }
     choose<T>(...ts: T[]): U.O<T> {
 	const n = this.int_range(0, ts.length);

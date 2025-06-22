@@ -44,8 +44,8 @@ function rect_in_bounds_y(db: GDB.GameDB, r: G.Rect, top_pad: number, bottom_pad
     return G.rect_set_lt(r, G.v2d_set_y(lt, y));
 }
 
-function calculate_acc(src: G.V2D, dst: G.V2D, acc_mag: number, dt: number): G.V2D {
-    const delta_acc = G.v2d_scale(
+function calculate_acc(src: G.V2D, dst: G.V2D, acc_mag: G.V2D, dt: number): G.V2D {
+    const delta_acc = G.v2d_scale_v2d(
         G.v2d_norm(
             G.v2d_sub(dst, src)
         ),
@@ -129,12 +129,10 @@ export class BuzzPlayer implements FlightPattern {
 
 export class TargetPlayer implements FlightPattern {
     target: G.V2D;
-    private acc_mag: number;
     private ticker: Tkg.TickingGenerator<G.V2D>;
 
-    constructor(db: GDB.GameDB, tick_msec: number, acc_mag: number) {
+    constructor(db: GDB.GameDB, tick_msec: number, private acc_mag: G.V2D) {
         this.target = G.rect_mid(db.shared.world.gameport.world_bounds);
-        this.acc_mag = acc_mag;
         this.ticker = Tkg.ticking_generator_mk(
             db,
             GDB.id_mk(),
@@ -153,8 +151,12 @@ export class TargetPlayer implements FlightPattern {
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
         U.if_let(
             this.ticker.step(db),
-            t => this.target = t
+            (t) => { this.target = t ?? G.rect_mid(db.shared.world.gameport.world_bounds); }
         );
+	const tw = Rnd.singleton.v2d_around(
+	    this.target,
+	    G.v2d_mk_nn(10)
+	);
         const delta_acc = calculate_acc(G.rect_mid(src), this.target, this.acc_mag, db.local.frame_dt);
         return delta_acc;
     }
@@ -163,16 +165,14 @@ export class TargetPlayer implements FlightPattern {
 // follow a sinusoidal-ish horizontal path.
 export class DecendAndGoSine implements FlightPattern {
     private target: G.V2D;
-    private acc_mag: number;
     private signX: number;
     private mid_y: number;
     private sinY: number;
     private period_factor: number;
 
     // up to the caller to adjust y? by size.y.
-    constructor(db: GDB.GameDB, size: G.V2D, acc_mag: number, y?: number) {
-        const world_rect = db.shared.world.gameport.world_bounds;
-        this.target = G.rect_mid(world_rect); // temporary non-null value until we step.
+    constructor(db: GDB.GameDB, size: G.V2D, private acc_mag: G.V2D, y?: number) {
+        this.target = G.rect_mid(db.shared.world.gameport.world_bounds); // temporary non-null value until we step.
 	const rnd_y = Rnd.singleton.float_range(
 	    G.rect_t(K.GAMEPORT_RECT) + TOP_PAD + (size.y*2),
 	    G.rect_b(K.GAMEPORT_RECT) - BOTTOM_PAD - (size.y*2),
@@ -181,7 +181,6 @@ export class DecendAndGoSine implements FlightPattern {
 	this.period_factor = Rnd.singleton.float_around(2000, 250);
 	this.sinY = size.y;
         this.signX = Rnd.singleton.boolean() ? -1 : 1;
-        this.acc_mag = acc_mag;
     }
 
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
@@ -226,11 +225,10 @@ export class DecendAndGoSine implements FlightPattern {
 export class DescendAndGoStraight implements FlightPattern {
     private target: G.V2D;
     private dst_y: number | undefined;
-    private acc_mag: number;
     private normal: G.V2D;
 
     // up to the caller to adjust y? by size.y.
-    constructor(db: GDB.GameDB, size: G.V2D, acc_mag: number, y?: number) {
+    constructor(db: GDB.GameDB, size: G.V2D, private acc_mag: G.V2D, y?: number) {
         const world_rect = db.shared.world.gameport.world_bounds;
         this.target = G.rect_mid(world_rect); // temporary non-null value until we step.
 	const rnd_y = Rnd.singleton.float_range(
@@ -238,7 +236,6 @@ export class DescendAndGoStraight implements FlightPattern {
 	    G.rect_b(K.GAMEPORT_RECT) - BOTTOM_PAD - size.y,
 	);
         this.dst_y = y ?? rnd_y;
-        this.acc_mag = acc_mag;
         this.normal = G.v2d_mk_x0(Rnd.singleton.sign() * 100);
     }
 

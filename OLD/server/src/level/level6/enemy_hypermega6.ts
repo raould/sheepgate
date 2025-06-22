@@ -27,7 +27,11 @@ const Hypermega: Lemk.EnemyMk = {
             'wr': Ebw.weapon_mk(ewsr),
             'wsb': Esbw.weapon_mk(ewsb), // todo: other sprites.
 	};
-	const flight_pattern = new Fp.DecendAndGoSine(db, SIZE, 0.0005);
+	const flight_pattern = new Fp.DecendAndGoSine(
+	    db,
+	    SIZE,
+	    G.v2d_mk_nn(0.0005)
+	);
 	return Emk.warpin_mk_enemy(
             db,
             SIZE,

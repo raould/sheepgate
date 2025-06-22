@@ -25,6 +25,7 @@ import { synthE_sfx_b64 } from '@client/synthE.ogg.b64';
 import { shot1_sfx_b64 } from '@client/shot1.ogg.b64';
 import { shot2_sfx_b64 } from '@client/shot2.ogg.b64';
 import { smartbomb_sfx_b64 } from '@client/smartbomb.ogg.b64';
+import { swarmer_sfx_b64 } from '@client/swarmer.ogg.b64';
 import { deffx_sfx_b64 } from '@client/deffx.ogg.b64';
 import { Gamepads, StandardMapping } from '@client/gamepads';
 import { FPS } from '@server/fps';
@@ -1186,6 +1187,7 @@ function loadSounds() {
     loadSound("shot1.ogg", shot1_sfx_b64);
     loadSound("shot2.ogg", shot2_sfx_b64);
     loadSound("smartbomb.ogg", smartbomb_sfx_b64);
+    loadSound("swarmer.ogg", swarmer_sfx_b64);
     loadSound("deffx.ogg", deffx_sfx_b64);
 }
 
@@ -1233,6 +1235,13 @@ function loadImages() {
     loadImage("enemies/munchies/mr2.png");
     loadImage("enemies/munchies/ml1.png");
     loadImage("enemies/munchies/ml2.png");
+
+    [...Array(4).keys()].forEach(n => {
+	loadImage(`enemies/pods/sprite_${n}.png`);
+    });
+    [...Array(8).keys()].forEach(n => {
+	loadImage(`enemies/swarmers/sprite_2${n}.png`);
+    });
 
     [1,2,3].forEach(anim => {
 	loadImage(`enemies/basic1/sph${anim}.png`);
@@ -1354,8 +1363,8 @@ function loadImages() {
 	loadImage(`enemies/e29/e7m${anim}.png`);
     });
 
-    Array.from({length: 10}, (v, i) => i+1).forEach((i) => {
-	loadImage(`gem/gem${i}.png`)
+    [...Array(10).keys()].forEach(i => {
+	loadImage(`gem/gem${i+1}.png`)
     });
 
     [1,2,3,4,5,6,7,8].forEach(anim => {

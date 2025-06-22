@@ -47,10 +47,10 @@ export function gem_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Gem {
     const anim: A.ResourceAnimator = A.animator_mk(
         db.shared.sim_now,
         {
-            frame_msec: Rnd.singleton.float_around(50, 10),
+            frame_msec: Rnd.singleton.int_around(70, 40),
             resource_ids: rids,
             starting_mode: A.MultiImageStartingMode.hold,
-            ending_mode: A.MultiImageEndingMode.bounce,
+            ending_mode: A.MultiImageEndingMode.loop,
         }
     );
     const g: GemPrivate = {

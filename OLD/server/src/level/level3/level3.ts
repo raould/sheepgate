@@ -6,6 +6,7 @@ import * as Lta from '../level_type_a';
 import * as Lis from '../level_in_screens';
 import Eb3 from '../../enemy/enemy_basic3';
 import Eb7 from '../../enemy/enemy_basic7';
+import Ep from '../../enemy/enemy_pod';
 import Es from './enemy_small3';
 import Em from './enemy_mega3';
 import Ehm from './enemy_hypermega3';
@@ -18,6 +19,7 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     return {
 	Eb3: { mk: Eb3.warpin_mk, count: 3 + buf, limit: 2 + buf },
 	Eb7: { mk: Eb7.warpin_mk, count: 3 + buf, limit: 2 + buf },
+	Ep: { mk: Ep.warpin_mk, count: 2 + buf, limit: 2 + buf },
 	Es: { mk: Es.warpin_mk, count: 4 + buf, limit: 1 + buf },
 	Em: { mk: Em.warpin_mk, count: 2 + buf, limit: 1 + buf },
 	Ehm: { mk: Ehm.warpin_mk, count: 1 + buf, limit: 1 + buf },
