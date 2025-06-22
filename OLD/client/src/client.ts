@@ -25,6 +25,7 @@ import { synthE_sfx_b64 } from './synthE.ogg.b64';
 import { shot1_sfx_b64 } from './shot1.ogg.b64';
 import { shot2_sfx_b64 } from './shot2.ogg.b64';
 import { smartbomb_sfx_b64 } from './smartbomb.ogg.b64';
+import { swarmer_sfx_b64 } from './swarmer.ogg.b64';
 import { deffx_sfx_b64 } from './deffx.ogg.b64';
 import { Gamepads, StandardMapping } from './gamepads';
 import { FPS } from './fps';
@@ -1227,6 +1228,7 @@ function loadSounds() {
     loadSound("shot1.ogg", shot1_sfx_b64);
     loadSound("shot2.ogg", shot2_sfx_b64);
     loadSound("smartbomb.ogg", smartbomb_sfx_b64);
+    loadSound("swarmer.ogg", swarmer_sfx_b64);
     loadSound("deffx.ogg", deffx_sfx_b64);
 }
 

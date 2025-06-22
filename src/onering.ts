@@ -25,6 +25,7 @@ import { synthE_sfx_b64 } from '@client/synthE.ogg.b64';
 import { shot1_sfx_b64 } from '@client/shot1.ogg.b64';
 import { shot2_sfx_b64 } from '@client/shot2.ogg.b64';
 import { smartbomb_sfx_b64 } from '@client/smartbomb.ogg.b64';
+import { swarmer_sfx_b64 } from '@client/swarmer.ogg.b64';
 import { deffx_sfx_b64 } from '@client/deffx.ogg.b64';
 import { Gamepads, StandardMapping } from '@client/gamepads';
 import { FPS } from '@server/fps';
@@ -1186,6 +1187,7 @@ function loadSounds() {
     loadSound("shot1.ogg", shot1_sfx_b64);
     loadSound("shot2.ogg", shot2_sfx_b64);
     loadSound("smartbomb.ogg", smartbomb_sfx_b64);
+    loadSound("swarmer.ogg", swarmer_sfx_b64);
     loadSound("deffx.ogg", deffx_sfx_b64);
 }
 

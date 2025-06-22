@@ -13,6 +13,7 @@ import * as Tf from '../type_flags';
 import * as Fp from './flight_patterns';
 import * as Ph from '../phys';
 import * as Gem from '../gem';
+import * as So from '../sound';
 import * as U from '../util/util';
 import * as Eu from './enemy_util';
 import * as K from '../konfig';
@@ -30,6 +31,7 @@ export interface EnemySpec {
     flight_pattern: Fp.FlightPattern,
     gem_count: number,
     shield_alpha?: number,
+    flying_sfx?: So.Sfx,
     hardpoint_left?: (r: G.Rect) => G.V2D,
     hardpoint_right?: (r: G.Rect) => G.V2D,
     on_death?: (db: GDB.GameDB, self: S.Enemy) => void,
@@ -119,6 +121,9 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
                     this.z_back_to_front_ids = spec.anim.z_back_to_front_ids(db, this.facing, thrusting, t);
                     Ph.p2d_force_drag_step_mut(this, delta_acc, db.local.frame_dt);
                     this.lt = G.v2d_wrapH(this.lt, db.shared.world.bounds0);
+		    if (U.exists(spec.flying_sfx)) {
+			db.shared.sfx.push(spec.flying_sfx);
+		    }
                 },
                 step_delta_acc(db: GDB.GameDB): G.V2D {
                     const delta_acc = this.flight_pattern.step_delta_acc(db, this);
