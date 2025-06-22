@@ -11,32 +11,10 @@ export interface EnemyGeneratorSpec {
     generations: number;
     max_alive: number;
     comment: string;
-    warpin: (db: GDB.GameDB, dbid: GDB.DBID) => U.O<S.Warpin>;
+    warpin: (db: GDB.GameDB) => U.O<S.Warpin>;
     delay_msec?: number;
     tick_msec?: number;
 }
-
-// todo: ugly, but basic 1 and 2 are hard-coded to spawn along with the hypermega.
-const basic1: EnemyGeneratorSpec = {
-    generations: 2,
-    max_alive: 2,
-    comment: `enemy-b1-from-adv`,
-    warpin: (db: GDB.GameDB, dbid: GDB.DBID): U.O<S.Warpin> => {
-	return Eb1.warpin_mk(db);
-    },
-    delay_msec: 1,
-    tick_msec: 2,
-};
-const basic2: EnemyGeneratorSpec = {
-    generations: 2,
-    max_alive: 2,
-    comment: `enemy-b2-from-adv`,
-    warpin: (db: GDB.GameDB, dbid: GDB.DBID): U.O<S.Warpin> => {
-	return Eb2.warpin_mk(db);
-    },
-    delay_msec: 1,
-    tick_msec: 2,
-};
 
 interface EnemyGenerationCounts {
     generated: number;
@@ -57,6 +35,28 @@ export interface AddGeneratorsSpec {
     hypermega?: EnemyGeneratorSpec;
 }
 
+// todo: ugly, but basic 1 and 2 are hard-coded to spawn along with the hypermega.
+const basic1: EnemyGeneratorSpec = {
+    generations: 2,
+    max_alive: 2,
+    comment: `enemy-b1-from-adv`,
+    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+	return Eb1.warpin_mk(db);
+    },
+    delay_msec: 1,
+    tick_msec: 2,
+};
+const basic2: EnemyGeneratorSpec = {
+    generations: 2,
+    max_alive: 2,
+    comment: `enemy-b2-from-adv`,
+    warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+	return Eb2.warpin_mk(db);
+    },
+    delay_msec: 1,
+    tick_msec: 2,
+};
+
 export function add_generators(
     db: GDB.GameDB,
     spec: AddGeneratorsSpec
@@ -71,8 +71,10 @@ export function add_generators(
     add_generator(db, state, spec.small, should_generate_small, (s) => { s.small.generated++; });
     add_generator(db, state, spec.mega, should_generate_mega, (s) => { s.mega.generated++; });
     add_generator(db, state, spec.hypermega, should_generate_hypermega, (s) => { s.hypermega.generated++; });
-    add_generator(db, state, basic1, should_generate_basic1, (s) => { s.basic1.generated++ });
-    add_generator(db, state, basic2, should_generate_basic2, (s) => { s.basic2.generated++ });
+    if (spec.hypermega?.generations ?? 0 > 0) {
+	add_generator(db, state, basic1, should_generate_basic1, (s) => { s.basic1.generated++ });
+	add_generator(db, state, basic2, should_generate_basic2, (s) => { s.basic2.generated++ });
+    }
 }
 
 type TestFn = (db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState) => boolean;
@@ -159,10 +161,9 @@ function should_generate_basic2(db: GDB.GameDB, spec: EnemyGeneratorSpec, state:
 }
 
 function add_enemy(db: GDB.GameDB, spec: EnemyGeneratorSpec): U.O<S.Warpin> {
-    const e = GDB.add_dict_id_mut(
-        db.shared.items.warpin,
-        (dbid: GDB.DBID): U.O<S.Warpin> => spec.warpin(db, dbid)
-    );
+    const e = spec.warpin(db);
+    if (U.exists(e)) {
+	GDB.add_item(db.shared.items.warpin, e);
+    }
     return e;
 }
-

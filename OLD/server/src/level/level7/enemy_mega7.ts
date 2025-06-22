@@ -34,7 +34,7 @@ const Mega: Lemk.EnemyMk = {
             G.v2d_scale(acc_base, 0.5)
 	);
 	const flight_pattern = new Fp.BuzzPlayer(db, acc);
-	return Emk.warpin_mk(
+	return Emk.warpin_mk_enemy(
             db,
             SIZE,
     	    WARPIN_RESOURCE_ID,

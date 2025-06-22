@@ -15,6 +15,7 @@ export function step(db: GDB.GameDB) {
             // but the way this works is simplistic (!) so they can visually overlap the top bounds.
             render_ground(db, player);
             render_enemies(db, player);
+            render_munchies(db, player);
             render_gems(db, player);
             render_base(db, db.shared.items.base, player);
             render_people(db, player);
@@ -112,16 +113,18 @@ function render_player(db: GDB.GameDB, sprite: S.Player) {
 
 function render_people(db: GDB.GameDB, center: S.Player) {
     Object.values(db.shared.items.people).forEach(sprite => {
-        const rs = world2radars(db, sprite, center);
-        rs.forEach(r =>
-            db.shared.hud_drawing.rects.push({
-                wrap: false,
-                line_width: 0,
-                color: RGBA.YELLOW,
-                is_filled: true,
-                rect: r
-            })
-        );
+	if (sprite.beaming_state == S.BeamingState.not_beaming) {
+            const rs = world2radars(db, sprite, center);
+            rs.forEach(r => {
+		db.shared.hud_drawing.rects.push({
+		    wrap: false,
+		    line_width: 0,
+		    color: RGBA.YELLOW,
+		    is_filled: true,
+		    rect: r
+		})
+	    });
+	}
     });
 }
 
@@ -149,6 +152,22 @@ function render_enemies(db: GDB.GameDB, center: S.Player) {
                 is_filled: true,
                 rect: r,
                 comment: `r-enemy-${sprite.dbid}`
+            })
+        );
+    });
+}
+
+function render_munchies(db: GDB.GameDB, center: S.Player) {
+    Object.values(db.shared.items.munchies).forEach(sprite => {
+        const rs = world2radars(db, sprite, center);
+        rs.forEach(r =>
+            db.shared.hud_drawing.rects.push({
+                wrap: false,
+                line_width: 0,
+                color: K.BAD_COLOR,
+                is_filled: true,
+                rect: r,
+                comment: `r-munchie-${sprite.dbid}`
             })
         );
     });

@@ -551,6 +551,12 @@ function renderEnemies(gdb: any) {
     }
 }
 
+function renderMunchies(gdb: any) {
+    for (const m of Object.values(gdb.items.munchies)) {
+        renderSprite(gdb, m);
+    }
+}
+
 function renderShields(gdb: any) {
     for (const s of Object.values(gdb.items.shields)) {
         renderSprite(gdb, s);
@@ -908,6 +914,7 @@ function renderPlaying(gdb: any) {
     renderGems(gdb);
     renderWarpin(gdb);
     renderEnemies(gdb);
+    renderMunchies(gdb);
     renderExplosions(gdb);
     renderShots(gdb);
     renderFx(gdb);
@@ -1214,6 +1221,11 @@ function loadImages() {
         loadImage(`ground/base${anim}.png`);
     });
     
+    loadImage("enemies/munchies/mr1.png");
+    loadImage("enemies/munchies/mr2.png");
+    loadImage("enemies/munchies/ml1.png");
+    loadImage("enemies/munchies/ml2.png");
+
     [1,2,3].forEach(anim => {
 	loadImage(`enemies/basic1/sph${anim}.png`);
     });

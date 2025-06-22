@@ -33,7 +33,6 @@ export interface HighScores {
 // todo: persistence!
 // note: the high score table must never be empty.
 export function high_scores_mk(): HighScores {
-    D.log("high_scores_mk");
     return new class _H implements HighScores {
         scores: HighScore[];
         constructor() {
@@ -71,7 +70,6 @@ export function high_scores_mk(): HighScores {
 	set_scores_from_json(json: string) {
 	    try {
 		const table = JSON.parse(json);
-		D.log("json->table", table);
 		this.scores = table.map((r: any) => new HighScore(r.callsign, r.score));
 		this.trim();
 	    }

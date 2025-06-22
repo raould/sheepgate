@@ -7,7 +7,7 @@ import * as U from '../../util/util';
 import * as F from '../../facing';
 import * as Ebw from '../../enemy/enemy_ball_weapon';
 import * as Fp from '../../enemy/flight_patterns';
-import * as E from '../../enemy/enemy_mk';
+import * as Emk from '../../enemy/enemy_mk';
 import * as Lemk from '../enemy_mk';
 import * as K from '../../konfig';
 
@@ -25,7 +25,7 @@ const Mega: Lemk.EnemyMk = {
             'wr': Ebw.weapon_mk(ewsr),
 	};
 	const flight_pattern = new Fp.DecendAndGoSine(db, SIZE, 0.001);
-	return E.warpin_mk(
+	return Emk.warpin_mk_enemy(
             db,
             SIZE,
     	    WARPIN_RESOURCE_ID,

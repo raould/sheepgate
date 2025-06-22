@@ -83,40 +83,39 @@ export interface WarpinSpec {
 export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
     const images = db.uncloned.images;
     const resource_ids = [
-        ...images.lookup_range_a((n) => `warpin/warpin_${n}.png`, ['a','b','c','d']),
-        ...images.lookup_range_n((n) => `warpin/warpin${n}.png`, 1, 5)
+	...images.lookup_range_a((n) => `warpin/warpin_${n}.png`, ['a','b','c','d']),
+	...images.lookup_range_n((n) => `warpin/warpin${n}.png`, 1, 5)
     ];
-    const anim = animator_mk(
-        db.shared.sim_now,
-        {
-            frame_msec: spec.duration_msec / resource_ids.length,
-            resource_ids: resource_ids,
-            starting_mode: MultiImageStartingMode.hide,
-            ending_mode: MultiImageEndingMode.hold        
-        }
+    const animE = new ResourceAnimatorEvents(
+	animator_mk(
+            db.shared.sim_now,
+            {
+		resource_ids,
+		frame_msec: spec.duration_msec / resource_ids.length,
+		starting_mode: MultiImageStartingMode.hide,
+		ending_mode: MultiImageEndingMode.hold        
+            }
+	),
+	// todo: dunno if the on_end behaviour could work via on_death instead, but maybe not.
+	{on_end: spec.on_end}
     );
-
-    // todo: dunno if the on_end behaviour could work via on_death instead, but maybe not.
-    const events = new ResourceAnimatorEvents(anim, {on_end: spec.on_end});
-
     const dbid = GDB.id_mk();
+    const rect = G.rect_scale_mid(spec.rect, 1.25);
     return {
         dbid: dbid,
         comment: `warpin-${dbid}`,
-        // todo: i REALLY wish the warpin was like 1.25 or 1.5x bigger
-        // than the final sprite but that's not supported atm
-        // (it would probably have to be 2 z-ordrered sprites).
-        ...spec.rect,
+	...rect,
         rank: spec.rank,
         acc: G.v2d_mk_0(),
         vel: G.v2d_mk_0(),
         alpha: 1,
         step(db: GDB.GameDB) {
-            const top = events.z_back_to_front_ids(db) || K.MISSING_IMAGE_RESOURCE_ID;
-            this.z_back_to_front_ids = [spec.resource_id, ...top];
+            const top = animE.z_back_to_front_ids(db) || K.MISSING_IMAGE_RESOURCE_ID;
+	    // note: removing the underlying enemy sprite for now to see how that looks.
+            this.z_back_to_front_ids = [...top];
         },
         get_lifecycle(db: GDB.GameDB) {
-            return events.is_alive(db) ? GDB.Lifecycle.alive : GDB.Lifecycle.dead
+            return animE.is_alive(db) ? GDB.Lifecycle.alive : GDB.Lifecycle.dead
         },
         on_death(db: GDB.GameDB) {},
         toJSON() {

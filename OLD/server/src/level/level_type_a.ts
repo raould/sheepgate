@@ -20,13 +20,17 @@ import * as ES from '../empty_sprite';
 import * as Pl from '../player';
 import * as Eag from '../enemy/enemy_adv_generator';
 import * as Ebg from '../enemy/enemy_basic_generator';
+import Em from '../enemy/enemy_munchie';
 import * as Sc from '../scoring';
 import * as Hs from '../high_scores';
 import * as U from '../util/util';
 import * as D from '../debug';
+import * as Rnd from '../random';
 import { RGBA, HCycle } from '../color';
 import { DebugGraphics } from '../debug_graphics';
 import * as _ from 'lodash';
+
+// funny that thus far there's no type B.
 
 export type warpin_mk = (db: GDB.GameDB) => U.O<S.Sprite>;
 
@@ -155,7 +159,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	B.base_add(this.db);
 	Po.populate(
 	    this.db,
-	    Math.min(this.konfig.people_cluster_count, K.CLUSTER_MAX_COUNT)
+	    this.konfig.people_cluster_count
 	);
     }
 
@@ -334,6 +338,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
     private are_all_enemies_done(next: GDB.GameDB): boolean {
 	// note: this isn't totally correct e.g. if you hack a level
 	// to only have 1 Rank.small and you shoot it, this still doesn't trigger?!
+	// note: do not include munchies.
 	return U.count_dict(next.local.enemy_generators) == 0 &&
 	    U.count_dict(next.shared.items.warpin) == 0 &&
 	    U.count_dict(next.shared.items.enemies) == 0 &&
@@ -348,6 +353,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
     }
 
     update_impl(next: GDB.GameDB) {
+	// debugging...
 	if (!!next.local.client_db.inputs.commands[Cmd.CommandType.debug_win_level]) {
 	    this.state = Gs.StepperState.completed;
 	    return;
@@ -365,6 +371,8 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		}
 	    });
 	}
+	// ...debugging
+	
 	if (this.state == Gs.StepperState.running) {
 	    // the player bought the farm?
 	    if (GDB.get_player(next) == null) {
@@ -375,9 +383,24 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		}
 	    }
 	    // all tasks accomplished?
-	    else if (this.get_people_count(next) == 0 && this.are_all_enemies_done(next)) {
-		this.state = Gs.StepperState.completed;
-		return;
+	    if (this.are_all_enemies_done(next)) {
+		if (this.get_people_count(next) == 0) {
+		    this.state = Gs.StepperState.completed;
+		    return;
+		}
+		// harass the player while they try to finish picking up people.
+		else if (this.index1 > 1) {
+		    const count = U.count_dict(next.shared.items.munchies);
+		    if (count < K.MUNCHIES_MAX + Math.floor(this.index1 / 5)) {
+			const chance = 0.002 + (this.index1 * 0.0005);
+			if (Rnd.singleton.boolean(chance)) {
+			    const m = Em.warpin_mk(next);
+			    if (U.exists(m)) {
+				GDB.add_item(next.shared.items.warpin, m);
+			    }
+			}
+		    }
+		}
 	    }
 	}
     }
@@ -426,7 +449,6 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 			G.v2d_mk(world_size.x, ground_y)
 		    ),			
 		    gameport: {
-			// todo: i wish i understood the use of world_bounds.
 			world_bounds: {
 			    // match: lt gets updated by gameport_step().
 			    lt: G.v2d_mk_0(),
@@ -511,6 +533,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		player_shadow: undefined,
 		warpin: {},
 		enemies: {},
+		munchies: {},
 		shields: {},
 		shots: {},
 		explosions: {},

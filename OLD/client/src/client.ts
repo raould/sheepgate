@@ -206,6 +206,14 @@ const key2cmd_hotrod: { [k: string]: CommandSpec } = {
     "]": FireSpec,
     "{": FireSpec,
     "}": FireSpec,
+    ".":        { command: CommandType.debug_step_frame, is_singular: true },
+    "!":        { command: CommandType.debug_dump_state, is_singular: true },
+    b:          { command: CommandType.debug_toggle_graphics, is_singular: true }, // de"b"ug mnemonic :-(
+    n:          { command: CommandType.debug_toggle_annotations, is_singular: true },
+    "/":        { command: CommandType.debug_toggle_stepping, is_singular: true },
+    "^":        { command: CommandType.debug_win_level, is_singular: true },
+    "&":        { command: CommandType.debug_lose_level, is_singular: true },
+    "*":        { command: CommandType.debug_smite, is_singular: true },
 }
 const key2cmd = key2cmd_default;
 
@@ -548,6 +556,12 @@ function renderWarpin(gdb: any) {
 function renderEnemies(gdb: any) {
     for (const e of Object.values(gdb.items.enemies)) {
         renderSprite(gdb, e);
+    }
+}
+
+function renderMunchies(gdb: any) {
+    for (const m of Object.values(gdb.items.munchies)) {
+        renderSprite(gdb, m);
     }
 }
 
@@ -909,6 +923,7 @@ function renderPlaying(gdb: any) {
     renderGems(gdb);
     renderWarpin(gdb);
     renderEnemies(gdb);
+    renderMunchies(gdb);
     renderExplosions(gdb);
     renderShots(gdb);
     renderFx(gdb);
@@ -1254,6 +1269,11 @@ function loadImages() {
     [1,2,3,4].forEach(anim => {
         loadImage(`ground/base${anim}.png`);
     });
+
+    loadImage("enemies/munchies/mr1.png");
+    loadImage("enemies/munchies/mr2.png");
+    loadImage("enemies/munchies/ml1.png");
+    loadImage("enemies/munchies/ml2.png");
     
     [1,2,3].forEach(anim => {
 	loadImage(`enemies/basic1/sph${anim}.png`);

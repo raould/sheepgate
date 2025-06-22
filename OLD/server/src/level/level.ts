@@ -23,15 +23,8 @@ import * as FS from 'fs';
 import * as OS from 'os';
 import * as _ from 'lodash';
 
-// currently this is less of a classic big Level object that is continually doing things,
-// instead it "just" adds new sprites etc. as they die off.
-// the level can also replace itself in the db with the next level instance.
-// there's a few different aspects of levels:
-// 1) intra-level things like generating more waves of enemies.
-// 2) iter-level ui which is like a different db entirely,
-//    and different client ui likewise.
-// 3) beyond that: pause, and game over ui - maybe still encoded as 'levels'?
-// mostly just doing (1) for now, infinitely generating some enemies...
+// generic stuff to "step" a level.
+// see: level_type_a.ts for the actual gameplay.
 
 export interface Level extends Gs.Stepper {
     small_snapshot: S.ImageSized;
@@ -143,6 +136,7 @@ export abstract class AbstractLevel implements Level {
         this.update_viewport(next);
         this.update_warpins(next);
         this.update_enemies(next);
+	this.update_munchies(next)
         this.update_explosions(next);
         this.update_sky(next);
         this.update_ground(next);
@@ -247,6 +241,13 @@ export abstract class AbstractLevel implements Level {
         Object.values(next.shared.items.enemies).forEach(e => {
             e.step(next);
             D.assert(GDB.is_in_bounds(next, e), e.comment);
+        });
+    }
+
+    private update_munchies(next: GDB.GameDB) {
+        Object.values(next.shared.items.munchies).forEach(m => {
+            m.step(next);
+            D.assert(GDB.is_in_bounds(next, m), m.comment);
         });
     }
 
@@ -450,9 +451,9 @@ export abstract class AbstractLevel implements Level {
     }
 
     private update_stats(next: GDB.GameDB) {
-        const more_enemies = U.count_dict(next.local.enemy_generators) > 0 ||
-            U.count_dict(next.shared.items.enemies) > 0 ||
-            U.count_dict(next.shared.items.warpin) > 0;
+        const more_enemies =
+	      U.count_dict(next.local.enemy_generators) > 0 ||
+              U.count_dict(next.shared.items.enemies) > 0;
         const carrying = GDB.get_beaming_count(next);
         const more_people = U.count_dict(next.shared.items.people) > 0;
 

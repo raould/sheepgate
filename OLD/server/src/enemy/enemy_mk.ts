@@ -34,7 +34,7 @@ export interface EnemySpec {
     hardpoint_right?: (r: G.Rect) => G.V2D,
 }
 
-export function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec): U.O<S.Warpin> {
+function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec, get_container: (db: GDB.GameDB) => U.Dict<S.Enemy>): U.O<S.Warpin> {
     if (!!spec.lt) {
 	DebugGraphics.add_DrawEllipse(
 	    DebugGraphics.get_permanent(),
@@ -52,13 +52,13 @@ export function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec
         db,
         {
             duration_msec: K.WARPIN_TOTAL_MSEC,
-            rect: rect,
+            rect,
             resource_id: db.uncloned.images.lookup(resource_id),
             rank: spec.rank,
             on_end: (db: GDB.GameDB) => {
                 const images = db.uncloned.images;
                 const sprite: U.O<EnemyPrivate> = GDB.add_sprite_dict_id_mut(
-                    db.shared.items.enemies,
+                    get_container(db),
                     (dbid: GDB.DBID): U.O<EnemyPrivate> => sprite_mk(db, rect, spec)
                 );
                 if (sprite != null) {
@@ -67,6 +67,14 @@ export function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec
             }
         }
     );
+}
+
+export function warpin_mk_enemy(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec): U.O<S.Warpin> {
+    return warpin_mk(db, size, resource_id, spec, (db: GDB.GameDB) => { return db.shared.items.enemies; });
+}
+
+export function warpin_mk_munchie(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec): U.O<S.Warpin> {
+    return warpin_mk(db, size, resource_id, spec, (db: GDB.GameDB) => { return db.shared.items.munchies; });
 }
 
 interface EnemyPrivate extends S.Enemy {
@@ -116,8 +124,11 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
                 },
                 step_return_fire(db: GDB.GameDB): boolean {
                     const delta = db.shared.sim_now - this.last_hit_msec;
-                    const chance = Rnd.singleton.boolean();
-                    const return_fire = delta < K.ENEMY_RETURN_FIRE_MAX_MSEC && delta > K.ENEMY_RETURN_FIRE_MIN_MSEC && chance;
+                    const chance = Rnd.singleton.boolean(0.1);
+                    const return_fire =
+			  delta < K.ENEMY_RETURN_FIRE_MAX_MSEC &&
+			  delta > K.ENEMY_RETURN_FIRE_MIN_MSEC &&
+			  chance;
                     if (return_fire) {
                         this.last_hit_msec = 0;
                     }

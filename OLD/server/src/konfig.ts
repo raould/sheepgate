@@ -311,7 +311,7 @@ export const SHEEP_SIZE = vd2si(
 ); // K
 // match: people.ts, currently hardcoded to have 2 people per cluster.
 // even this is too much toing and froing?
-export const CLUSTER_MAX_COUNT = 3; // K // note: match: 3 people per cluster at the moment.
+export const CLUSTER_COUNT_MAX = 4; // K
 export const PEOPLE_REMINDER_TIMEOUT = 3 * 1000; // K
 
 export const GEM_SIZE = vd2si(G.v2d_mk_nn(13));
@@ -351,6 +351,12 @@ export const TELEPORT_ANIM_FRAME_MSEC = 100; // K
 export const WARPIN_TOTAL_MSEC = 500; // K
 
 // note/todo: not much time yet spent on real game balance for these (or any) values.
+
+// harass the player when all enemies are gone but there are still people to rescue.
+export const MUNCHIES_MAX = 2; // L, is adjusted per level.
+export const ENEMY_MUNCHIE_HP = PLAYER_SHOT_DAMAGE; // L
+export const ENEMY_MUNCHIE_DAMAGE = Math.floor(PLAYER_HP/4); // L
+export const ENEMY_MUNCHIE_GEM_COUNT = 0; // L
 
 // basic enemies should be one-shots, that's why they are basic.
 // they also should not drop any gems, that's why they are basic.
