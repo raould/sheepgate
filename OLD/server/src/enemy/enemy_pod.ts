@@ -5,6 +5,7 @@ import * as G from '../geom';
 import * as A from '../animation';
 import * as U from '../util/util';
 import * as F from '../facing';
+import * as Es from './enemy_swarmer';
 import * as Ebw from './enemy_ball_weapon';
 import * as Fp from './flight_patterns';
 import * as Emk from './enemy_mk';
@@ -29,6 +30,16 @@ const Pod: Lemk.EnemyMk = {
             weapons: {},
             flight_pattern: flight_pattern,
             gem_count: 0,
+	    on_death: (db: GDB.GameDB, self: S.Enemy) => {
+		for (let i = 0; i < K.ENEMY_POD_SWARMER_COUNT; ++i) {
+		    Emk.add_enemy(
+			db,
+			Es.spec_mk(db),
+			self,
+			(db: GDB.GameDB) => db.shared.items.enemies
+		    );
+		}
+	    },
 	};
 	return Emk.warpin_mk_enemy(
             db,
@@ -38,7 +49,6 @@ const Pod: Lemk.EnemyMk = {
 	);
     }
 }
-// todo: spawn swarmers on death.
 export default Pod;
 
 function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {

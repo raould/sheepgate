@@ -13,41 +13,38 @@ import * as K from '../konfig';
 import * as Rnd from '../random';
 
 // match: sprite animation.
-const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(32, 32), 0.7));
-const WARPIN_RESOURCE_ID = "enemies/basic1/sph1.png";
-const Basic1: Lemk.EnemyMk = {
+const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(8, 8), 1));
+const WARPIN_RESOURCE_ID = "enemies/swarmers/sprite_20.png";
+
+export function spec_mk(db: GDB.GameDB): Emk.EnemySpec {
+    const anim = new A.AnimatorDimensions(anims_spec_mk(db));
+    const acc = Rnd.singleton.float_range(0.001, 0.003);
+    const flight_pattern = new Fp.TargetPlayer(db, 250, acc);
+    return {
+        anim: anim,
+        rank: S.Rank.basic,
+        hp_init: K.ENEMY_SWARMER_HP,
+        damage: K.ENEMY_SWARMER_DAMAGE,
+        weapons: {},
+        flight_pattern: flight_pattern,
+        gem_count: 0,
+    };
+}
+
+const Swarmer: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
-	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
-	// todo: fix up all this weapon stuff, everywhere, just shoot me.
-	// 1 weapon that swivels so there's only one clip to avoid too many shots. :-(
-	const [ews] = Ebw.scale_specs(db.shared.level_index1, S.Rank.basic, true);
-	const weapons = {
-            'w': Ebw.weapon_mk(ews),
-	};
-	const flight_pattern = new Fp.DecendAndGoSine(
-	    db,
-	    SIZE,
-	    Rnd.singleton.float_around(0.0001, 0.00002));
-	const spec: Emk.EnemySpec = {
-            anim: anim,
-            rank: S.Rank.basic,
-            hp_init: K.ENEMY_BASIC_HP,
-            damage: K.ENEMY_BASIC_DAMAGE,
-            weapons: weapons,
-            flight_pattern: flight_pattern,
-            gem_count: K.ENEMY_BASIC_GEM_COUNT,
-	};
 	return Emk.warpin_mk_enemy(
             db,
             SIZE,
     	    WARPIN_RESOURCE_ID,
-	    spec,
+	    spec_mk(db)
 	);
     }
 }
-export default Basic1;
+// todo: spawn swarmers on death.
+export default Swarmer;
 
 function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     const frames: A.DimensionsFrame[] = [
@@ -73,12 +70,12 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
 	    animator: A.animator_mk(
                 db.shared.sim_now,
                 {
-		    frame_msec: 80,
+		    frame_msec: 40,
 		    resource_ids: [
-                        ...images.lookup_range_n(n => `enemies/basic1/sph${n}.png`, 1, 3)
+                        ...images.lookup_range_n(n => `enemies/swarmers/sprite_2${n}.png`, 0, 7)
 		    ],
 		    starting_mode: A.MultiImageStartingMode.hold,
-		    ending_mode: A.MultiImageEndingMode.bounce
+		    ending_mode: A.MultiImageEndingMode.loop
                 }
 	    )
         });

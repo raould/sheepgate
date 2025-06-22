@@ -382,6 +382,9 @@ export const ENEMY_POD_HP = PLAYER_SHOT_DAMAGE; // L
 export const ENEMY_POD_DAMAGE = Math.floor(PLAYER_HP/4); // L
 export const ENEMY_POD_SWARMER_COUNT = 3; // L
 
+export const ENEMY_SWARMER_HP = PLAYER_SHOT_DAMAGE; // L
+export const ENEMY_SWARMER_DAMAGE = Math.floor(PLAYER_HP/6); // L
+
 // harass the player when all enemies are gone but there are still people to rescue.
 export const MUNCHIES_MAX = 2; // L, is adjusted per level.
 export const ENEMY_MUNCHIE_HP = PLAYER_SHOT_DAMAGE; // L
