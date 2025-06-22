@@ -5,7 +5,7 @@ import * as S from '../../sprite';
 import * as Lta from '../level_type_a';
 import * as Lis from '../level_in_screens';
 import Eb2 from '../../enemy/enemy_basic2';
-import Ep from '../../enemy//enemy_pod';
+import Ep from '../../enemy/enemy_pod';
 import Es from './enemy_small2';
 import Em from './enemy_mega2';
 import Ehm from './enemy_hypermega2';
