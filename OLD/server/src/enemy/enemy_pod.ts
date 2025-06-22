@@ -37,7 +37,7 @@ const Pod: Lemk.EnemyMk = {
 			Es.spec_mk(db),
 			G.rect_move(
 			    G.rect_mk(self.lt, Es.SIZE),
-			    G.v2d_mk(i * 16, Rnd.singleton.float_around(0, i*16))
+			    G.v2d_mk(i * 8, Rnd.singleton.float_around(0, i*8))
 			),
 			(db: GDB.GameDB) => db.shared.items.enemies
 		    );
