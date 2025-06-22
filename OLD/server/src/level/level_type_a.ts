@@ -49,6 +49,7 @@ export interface LevelKonfig {
     Eb6?: LevelEnemyKonfig,
     Eb7?: LevelEnemyKonfig,
     Eb8?: LevelEnemyKonfig,
+    Ep?: LevelEnemyKonfig,
     Es?: LevelEnemyKonfig,
     Em?: LevelEnemyKonfig,
     Ehm?: LevelEnemyKonfig,
@@ -200,139 +201,48 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	return far_spec0;
     }
 
+    private init_enemy_from_konfig(konfig: U.O<LevelEnemyKonfig>, name: string): U.O<Eag.EnemyGeneratorSpec> {
+	if (U.exists(konfig)) {
+	    return {
+		comment: `enemy-gen-${name}`,
+		generations: konfig?.count,
+		max_alive: konfig?.limit,
+		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+		    return konfig?.mk(db);
+		}
+	    }
+	}
+    }
+
     private init_enemies() {
 	// note: i don't have nor am ever likely to implement a
 	// general solution that keeps track of all the #'s and types
 	// of enemies generated & defeated so that these generators
 	// can query those values and react accordingly. no, no, instead
 	// this is going to be a crappy half-hard-coded state machine hack.
+
 	const spec: Eag.AddGeneratorsSpec = {}
-	if (U.exists(this.konfig.Es)) {
-	    spec.small = {
-		comment: "enemy-gen-small",
-		generations: this.konfig.Es?.count,
-		max_alive: this.konfig.Es?.limit,
-		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		    return this.konfig.Es?.mk(db);
-		}
-	    }
-	}
-	if (U.exists(this.konfig.Em)) {
-	    spec.mega = {
-		comment: "enemy-gen-mega",
-		generations: this.konfig.Em?.count,
-		max_alive: this.konfig.Em?.limit,
-		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		    return this.konfig.Em?.mk(db);
-		}
-	    }
-	}
-	if (U.exists(this.konfig.Ehm)) {
-	    spec.hypermega = {
-		comment: "enemy-gen-hypermega",
-		generations: this.konfig.Ehm?.count,
-		max_alive: this.konfig.Ehm?.limit,
-		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		    return this.konfig.Ehm?.mk(db);
-		}
-	    }
-	}
+	spec.pod = this.init_enemy_from_konfig(this.konfig.Ep, "pod");
+	spec.small = this.init_enemy_from_konfig(this.konfig.Es, "small");
+	spec.mega = this.init_enemy_from_konfig(this.konfig.Em, "mega");
+	spec.hypermega = this.init_enemy_from_konfig(this.konfig.Ehm, "hypermega");
 	Eag.add_generators(this.db, spec);
 
-	const basics: Ebg.EnemyGeneratorSpec[] = [];
-	if (U.exists(this.konfig.Eb1)) {
-	    basics.push({
-		comment: "enemy-gen-basic1",
-		generations: this.konfig.Eb1?.count,
-		max_alive: this.konfig.Eb1?.limit,
-		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		    return this.konfig.Eb1?.mk(db); // wtf tsc?
-		}
-	    });
-	}
-	if (U.exists(this.konfig.Eb2)) {
-	    basics.push({
-		comment: "enemy-gen-basic2",
-		generations: this.konfig.Eb2?.count,
-		max_alive: this.konfig.Eb2?.limit,
-		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		    return this.konfig.Eb2?.mk(db); // wtf tsc?
-		}
-	    });
-	}
-	if (U.exists(this.konfig.Eb3)) {
-	    basics.push({
-		comment: "enemy-gen-basic3",
-		generations: this.konfig.Eb3?.count,
-		max_alive: this.konfig.Eb3?.limit,
-		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		    return this.konfig.Eb3?.mk(db); // wtf tsc?
-		}
-	    });
-	}
-	if (U.exists(this.konfig.Eb4)) {
-	    basics.push({
-		comment: "enemy-gen-basic4",
-		generations: this.konfig.Eb4?.count,
-		max_alive: this.konfig.Eb4?.limit,
-		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		    return this.konfig.Eb4?.mk(db); // wtf tsc?
-		}
-	    });
-	}
-	if (U.exists(this.konfig.Eb5)) {
-	    basics.push({
-		comment: "enemy-gen-basic5",
-		generations: this.konfig.Eb5?.count,
-		max_alive: this.konfig.Eb5?.limit,
-		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		    return this.konfig.Eb5?.mk(db); // wtf tsc?
-		}
-	    });
-	}
-	if (U.exists(this.konfig.Eb6)) {
-	    basics.push({
-		comment: "enemy-gen-basic6",
-		generations: this.konfig.Eb6?.count,
-		max_alive: this.konfig.Eb6?.limit,
-		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		    return this.konfig.Eb6?.mk(db); // wtf tsc?
-		}
-	    });
-	}
-	if (U.exists(this.konfig.Eb7)) {
-	    basics.push({
-		comment: "enemy-gen-basic7",
-		generations: this.konfig.Eb7?.count,
-		max_alive: this.konfig.Eb7?.limit,
-		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		    return this.konfig.Eb7?.mk(db); // wtf tsc?
-		}
-	    });
-	}
-	if (U.exists(this.konfig.Eb8)) {
-	    basics.push({
-		comment: "enemy-gen-basic8",
-		generations: this.konfig.Eb8?.count,
-		max_alive: this.konfig.Eb8?.limit,
-		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
-		    return this.konfig.Eb8?.mk(db); // wtf tsc?
-		}
-	    });
-	}
+	const basics: U.O<Ebg.EnemyGeneratorSpec>[] = [];
+	basics.push(this.init_enemy_from_konfig(this.konfig.Eb1, "basic1"));
+	basics.push(this.init_enemy_from_konfig(this.konfig.Eb2, "basic2"));
+	basics.push(this.init_enemy_from_konfig(this.konfig.Eb3, "basic3"));
+	basics.push(this.init_enemy_from_konfig(this.konfig.Eb4, "basic4"));
+	basics.push(this.init_enemy_from_konfig(this.konfig.Eb5, "basic5"));
+	basics.push(this.init_enemy_from_konfig(this.konfig.Eb6, "basic6"));
+	basics.push(this.init_enemy_from_konfig(this.konfig.Eb7, "basic7"));
+	basics.push(this.init_enemy_from_konfig(this.konfig.Eb8, "basic8"));
 	D.assert(basics.length > 0, "no basic enemies found?!");
-	Ebg.add_generators(this.db, basics);
+	Ebg.add_generators(
+	    this.db,
+	    basics.filter(b => U.exists(b)) as Ebg.EnemyGeneratorSpec[]
+	);
     }
 
     private are_all_enemies_done(next: GDB.GameDB): boolean {

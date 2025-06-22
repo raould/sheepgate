@@ -352,12 +352,6 @@ export const WARPIN_TOTAL_MSEC = 500; // K
 
 // note/todo: not much time yet spent on real game balance for these (or any) values.
 
-// harass the player when all enemies are gone but there are still people to rescue.
-export const MUNCHIES_MAX = 2; // L, is adjusted per level.
-export const ENEMY_MUNCHIE_HP = PLAYER_SHOT_DAMAGE; // L
-export const ENEMY_MUNCHIE_DAMAGE = Math.floor(PLAYER_HP/4); // L
-export const ENEMY_MUNCHIE_GEM_COUNT = 0; // L
-
 // basic enemies should be one-shots, that's why they are basic.
 // they also should not drop any gems, that's why they are basic.
 // they should also not show their hp meter to reduce chartjunk.
@@ -383,6 +377,16 @@ export const ENEMY_HYPERMEGA_DAMAGE = PLAYER_HP; // L
 // level until/before they can be picked up by the player.
 export const ENEMY_HYPERMEGA_GEM_COUNT = 0;
 D.assert(ENEMY_HYPERMEGA_DAMAGE >= 1);
+
+export const ENEMY_POD_HP = PLAYER_SHOT_DAMAGE; // L
+export const ENEMY_POD_DAMAGE = Math.floor(PLAYER_HP/4); // L
+export const ENEMY_POD_SWARMER_COUNT = 3; // L
+
+// harass the player when all enemies are gone but there are still people to rescue.
+export const MUNCHIES_MAX = 2; // L, is adjusted per level.
+export const ENEMY_MUNCHIE_HP = PLAYER_SHOT_DAMAGE; // L
+export const ENEMY_MUNCHIE_DAMAGE = Math.floor(PLAYER_HP/4); // L
+export const ENEMY_MUNCHIE_GEM_COUNT = 0; // L
 
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L
 export const ENEMY_RETURN_FIRE_MIN_MSEC = 100; // L

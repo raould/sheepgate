@@ -8,9 +8,9 @@ import Eb1 from './enemy_basic1';
 import Eb2 from './enemy_basic2'; // todo:
 
 export interface EnemyGeneratorSpec {
+    comment: string;
     generations: number;
     max_alive: number;
-    comment: string;
     warpin: (db: GDB.GameDB) => U.O<S.Warpin>;
     delay_msec?: number;
     tick_msec?: number;
@@ -22,6 +22,7 @@ interface EnemyGenerationCounts {
 }
 
 interface EnemyGenerationState {
+    pod: EnemyGenerationCounts;
     small: EnemyGenerationCounts;
     mega: EnemyGenerationCounts;
     hypermega: EnemyGenerationCounts;
@@ -30,6 +31,7 @@ interface EnemyGenerationState {
 }
 
 export interface AddGeneratorsSpec {
+    pod?: EnemyGeneratorSpec;
     small?: EnemyGeneratorSpec;
     mega?: EnemyGeneratorSpec;
     hypermega?: EnemyGeneratorSpec;
@@ -61,13 +63,16 @@ export function add_generators(
     db: GDB.GameDB,
     spec: AddGeneratorsSpec
 ) {
+    // this could probably be more programmatic, less copy-paste.
     const state: EnemyGenerationState = {
+        pod: { generated: 0, generations: spec.pod?.generations ?? 0 },
         small: { generated: 0, generations: spec.small?.generations ?? 0 },
         mega: { generated: 0, generations: spec.mega?.generations ?? 0 },
         hypermega: { generated: 0, generations: spec.hypermega?.generations?? 0 },
 	basic1: { generated: 0, generations: basic1.generations },
 	basic2: { generated: 0, generations: basic1.generations },
     };
+    add_generator(db, state, spec.pod, should_generate_pod, (s) => { s.pod.generated++; });
     add_generator(db, state, spec.small, should_generate_small, (s) => { s.small.generated++; });
     add_generator(db, state, spec.mega, should_generate_mega, (s) => { s.mega.generated++; });
     add_generator(db, state, spec.hypermega, should_generate_hypermega, (s) => { s.hypermega.generated++; });
@@ -112,6 +117,15 @@ function count_rank(db: GDB.GameDB, rank: S.Rank): number {
     const alive = Object.values(db.shared.items.enemies).filter(e => e.rank == rank).length;
     const warping = Object.values(db.shared.items.warpin).filter(e => e.rank == rank).length;
     return alive + warping;
+}
+
+function should_generate_pod(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
+    const running = state.pod.generated < spec.generations;
+    if (running) {
+        const room = spec.max_alive > count_rank(db, S.Rank.basic);
+        return room;
+    }
+    return false;
 }
 
 function should_generate_small(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {

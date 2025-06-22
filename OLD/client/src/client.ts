@@ -1274,6 +1274,13 @@ function loadImages() {
     loadImage("enemies/munchies/mr2.png");
     loadImage("enemies/munchies/ml1.png");
     loadImage("enemies/munchies/ml2.png");
+
+    [...Array(4).keys()].forEach(n => {
+	loadImage(`enemies/pods/sprite_${n}.png`);
+    });
+    [...Array(8).keys()].forEach(n => {
+	loadImage(`enemies/swarmers/sprite_2${n}.png`);
+    });
     
     [1,2,3].forEach(anim => {
 	loadImage(`enemies/basic1/sph${anim}.png`);
@@ -1395,8 +1402,8 @@ function loadImages() {
 	loadImage(`enemies/e29/e7m${anim}.png`);
     });
 
-    Array.from({length: 10}, (v, i) => i+1).forEach((i) => {
-	loadImage(`gem/gem${i}.png`)
+    [...Array(10).keys()].forEach(i => {
+	loadImage(`gem/gem${i+1}.png`)
     });
 
     [1,2,3,4,5,6,7,8].forEach(anim => {
