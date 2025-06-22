@@ -100,13 +100,11 @@ export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
 	{on_end: spec.on_end}
     );
     const dbid = GDB.id_mk();
+    const rect = G.rect_scale_mid(spec.rect, 1.25);
     return {
         dbid: dbid,
         comment: `warpin-${dbid}`,
-        // todo: i REALLY wish the warpin was like 1.25 or 1.5x bigger
-        // than the final sprite but that's not supported atm
-        // (it would probably have to be 2 z-ordrered sprites).
-        ...spec.rect,
+	...rect,
         rank: spec.rank,
         acc: G.v2d_mk_0(),
         vel: G.v2d_mk_0(),
