@@ -18,7 +18,7 @@ This version is client-client, all-in-browser. _Note that all this won't work vi
 
 * have a unixy system (i use git bash on windows).
 * have node and npm installed.
-* ./runme-standalone.sh
+* bash ./runme-standalone.sh
 * open onering/index.html in a browser.
 
 # the old client-server style.
@@ -27,7 +27,7 @@ This version can be pretty slow when played remotely, especially on a resource c
 
 * have a unixy system (i use git bash on windows).
 * have node and npm installed.
-* ./runme-client-server.sh
+* bash ./runme-client-server.sh
 
 # the old-old client-server style.
 
