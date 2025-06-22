@@ -37,6 +37,9 @@ really really todo, maybe?
   also the way the client is hard-coded to know the db structure is bad.
   better if the client was dumb and only iterated over a draw list kind of thing.
 
+* if you see something that is badly named and you are like, "i cannot believe somebody
+  would have named something that badly," let me tell you i am right there with ya.
+
 * there's lots of misc stuff that started out trying to support more complex things
   like multiple beam up/downs at once, or the 't' of enemy damage, that ended
   up not working out or not being fun, yet their vestigial code somewhat remains :-(

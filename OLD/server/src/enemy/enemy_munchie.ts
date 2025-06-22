@@ -26,7 +26,7 @@ const Munchie: Lemk.EnemyMk = {
 	const weapons = {
             'w': Ebw.weapon_mk(ews),
 	};
-	const flight_pattern = new Fp.BuzzPlayer(db, G.v2d_mk(0.001, 0.0003));
+	const flight_pattern = new Fp.BuzzPlayer(db, G.v2d_mk(0.001, 0.0003), true);
 	const spec: Emk.EnemySpec = {
             anim: anim,
             rank: S.Rank.basic,

@@ -58,11 +58,9 @@ function calculate_acc(src: G.V2D, dst: G.V2D, acc_mag: number, dt: number): G.V
 // todo: would be nice if the patterns could react to e.g. being shot.
 export class BuzzPlayer implements FlightPattern {
     private static NEXT_SEEK_MSEC = 5*1000;
-    private acc_mag: G.V2D;
     private next_seek_msec: number;
 
-    constructor(db: GDB.GameDB, acc_mag: G.V2D) {
-        this.acc_mag = acc_mag;
+    constructor(db: GDB.GameDB, private acc_mag: G.V2D, private full_range: boolean=false) {
         this.next_seek_msec = 0;
     }
 
@@ -115,7 +113,9 @@ export class BuzzPlayer implements FlightPattern {
             GDB.get_player(db),
             player => {
                 // todo: ugh this can still overshoot y.
-                const safe_player = rect_in_bounds_y(db, player, TOP_PAD, BOTTOM_PAD);
+                const safe_player = this.full_range ?
+		      player :
+		      rect_in_bounds_y(db, player, TOP_PAD, BOTTOM_PAD);
                 const target_y = G.rect_mid(safe_player).y;
                 const diff = target_y - G.rect_mid(src).y;
                 const sign = U.sign(diff);
