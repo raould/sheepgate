@@ -218,7 +218,7 @@ export const DANGER_IMAGE_LOCATED = { // K
 };
 
 export const CLOUD_SIZE = vd2si(G.v2d_mk(80, 20)); // L
-export const CLOUD_ALPHA = 0.1; // L
+export const CLOUD_ALPHA = 0.05; // L
 
 // match: enforce bg's width and world be integer multiples of each other,
 // a) so we can try to avoid floating point error 'seams' between sprites.
