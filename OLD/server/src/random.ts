@@ -30,6 +30,7 @@ export interface Random {
 
     // [center-half_bound,center+half_bound).
     float_around(center: number, half_bound: number, non_zero?: boolean): number;
+    int_around(center: number, half_bound: number, non_zero?: boolean): number;
 
     choose<T>(...ts: T[]): U.O<T>;
 
@@ -93,6 +94,9 @@ export class RandomImpl implements Random {
     float_around(center: number, half_bound: number, non_zero:boolean=false): number {
         const n = this.float_neg1_1() * half_bound + center;
         return return_non_zero(n, non_zero, Math.sign(n));
+    }
+    int_around(center: number, half_bound: number, non_zero:boolean=false): number {
+	return Math.round(this.float_around(center, half_bound, non_zero));
     }
     choose<T>(...ts: T[]): U.O<T> {
 	const n = this.int_range(0, ts.length);

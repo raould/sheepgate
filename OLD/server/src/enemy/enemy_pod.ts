@@ -35,7 +35,10 @@ const Pod: Lemk.EnemyMk = {
 		    Emk.add_enemy(
 			db,
 			Es.spec_mk(db),
-			self,
+			G.rect_move(
+			    G.rect_mk(self.lt, Es.SIZE),
+			    G.v2d_mk(i * 16, Rnd.singleton.float_around(0, i*16))
+			),
 			(db: GDB.GameDB) => db.shared.items.enemies
 		    );
 		}

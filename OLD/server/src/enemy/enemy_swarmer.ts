@@ -12,14 +12,13 @@ import * as Lemk from '../level/enemy_mk';
 import * as K from '../konfig';
 import * as Rnd from '../random';
 
-// match: sprite animation.
-const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(8, 8), 1));
+export const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(8, 8), 1));
 const WARPIN_RESOURCE_ID = "enemies/swarmers/sprite_20.png";
 
 export function spec_mk(db: GDB.GameDB): Emk.EnemySpec {
     const anim = new A.AnimatorDimensions(anims_spec_mk(db));
-    const acc = Rnd.singleton.float_range(0.001, 0.003);
-    const flight_pattern = new Fp.TargetPlayer(db, 250, acc);
+    const acc = Rnd.singleton.float_range(0.0001, 0.0004);
+    const flight_pattern = new Fp.TargetPlayer(db, 500, acc);
     return {
         anim: anim,
         rank: S.Rank.basic,

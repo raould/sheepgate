@@ -155,6 +155,10 @@ export class TargetPlayer implements FlightPattern {
             this.ticker.step(db),
             t => this.target = t
         );
+	const tw = Rnd.singleton.v2d_around(
+	    this.target,
+	    G.v2d_mk_nn(10)
+	);
         const delta_acc = calculate_acc(G.rect_mid(src), this.target, this.acc_mag, db.local.frame_dt);
         return delta_acc;
     }
