@@ -31,7 +31,7 @@ const Pod: Lemk.EnemyMk = {
             flight_pattern: flight_pattern,
             gem_count: 0,
 	    on_death: (db: GDB.GameDB, self: S.Enemy) => {
-		for (let i = 0; i < K.ENEMY_POD_SWARMER_COUNT; ++i) {
+		for (let i = 0; i < Rnd.singleton.int_around(K.ENEMY_POD_SWARMER_COUNT * 2, K.ENEMY_POD_SWARMER_COUNT); ++i) {
 		    Emk.add_enemy(
 			db,
 			Es.spec_mk(db),
