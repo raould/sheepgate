@@ -1403,6 +1403,7 @@ function loadImages() {
     loadImage("bg/mal_far.png");
     loadImage("bg/mar_far.png");
     loadImage("bg/ma_near.png");
+    loadImage("bg/ma_near2.png");
 
     loadImage("danger.png");
 

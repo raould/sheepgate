@@ -131,9 +131,10 @@ function far2near_specs(db: GDB.GameDB, far_specs: FarSpec[]): NearSpec[] {
         type: BgNearType.sea,
         alpha: 1
     };
+    const city_image = db.shared.level_index1 % 2 === 0 ? images.lookup("bg/ma_near2.png") : images.lookup("bg/ma_near.png");
     const city: UnlocatedSpec<BgNearType> = {
         // todo: 'city' stuff seems to never be used really for ma_*, so either test & use, or delete?
-        images_spec: {resource_id: images.lookup("bg/ma_near.png")},
+        images_spec: { resource_id: city_image },
         type: BgNearType.city,
         alpha: 1
     };
