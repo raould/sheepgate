@@ -53,31 +53,36 @@ function f2s(f: F.Facing): string {
 function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     const frames: A.DimensionsFrame[] = [
         // enemy doesn't show any thrusters.
-        ...t2a_still_facing_mk(db, true, F.Facing.left),
-        ...t2a_still_facing_mk(db, true, F.Facing.right),
-        ...t2a_still_facing_mk(db, false, F.Facing.left),
-        ...t2a_still_facing_mk(db, false, F.Facing.right),
+        ...t2a_facing_mk(db, true, F.Facing.left),
+        ...t2a_facing_mk(db, true, F.Facing.right),
+        ...t2a_facing_mk(db, false, F.Facing.left),
+        ...t2a_facing_mk(db, false, F.Facing.right),
     ];
     return A.dimension_spec_mk(db, frames);
 }
 
 const tspecs: Array<[number, string]> = [[1,""]];
-function t2a_still_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.DimensionsFrame[] {
+function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.DimensionsFrame[] {
     const table: A.DimensionsFrame[] = [];
     const images = db.uncloned.images;
     const fstr = f2s(facing);
     tspecs.forEach(spec => {
         const [t, _] = spec;
         table.push({
-            facing,
-            thrusting,
-            t,
-            animator: A.animator_mk(
+	    facing: facing,
+	    thrusting: thrusting,
+	    t: t,
+	    animator: A.animator_mk(
                 db.shared.sim_now,
                 {
-		    resource_id: images.lookup(`enemies/munchies/m${fstr}.png`)
-		}
-            )
+		    frame_msec: 80,
+		    resource_ids: [
+                        ...images.lookup_range_n(n => `enemies/munchies/m${fstr}${n}.png`, 1, 2)
+		    ],
+		    starting_mode: A.MultiImageStartingMode.hold,
+		    ending_mode: A.MultiImageEndingMode.bounce
+                }
+	    )
         });
     });
     return table;
