@@ -314,7 +314,6 @@ export const SHEEP_SIZE = vd2si(
 export const CLUSTER_COUNT_MAX = 4; // K
 export const PEOPLE_REMINDER_TIMEOUT = 3 * 1000; // K
 
-export const GEM_SIZE = vd2si(G.v2d_mk_nn(8));
 export const GEM_HP_BONUS = 3; // keep it smallish.
 
 // todo: !!!! too many collision buckets as this gets bigger !!!!

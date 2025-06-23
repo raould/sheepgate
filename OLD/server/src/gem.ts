@@ -10,6 +10,8 @@ import * as Rnd from './random';
 import * as U from './util/util';
 import * as D from './debug';
 
+const SIZE = K.vd2si(G.v2d_mk_nn(10));
+
 interface GemPrivate extends S.Gem {
     anim: A.ResourceAnimator;
     lifecycle_state: GDB.Lifecycle;
@@ -26,7 +28,7 @@ export function gems_add(db: GDB.GameDB, around: G.V2D, count: number) {
     else {
         const rstart = 2 * Math.PI * Rnd.singleton.float_0_1();
         const rstep = 2 * Math.PI / count;
-        const radius = G.v2d_abs_max_coord(K.GEM_SIZE);
+        const radius = G.v2d_abs_max_coord(SIZE);
         for (let i = 0; i < count; ++i) {
             const radians = rstart + i * rstep;
             const ix = around.x + radius * Math.cos(radians);
@@ -59,7 +61,7 @@ export function gem_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Gem {
         vel: G.v2d_mk_0(),
         acc: G.v2d_mk_0(),
         lt: lt,
-        size: K.GEM_SIZE,
+        size: SIZE,
         hp_init: 1,
         hp: 1,
         damage: 0,
