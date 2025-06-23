@@ -29,7 +29,7 @@ import { swarmer_sfx_b64 } from '@client/swarmer.ogg.b64';
 import { deffx_sfx_b64 } from '@client/deffx.ogg.b64';
 import { Gamepads, StandardMapping } from '@client/gamepads';
 import { FPS } from '@server/fps';
-import { high_scores_mk } from '@server/high_scores';
+import { HighScores } from '@server/high_scores';
 import { game_mk } from '@server/game';
 import * as K from '@server/konfig';
  
@@ -63,7 +63,7 @@ let sounds: any = {};
 // sfx_id resource path - to - audio buffer source.
 let singletonSounds = new Map<string, any>(); 
 
-const high_scores = high_scores_mk();
+const high_scores = new HighScores();
 let game_loop = game_mk(high_scores);
 
 let last_render_msec = 0;

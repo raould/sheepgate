@@ -7,7 +7,10 @@ import * as U from './util/util';
 // match: todo: make this stuff common between both client & server.
 
 // Command string to is_pressed boolean.
-export type Inputs = {commands: {[k:string]:boolean}, keys: {[k:string]:boolean}};
+export type Inputs = {
+    commands: { [k:string]: boolean },
+    keys: { [k:string]: boolean }
+};
 
 export interface CommandSpec {
     command: CommandType;
