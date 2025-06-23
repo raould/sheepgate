@@ -207,6 +207,8 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		comment: `enemy-gen-${name}`,
 		generations: konfig?.count,
 		max_alive: konfig?.limit,
+		delay_msec: 1000,
+		tick_msec: 2000,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
 		    return konfig?.mk(db);
 		}

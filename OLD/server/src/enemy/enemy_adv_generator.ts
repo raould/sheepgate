@@ -12,8 +12,8 @@ export interface EnemyGeneratorSpec {
     generations: number;
     max_alive: number;
     warpin: (db: GDB.GameDB) => U.O<S.Warpin>;
-    delay_msec?: number;
-    tick_msec?: number;
+    delay_msec: number;
+    tick_msec: number;
 }
 
 interface EnemyGenerationCounts {
@@ -31,6 +31,7 @@ interface EnemyGenerationState {
 }
 
 export interface AddGeneratorsSpec {
+    // the basics are omittied, not for export.
     pod?: EnemyGeneratorSpec;
     small?: EnemyGeneratorSpec;
     mega?: EnemyGeneratorSpec;
@@ -46,7 +47,7 @@ const basic1: EnemyGeneratorSpec = {
 	return Eb1.warpin_mk(db);
     },
     delay_msec: 1,
-    tick_msec: 2,
+    tick_msec: 100,
 };
 const basic2: EnemyGeneratorSpec = {
     generations: 2,
@@ -56,34 +57,35 @@ const basic2: EnemyGeneratorSpec = {
 	return Eb2.warpin_mk(db);
     },
     delay_msec: 1,
-    tick_msec: 2,
+    tick_msec: 100,
 };
+
+type TestFn = (db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState) => boolean;
+type IncrFn = (state: EnemyGenerationState) => void;
 
 export function add_generators(
     db: GDB.GameDB,
     spec: AddGeneratorsSpec
 ) {
+    const has_hypermega = spec.hypermega?.generations ?? 0 > 0;
     // this could probably be more programmatic, less copy-paste.
     const state: EnemyGenerationState = {
         pod: { generated: 0, generations: spec.pod?.generations ?? 0 },
         small: { generated: 0, generations: spec.small?.generations ?? 0 },
         mega: { generated: 0, generations: spec.mega?.generations ?? 0 },
         hypermega: { generated: 0, generations: spec.hypermega?.generations?? 0 },
-	basic1: { generated: 0, generations: basic1.generations },
-	basic2: { generated: 0, generations: basic1.generations },
+	basic1: { generated: 0, generations: has_hypermega ? basic1.generations : 0 },
+	basic2: { generated: 0, generations: has_hypermega ? basic1.generations : 0 },
     };
     add_generator(db, state, spec.pod, should_generate_pod, (s) => { s.pod.generated++; });
     add_generator(db, state, spec.small, should_generate_small, (s) => { s.small.generated++; });
     add_generator(db, state, spec.mega, should_generate_mega, (s) => { s.mega.generated++; });
     add_generator(db, state, spec.hypermega, should_generate_hypermega, (s) => { s.hypermega.generated++; });
-    if (spec.hypermega?.generations ?? 0 > 0) {
+    if (has_hypermega) {
 	add_generator(db, state, basic1, should_generate_basic1, (s) => { s.basic1.generated++ });
 	add_generator(db, state, basic2, should_generate_basic2, (s) => { s.basic2.generated++ });
     }
 }
-
-type TestFn = (db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState) => boolean;
-type IncrFn = (state: EnemyGenerationState) => void;
 
 function add_generator(
     db: GDB.GameDB,
@@ -98,9 +100,8 @@ function add_generator(
             Tkg.ticking_generator_mk(db, dbid, {
                 comment: spec.comment,
                 generations: spec.generations,
-		// yes, buried default values is evil.
-                delay_msec: spec.delay_msec ?? 1000,
-                tick_msec: spec.tick_msec ?? 2000,
+                delay_msec: spec.delay_msec,
+                tick_msec: spec.tick_msec,
                 generate: (db: GDB.GameDB): U.O<S.Sprite> => {
 		    const yes = testfn(db, spec, state);
                     if (yes) {
@@ -163,15 +164,11 @@ function should_generate_hypermega(db: GDB.GameDB, spec: EnemyGeneratorSpec, sta
 }
 
 function should_generate_basic1(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
-    const activated = state.hypermega.generated > 0;
-    const available = state.basic1.generated < spec.generations;
-    return activated && available;
+    return state.basic1.generated < spec.generations;
 }
 
 function should_generate_basic2(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
-    const activated = state.hypermega.generated > 0;
-    const available = state.basic2.generated < spec.generations;
-    return activated && available;
+    return state.basic2.generated < spec.generations;
 }
 
 function add_enemy(db: GDB.GameDB, spec: EnemyGeneratorSpec): U.O<S.Warpin> {
