@@ -262,7 +262,7 @@ function person_waving_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
         starting_mode: A.MultiImageStartingMode.hold,
         ending_mode: A.MultiImageEndingMode.loop,
         offset_msec: Rnd.singleton.float_range(0, 250),
-        frame_msec: Rnd.singleton.float_around(200, 50),
+        frame_msec: Rnd.singleton.float_around(125, 25),
         resource_ids: images.lookup_range_n((n) => `people/waving${n}.png`, 1, 2)
     };
     const anim = new A.MultiImageAnimator(db.shared.sim_now, spec);

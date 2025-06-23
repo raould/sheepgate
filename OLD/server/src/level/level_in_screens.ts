@@ -108,7 +108,7 @@ class LevelWithScreen_EndScreen implements SubState {
 	"DAMN THE TORPEDOES!",
 	"SHAZBOT!",
 	"SLICE AND DICE!",
-	"GO HUMAN!",
+	"BOVINE POWER!",
 	"TWITCH MASTER!",
 	"BRING IT!",
 	"BROUGHT IT!",

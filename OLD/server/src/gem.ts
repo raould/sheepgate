@@ -10,7 +10,7 @@ import * as Rnd from './random';
 import * as U from './util/util';
 import * as D from './debug';
 
-const SIZE = K.vd2si(G.v2d_mk_nn(10));
+const SIZE = K.vd2si(G.v2d_mk_nn(12));
 
 interface GemPrivate extends S.Gem {
     anim: A.ResourceAnimator;

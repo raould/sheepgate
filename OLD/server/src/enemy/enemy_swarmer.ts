@@ -74,7 +74,7 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
 	    animator: A.animator_mk(
                 db.shared.sim_now,
                 {
-		    frame_msec: 40,
+		    frame_msec: Rnd.singleton.float_around(50, 20),
 		    resource_ids: [
                         ...images.lookup_range_n(n => `enemies/swarmers/sprite_2${n}.png`, 0, 7)
 		    ],

@@ -31,13 +31,17 @@ const Pod: Lemk.EnemyMk = {
             flight_pattern: flight_pattern,
             gem_count: 0,
 	    on_death: (db: GDB.GameDB, self: S.Enemy) => {
-		for (let i = 0; i < Rnd.singleton.int_around(K.ENEMY_POD_SWARMER_COUNT * 2, K.ENEMY_POD_SWARMER_COUNT); ++i) {
+		const spawn_count = K.ENEMY_POD_SWARMER_COUNT +
+		      Rnd.singleton.int_range(0, K.ENEMY_POD_SWARMER_COUNT);
+		const offset_step = K.d2si(6);
+		for (let i = 0; i < spawn_count; ++i) {
+		    const offset = i * offset_step;
 		    Emk.add_enemy(
 			db,
 			Es.spec_mk(db),
 			G.rect_move(
 			    G.rect_mk(self.lt, Es.SIZE),
-			    G.v2d_mk(i * 8, Rnd.singleton.float_around(0, i*8))
+			    G.v2d_mk(offset, Rnd.singleton.float_around(0, offset, true))
 			),
 			(db: GDB.GameDB) => db.shared.items.enemies
 		    );
