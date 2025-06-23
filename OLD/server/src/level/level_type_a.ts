@@ -208,7 +208,6 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		generations: konfig?.count,
 		max_alive: konfig?.limit,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
-		    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
 		    return konfig?.mk(db);
 		}
 	    }

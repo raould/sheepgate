@@ -63,6 +63,7 @@ function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: Enemy
     const rect = G.rect_mk(lt, size);
     spec.lt = lt;
     DebugGraphics.add_rect(DebugGraphics.get_permanent(), rect);
+    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
     return A.warpin_mk(
         db,
         {
