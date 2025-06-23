@@ -13,6 +13,8 @@ export interface EnemyGeneratorSpec {
     max_alive: number;
     comment: string;
     warpin: (db: GDB.GameDB, dbid: GDB.DBID) => U.O<S.Warpin>;
+    delay_msec: number;
+    tick_msec: number;
 }
 
 interface EnemyGenerationCounts {
@@ -45,8 +47,8 @@ function add_generator(
             Tkg.ticking_generator_mk(db, dbid, {
                 comment: spec.comment,
                 generations: spec.generations,
-                delay_msec: 2000,
-                tick_msec: Rnd.singleton.float_around(3000, 100),
+                delay_msec: spec.delay_msec,
+                tick_msec: spec.tick_msec,
                 generate: (db: GDB.GameDB): U.O<S.Sprite> => {
                     if (testfn(db, spec, counts)) {
                         const e = add_enemy(db, spec);

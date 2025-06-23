@@ -16,7 +16,7 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     const denom = K.LEVEL_TEMPLATE_COUNT;
     const buf = Math.floor(level_index / denom);
     return {
-	Eb4: { mk: Eb4.warpin_mk, count: 5 + buf, limit: 5 + buf, delay_msec: 1000, tick_msec: 1000 },
+	Eb4: { mk: Eb4.warpin_mk, count: 5 + buf, limit: 5 + buf, delay_msec: 1000, tick_msec: 5*1000 },
 	Ep: { mk: Ep.warpin_mk, count: 4 + buf, limit: 4 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Es: { mk: Es.warpin_mk, count: 4 + buf, limit: 2 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Em: { mk: Em.warpin_mk, count: 2 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 3*1000 },

@@ -26,8 +26,8 @@ interface EnemyGenerationState {
     small: EnemyGenerationCounts;
     mega: EnemyGenerationCounts;
     hypermega: EnemyGenerationCounts;
-    basic1: EnemyGenerationCounts;
-    basic2: EnemyGenerationCounts;
+    hm_basic1: EnemyGenerationCounts;
+    hm_basic2: EnemyGenerationCounts;
 }
 
 export interface AddGeneratorsSpec {
@@ -39,20 +39,20 @@ export interface AddGeneratorsSpec {
 }
 
 // todo: ugly, but basic 1 and 2 are hard-coded to spawn along with the hypermega.
-const basic1: EnemyGeneratorSpec = {
+const hm_basic1: EnemyGeneratorSpec = {
     generations: 2,
     max_alive: 2,
-    comment: `enemy-b1-from-adv`,
+    comment: `enemy-hm_b1-from-adv`,
     warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
 	return Eb1.warpin_mk(db);
     },
     delay_msec: 1,
     tick_msec: 100,
 };
-const basic2: EnemyGeneratorSpec = {
+const hm_basic2: EnemyGeneratorSpec = {
     generations: 2,
     max_alive: 2,
-    comment: `enemy-b2-from-adv`,
+    comment: `enemy-hm_b2-from-adv`,
     warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
 	return Eb2.warpin_mk(db);
     },
@@ -74,16 +74,16 @@ export function add_generators(
         small: { generated: 0, generations: spec.small?.generations ?? 0 },
         mega: { generated: 0, generations: spec.mega?.generations ?? 0 },
         hypermega: { generated: 0, generations: spec.hypermega?.generations?? 0 },
-	basic1: { generated: 0, generations: has_hypermega ? basic1.generations : 0 },
-	basic2: { generated: 0, generations: has_hypermega ? basic1.generations : 0 },
+	hm_basic1: { generated: 0, generations: has_hypermega ? hm_basic1.generations : 0 },
+	hm_basic2: { generated: 0, generations: has_hypermega ? hm_basic2.generations : 0 },
     };
     add_generator(db, state, spec.pod, should_generate_pod, (s) => { s.pod.generated++; });
     add_generator(db, state, spec.small, should_generate_small, (s) => { s.small.generated++; });
     add_generator(db, state, spec.mega, should_generate_mega, (s) => { s.mega.generated++; });
     add_generator(db, state, spec.hypermega, should_generate_hypermega, (s) => { s.hypermega.generated++; });
     if (has_hypermega) {
-	add_generator(db, state, basic1, should_generate_basic1, (s) => { s.basic1.generated++ });
-	add_generator(db, state, basic2, should_generate_basic2, (s) => { s.basic2.generated++ });
+	add_generator(db, state, hm_basic1, should_generate_hm_basic1, (s) => { s.hm_basic1.generated++ });
+	add_generator(db, state, hm_basic2, should_generate_hm_basic2, (s) => { s.hm_basic2.generated++ });
     }
 }
 
@@ -163,12 +163,16 @@ function should_generate_hypermega(db: GDB.GameDB, spec: EnemyGeneratorSpec, sta
     return false;
 }
 
-function should_generate_basic1(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
-    return state.basic1.generated < spec.generations;
+function should_generate_hm_basic1(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
+    const activated = state.hypermega.generated > 0;
+    const available = state.hm_basic1.generated < spec.generations;
+    return activated && available;
 }
 
-function should_generate_basic2(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
-    return state.basic2.generated < spec.generations;
+function should_generate_hm_basic2(db: GDB.GameDB, spec: EnemyGeneratorSpec, state: EnemyGenerationState): boolean {
+    const activated = state.hypermega.generated > 0;
+    const available = state.hm_basic2.generated < spec.generations;
+    return activated && available;
 }
 
 function add_enemy(db: GDB.GameDB, spec: EnemyGeneratorSpec): U.O<S.Warpin> {

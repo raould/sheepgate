@@ -1353,8 +1353,11 @@ function loadImages() {
 
     [1,2,3,4,5].forEach(anim => {
         loadImage(`enemies/e10s/e10_s${anim}.png`);
-        loadImage(`enemies/e10m/e10_m${anim}.png`);
         loadImage(`enemies/e10hm/e10_hm${anim}.png`);
+    });
+
+    [...Array(8).keys()].forEach(n => {
+        loadImage(`enemies/e10m/e10_m${n+1}.png`);
     });
 
     [1,2,3,4].forEach(anim => {
