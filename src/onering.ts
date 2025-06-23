@@ -1294,9 +1294,14 @@ function loadImages() {
     ["l", "r"].forEach(d => {
         loadImage(`enemies/e15/e15${d}.png`);
         loadImage(`enemies/e16/e16${d}.png`);
-        loadImage(`enemies/e17/e17${d}.png`);
-        loadImage(`enemies/e17/e17${d}_0.png`);
     });
+
+    loadImage(`enemies/e17/e17l.png`);
+    loadImage(`enemies/e17/e17l_0.png`);
+    loadImage(`enemies/e17/e17l_1.png`);
+    loadImage(`enemies/e17/e17r.png`);
+    loadImage(`enemies/e17/e17r_0.png`);
+    loadImage(`enemies/e17/e17r_1.png`);
 
     ["", "_50", "_20"].forEach(hp => {
         loadImage(`enemies/e8/e8${hp}.png`);
