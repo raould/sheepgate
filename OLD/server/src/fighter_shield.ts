@@ -26,6 +26,7 @@ export interface ShieldWrappingSpec extends C.Masked, C.Ignores {
     fighter: S.Fighter;
     comment: string;
     hp_init: number;
+    spawn_strong?: boolean;
     damage: number;
     alpha?: number;
     on_collide?(thiz: S.Shield<S.Fighter>, db: GDB.GameDB, sprite: S.CollidableSprite, reaction: C.Reaction): void;
@@ -33,6 +34,7 @@ export interface ShieldWrappingSpec extends C.Masked, C.Ignores {
 
 interface ShieldPrivate extends S.Shield<S.Fighter> {
     visible: boolean;
+    spawn_strong?: boolean;
     wrapped_dbid: GDB.DBID;
     pull_rect(db: GDB.GameDB): void;
     step_anim(db: GDB.GameDB): void;
@@ -43,7 +45,7 @@ interface ShieldPrivate extends S.Shield<S.Fighter> {
 
 export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
     const shields = db.shared.items.shields;
-    const visible = spec.hp_init > K.PLAYER_SHOT_DAMAGE; // 'basic' enemies.
+    const visible = spec.hp_init > K.PLAYER_SHOT_DAMAGE; // e.g. 'basic' enemies.
     GDB.add_sprite_dict_id_mut(
         shields,
         (dbid): S.Shield<S.Fighter> => {
@@ -64,6 +66,7 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
                 acc: G.v2d_mk_0(),
                 ignores: spec.ignores,
                 hp_init: spec.hp_init,
+		spawn_strong: spec.spawn_strong,
                 hp: spec.hp_init,
                 damage: spec.damage,
                 // todo: i wish i knew a better way to do all this 'typing'.
@@ -154,19 +157,24 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
                         break;
 		    }
                     case C.Reaction.hp: {
-                        this.anim = new ShieldHitAnimation(db, this.dbid);
-			db.shared.sfx.push({ sfx_id: K.EXPLOSION_SFX, gain: 0.4 });
-                        this.hp -= sprite.damage;
-                        GDB.add_dict_id_mut(
-                            db.shared.items.particles,
-                            (dbid: GDB.DBID) => new Pr.ParticleEllipseGenerator(
-                                dbid,
-                                K.SHIELD_HIT_PARTICLE_DURATION_MSEC,
-                                this,
-                                K.SHIELD_HIT_PARTICLE_COUNT,
-                                K.SHIELD_HIT_PARTICLE_SPEED,
-                            )
-                        );                        
+			if (this.spawn_strong === true) { // e.g. swarmers.
+			    this.spawn_strong = undefined;
+			}
+			else {
+                            this.anim = new ShieldHitAnimation(db, this.dbid);
+			    db.shared.sfx.push({ sfx_id: K.EXPLOSION_SFX, gain: 0.4 });
+                            this.hp -= sprite.damage;
+                            GDB.add_dict_id_mut(
+				db.shared.items.particles,
+				(dbid: GDB.DBID) => new Pr.ParticleEllipseGenerator(
+                                    dbid,
+                                    K.SHIELD_HIT_PARTICLE_DURATION_MSEC,
+                                    this,
+                                    K.SHIELD_HIT_PARTICLE_COUNT,
+                                    K.SHIELD_HIT_PARTICLE_SPEED,
+				)
+                            );
+			}
                         break;
 		    }
                     }

@@ -33,15 +33,18 @@ const Pod: Lemk.EnemyMk = {
 	    on_death: (db: GDB.GameDB, self: S.Enemy) => {
 		const spawn_count = K.ENEMY_POD_SWARMER_COUNT +
 		      Rnd.singleton.int_range(0, K.ENEMY_POD_SWARMER_COUNT);
-		const offset_step = K.d2si(6);
+		const ox = Es.SIZE.x;
+		const oy = SIZE.y;
 		for (let i = 0; i < spawn_count; ++i) {
-		    const offset = i * offset_step;
 		    Emk.add_enemy(
 			db,
 			Es.spec_mk(db),
 			G.rect_move(
 			    G.rect_mk(self.lt, Es.SIZE),
-			    G.v2d_mk(offset, Rnd.singleton.float_around(0, offset, true))
+			    G.v2d_mk(
+				ox*(i-Math.round(spawn_count/2)),
+				oy*Rnd.singleton.sign()
+			    ),
 			),
 			(db: GDB.GameDB) => db.shared.items.enemies
 		    );
