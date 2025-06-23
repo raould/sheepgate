@@ -38,6 +38,8 @@ export interface LevelEnemyKonfig {
     mk: Lemk.Warpin_Mk;
     count: number,
     limit: number,
+    delay_msec: number,
+    tick_msec: number,
 }
 
 export interface LevelKonfig {
@@ -207,8 +209,8 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		comment: `enemy-gen-${name}`,
 		generations: konfig?.count,
 		max_alive: konfig?.limit,
-		delay_msec: 1000,
-		tick_msec: 2000,
+		delay_msec: konfig?.delay_msec,
+		tick_msec: konfig?.tick_msec,
 		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
 		    return konfig?.mk(db);
 		}
