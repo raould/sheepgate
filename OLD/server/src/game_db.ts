@@ -362,6 +362,8 @@ export function get_sprite(db: GameDB, sid: U.O<DBID>): U.O<S.Sprite> {
     return undefined;
 }
 
+// note: players and enemies do not have hp themselves, their shields do.
+
 export function get_player(db: GameDB): U.O<S.Player> {
     return db.shared.items.player;
 }

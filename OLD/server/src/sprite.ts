@@ -90,6 +90,7 @@ export interface HpSprite extends Sprite, HitPoints, Damage {
     // explicitly not extending S.CollidableSprite here
     // because the players and enemies inside shields
     // aren't collidable - they die when their shield does.
+    // yes, all my interfaces have gotten out of hand.
 }
 
 export interface CollidableSprite extends HpSprite, C.Masked, C.Ignores {

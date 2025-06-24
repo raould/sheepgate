@@ -979,9 +979,7 @@ function onKey(event: any, is_keydown: boolean) {
             }
             sendState();
 
-	    // todo: i am confused looking at this now,
-	    // i should think after the delete we'd have
-	    // to sendState() again for it to work right?!
+	    // user has to re-press the key to get it to happen again.
             if (spec.is_singular) {
                 delete inputs.commands[ik];
             }

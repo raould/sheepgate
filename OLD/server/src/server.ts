@@ -13,7 +13,7 @@ import * as WS from 'ws';
 
 const ws2game: Map<any, U.O<Gm.Game>> = new Map();
 const wss = new WS.Server({ port: 6969 });
-const high_scores = Hs.high_scores_mk();
+const high_scores = new Hs.HighScores();
 
 const PROFILE = false;
 const pLoop = new P.PerfDuration(K.FPS, (avg) => D.log('big loop', U.F2D(avg)));

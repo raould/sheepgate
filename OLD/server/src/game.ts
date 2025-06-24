@@ -16,6 +16,7 @@ import * as Rnd from './random';
 import * as Lis from './level/level_in_screens';
 import { RGBA } from './color';
 // well, this sucks.
+import * as La from './level/attract/attract';
 import * as L1 from './level/level1/level1';
 import * as L2 from './level/level2/level2';
 import * as L3 from './level/level3/level3';
@@ -78,7 +79,7 @@ export function game_mk(high_scores: Hs.HighScores): Game {
 
         constructor() {
             D.log("new game!");
-            this.stepper = new GameWarning();
+            this.stepper = K.ARCADE_MODE ? new GameAttract() : new GameWarning();
         }
 
         merge_client_db(cnew: Cdb.ClientDB) {
@@ -92,7 +93,10 @@ export function game_mk(high_scores: Hs.HighScores): Game {
         // todo: this would all be better done as a state machine / graph type of thing.
 	step() {
             this.stepper.step();
-            if (this.stepper instanceof GameWarning && this.stepper.get_state() != Gs.StepperState.running) {
+	    if (this.stepper instanceof GameAttract && this.stepper.get_state() != Gs.StepperState.running) {
+                this.stepper = new GameInstructions("HOW TO PLAY");
+	    }
+            else if (this.stepper instanceof GameWarning && this.stepper.get_state() != Gs.StepperState.running) {
                 this.stepper = new GameInstructions("HOW TO PLAY");
 	    }
             else if (this.stepper instanceof GameInstructions && this.stepper.get_state() != Gs.StepperState.running) {
@@ -122,6 +126,39 @@ export function game_mk(high_scores: Hs.HighScores): Game {
         stringify(): string {
             return this.stepper.stringify();
         }
+    }
+}
+
+class GameAttract implements Gs.Stepper {
+    stepper: Gs.Stepper;
+    exit: boolean;
+
+    constructor() {
+        this.stepper = La.level_mk();
+	this.exit = false;
+    }
+
+    get_state(): Gs.StepperState {
+        return this.exit ? Gs.StepperState.completed : this.stepper.get_state();
+    }
+
+    merge_client_db(cnew: Cdb.ClientDB) {
+	if (Object.keys(cnew.inputs.commands).length > 0) {
+	    this.exit = true;
+	} 
+        this.stepper.merge_client_db(cnew);
+    }
+
+    step() {
+        this.stepper.step();
+    }
+
+    get_db(): Db.DB<Db.World> {
+	return this.stepper.get_db();
+    }
+
+    stringify(): string {
+        return this.stepper.stringify();
     }
 }
 

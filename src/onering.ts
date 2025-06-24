@@ -29,7 +29,7 @@ import { swarmer_sfx_b64 } from '@client/swarmer.ogg.b64';
 import { deffx_sfx_b64 } from '@client/deffx.ogg.b64';
 import { Gamepads, StandardMapping } from '@client/gamepads';
 import { FPS } from '@server/fps';
-import { high_scores_mk } from '@server/high_scores';
+import { HighScores } from '@server/high_scores';
 import { game_mk } from '@server/game';
 import * as K from '@server/konfig';
  
@@ -63,7 +63,7 @@ let sounds: any = {};
 // sfx_id resource path - to - audio buffer source.
 let singletonSounds = new Map<string, any>(); 
 
-const high_scores = high_scores_mk();
+const high_scores = new HighScores();
 let game_loop = game_mk(high_scores);
 
 let last_render_msec = 0;
@@ -444,6 +444,8 @@ function renderSounds(db: any) {
             sound.play(sfx);
         }
 	else {
+	    // note: i guess there is a race condition on loading sounds
+	    // because sometimes right after loading this error will happen.
 	    console.error("!! no resource for", sfx.sfx_id);
 	}
     });
@@ -978,9 +980,7 @@ function onKey(event: any, is_keydown: boolean) {
             }
             sendState();
 
-	    // todo: i am confused looking at this now,
-	    // i should think after the delete we'd have
-	    // to sendState() again for it to work right?!
+	    // user has to re-press the key to get it to happen again.
             if (spec.is_singular) {
                 delete inputs.commands[ik];
             }
@@ -1242,7 +1242,7 @@ function loadImages() {
     [...Array(8).keys()].forEach(n => {
 	loadImage(`enemies/swarmers/sprite_2${n}.png`);
     });
-
+    
     [1,2,3].forEach(anim => {
 	loadImage(`enemies/basic1/sph${anim}.png`);
     });
