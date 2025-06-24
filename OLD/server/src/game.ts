@@ -146,10 +146,6 @@ class GameAttract implements Gs.Stepper {
 	if (Object.keys(cnew.inputs.commands).length > 0) {
 	    this.exit = true;
 	} 
-	cnew.inputs.commands[Cmd.CommandType.thrust] = true;
-	if (Rnd.singleton.boolean(0.1)) {
-	    cnew.inputs.commands[Cmd.CommandType.fire] = true;
-	}
         this.stepper.merge_client_db(cnew);
     }
 

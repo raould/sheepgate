@@ -444,6 +444,8 @@ function renderSounds(db: any) {
             sound.play(sfx);
         }
 	else {
+	    // note: i guess there is a race condition on loading sounds
+	    // because sometimes right after loading this error will happen.
 	    console.error("!! no resource for", sfx.sfx_id);
 	}
     });

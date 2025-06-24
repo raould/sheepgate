@@ -33,6 +33,7 @@ import * as _ from 'lodash';
 // funny that thus far there's no type B.
 
 export type warpin_mk = (db: GDB.GameDB) => U.O<S.Sprite>;
+const RESCUE_FONT = `${K.d2si(60)}px ${K.MENU_FONT}`;
 
 export interface LevelEnemyKonfig {
     mk: Lemk.Warpin_Mk;
@@ -334,11 +335,11 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		wrap: false,
 		// hard-coded eye-balled positioning.
 		lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.335, K.GAMEPORT_RECT.size.y/2),
-		font: `60px ${K.MENU_FONT}`,
+		font: RESCUE_FONT,
 		fillStyle: this.reminder_cycle.next().setAlpha01(
 		    U.t01(0, K.PEOPLE_REMINDER_TIMEOUT, this.people_reminder_timeout)
 		),
-		text: "RESCUE PEOPLE!",
+		text: "GO RESCUE!",
 		comment: "save-people-reminder",
 	    };
 	    next.shared.hud_drawing.texts.push(reminder);

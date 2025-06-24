@@ -4,6 +4,11 @@ import * as K from '../../konfig';
 import * as S from '../../sprite';
 import * as Lta from '../level_type_a';
 import * as Lis from '../level_in_screens';
+import * as U from '../../util/util';
+import * as Cmd from '../../commands';
+import * as Rnd from '../../random';
+import * as G from '../../geom';
+import * as GDB from '../../game_db';
 import Eb1 from '../../enemy/enemy_basic1';
 import Es from './enemy_small1';
 import Em from './enemy_mega1';
@@ -40,6 +45,27 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 	    size: Ehm.SIZE,
 	    resource_id: images.lookup(Ehm.WARPIN_RESOURCE_ID)
 	};
+    }
+
+    step() {
+	super.step();
+	const p = GDB.get_player(this.db);
+	const s = p && GDB.get_shield(this.db, p.shield_id);
+	if (U.exists(s)) {
+	    s.hp = s.hp_init;
+	}
+	this.db.local.client_db.inputs.commands[Cmd.CommandType.thrust] = Rnd.singleton.boolean(0.8);
+	this.db.local.client_db.inputs.commands[Cmd.CommandType.up] = Rnd.singleton.boolean(0.5);
+	this.db.local.client_db.inputs.commands[Cmd.CommandType.down] = Rnd.singleton.boolean(0.5);
+	this.db.local.client_db.inputs.commands[Cmd.CommandType.fire] = Rnd.singleton.boolean(0.1);
+	this.db.shared.hud_drawing.texts.push({
+	    wrap: true,
+	    fillStyle: RGBA.WHITE,
+	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.4, K.GAMEPORT_RECT.size.y * 0.98),
+	    font: `${K.d2si(20)}px ${K.MENU_FONT}`,
+	    text: "PRESS ANY BUTTON TO PLAY!",
+	    comment: "demo",
+	});
     }
 }
 

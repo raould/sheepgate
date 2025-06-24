@@ -14,6 +14,9 @@ export type Inputs = {
 
 export interface CommandSpec {
     command: CommandType;
+    // true: event happens once per key press.
+    // false: event continues as long as key is pressed.
+    // (i guess?)
     is_singular: boolean;
 }
 

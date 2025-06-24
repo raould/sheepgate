@@ -68,7 +68,7 @@ export abstract class AbstractLevel implements Level {
         else if (cdb.client_id === cdb2.client_id) {
             Object.values(Cmd.CommandSpecs).forEach(
                 (s: Cmd.CommandSpec) => {
-                    if (s.is_singular) {
+                    if (s.is_singular) { // wtf? this seems backwards to me now.
                         cdb.inputs.commands[s.command] =
                         !!cdb.inputs.commands[s.command] ||
                         !!cdb2.inputs.commands[s.command];
