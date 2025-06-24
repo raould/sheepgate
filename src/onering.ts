@@ -980,9 +980,7 @@ function onKey(event: any, is_keydown: boolean) {
             }
             sendState();
 
-	    // todo: i am confused looking at this now,
-	    // i should think after the delete we'd have
-	    // to sendState() again for it to work right?!
+	    // user has to re-press the key to get it to happen again.
             if (spec.is_singular) {
                 delete inputs.commands[ik];
             }
@@ -1004,7 +1002,8 @@ function sendState(storage_json?: string | undefined) {
 	    // @ts-expect-error syntaxhell
 	    step["storage_json"] = storage_json;
 	}
-	game_loop.merge_client_db(step);
+        const json = JSON.stringify(step);
+        sendWS(json);
     }
     catch (err) {
         console.error(err);
@@ -1244,7 +1243,7 @@ function loadImages() {
     [...Array(8).keys()].forEach(n => {
 	loadImage(`enemies/swarmers/sprite_2${n}.png`);
     });
-
+    
     [1,2,3].forEach(anim => {
 	loadImage(`enemies/basic1/sph${anim}.png`);
     });
