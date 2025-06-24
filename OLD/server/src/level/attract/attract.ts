@@ -58,10 +58,11 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.up] = Rnd.singleton.boolean(0.5);
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.down] = Rnd.singleton.boolean(0.5);
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.fire] = Rnd.singleton.boolean(0.1);
+	const fy = Math.floor(this.db.shared.sim_now / 2000) % 2 === 0 ? 0.98 : 0.2;
 	this.db.shared.hud_drawing.texts.push({
 	    wrap: true,
 	    fillStyle: RGBA.WHITE,
-	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.4, K.GAMEPORT_RECT.size.y * 0.98),
+	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.4, K.GAMEPORT_RECT.size.y * fy),
 	    font: `${K.d2si(20)}px ${K.MENU_FONT}`,
 	    text: "PRESS ANY BUTTON TO PLAY!",
 	    comment: "demo",
