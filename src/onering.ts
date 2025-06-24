@@ -1002,8 +1002,7 @@ function sendState(storage_json?: string | undefined) {
 	    // @ts-expect-error syntaxhell
 	    step["storage_json"] = storage_json;
 	}
-        const json = JSON.stringify(step);
-        sendWS(json);
+	game_loop.merge_client_db(step);
     }
     catch (err) {
         console.error(err);
