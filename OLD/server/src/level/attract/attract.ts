@@ -58,14 +58,22 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.up] = Rnd.singleton.boolean(0.5);
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.down] = Rnd.singleton.boolean(0.5);
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.fire] = Rnd.singleton.boolean(0.1);
-	const fy = Math.floor(this.db.shared.sim_now / 2000) % 2 === 0 ? 0.98 : 0.2;
+	const color = Math.floor(this.db.shared.sim_now / 2000) % 2 === 0 ? RGBA.YELLOW : RGBA.MAGENTA;
 	this.db.shared.hud_drawing.texts.push({
 	    wrap: true,
-	    fillStyle: RGBA.WHITE,
-	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.4, K.GAMEPORT_RECT.size.y * fy),
+	    fillStyle: color,
+	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.4, K.GAMEPORT_RECT.size.y * 0.6),
 	    font: `${K.d2si(20)}px ${K.MENU_FONT}`,
 	    text: "PRESS ANY BUTTON TO PLAY!",
-	    comment: "demo",
+	    comment: "demo-instructions",
+	});
+	this.db.shared.hud_drawing.texts.push({
+	    wrap: true,
+	    fillStyle: RGBA.CYAN,
+	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.36, K.GAMEPORT_RECT.size.y * 0.5),
+	    font: `${K.d2si(80)}px ${K.MENU_FONT}`,
+	    text: "SHEEPGATE",
+	    comment: "demo-title",
 	});
     }
 }
