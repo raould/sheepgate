@@ -68,7 +68,7 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 	super.step();
 
 	// commands here vs. merge_client_db() because that only gets called when there is actual input from the client.
-	this.db.local.client_db.inputs.commands[Cmd.CommandType.thrust] = Rnd.singleton.boolean(0.1);
+	this.db.local.client_db.inputs.commands[Cmd.CommandType.thrust] = Rnd.singleton.boolean(0.6);
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.right] = Rnd.singleton.boolean(0.003);
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.left] = Rnd.singleton.boolean(0.003);
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.up] = Rnd.singleton.boolean(0.5);
