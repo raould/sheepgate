@@ -5,7 +5,7 @@ import * as G from './geom';
 import { RGBA } from './color';
 
 // for demo days.
-export const ARCADE_MODE = true;
+export const ARCADE_MODE = false;
 
 // todo: what would be better is to have types for the different
 // kinds of values, and to have all this in a dict, and then
