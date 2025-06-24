@@ -138,15 +138,12 @@ class GameAttract implements Gs.Stepper {
 	this.exit = false;
     }
 
-    get_state(): Gs.StepperState {
-        return this.exit ? Gs.StepperState.completed : this.stepper.get_state();
+    merge_client_db(cnew: Cdb.ClientDB) {
+        this.stepper.merge_client_db(cnew);
     }
 
-    merge_client_db(cnew: Cdb.ClientDB) {
-	if (Object.keys(cnew.inputs.commands).length > 0) {
-	    this.exit = true;
-	} 
-        this.stepper.merge_client_db(cnew);
+    get_state(): Gs.StepperState {
+        return this.exit ? Gs.StepperState.completed : this.stepper.get_state();
     }
 
     step() {

@@ -8,7 +8,9 @@ import * as U from '../../util/util';
 import * as Cmd from '../../commands';
 import * as Rnd from '../../random';
 import * as G from '../../geom';
+import * as Cdb from '../../client_db';
 import * as GDB from '../../game_db';
+import * as Gs from '../../game_stepper';
 import Eb1 from '../../enemy/enemy_basic1';
 import Es from './enemy_small1';
 import Em from './enemy_mega1';
@@ -29,6 +31,7 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
     small_snapshot: S.ImageSized;
     mega_snapshot: S.ImageSized;
     hypermega_snapshot: S.ImageSized;
+    exit: boolean = false;
 
     constructor(readonly index1: number, konfig: Lta.LevelKonfig, score: number, high_score: Hs.HighScore) {
 	super(index1, konfig, score, high_score);
@@ -47,19 +50,36 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 	};
     }
 
+    update_impl(next: GDB.GameDB) {
+	super.update_impl(next);
+	if (this.exit) {
+	    this.state = Gs.StepperState.completed;	    
+	}
+    }
+
+    merge_client_db(cnew: Cdb.ClientDB) {
+	super.merge_client_db(cnew);
+	if(Object.keys(cnew.inputs.keys).length > 0) {
+	    this.exit = true;
+	}
+    }
+
     step() {
 	super.step();
-	const p = GDB.get_player(this.db);
-	const s = p && GDB.get_shield(this.db, p.shield_id);
-	if (U.exists(s)) {
-	    s.hp = s.hp_init;
-	}
-	this.db.local.client_db.inputs.commands[Cmd.CommandType.thrust] = Rnd.singleton.boolean(0.7);
+
+	// commands here vs. merge_client_db() because that only gets called when there is actual input from the client.
+	this.db.local.client_db.inputs.commands[Cmd.CommandType.thrust] = Rnd.singleton.boolean(0.1);
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.right] = Rnd.singleton.boolean(0.003);
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.left] = Rnd.singleton.boolean(0.003);
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.up] = Rnd.singleton.boolean(0.5);
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.down] = Rnd.singleton.boolean(0.5);
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.fire] = Rnd.singleton.boolean(0.1);
+
+	const p = GDB.get_player(this.db);
+	const s = p && GDB.get_shield(this.db, p.shield_id);
+	if (U.exists(s)) {
+	    s.hp = s.hp_init;
+	}
 	const color = Math.floor(this.db.shared.sim_now / 2000) % 2 === 0 ? RGBA.YELLOW : RGBA.MAGENTA;
 	this.db.shared.hud_drawing.texts.push({
 	    wrap: true,

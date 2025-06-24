@@ -946,7 +946,6 @@ function onKeyUp(event: any) {
 }
 
 function onKey(event: any, is_keydown: boolean) {
-    // log("onKey", event.key, is_keydown?"down":"up");
     // todo: i am not sure this is really preventing key repeat cf. space bar shooting.
     if (!event.defaultPrevented && !event.repeat) {
         if (is_keydown) {
@@ -956,10 +955,8 @@ function onKey(event: any, is_keydown: boolean) {
             delete inputs.keys[event.key];
         }
         const spec: CommandSpec = key2cmd[event.key];
-        // log("  key", event.key);
         if (spec != null) {
             const ik = spec.command;
-            // log("  ik", ik);
             event.preventDefault();
             inputs.commands[ik] = is_keydown;
             // todo: maybe also keep debugging_state only on the server, don't have it be a long-term client global.
@@ -978,13 +975,16 @@ function onKey(event: any, is_keydown: boolean) {
             if (ik == CommandType.debug_step_frame && debugging_state.is_stepping && is_keydown) {
                 log("  debug_step_frame");
             }
-            sendState();
-
+            sendState(); 
 	    // user has to re-press the key to get it to happen again.
             if (spec.is_singular) {
-                delete inputs.commands[ik];
+		delete inputs.commands[ik];
             }
-        }
+	}
+	else {
+	    // even if there was no command registered.
+	    sendState();
+	}
     }
 }
 
