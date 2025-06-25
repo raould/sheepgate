@@ -296,7 +296,6 @@ export class ResourceAnimatorEvents implements ResourceAnimator {
             this.on_start && this.on_start(db);
         }
         if (!is_alive && !this.ended) {
-	    D.log("ended");
             this.ended = true;
             this.on_end && this.on_end(db);
         }
