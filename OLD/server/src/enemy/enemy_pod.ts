@@ -6,7 +6,6 @@ import * as A from '../animation';
 import * as U from '../util/util';
 import * as F from '../facing';
 import * as Es from './enemy_swarmer';
-import * as Ebw from './enemy_ball_weapon';
 import * as Fp from './flight_patterns';
 import * as Emk from './enemy_mk';
 import * as Lemk from '../level/enemy_mk';
@@ -23,6 +22,7 @@ const Pod: Lemk.EnemyMk = {
 	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
 	const flight_pattern = new Fp.BuzzPlayer(db, G.v2d_mk(0.0001, 0.0001));
 	const spec: Emk.EnemySpec = {
+	    kind: "pod",
             anim: anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_POD_HP,

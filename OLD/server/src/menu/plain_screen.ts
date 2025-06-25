@@ -10,7 +10,6 @@ import * as U from '../util/util';
 import * as Tx from '../util/text';
 import * as Dr from '../drawing';
 import * as Cmd from '../commands';
-import * as Rnd from '../random';
 import { RGBA } from '../color';
 
 // todo: support size, like InstructionsScreen.

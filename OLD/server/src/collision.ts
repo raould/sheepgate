@@ -3,10 +3,9 @@ import * as G from './geom';
 import * as S from './sprite';
 import * as D from './debug';
 import * as K from './konfig';
-import { DebugGraphics, DEBUG_COLOR_RED, DEBUG_COLOR_BLUE } from './debug_graphics';
 import * as U from './util/util';
-
-const debug = true; // might be extra slow if enabled!
+// import { DebugGraphics, DEBUG_COLOR_RED, DEBUG_COLOR_BLUE } from './debug_graphics';
+// const debug = true; // might be extra slow if enabled!
 
 export enum CMask {
     none = 0,

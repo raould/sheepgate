@@ -69,12 +69,12 @@ export interface Damage {
 // todo: it is confusing that step() isn't in any of these interfaces.
 export interface Sprite extends GDB.Item, G.P2D, GDB.Aliveness, ImageResource, GDB.Steps, Tf.Flagged {
     draw_lt?: G.V2D;
-    toJSON(): Object;
+    toJSON(): object;
 }
 
 // ideally only the things the client really needs for rendering, nothing more.
 // yet another reason to be using real typescript classes instead of kneecapped interface hell?
-export function spriteJSON(s: Sprite): Object {
+export function spriteJSON(s: Sprite): object {
     return {
         lt: s.lt,
 	draw_lt: s.draw_lt,
@@ -151,14 +151,21 @@ export interface Ranked {
     rank: Rank
 };
 
-export interface Warpin extends Sprite, Ranked { // only fx, no hp.
+export interface Kind {
+    // e.g. all basic1's in a level; all megas in a level.
+    // (a little bit just because we don't have nominal typing.)
+    kind: string;
+}
+
+export interface Warpin extends Sprite, Ranked, Kind { // only fx, no hp.
+    
 }
 
 export interface Explosion extends Sprite, Ranked, Tf.Flagged { // only fx, no hp.
 }
 
 // fighters don't have their own hp, it is all in their shield.
-export interface Fighter extends Sprite, Ranked, Facing, Tf.Flagged, Shielded {
+export interface Fighter extends Sprite, Ranked, Facing, Tf.Flagged, Shielded, Kind {
     weapons: Arsenal;
     // todo: these should really come from magic pixels in the image resources.
     get_weapon_hardpoint(weapon_type: WeaponType, facing: F.Facing): G.V2D;
@@ -172,9 +179,7 @@ export interface Player extends Fighter {
 }
 
 export interface Enemy extends Fighter {
-    // although a lot of enemies
-    // do not look different depending
-    // on the facing.
+    // note: several enemies don't make use of Facing.
 }
 
 // Shielded should not be a full CollidableSprite, but

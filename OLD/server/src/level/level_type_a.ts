@@ -199,10 +199,26 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	return far_spec0;
     }
 
-    private init_enemy_from_konfig(konfig: U.O<LevelEnemyKonfig>, name: string): U.O<Eag.EnemyGeneratorSpec> {
+    private init_adv_from_konfig(konfig: U.O<LevelEnemyKonfig>, kind: string): U.O<Eag.EnemyGeneratorSpec> {
 	if (U.exists(konfig)) {
 	    return {
-		comment: `enemy-gen-${name}`,
+		kind: kind,
+		comment: `enemy-gen-${kind}`,
+		generations: konfig?.count,
+		max_alive: konfig?.limit,
+		delay_msec: konfig?.delay_msec,
+		tick_msec: konfig?.tick_msec,
+		warpin: (db: GDB.GameDB): U.O<S.Warpin> => {
+		    return konfig?.mk(db);
+		}
+	    }
+	}
+    }
+    private init_basic_from_konfig(konfig: U.O<LevelEnemyKonfig>, kind: string): U.O<Ebg.EnemyGeneratorSpec> {
+	if (U.exists(konfig)) {
+	    return {
+		kind: kind,
+		comment: `enemy-gen-${kind}`,
 		generations: konfig?.count,
 		max_alive: konfig?.limit,
 		delay_msec: konfig?.delay_msec,
@@ -222,21 +238,21 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	// this is going to be a crappy half-hard-coded state machine hack.
 
 	const spec: Eag.AddGeneratorsSpec = {}
-	spec.pod = this.init_enemy_from_konfig(this.konfig.Ep, "pod");
-	spec.small = this.init_enemy_from_konfig(this.konfig.Es, "small");
-	spec.mega = this.init_enemy_from_konfig(this.konfig.Em, "mega");
-	spec.hypermega = this.init_enemy_from_konfig(this.konfig.Ehm, "hypermega");
+	spec.pod = this.init_adv_from_konfig(this.konfig.Ep, "pod");
+	spec.small = this.init_adv_from_konfig(this.konfig.Es, "small");
+	spec.mega = this.init_adv_from_konfig(this.konfig.Em, "mega");
+	spec.hypermega = this.init_adv_from_konfig(this.konfig.Ehm, "hypermega");
 	Eag.add_generators(this.db, spec);
 
 	const basics: U.O<Ebg.EnemyGeneratorSpec>[] = [];
-	basics.push(this.init_enemy_from_konfig(this.konfig.Eb1, "basic1"));
-	basics.push(this.init_enemy_from_konfig(this.konfig.Eb2, "basic2"));
-	basics.push(this.init_enemy_from_konfig(this.konfig.Eb3, "basic3"));
-	basics.push(this.init_enemy_from_konfig(this.konfig.Eb4, "basic4"));
-	basics.push(this.init_enemy_from_konfig(this.konfig.Eb5, "basic5"));
-	basics.push(this.init_enemy_from_konfig(this.konfig.Eb6, "basic6"));
-	basics.push(this.init_enemy_from_konfig(this.konfig.Eb7, "basic7"));
-	basics.push(this.init_enemy_from_konfig(this.konfig.Eb8, "basic8"));
+	basics.push(this.init_basic_from_konfig(this.konfig.Eb1, "basic1"));
+	basics.push(this.init_basic_from_konfig(this.konfig.Eb2, "basic2"));
+	basics.push(this.init_basic_from_konfig(this.konfig.Eb3, "basic3"));
+	basics.push(this.init_basic_from_konfig(this.konfig.Eb4, "basic4"));
+	basics.push(this.init_basic_from_konfig(this.konfig.Eb5, "basic5"));
+	basics.push(this.init_basic_from_konfig(this.konfig.Eb6, "basic6"));
+	basics.push(this.init_basic_from_konfig(this.konfig.Eb7, "basic7"));
+	basics.push(this.init_basic_from_konfig(this.konfig.Eb8, "basic8"));
 	D.assert(basics.length > 0, "no basic enemies found?!");
 	Ebg.add_generators(
 	    this.db,
@@ -263,15 +279,15 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 
     update_impl(next: GDB.GameDB) {
 	// debugging...
-	if (!!next.local.client_db.inputs.commands[Cmd.CommandType.debug_win_level]) {
+	if (next.local.client_db.inputs.commands[Cmd.CommandType.debug_win_level]) {
 	    this.state = Gs.StepperState.completed;
 	    return;
 	}
-	if (!!next.local.client_db.inputs.commands[Cmd.CommandType.debug_lose_level]) {
+	if (next.local.client_db.inputs.commands[Cmd.CommandType.debug_lose_level]) {
 	    this.state = Gs.StepperState.lost;
 	    return;
 	}
-	if (!!next.local.client_db.inputs.commands[Cmd.CommandType.debug_smite]) {
+	if (next.local.client_db.inputs.commands[Cmd.CommandType.debug_smite]) {
 	    Object.values(next.shared.items.enemies).forEach(e => {
 		const sid = e.shield_id;
 		if (U.exists(sid)) {

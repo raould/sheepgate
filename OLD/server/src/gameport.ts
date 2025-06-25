@@ -5,7 +5,7 @@ import * as F from './facing';
 import * as S from './sprite';
 import * as K from './konfig';
 import * as D from './debug';
-import { DebugGraphics, DEBUG_COLOR_GREEN, DEBUG_COLOR_RED } from './debug_graphics';
+import { DebugGraphics } from './debug_graphics';
 import * as U from './util/util';
 
 // magic numbers ahead, beware.

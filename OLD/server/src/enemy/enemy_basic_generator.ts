@@ -3,12 +3,11 @@ import * as GDB from '../game_db';
 import * as Tkg from '../ticking_generator';
 import * as S from '../sprite';
 import * as U from '../util/util';
-import * as Rnd from '../random';
-import * as D from '../debug';
 
 // doesn't care how many other enemies of types exist.
 
 export interface EnemyGeneratorSpec {
+    kind: string,
     generations: number;
     max_alive: number;
     comment: string;
@@ -60,8 +59,16 @@ function add_generator(
     );
 }
 
+function count_kind(db: GDB.GameDB, kind: string): number {
+    const alive = Object.values(db.shared.items.enemies).filter(e => e.kind == kind).length;
+    const warping = Object.values(db.shared.items.warpin).filter(e => e.kind == kind).length;
+    return alive + warping;
+}
+
 function should_generate(db: GDB.GameDB, spec: EnemyGeneratorSpec, counts: EnemyGenerationCounts): boolean {
-    return spec.generations > counts.generated && Rnd.singleton.boolean(0.5);
+    const available = counts.generated < spec.generations;
+    const room = count_kind(db, spec.kind) < spec.max_alive;
+    return available && room;
 }
 
 function add_enemy(db: GDB.GameDB, spec: EnemyGeneratorSpec): U.O<S.Warpin> {

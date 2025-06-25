@@ -5,7 +5,6 @@ import * as G from '../geom';
 import * as A from '../animation';
 import * as U from '../util/util';
 import * as F from '../facing';
-import * as Ebw from './enemy_ball_weapon';
 import * as Fp from './flight_patterns';
 import * as Emk from './enemy_mk';
 import * as Lemk from '../level/enemy_mk';
@@ -24,6 +23,7 @@ export function spec_mk(db: GDB.GameDB): Emk.EnemySpec {
     );
     const flight_pattern = new Fp.TargetPlayer(db, 500, acc);
     return {
+	kind: "swarmer",
         anim: anim,
         rank: S.Rank.basic,
         hp_init: K.ENEMY_SWARMER_HP,

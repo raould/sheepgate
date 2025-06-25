@@ -3,11 +3,11 @@ import * as GDB from '../game_db';
 import * as Tkg from '../ticking_generator';
 import * as S from '../sprite';
 import * as U from '../util/util';
-import * as D from '../debug';
 import Eb1 from './enemy_basic1';
 import Eb2 from './enemy_basic2'; // todo:
 
 export interface EnemyGeneratorSpec {
+    kind: string;
     comment: string;
     generations: number;
     max_alive: number;
@@ -40,6 +40,7 @@ export interface AddGeneratorsSpec {
 
 // todo: ugly, but basic 1 and 2 are hard-coded to spawn along with the hypermega.
 const hm_basic1: EnemyGeneratorSpec = {
+    kind: "hm_basic1",
     generations: 2,
     max_alive: 2,
     comment: `enemy-hm_b1-from-adv`,
@@ -50,6 +51,7 @@ const hm_basic1: EnemyGeneratorSpec = {
     tick_msec: 100,
 };
 const hm_basic2: EnemyGeneratorSpec = {
+    kind: "hm_basic2",
     generations: 2,
     max_alive: 2,
     comment: `enemy-hm_b2-from-adv`,

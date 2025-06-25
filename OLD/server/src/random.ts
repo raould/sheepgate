@@ -127,7 +127,7 @@ export class RandomImpl implements Random {
         );
     }
     generate_n_float_range(count: number, min: number, max: number, non_zero: boolean=false): number[] {
-        return Array.from({length: count}, e => this.float_range(min, max, non_zero));
+        return Array.from({length: count}, _ => this.float_range(min, max, non_zero));
     }
 }
 

@@ -10,7 +10,6 @@ import * as Fp from './flight_patterns';
 import * as Emk from './enemy_mk';
 import * as Lemk from '../level/enemy_mk';
 import * as K from '../konfig';
-import * as Rnd from '../random';
 
 // match: sprite animation.
 const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(8, 8), 3));
@@ -28,6 +27,7 @@ const Munchie: Lemk.EnemyMk = {
 	};
 	const flight_pattern = new Fp.BuzzPlayer(db, G.v2d_mk(0.001, 0.0003), true);
 	const spec: Emk.EnemySpec = {
+	    kind: "munchie",
             anim: anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_MUNCHIE_HP,

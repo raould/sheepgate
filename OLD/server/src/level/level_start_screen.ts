@@ -4,7 +4,7 @@ import * as S from '../sprite';
 import * as G from '../geom';
 import * as K from '../konfig';
 import * as Dr from '../drawing';
-import { RGBA, HCycle } from '../color';
+import { RGBA } from '../color';
 
 const FONT_SIZE = K.d2si(40);
 

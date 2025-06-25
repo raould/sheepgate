@@ -12,7 +12,6 @@ import * as Dr from '../drawing';
 import * as Cmd from '../commands';
 import * as Rnd from '../random';
 import { RGBA, HCycle } from '../color';
-import * as D from '../debug';
 
 export const MESSAGE_MESC = 500;
 

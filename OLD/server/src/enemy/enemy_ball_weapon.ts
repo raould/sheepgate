@@ -11,7 +11,6 @@ import * as A from '../animation';
 import * as U from '../util/util';
 import * as K from '../konfig';
 import * as D from '../debug';
-import * as Rnd from '../random';
 
 export interface EnemyWeaponSpec extends C.Masked {
     // todo: facing & swivel are a confusing abstraction, it should
