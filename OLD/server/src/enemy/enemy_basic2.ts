@@ -32,6 +32,7 @@ const Basic2: Lemk.EnemyMk = {
 	    Rnd.singleton.v2d_around(G.v2d_mk_nn(0.0005), G.v2d_mk_nn(0.00005))
 	);
 	const spec: Emk.EnemySpec = {
+	    kind: "basic2",
             anim: anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_BASIC_HP,

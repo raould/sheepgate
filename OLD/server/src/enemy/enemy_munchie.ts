@@ -28,6 +28,7 @@ const Munchie: Lemk.EnemyMk = {
 	};
 	const flight_pattern = new Fp.BuzzPlayer(db, G.v2d_mk(0.001, 0.0003), true);
 	const spec: Emk.EnemySpec = {
+	    kind: "munchie",
             anim: anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_MUNCHIE_HP,

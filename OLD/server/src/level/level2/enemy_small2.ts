@@ -36,7 +36,8 @@ const Small: Lemk.EnemyMk = {
             SIZE,
     	    WARPIN_RESOURCE_ID,
             {
-		anim: anim,
+		kind: "small",
+	anim: anim,
 		rank: S.Rank.small,
 		hp_init: K.ENEMY_SMALL_HP,
 		damage: K.ENEMY_SMALL_DAMAGE,

@@ -23,6 +23,7 @@ const Pod: Lemk.EnemyMk = {
 	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
 	const flight_pattern = new Fp.BuzzPlayer(db, G.v2d_mk(0.0001, 0.0001));
 	const spec: Emk.EnemySpec = {
+	    kind: "pod",
             anim: anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_POD_HP,
