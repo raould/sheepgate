@@ -48,7 +48,8 @@ function calculate_acc(src: G.V2D, dst: G.V2D, acc_mag: G.V2D, dt: number): G.V2
         G.v2d_norm(
             G.v2d_sub(dst, src)
         ),
-        G.v2d_scale(acc_mag, dt),
+	// todo: scale by dt vs. designed frame rate.
+        acc_mag
     );
     return delta_acc;
 }
