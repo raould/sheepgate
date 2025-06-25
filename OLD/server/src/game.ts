@@ -72,13 +72,15 @@ const level_mks: LevelMk[] = [
 ];
 D.assert(level_mks.length === K.LEVEL_TEMPLATE_COUNT, "level template count");
 
+function starter_stepper_mk() { return K.ARCADE_MODE ? new GameAttract() : new GameWarning(); }
+
 export function game_mk(high_scores: Hs.HighScores): Game {
     return new class _G implements GamePrivate {
         stepper: Gs.Stepper;
 
         constructor() {
             D.log("new game!");
-            this.stepper = K.ARCADE_MODE ? new GameAttract() : new GameWarning();
+            this.stepper = starter_stepper_mk();
         }
 
         merge_client_db(cnew: Cdb.ClientDB) {
@@ -114,7 +116,7 @@ export function game_mk(high_scores: Hs.HighScores): Game {
                 this.stepper = new GameHighScoreTable(high_scores, true);
             }
 	    else if (this.stepper instanceof GameHighScoreTable && this.stepper.get_state() != Gs.StepperState.running) {
-		this.stepper = new GameWarning();
+		this.stepper = starter_stepper_mk();
 	    }
         }
 
