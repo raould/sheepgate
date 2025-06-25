@@ -27,11 +27,14 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     };
 };
 
+const ATTRACT_MOVES = [Cmd.CommandType.up, Cmd.CommandType.down, undefined];
+
 class LevelImpl extends Lta.AbstractLevelTypeA {
     small_snapshot: S.ImageSized;
     mega_snapshot: S.ImageSized;
     hypermega_snapshot: S.ImageSized;
     exit: boolean = false;
+    moves: Cmd.CommandType[] = [];
 
     constructor(readonly index1: number, konfig: Lta.LevelKonfig, score: number, high_score: Hs.HighScore) {
 	super(index1, konfig, score, high_score);
@@ -68,11 +71,20 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 	super.step();
 
 	// commands here vs. merge_client_db() because that only gets called when there is actual input from the client.
-	this.db.local.client_db.inputs.commands[Cmd.CommandType.thrust] = Rnd.singleton.boolean(0.6);
+	if (this.moves.length === 0) {
+	    this.db.local.client_db.inputs.commands[Cmd.CommandType.up] = false;
+	    this.db.local.client_db.inputs.commands[Cmd.CommandType.down] = false;
+	    const cmd = Rnd.singleton.array_item(ATTRACT_MOVES);
+	    const count = Rnd.singleton.int_range(5, 20);
+	    this.moves.push(...Array(count).fill(cmd));
+	}
+	if (this.moves.length > 0) {
+	    const cmd = this.moves.pop();
+	    if (U.exists(cmd)) { this.db.local.client_db.inputs.commands[cmd] = true; }
+	}
+	this.db.local.client_db.inputs.commands[Cmd.CommandType.thrust] = Rnd.singleton.boolean(0.8);
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.right] = Rnd.singleton.boolean(0.003);
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.left] = Rnd.singleton.boolean(0.003);
-	this.db.local.client_db.inputs.commands[Cmd.CommandType.up] = Rnd.singleton.boolean(0.5);
-	this.db.local.client_db.inputs.commands[Cmd.CommandType.down] = Rnd.singleton.boolean(0.5);
 	this.db.local.client_db.inputs.commands[Cmd.CommandType.fire] = Rnd.singleton.boolean(0.1);
 
 	const p = GDB.get_player(this.db);

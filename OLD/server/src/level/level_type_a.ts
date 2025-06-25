@@ -99,11 +99,6 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	// then they will be broken because it is undefined there.
 	this.db.local.prev_db = _.cloneDeep(this.db);
 
-	// todo: unhack this crappy hack. we run the simulation
-	// one step in order for things to settle. otherwise the
-	// world visibly jumps badly from frame 1 to frame 2.
-	this.step();
-	
 	this.db.shared.sfx.push({ sfx_id: K.BEGIN_SFX });
     }
 
