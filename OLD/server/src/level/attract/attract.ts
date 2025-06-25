@@ -64,7 +64,10 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 
     merge_client_db(cnew: Cdb.ClientDB) {
 	super.merge_client_db(cnew);
-	if(Object.keys(cnew.inputs.keys).length > 0) {
+	if (Object.keys(cnew.inputs.keys).length > 0) {
+	    this.exit = true;
+	}
+	if (cnew.inputs.commands[Cmd.CommandType.click]) {
 	    this.exit = true;
 	}
     }

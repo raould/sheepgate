@@ -90,6 +90,7 @@ interface CommandSpec {
     is_singular: boolean;
 }
 enum CommandType {
+    click = "click",
     pause = "pause",
     high_score = "high_score",
     fire = "fire",
@@ -360,7 +361,7 @@ function rand_mk(seed: number) {
 function nextFrame(/*using global server_db*/) {
     const now = Date.now();
     fps.on_tick();
-    // requestAnimationFrame() is running at 30fps for me
+    // requestAnimationFrame() is running at 60 fps for me
     // so don't wait a whole nother round if we're close,
     // hence this heuristic of scaling the threshold by 0.9.
     if (now - last_render_msec >= MSEC_PER_FRAME*0.9) {
@@ -936,6 +937,12 @@ function renderPlaying(gdb: any) {
     renderDebug(gdb);
 }
 
+function onClick(event: any) {
+    inputs.commands[CommandType.click] = true;
+    sendState();
+    delete inputs.commands[CommandType.click];
+}
+
 function onKeyDown(event: any) {
     onKey(event, true);
 }
@@ -981,7 +988,7 @@ function onKey(event: any, is_keydown: boolean) {
             }
 	}
 	else {
-	    // even if there was no command registered.
+	    // always send keys, even if no commands happened.
 	    sendState();
 	}
     }
@@ -1506,8 +1513,6 @@ function applyCommand(spec: CommandSpec, pressed: boolean) {
     let ik = spec.command;
     inputs.commands[ik] = pressed;
     sendState();
-
-    // todo: see comments on the other instance of this. (like, "wtf?")
     if (spec.is_singular) {
         delete inputs.commands[ik];
     }
@@ -1610,9 +1615,11 @@ function init() {
     }
     loadSounds();
     loadImages();
-    // todo: can/should i add it on the h5canvas instead of the windows?
+
     window.addEventListener("keydown", onKeyDown, true);
     window.addEventListener("keyup", onKeyUp, true);
+    h5canvas.addEventListener("click", onClick, true);
+
     Gamepads.start();
     Gamepads.addEventListener("connect", (e:any)=> gamepadHandler(e, true));
     Gamepads.addEventListener("disconnect", (e:any)=> gamepadHandler(e, false));

@@ -20,6 +20,7 @@ export interface CommandSpec {
 }
 
 export enum CommandType {
+    click = "click",
     pause = "pause",
     high_score = "high_score",
     fire = "fire",
