@@ -108,6 +108,10 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 	    text: "SHEEPGATE",
 	    comment: "demo-title",
 	});
+
+	// browser security means no sounds play during attract.
+	// don't let them build up and overflow to the instructions page.
+	this.db.shared.sfx = [];
     }
 }
 

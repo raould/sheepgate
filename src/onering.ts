@@ -354,7 +354,7 @@ function rand_mk(seed: number) {
 
 function nextFrame(/*using global server_db*/) {
     const now = Date.now();
-    // requestAnimationFrame() is running at 30fps for me
+    // requestAnimationFrame() is running at 60 fps for me
     // so don't wait a whole nother round if we're close,
     // hence this heuristic of scaling the threshold by 0.9.
     if (now - last_render_msec >= K.FRAME_MSEC_DT * 0.9) {
