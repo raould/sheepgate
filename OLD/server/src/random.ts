@@ -135,16 +135,22 @@ export const singleton = new RandomImpl();
 
 export class RandomBoolDuration {
     latchedTime: number | undefined;
-    constructor( private chance: number, private latchDuration: number ) {}
+    calmTime: number | undefined;
+    constructor(
+	private chance: number,
+	private latchDuration: number,
+	private calmDuration: number = 0 ) {}
     test(now: number): boolean {
         if (U.exists(this.latchedTime)) {
             if (now - this.latchedTime > this.latchDuration) {
                 this.latchedTime = undefined;
+		this.calmTime = now;
             }
         }
-        else if (singleton.boolean(this.chance)) {
-            this.latchedTime = now;
-        }
+        else if (now - (this.calmTime??0) >= this.calmDuration && singleton.boolean(this.chance)) {
+	    this.calmTime = undefined;
+	    this.latchedTime = now;
+	}
         return U.exists(this.latchedTime);
     };
 }
