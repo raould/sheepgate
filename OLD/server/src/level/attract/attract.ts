@@ -27,6 +27,9 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
 };
 
 const ATTRACT_MOVES = [Cmd.CommandType.up, Cmd.CommandType.down, undefined];
+const LEET = "5H33PGAT3";
+const SHEEP = "SHEEPGATE";
+const titleLatch = new Rnd.RandomBoolDuration(0.005, 1000);
 
 class LevelImpl extends Lta.AbstractLevelTypeA {
     small_snapshot: S.ImageSized;
@@ -105,7 +108,7 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 	    fillStyle: RGBA.CYAN,
 	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.36, K.GAMEPORT_RECT.size.y * 0.5),
 	    font: `${K.d2si(80)}px ${K.MENU_FONT}`,
-	    text: "SHEEPGATE",
+	    text: titleLatch.test(this.db.shared.sim_now) ? LEET : SHEEP,
 	    comment: "demo-title",
 	});
 

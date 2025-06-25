@@ -132,3 +132,19 @@ export class RandomImpl implements Random {
 }
 
 export const singleton = new RandomImpl();
+
+export class RandomBoolDuration {
+    latchedTime: number | undefined;
+    constructor( private chance: number, private latchDuration: number ) {}
+    test(now: number): boolean {
+        if (U.exists(this.latchedTime)) {
+            if (now - this.latchedTime > this.latchDuration) {
+                this.latchedTime = undefined;
+            }
+        }
+        else if (singleton.boolean(this.chance)) {
+            this.latchedTime = now;
+        }
+        return U.exists(this.latchedTime);
+    };
+}
