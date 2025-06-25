@@ -5,7 +5,6 @@ import * as G from '../geom';
 import * as A from '../animation';
 import * as U from '../util/util';
 import * as F from '../facing';
-import * as Ebw from './enemy_ball_weapon';
 import * as Fp from './flight_patterns';
 import * as Emk from './enemy_mk';
 import * as Lemk from '../level/enemy_mk';

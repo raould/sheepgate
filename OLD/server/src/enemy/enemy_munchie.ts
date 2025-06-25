@@ -10,7 +10,6 @@ import * as Fp from './flight_patterns';
 import * as Emk from './enemy_mk';
 import * as Lemk from '../level/enemy_mk';
 import * as K from '../konfig';
-import * as Rnd from '../random';
 
 // match: sprite animation.
 const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(8, 8), 3));

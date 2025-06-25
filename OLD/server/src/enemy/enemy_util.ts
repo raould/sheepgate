@@ -36,7 +36,7 @@ export function safe_lt(db: GDB.GameDB, rank: S.Rank, size: G.V2D, rnd: Rnd.Rand
 
 export function safe_lt_vs_player(db: GDB.GameDB, rank: S.Rank, size: G.V2D, rnd: Rnd.Random, lt: G.V2D) {
     const p = GDB.get_player(db);
-    if (!!p) {
+    if (U.exists(p)) {
 	if (rank >= S.Rank.hypermega) {
 	    lt = G.v2d_mk(
 		p.lt.x + db.shared.world.bounds0.x/3,

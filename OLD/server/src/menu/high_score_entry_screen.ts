@@ -11,7 +11,6 @@ import * as Tx from '../util/text';
 import * as Cmd from '../commands';
 import * as U from '../util/util';
 import { RGBA, HCycle } from '../color';
-import * as D from '../debug';
 
 // todo: left as a fun fun exercise for the reader to imagine
 // doing this in an OO style rather than this oldschool procedural way.
@@ -119,10 +118,10 @@ export class HighScoreEntryScreen extends Is.InstructionsScreen {
             let x1 = x0;
             let y1 = y0;
 
-            if (!!commands[Cmd.CommandType.left]) { x1 -= 1; }
-            if (!!commands[Cmd.CommandType.right]) { x1 += 1; }            
-            if (!!commands[Cmd.CommandType.up]) { y1 -= 1; }
-            if (!!commands[Cmd.CommandType.down]) { y1 += 1; }
+            if (commands[Cmd.CommandType.left]) { x1 -= 1; }
+            if (commands[Cmd.CommandType.right]) { x1 += 1; }            
+            if (commands[Cmd.CommandType.up]) { y1 -= 1; }
+            if (commands[Cmd.CommandType.down]) { y1 += 1; }
 
             y1 = U.clip(y1, 0, this.rects.length-1);
             if (y1 != y0) {
@@ -141,7 +140,7 @@ export class HighScoreEntryScreen extends Is.InstructionsScreen {
             }
             this.cursor = G.v2d_mk(x1, y1);
 
-            if (!!commands[Cmd.CommandType.fire]) {
+            if (commands[Cmd.CommandType.fire]) {
                 if (G.v2d_eq(this.cursor, SPC_RC)) {
                     if (this.letters.length < MAX_LETTERS) {
                         this.letters += " ";

@@ -51,7 +51,7 @@ export function add_enemy(db: GDB.GameDB, spec: EnemySpec, rect: G.Rect, get_con
 }
 
 function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec, get_container: (db: GDB.GameDB) => U.Dict<S.Enemy>): U.O<S.Warpin> {
-    if (!!spec.lt) {
+    if (U.exists(spec.lt)) {
 	DebugGraphics.add_DrawEllipse(
 	    DebugGraphics.get_permanent(),
 	    { wrap: true,

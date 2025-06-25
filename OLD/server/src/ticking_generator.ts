@@ -1,7 +1,6 @@
 /* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as GDB from './game_db';
 import * as U from './util/util';
-import * as D from './debug';
 
 export interface TickingGeneratorSpec<T> {
     // if generations is not specified, that means 'never ending'.

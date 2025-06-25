@@ -3,7 +3,6 @@ import * as GDB from '../game_db';
 import * as Tkg from '../ticking_generator';
 import * as S from '../sprite';
 import * as U from '../util/util';
-import * as D from '../debug';
 import Eb1 from './enemy_basic1';
 import Eb2 from './enemy_basic2'; // todo:
 

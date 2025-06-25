@@ -12,7 +12,6 @@ import * as U from './util/util';
 import * as G from './geom';
 import * as D from './debug';
 import * as K from './konfig';
-import * as Rnd from './random';
 import * as Lis from './level/level_in_screens';
 import { RGBA } from './color';
 // well, this sucks.
@@ -367,8 +366,8 @@ class GameLevels implements Gs.Stepper {
 
     merge_client_db(cnew: Cdb.ClientDB) {
         this.stepper.merge_client_db(cnew);
-        if (!!cnew.inputs.commands[Cmd.CommandType.pause]) {
-            if (!!this.paused) {
+        if (cnew.inputs.commands[Cmd.CommandType.pause]) {
+            if (U.exists(this.paused)) {
                 this.stepper = this.paused;
                 this.paused = undefined;
             }
@@ -383,7 +382,7 @@ class GameLevels implements Gs.Stepper {
     step() {
         this.stepper.step();
         if (this.stepper.get_state() == Gs.StepperState.completed) {
-            if (!!this.paused) {
+            if (U.exists(this.paused)) {
                 this.stepper = this.paused;
                 this.paused = undefined;
             }

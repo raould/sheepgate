@@ -3,7 +3,6 @@ import { RGBA } from '../../color';
 import * as K from '../../konfig';
 import * as S from '../../sprite';
 import * as Lta from '../level_type_a';
-import * as Lis from '../level_in_screens';
 import * as U from '../../util/util';
 import * as Cmd from '../../commands';
 import * as Rnd from '../../random';

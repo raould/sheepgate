@@ -6,7 +6,6 @@ import * as A from '../../animation';
 import * as U from '../../util/util';
 import * as F from '../../facing';
 import * as Ebw from '../../enemy/enemy_ball_weapon';
-import * as Rnd from '../../random';
 import * as Fp from '../../enemy/flight_patterns';
 import * as Emk from '../../enemy/enemy_mk';
 import * as Lemk from '../enemy_mk';

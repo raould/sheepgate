@@ -11,7 +11,6 @@ import * as Sh from './fighter_shield';
 import * as Rnd from './random';
 import * as U from './util/util';
 import * as D from './debug';
-import { DebugGraphics } from './debug_graphics';
 
 interface BasePrivate extends S.Base {
     animator: A.ResourceAnimator;

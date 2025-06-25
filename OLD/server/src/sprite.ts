@@ -69,12 +69,12 @@ export interface Damage {
 // todo: it is confusing that step() isn't in any of these interfaces.
 export interface Sprite extends GDB.Item, G.P2D, GDB.Aliveness, ImageResource, GDB.Steps, Tf.Flagged {
     draw_lt?: G.V2D;
-    toJSON(): Object;
+    toJSON(): object;
 }
 
 // ideally only the things the client really needs for rendering, nothing more.
 // yet another reason to be using real typescript classes instead of kneecapped interface hell?
-export function spriteJSON(s: Sprite): Object {
+export function spriteJSON(s: Sprite): object {
     return {
         lt: s.lt,
 	draw_lt: s.draw_lt,

@@ -9,7 +9,6 @@ import * as F from '../facing';
 import * as U from '../util/util';
 import { RGBA } from '../color';
 import { DebugGraphics } from '../debug_graphics';
-import * as D from '../debug';
 
 // some (mostly lame, crappy) movement behaviors.
 
@@ -49,7 +48,7 @@ function calculate_acc(src: G.V2D, dst: G.V2D, acc_mag: G.V2D, dt: number): G.V2
         G.v2d_norm(
             G.v2d_sub(dst, src)
         ),
-        acc_mag
+        G.v2d_scale(acc_mag, dt),
     );
     return delta_acc;
 }

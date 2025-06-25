@@ -13,7 +13,7 @@ export function step(db: GDB.GameDB) {
         player => {
             // todo: when drawing the rects in the radar we want to fit fully inside
             // but the way this works is simplistic (!) so they can visually overlap the top bounds.
-            render_ground(db, player);
+            render_ground(db);
             render_enemies(db, player);
             render_munchies(db, player);
             render_gems(db, player);
@@ -80,7 +80,7 @@ function world2radars(db: GDB.GameDB, rect: S.Sprite, player: S.Sprite): G.Rect[
     return all;
 }
 
-function render_ground(db: GDB.GameDB, player: S.Player) {
+function render_ground(db: GDB.GameDB) {
     // todo: blah this could really all be long-term constant stuff, it never changes.
     const radar = db.local.hud.radar.inset_rect;
     const gy = db.shared.world.ground_y;

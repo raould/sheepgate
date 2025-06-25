@@ -19,8 +19,6 @@ import * as Vp from '../gameport';
 import * as Rdr from '../radar';
 import * as D from '../debug';
 import { DebugGraphics } from '../debug_graphics';
-import * as FS from 'fs';
-import * as OS from 'os';
 import * as _ from 'lodash';
 
 // generic stuff to "step" a level.

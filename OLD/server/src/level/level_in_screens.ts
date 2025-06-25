@@ -7,7 +7,6 @@ import * as M from '../menu/menu';
 import * as Lss from './level_start_screen';
 import * as Les from './level_end_screen';
 import * as Lv from './level';
-import * as G from '../geom';
 import { RGBA } from '../color';
 import * as U from '../util/util';
 import * as Rnd from "../random";

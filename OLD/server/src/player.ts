@@ -8,14 +8,12 @@ import * as Sh from './fighter_shield';
 import * as C from './collision';
 import * as Tf from './type_flags';
 import * as Gr from './ground';
-import * as Po from './people';
 import * as A from './animation';
 import * as U from './util/util';
 import * as GDB from './game_db';
 import * as Cmd from './commands';
 import * as K from './konfig';
 import * as Sc from './scoring';
-import * as D from './debug';
 import * as So from './sound';
 import * as Rnd from './random';
 

@@ -3,8 +3,6 @@ import * as GDB from '../game_db';
 import * as Tkg from '../ticking_generator';
 import * as S from '../sprite';
 import * as U from '../util/util';
-import * as Rnd from '../random';
-import * as D from '../debug';
 
 // doesn't care how many other enemies of types exist.
 

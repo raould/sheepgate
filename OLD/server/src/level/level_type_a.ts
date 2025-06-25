@@ -279,15 +279,15 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 
     update_impl(next: GDB.GameDB) {
 	// debugging...
-	if (!!next.local.client_db.inputs.commands[Cmd.CommandType.debug_win_level]) {
+	if (next.local.client_db.inputs.commands[Cmd.CommandType.debug_win_level]) {
 	    this.state = Gs.StepperState.completed;
 	    return;
 	}
-	if (!!next.local.client_db.inputs.commands[Cmd.CommandType.debug_lose_level]) {
+	if (next.local.client_db.inputs.commands[Cmd.CommandType.debug_lose_level]) {
 	    this.state = Gs.StepperState.lost;
 	    return;
 	}
-	if (!!next.local.client_db.inputs.commands[Cmd.CommandType.debug_smite]) {
+	if (next.local.client_db.inputs.commands[Cmd.CommandType.debug_smite]) {
 	    Object.values(next.shared.items.enemies).forEach(e => {
 		const sid = e.shield_id;
 		if (U.exists(sid)) {

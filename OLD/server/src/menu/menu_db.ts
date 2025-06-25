@@ -1,10 +1,6 @@
 /* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as K from '../konfig';
 import * as Db from '../db';
-import * as U from '../util/util';
-import * as S from '../sprite';
-import * as So from '../sound';
-import * as G from '../geom';
 import * as Dr from '../drawing';
 import { RGBA } from '../color';
 
