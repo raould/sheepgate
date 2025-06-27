@@ -44,4 +44,5 @@ export interface DB<W extends World> {
     debug_graphics?: Dr.Drawing[];
     sfx: So.Sfx[];
     local_storage_json?: string;
+    xyround?: number;
 }

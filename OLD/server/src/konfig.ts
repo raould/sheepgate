@@ -102,16 +102,6 @@ export const GAME_FONT = 'gamefont'; // K
 export const MENU_FONT = 'menufont'; // K
 export const SCORE_FONT = `${d2si(20)}px ${GAME_FONT}`;
 export const HUD_MESSAGE_FONT = `${d2si(12)}px ${GAME_FONT}`;
-// match: client canvas etc.
-// these are currently in pixels.
-// todo: logical coords instead!? for targeting different display types.
-// note: things like ground sprites are drawn/scaled to fit this width.
-// so it should ideally be as big as the fully displayable area on the output device.
-export const PLAYER_SHIP_SIZE = vd2si(G.v2d_mk(76, 25)); // L?
-// note: the cow size should be kinda <= the ship size,
-// because use of the variables below, and elsewhere.
-export const PLAYER_COW_SIZE = vd2si(G.v2d_scale_i(G.v2d_mk(32, 16), 2.4)); // L?
-export const PLAYER_SHADOW_SIZE = vd2si(G.v2d_mk(76, 10)); // L?
 
 // todo: all the screen -> hud/gameport would be better done with 2d 3x3 matricies.
 
@@ -178,8 +168,8 @@ export const ENEMY_FIRING_RECT = G.rect_inset(
     ENEMY_FIRING_INSET
 );
 
-export const GAMEPORT_PLAYER_ZONE_MIN_WIDTH = PLAYER_SHIP_SIZE.x * 1;
-export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(PLAYER_SHIP_SIZE.x * 2);
+export const GAMEPORT_PLAYER_ZONE_MIN_WIDTH = d2si(80); // match: approx player sprite sizes.
+export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(d2si(80) * 2); // match: approx player sprite sizes.
 // match: if PLAYER_DELTA_*_ACC changes then these will likely need adjustment.
 // note: the x value is more tricky as it is used in more than one way during GAMEPORT update.
 // that is because when the player ship transitions from being outside the default zone

@@ -8,6 +8,11 @@ import * as U from './util/util';
 import * as D from './debug';
 import * as _ from 'lodash';
 
+export enum GroundNearKind {
+    regular,
+    cbm,
+}
+
 export enum BgFarType {
     mountain,
     sea, // lava, water, etc.
@@ -124,15 +129,24 @@ function far2far_specs(db: GDB.GameDB, far_specs: FarSpec[]): FarSpec[] {
     return specs;
 }
 
-function far2near_specs(db: GDB.GameDB, far_specs: FarSpec[]): NearSpec[] {
+function far2near_specs(db: GDB.GameDB, far_specs: FarSpec[], near_kind: GroundNearKind): NearSpec[] {
     const images = db.uncloned.images;
     const sea: UnlocatedSpec<BgNearType> = {
         images_spec: {resource_id: K.EMPTY_IMAGE_RESOURCE_ID},
         type: BgNearType.sea,
         alpha: 1
     };
-    const city_images = [images.lookup("bg/ma_near.png"), images.lookup("bg/ma_near2.png"), images.lookup("bg/ma_near3.png")];
-    const city_image = city_images[(db.shared.level_index1-1) % 3];
+    const city_image = (() => {
+	switch (near_kind) {
+	case GroundNearKind.regular: {
+	    const city_images = [images.lookup("bg/ma_near.png"), images.lookup("bg/ma_near2.png"), images.lookup("bg/ma_near3.png")];
+	    return city_images[(db.shared.level_index1-1) % 3];
+	}
+	case GroundNearKind.cbm: {
+	    return images.lookup("bg/ma_near_cbm.png")
+	}
+	}
+    })();
     const city: UnlocatedSpec<BgNearType> = {
         // todo: 'city' stuff seems to never be used really for ma_*, so either test & use, or delete?
         images_spec: { resource_id: city_image },
@@ -287,7 +301,7 @@ function add_ground_tiles(db: GDB.GameDB, far_specs: FarSpec[]) {
     });
 }
 
-export function bg_mk(db: GDB.GameDB, far_specs: FarSpec[]) {
+export function bg_mk(db: GDB.GameDB, far_specs: FarSpec[], near_kind: GroundNearKind) {
     // setting the two background layers down by some arbitrary amount
     // so they layer nicely behind the real ground tiles that
     // have a little transparency at their top since they aren't
@@ -309,7 +323,7 @@ export function bg_mk(db: GDB.GameDB, far_specs: FarSpec[]) {
         K.BG_NEAR_BG_SIZE,
         ground2near_scale,
         "bg-n",
-        far2near_specs(db, far_specs)
+        far2near_specs(db, far_specs, near_kind)
     );
 }
 

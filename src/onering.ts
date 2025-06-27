@@ -1436,6 +1436,7 @@ function loadImages() {
     loadImage("bg/ma_near.png");
     loadImage("bg/ma_near2.png");
     loadImage("bg/ma_near3.png");
+    loadImage("bg/ma_near_cbm.png");
 
     loadImage("danger.png");
 

@@ -4,6 +4,7 @@ import * as K from '../../konfig';
 import * as S from '../../sprite';
 import * as Lta from '../level_type_a';
 import * as Lis from '../level_in_screens';
+import * as Gr from '../../ground';
 import Es from './enemy_small1';
 import Em from './enemy_mega1';
 import Ehm from './enemy_hypermega1';
@@ -15,6 +16,7 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     const buf = Math.floor(level_index / denom);
     return {
 	player_kind: S.PlayerKind.cbm,
+	near_kind: Gr.GroundNearKind.cbm,
 	Es: { mk: Es.warpin_mk, count: 5 + buf, limit: 3 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Em: { mk: Em.warpin_mk, count: 2 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Ehm: { mk: Ehm.warpin_mk, count: 1 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 5*1000 },
@@ -43,6 +45,11 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 	    size: Ehm.SIZE,
 	    resource_id: images.lookup(Ehm.WARPIN_RESOURCE_ID)
 	};
+    }
+
+    step() {
+	super.step();
+	this.db.shared.xyround = 8;
     }
 }
 

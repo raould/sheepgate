@@ -59,6 +59,7 @@ export interface LevelKonfig {
     Ehm?: LevelEnemyKonfig,
     BG_COLOR: RGBA,
     people_cluster_count: number,
+    near_kind: Gr.GroundNearKind,
 };
 
 interface FarSpec0 {
@@ -90,8 +91,8 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	this.state = Gs.StepperState.running;
         this.reminder_cycle = HCycle.newFromRed(90 / K.FRAME_MSEC_DT);
 	const far_spec0 = this.far_spec0_mk();
-	this.db = this.db_mk(far_spec0, score);
-	this.init_bg(far_spec0);
+	this.db = this.db_mk(far_spec0, score, konfig.player_kind);
+	this.init_bg(far_spec0, konfig.near_kind);
 	this.init_player(konfig.player_kind);
 	this.init_enemies();
 
@@ -103,7 +104,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	this.db.shared.sfx.push({ sfx_id: K.BEGIN_SFX });
     }
 
-    private db_mk(far_spec0: FarSpec0[], score: number): GDB.GameDB {
+    private db_mk(far_spec0: FarSpec0[], score: number, player_kind: S.PlayerKind): GDB.GameDB {
 	// match: ground level, mountains, world height, etc. K.TILE_WIDTH.
 	// match: project_far_specs()
 	const world_size = G.v2d_mk(
@@ -112,7 +113,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	);
 	
 	const dbc = this.sharedCore_mk(world_size);
-	const uncloned = this.uncloned_mk(dbc, this.index1, world_size);
+	const uncloned = this.uncloned_mk(dbc, this.index1, world_size, player_kind);
 	const local = this.local_mk(dbc, this.index1, score, world_size);
 	const shared = this.sharedItems_mk(dbc, uncloned.images);
 	return {
@@ -142,6 +143,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	this.db.shared.items.player_shadow = Pl.player_shadow_mk(
 	    this.db,
 	    GDB.id_mk(),
+	    player_kind,
 	    {
 		facing: F.Facing.right,
 		lt: lt,
@@ -149,13 +151,13 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	);
     }
 
-    private init_bg(far_spec0: FarSpec0[]) {
+    private init_bg(far_spec0: FarSpec0[], near_kind: Gr.GroundNearKind) {
 	Sk.sky_mk(this.db);
 	const far_spec_images: Gr.FarSpec[] = far_spec0.map((e: FarSpec0): Gr.FarSpec => ({
 	    ...e,
 	    images_spec: { resource_id: this.db.uncloned.images.lookup(e.resource_name) }
 	}));
-	Gr.bg_mk(this.db, far_spec_images);
+	Gr.bg_mk(this.db, far_spec_images, near_kind);
 	Gr.ground_mk(this.db, far_spec_images);
 	B.base_add(this.db);
 	Po.populate(
@@ -401,8 +403,9 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	return shared;
     }
 
-    private uncloned_mk(dbc: GDB.DBSharedCore, index1: number, world_size: G.V2D): any {
-	const collision_spacey_pad = K.PLAYER_SHIP_SIZE.y * 5; // match: empirical player constraints.
+    private uncloned_mk(dbc: GDB.DBSharedCore, index1: number, world_size: G.V2D, player_kind: S.PlayerKind): any {
+	const player_size = Pl.get_player_size(player_kind);
+	const collision_spacey_pad = player_size.y * 5; // match: empirical player constraints.
 	const collision_bounds = G.rect_mk(
 	    G.v2d_mk(0, -collision_spacey_pad),
 	    G.v2d_mk(world_size.x, world_size.y + collision_spacey_pad)

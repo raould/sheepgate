@@ -37,16 +37,17 @@ interface PlayerSpritePrivate extends S.Player {
     step_resource_id(db: GDB.GameDB, delta_acc_x: number): void;
 }
 
-export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: any): S.Sprite {
+export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, player_kind: S.PlayerKind,spec: any): S.Sprite {
     const images = db.uncloned.images;
     // x-backwards from the ship, yes.
     const left_rid = images.lookup("player/p1_s_right.png");
     const right_rid = images.lookup("player/p1_s_left.png");
+    const size = get_shadow_size(player_kind);
     const shadow = {
 	dbid: dbid,
 	comment: `player-shadow-${dbid}`,
 	lt: spec.lt,
-	size: K.PLAYER_SHADOW_SIZE,
+	size,
 	vel: G.v2d_mk_0(),
 	acc: G.v2d_mk_0(),
 	alpha: 1,
@@ -60,7 +61,7 @@ export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: any): S.S
 		    this.resource_id = F.on_facing(this.facing, left_rid, right_rid);
 		    this.lt = G.v2d_set_y(
 			player.lt,
-			K.GAMEPORT_RECT.size.y - K.PLAYER_SHADOW_SIZE.y * 2
+			K.GAMEPORT_RECT.size.y - size.y * 2
 		    );
 		}
 	    );
@@ -76,7 +77,7 @@ export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: any): S.S
     return shadow;
 }
 
-export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, playerKind: S.PlayerKind, spec: PlayerSpec): S.Player {
+export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, player_kind: S.PlayerKind, spec: PlayerSpec): S.Player {
     const p: PlayerSpritePrivate = {
         ...spec,
         dbid,
@@ -84,13 +85,13 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, playerKind: S.PlayerKi
         comment: `player-${dbid}`,
         lt: spec.lt,
 	lt_wiggle: spec.lt,
-        size: K.PLAYER_COW_SIZE,
+        size: get_player_size(player_kind),
         vel: G.v2d_mk_0(),
         acc: G.v2d_mk_0(),
         alpha: 1,
         rank: S.Rank.player,
-        still_anim: still_anim_mk(db, playerKind),
-        thrusting_anim: thrusting_anim_mk(db, playerKind),
+        still_anim: still_anim_mk(db, player_kind),
+        thrusting_anim: thrusting_anim_mk(db, player_kind),
         type_flags: Tf.TF.playerShip,
         weapons: weapons_mk(),
         lifecycle: GDB.Lifecycle.alive,
@@ -262,9 +263,38 @@ function weapons_mk(): { [k: string]: S.Weapon } {
     };
 }
 
-function still_anim_mk(db: GDB.GameDB, playerKind: S.PlayerKind): A.FacingResourceAnimator {
+function get_shadow_size(player_kind: S.PlayerKind): G.V2D {
+    switch (player_kind) {
+    case S.PlayerKind.ship: {
+	return K.vd2si(G.v2d_mk(76, 10));
+    }
+    case S.PlayerKind.cow: {
+	return K.vd2si(G.v2d_mk(76, 10));
+    }
+    case S.PlayerKind.cbm: {
+	return K.vd2si(G.v2d_mk(76, 10));
+    }
+    }	
+}
+
+
+export function get_player_size(player_kind: S.PlayerKind): G.V2D {
+    switch (player_kind) {
+    case S.PlayerKind.ship: {
+	return K.vd2si(G.v2d_mk(76, 25));
+    }
+    case S.PlayerKind.cow: {
+	return K.vd2si(G.v2d_scale_i(G.v2d_mk(32, 16), 2.4));
+    }
+    case S.PlayerKind.cbm: {
+	return K.vd2si(G.v2d_scale_i(G.v2d_mk(112, 70), 1));
+    }
+    }	
+}
+
+function still_anim_mk(db: GDB.GameDB, player_kind: S.PlayerKind): A.FacingResourceAnimator {
     const images = db.uncloned.images;
-    switch (playerKind) {
+    switch (player_kind) {
     case S.PlayerKind.ship: {
 	return A.facing_animator_mk(
             db.shared.sim_now,
@@ -307,9 +337,9 @@ function still_anim_mk(db: GDB.GameDB, playerKind: S.PlayerKind): A.FacingResour
     }
 }
 
-function thrusting_anim_mk(db: GDB.GameDB, playerKind: S.PlayerKind): A.FacingResourceAnimator {
+function thrusting_anim_mk(db: GDB.GameDB, player_kind: S.PlayerKind): A.FacingResourceAnimator {
     const images = db.uncloned.images;
-    switch (playerKind) {
+    switch (player_kind) {
     case S.PlayerKind.ship: {
 	return A.facing_animator_mk(
             db.shared.sim_now,

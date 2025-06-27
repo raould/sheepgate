@@ -5,6 +5,8 @@ import * as Hse from './menu/high_score_entry_screen';
 import * as Hst from './menu/high_score_table_screen';
 import * as Cdb from './client_db';
 import * as Db from './db';
+import * as P from './player';
+import * as S from './sprite';
 import * as Cmd from './commands';
 import * as Gs from './game_stepper';
 import * as Hs from './high_scores';
@@ -233,13 +235,14 @@ class GameInstructions implements Gs.Stepper {
 	const x = G.rect_w(K.SCREEN_RECT)*0.1;
 	const y = G.rect_h(K.SCREEN_RECT)*0.2;
 	const yo = Math.sin((this.stepper.mdb.shared.tick + x)/40) * K.d2s(5);
+	const size = P.get_player_size(S.PlayerKind.cow);
 	return {
             wrap: false,
             image_located: {
                 resource_id: "images/player/cowR.png",
                 rect: G.rect_mk(
 		    G.v2d_mk(x, y + yo),
-		    K.PLAYER_COW_SIZE,
+		    size,
 		),
             },
 	    comment: "player",

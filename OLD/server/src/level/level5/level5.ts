@@ -4,6 +4,7 @@ import * as K from '../../konfig';
 import * as S from '../../sprite';
 import * as Lta from '../level_type_a';
 import * as Lis from '../level_in_screens';
+import * as Gr from '../../ground';
 import Eb4 from '../../enemy/enemy_basic4';
 import Ep from '../../enemy/enemy_pod';
 import Es from './enemy_small5';
@@ -17,6 +18,7 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     const buf = Math.floor(level_index / denom);
     return {
 	player_kind: S.PlayerKind.cow,
+	near_kind: Gr.GroundNearKind.regular,
 	Eb4: { mk: Eb4.warpin_mk, count: 5 + buf, limit: 5 + buf, delay_msec: 1000, tick_msec: 5*1000 },
 	Ep: { mk: Ep.warpin_mk, count: 4 + buf, limit: 4 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Es: { mk: Es.warpin_mk, count: 4 + buf, limit: 2 + buf, delay_msec: 1000, tick_msec: 3*1000 },

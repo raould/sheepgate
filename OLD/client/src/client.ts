@@ -466,6 +466,7 @@ function renderSpriteImage(gdb: any, s: any) {
 }
 
 function renderSpriteImageLayer(gdb: any, s: any, resource_id: string) {
+    const xyround = gdb.xyround;
     const gameport = gdb.world.gameport;
     const world_bounds = gdb.world.bounds0;
     if (resource_id != null && s.alpha > 0) {
@@ -1475,6 +1476,7 @@ function loadImages() {
     loadImage("bg/ma_near.png");
     loadImage("bg/ma_near2.png");
     loadImage("bg/ma_near3.png");
+    loadImage("bg/ma_near_cbm.png");
 
     loadImage("danger.png");
 
