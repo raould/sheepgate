@@ -267,10 +267,10 @@ function still_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
     return A.facing_animator_mk(
         db.shared.sim_now,
         {
-            resource_id: images.lookup("player/cowL.png"),
+            resource_id: images.lookup("player/cbml.png"),
         },
         {
-            resource_id: images.lookup("player/cowR.png"),
+            resource_id: images.lookup("player/cbmr.png"),
         },
     );
 }
@@ -281,13 +281,13 @@ function thrusting_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
         db.shared.sim_now,
         {
             frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
-            resource_ids: images.lookup_range_n((n) => `player/cowLT${n}.png`, 1, 2),
+            resource_ids: [images.lookup("player/cbmlt.png"), images.lookup("player/cbmlt.png")],
             starting_mode: A.MultiImageStartingMode.hold,
             ending_mode: A.MultiImageEndingMode.loop
         },
         {
             frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
-            resource_ids: images.lookup_range_n((n) => `player/cowRT${n}.png`, 1, 2),
+            resource_ids: [images.lookup("player/cbmrt.png"), images.lookup("player/cbmrt.png")],
             starting_mode: A.MultiImageStartingMode.hold,
             ending_mode: A.MultiImageEndingMode.loop
         },

@@ -23,6 +23,7 @@ import * as L4 from './level/level4/level4';
 import * as L5 from './level/level5/level5';
 import * as L6 from './level/level6/level6';
 import * as L7 from './level/level7/level7';
+import * as Lcbm from './level/cbm/cbm';
 
 const TRACK1_SFX = { sfx_id: K.TRACK1_SFX, gain: 0.3, singleton: true };
 
@@ -62,6 +63,7 @@ interface GamePrivate extends Game {
 type LevelMk = (level_index: number, score: number, high_score: Hs.HighScore) => Lis.LevelInScreens;
 // match: konfig.ts
 const level_mks: LevelMk[] = [
+    (i: number, score: number, hi: Hs.HighScore) => Lcbm.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L1.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L2.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L3.level_mk(i, score, hi),

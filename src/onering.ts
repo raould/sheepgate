@@ -1233,6 +1233,10 @@ function loadImages() {
 	loadImage(`player/cow${dir}T1.png`);
 	loadImage(`player/cow${dir}T2.png`);
     });
+    loadImage(`player/cbml.png`);
+    loadImage(`player/cbmlt.png`);
+    loadImage(`player/cbmr.png`);
+    loadImage(`player/cbmrt.png`);
 
     [1,2,3,4].forEach(anim => {
         loadImage(`ground/base${anim}.png`);
@@ -1377,6 +1381,9 @@ function loadImages() {
     [1,2,3,4,5,6].forEach(anim => {
 	loadImage(`enemies/e29/e7m${anim}.png`);
     });
+
+    loadImage(`enemies/cbm1/cbm11.png`);
+    loadImage(`enemies/cbm1/cbm12.png`);
 
     [...Array(10).keys()].forEach(i => {
 	loadImage(`gem/gem${i+1}.png`)

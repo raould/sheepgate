@@ -426,6 +426,6 @@ export const DEFFX_SFX = "sounds/deffx.ogg";
 
 // match: game.ts
 // used to scale things across levels.
-export const LEVEL_TEMPLATE_COUNT = 7;
+export const LEVEL_TEMPLATE_COUNT = 8;
 
 export const USER_SKIP_TEXT = "PRESS [FIRE] TO CONTINUE";
