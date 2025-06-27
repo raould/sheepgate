@@ -6,7 +6,9 @@ import * as K from './konfig';
 import * as D from './debug';
 import * as U from './util/util';
 
-export type ExplosionImgSpec = Omit<U.FieldsOnly<S.Explosion>, "resource_id"|"drawing">;
+export type ExplosionImgSpec = Omit<U.FieldsOnly<S.Explosion>, "resource_id"|"drawing"> & {
+    explosion_kind: S.ExplosionKind;
+};
 type FramesMk = (images: GDB.ImageResources) => string[];
 
 // keep animations outside of explosion instance so we don't json the animation instances.
@@ -17,39 +19,41 @@ interface ExplosionImgPrivate extends S.Explosion {
     get_anim(): U.O<ExplosionAnimation>;
 }
 
-const frames_mkA = (images: GDB.ImageResources): string[] => {
-    const dir = "explosionA";
-    const base = "tile";
-    const start_n = 0;
-    const end_n = 11;
-    const frames = [];
-    for(let n = start_n; n <= end_n; ++n) {
-        const tail = String(n).padStart(3, '0') + ".png"
-        const file = dir + "/" + base + tail; // todo: use a file path api?
-        frames.push(images.lookup(file));
-    }
-    return frames;
+function frames_mk_helper(images: GDB.ImageResources, dir: string, base: string, start_n: number, end_n: number): string[] {
+    const count = end_n - start_n + 1;
+    return [...Array(count).keys()]
+	.map(i => images.lookup(`${dir}/${base}${i+start_n}.png`));
 }
 
-const frames_mkB = (images: GDB.ImageResources): string[] => {
-    const dir = "explosionB";
-    const base = "exB";
-    const start_n = 1;
-    const end_n = 6;
-    const frames = [];
-    for(let n = start_n; n <= end_n; ++n) {
-        const tail = `${n}.png`;
-        const file = dir + "/" + base + tail; // todo: use a file path api?
-        frames.push(images.lookup(file));
+function frames_mkA(images: GDB.ImageResources): string[] {
+    return frames_mk_helper(images, "explosionA", "tile", 0, 11);
+}
+
+function frames_mkB(images: GDB.ImageResources): string[] {
+    return frames_mk_helper(images, "explosionB", "exB", 1, 6);
+}
+
+function frames_mkCbm(images: GDB.ImageResources): string[] {
+    return frames_mk_helper(images, "explosionCbm", "cboom", 0, 6);
+}
+
+function frames_mk_mk(explosion_kind: S.ExplosionKind): FramesMk {
+    switch(explosion_kind) {
+    case S.ExplosionKind.regular: {
+	return Rnd.singleton.boolean() ? frames_mkA : frames_mkB;
     }
-    return frames;
+    case S.ExplosionKind.cbm: {
+	return frames_mkCbm;
+    }
+    }
+    return () => [];
 }
 
 export function explosionImg_mk(db: GDB.GameDB, spec: ExplosionImgSpec): S.Explosion {
-    const frames_mk = Rnd.singleton.boolean() ? frames_mkA : frames_mkB;
+    const frames_mk = frames_mk_mk(spec.explosion_kind);
     animations[spec.dbid] = new ExplosionAnimation(
         db,
-        Rnd.singleton.float_around(K.EXPLOSIONA_MSEC, K.EXPLOSIONA_MSEC/10),
+        Rnd.singleton.float_around(K.EXPLOSION_MSEC, K.EXPLOSION_MSEC/10),
 	frames_mk
     );
     const e: ExplosionImgPrivate = {

@@ -279,11 +279,10 @@ export const BULLET_SHOT_LIFE_MSEC = 3000; // W
 export const BULLET_SHOT_SIZE = vd2si(G.v2d_mk(44, 3)); // W
 export const BALL_SHOT_SIZE = vd2si(G.v2d_mk(6, 6)); // W
 
-// todo: explosions should have slightly different timings
+// note: explosions should have slightly different timings
 // so they don't appear in lock-step e.g. when things crash
 // into each other.
-export const EXPLOSIONA_MSEC = 1000; // K
-export const EXPLOSIONB_MSEC = 1250; // K
+export const EXPLOSION_MSEC = 1000; // K
 
 // pixels/dt? pixels/sec? i dunno!
 export const DRAG_ACC = vd2s(G.v2d_mk(-0.0025, -0.005)); // L

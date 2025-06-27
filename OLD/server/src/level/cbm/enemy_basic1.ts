@@ -26,7 +26,7 @@ const Basic1: Lemk.EnemyMk = {
 	const weapons = {
             'w': Ebw.weapon_mk(ews),
 	};
-	const acc = G.v2d_mk(0.0001, 0.0005);
+	const acc = G.v2d_mk(0.0003, 0.0006);
 	const flight_pattern = new Fp.BuzzPlayer(db, acc);
 	const spec: Emk.EnemySpec = {
 	    kind: "cbm2",
