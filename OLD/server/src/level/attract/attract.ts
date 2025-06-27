@@ -19,6 +19,7 @@ import * as Hs from '../../high_scores';
 // todo: move 'L' things from konfig to here.
 const LKfn = (level_index: number): Lta.LevelKonfig => {
     return {
+	player_kind: S.PlayerKind.cow,
 	Eb1: { mk: Eb1.warpin_mk, count: Number.MAX_SAFE_INTEGER, limit: 4, delay_msec: 1000, tick_msec: 1*1000 },
 	Es: { mk: Es.warpin_mk, count: Number.MAX_SAFE_INTEGER, limit: 3, delay_msec: 1000, tick_msec: 5*1000 },
 	BG_COLOR: RGBA.new01(0, 0, 0.05),

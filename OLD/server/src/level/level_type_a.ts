@@ -44,6 +44,7 @@ export interface LevelEnemyKonfig {
 }
 
 export interface LevelKonfig {
+    player_kind: S.PlayerKind;
     Eb1?: LevelEnemyKonfig,
     Eb2?: LevelEnemyKonfig,
     Eb3?: LevelEnemyKonfig,
@@ -91,7 +92,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	const far_spec0 = this.far_spec0_mk();
 	this.db = this.db_mk(far_spec0, score);
 	this.init_bg(far_spec0);
-	this.init_player();
+	this.init_player(konfig.player_kind);
 	this.init_enemies();
 
 	// prime the history pump with a minimal copy.
@@ -121,7 +122,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	};
     }
 
-    private init_player() {
+    private init_player(player_kind: S.PlayerKind) {
 	const b = this.db.shared.items.base;
 	D.assert(!!b);
 	const lt = G.v2d_mk(
@@ -131,6 +132,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	this.db.shared.items.player = Pl.player_mk(
 	    this.db,
 	    GDB.id_mk(),
+	    player_kind,
 	    {
 		facing: F.Facing.right,
 		lt: lt,

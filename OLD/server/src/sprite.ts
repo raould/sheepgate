@@ -171,6 +171,12 @@ export interface Fighter extends Sprite, Ranked, Facing, Tf.Flagged, Shielded, K
     get_weapon_hardpoint(weapon_type: WeaponType, facing: F.Facing): G.V2D;
 }
 
+export enum PlayerKind {
+    ship,
+    cow,
+    cbm,
+};
+
 export interface Player extends Fighter {
     // note: the player has an extra hard-coded ability to crash through enemies somewhat.
     maybe_shoot(db: GDB.GameDB): void;
