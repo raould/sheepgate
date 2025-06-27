@@ -53,6 +53,7 @@ export interface LevelKonfig {
     Eb6?: LevelEnemyKonfig,
     Eb7?: LevelEnemyKonfig,
     Eb8?: LevelEnemyKonfig,
+    Ebs1?: LevelEnemyKonfig, // 's'pecial e.g. cbm.
     Ep?: LevelEnemyKonfig,
     Es?: LevelEnemyKonfig,
     Em?: LevelEnemyKonfig,
@@ -257,6 +258,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	basics.push(this.init_basic_from_konfig(this.konfig.Eb6, "basic6"));
 	basics.push(this.init_basic_from_konfig(this.konfig.Eb7, "basic7"));
 	basics.push(this.init_basic_from_konfig(this.konfig.Eb8, "basic8"));
+	basics.push(this.init_basic_from_konfig(this.konfig.Ebs1, "basic-special-8"));
 	D.assert(basics.length > 0, "no basic enemies found?!");
 	Ebg.add_generators(
 	    this.db,
