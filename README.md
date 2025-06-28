@@ -11,6 +11,8 @@ For something really impressive, check out these instead:
 * [1k defender](https://keithclark.co.uk/articles/js1k-2015-defender/)
 * [cmb pet defender](https://youtu.be/uZ2mzl-WZ2E?feature=shared)
 * [cbm pet choplifter](https://youtu.be/Yn2mgdLMGgE?feature=shared)
+* [coco 2.5D defender](https://youtu.be/ylweMESQKB0?feature=shared)
+* [trs-80 defender](https://youtu.be/LRk9955hS4o?feature=shared)
 
 but if you want to try this monstrosity, do something like:
 
