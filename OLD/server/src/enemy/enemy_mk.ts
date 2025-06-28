@@ -28,7 +28,6 @@ export interface EnemySpec {
     rank: S.Rank,
     hp_init: number,
     spawn_strong?: boolean,
-    damage: number,
     weapons: S.Arsenal,
     explosion_kind?: S.ExplosionKind, // default is S.ExplosionKind.regular
     flight_pattern: Fp.FlightPattern,
@@ -234,7 +233,6 @@ function add_shield(db: GDB.GameDB, enemy: EnemyPrivate, spec: EnemySpec) {
         fighter: enemy,
         hp_init: spec.hp_init,
 	spawn_strong: spec.spawn_strong,
-        damage: spec.damage,
         comment: `enemy-FF-shield-${enemy.dbid}`,
         in_cmask: C.CMask.enemy,
         from_cmask: C.CMask.player | C.CMask.playerShot,

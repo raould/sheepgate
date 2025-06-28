@@ -28,7 +28,6 @@ export function spec_mk(db: GDB.GameDB): Emk.EnemySpec {
         rank: S.Rank.basic,
         hp_init: K.ENEMY_SWARMER_HP,
 	spawn_strong: true,
-        damage: K.ENEMY_SWARMER_DAMAGE,
         weapons: {},
         flight_pattern: flight_pattern,
         gem_count: 0,

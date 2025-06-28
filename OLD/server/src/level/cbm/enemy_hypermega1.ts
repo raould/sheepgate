@@ -39,7 +39,6 @@ const Hypermega: Lemk.EnemyMk = {
 		anim: anim,
 		rank: S.Rank.hypermega,
 		hp_init: K.ENEMY_HYPERMEGA_HP,
-		damage: K.ENEMY_HYPERMEGA_DAMAGE,
 		weapons: weapons,
 		flight_pattern: flight_pattern,
 		gem_count: K.ENEMY_HYPERMEGA_GEM_COUNT

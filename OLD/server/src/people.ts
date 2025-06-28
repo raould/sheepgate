@@ -169,7 +169,6 @@ function waiting_mk(
         size,
         hp_init: 1,
         hp: 1,
-        damage: 0,
 	beaming_state: S.BeamingState.not_beaming,
         type_flags: Tf.TF.person,
         in_cmask: C.CMask.people,

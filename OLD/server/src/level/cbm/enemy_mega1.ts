@@ -39,7 +39,6 @@ const Mega: Lemk.EnemyMk = {
 		anim: anim,
 		rank: S.Rank.mega,
 		hp_init: K.ENEMY_MEGA_HP,
-		damage: K.ENEMY_MEGA_DAMAGE,
 		weapons: weapons,
 		flight_pattern: flight_pattern,
 		gem_count: K.ENEMY_MEGA_GEM_COUNT

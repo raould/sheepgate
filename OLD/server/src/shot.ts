@@ -64,7 +64,7 @@ export function shot_mk(db: GDB.GameDB, src: S.Fighter, spec: ShotSpec): U.O<S.S
                 shot_maybe_collide(
                     db, this, dsts,
                     (d: GDB.GameDB, c: S.CollidableSprite) => {
-                        this.hp -= c.damage;
+                        this.hp -= c.hp;
                     }
                 );
             },

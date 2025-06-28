@@ -36,7 +36,6 @@ const Basic2: Lemk.EnemyMk = {
             anim: anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_BASIC_HP,
-            damage: K.ENEMY_BASIC_DAMAGE,
             weapons: weapons,
             flight_pattern: flight_pattern,
             gem_count: K.ENEMY_BASIC_GEM_COUNT,

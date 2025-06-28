@@ -130,14 +130,8 @@ function add_shield(db: GDB.GameDB, base: S.Base) {
                 acc: G.v2d_mk_0(),
                 lt: r.lt,
                 size: r.size,
-                // the base is not something that can easily
-                // be destroyed by anybody. nor is it something
-                // that does damage, just because that would
-                // get annoying to deal with either as a player
-                // or as a the game developer.
                 hp_init: Number.MAX_SAFE_INTEGER,
                 hp: Number.MAX_SAFE_INTEGER,
-                damage: Number.MAX_SAFE_INTEGER, // nullifies enemy shots.
                 type_flags: Tf.TF.baseShield,
                 ignores: new Map([
                     [C.CMask.enemyShot, C.Reaction.fx],

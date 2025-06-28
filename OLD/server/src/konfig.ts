@@ -345,40 +345,31 @@ export const WARPIN_TOTAL_MSEC = 500; // K
 // basic enemies should be one-shots, that's why they are basic.
 // they also should not drop any gems, that's why they are basic.
 // they should also not show their hp meter to reduce chartjunk.
-export const ENEMY_BASIC_HP = PLAYER_SHOT_DAMAGE; // L
-export const ENEMY_BASIC_DAMAGE = Math.floor(PLAYER_HP/5); // L
+export const ENEMY_BASIC_HP = Math.floor(PLAYER_HP/5); // L
 export const ENEMY_BASIC_GEM_COUNT = 0; // L
-D.assert(ENEMY_BASIC_DAMAGE >= 1);
 
-export const ENEMY_SMALL_HP = PLAYER_SHOT_DAMAGE * 4; // L
-export const ENEMY_SMALL_DAMAGE = Math.floor(PLAYER_HP/4); // L
+export const ENEMY_SMALL_HP = Math.floor(PLAYER_HP/4); // L
 export const ENEMY_SMALL_GEM_COUNT = 1;
-D.assert(ENEMY_SMALL_DAMAGE >= 1);
 
-export const ENEMY_MEGA_HP = PLAYER_SHOT_DAMAGE * 12; // L
-export const ENEMY_MEGA_DAMAGE = Math.floor(PLAYER_HP/2); // L
+export const ENEMY_MEGA_HP = Math.floor(PLAYER_HP/2); // L
 export const ENEMY_MEGA_GEM_COUNT = 2;
-D.assert(ENEMY_MEGA_DAMAGE >= 1);
 
 export const ENEMY_HYPERMEGA_HP = PLAYER_SHOT_DAMAGE * 30; // L
-export const ENEMY_HYPERMEGA_DAMAGE = PLAYER_HP; // L
 // if the final enemy generated any gems then there'd
 // be an annoying race condition ux problem of ending the
 // level until/before they can be picked up by the player.
 export const ENEMY_HYPERMEGA_GEM_COUNT = 0;
-D.assert(ENEMY_HYPERMEGA_DAMAGE >= 1);
 
-export const ENEMY_POD_HP = PLAYER_SHOT_DAMAGE; // L
-export const ENEMY_POD_DAMAGE = Math.floor(PLAYER_HP/4); // L
+export const ENEMY_SMARTBOMB_HP = Math.floor(PLAYER_HP/4); // L
+
+export const ENEMY_POD_HP = Math.floor(PLAYER_HP/4); // L
 export const ENEMY_POD_SWARMER_COUNT = 3; // L // just a 'seed' value.
 
-export const ENEMY_SWARMER_HP = PLAYER_SHOT_DAMAGE; // L
-export const ENEMY_SWARMER_DAMAGE = Math.floor(PLAYER_HP/6); // L
+export const ENEMY_SWARMER_HP = Math.floor(PLAYER_HP/6); // L
 
 // harass the player when all enemies are gone but there are still people to rescue.
 export const MUNCHIES_MAX = 2; // L, is adjusted per level.
-export const ENEMY_MUNCHIE_HP = PLAYER_SHOT_DAMAGE; // L
-export const ENEMY_MUNCHIE_DAMAGE = Math.floor(PLAYER_HP/4); // L
+export const ENEMY_MUNCHIE_HP = Math.floor(PLAYER_HP/4); // L
 export const ENEMY_MUNCHIE_GEM_COUNT = 0; // L
 
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L

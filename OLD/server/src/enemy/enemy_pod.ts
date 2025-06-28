@@ -26,7 +26,6 @@ const Pod: Lemk.EnemyMk = {
             anim: anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_POD_HP,
-            damage: K.ENEMY_POD_DAMAGE,
             weapons: {},
             flight_pattern: flight_pattern,
             gem_count: 0,

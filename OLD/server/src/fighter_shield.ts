@@ -27,7 +27,6 @@ export interface ShieldWrappingSpec extends C.Masked, C.Ignores {
     comment: string;
     hp_init: number;
     spawn_strong?: boolean;
-    damage: number;
     alpha?: number;
     on_collide?(thiz: S.Shield<S.Fighter>, db: GDB.GameDB, sprite: S.CollidableSprite, reaction: C.Reaction): void;
 }
@@ -68,7 +67,6 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
                 hp_init: spec.hp_init,
 		spawn_strong: spec.spawn_strong,
                 hp: spec.hp_init,
-                damage: spec.damage,
                 // todo: i wish i knew a better way to do all this 'typing'.
                 type_flags: Tf.firstMatch(spec.fighter.type_flags, [Tf.TF.player, Tf.TF.enemy]) | Tf.TF.shield,
                 in_cmask: spec.in_cmask,
@@ -163,7 +161,10 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
 			else {
                             this.anim = new ShieldHitAnimation(db, this.dbid);
 			    db.shared.sfx.push({ sfx_id: K.EXPLOSION_SFX, gain: 0.4 });
-                            this.hp -= sprite.damage;
+			    // if you damaged the other sprite,
+			    // then it shouldn't hurt you so much
+			    // thus using their hp as the damage.
+                            this.hp -= sprite.hp;
                             GDB.add_dict_id_mut(
 				db.shared.items.particles,
 				(dbid: GDB.DBID) => new Pr.ParticleEllipseGenerator(

@@ -64,7 +64,6 @@ export function gem_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Gem {
         size: SIZE,
         hp_init: 1,
         hp: 1,
-        damage: 0,
         type_flags: Tf.TF.gem,
         in_cmask: C.CMask.gem,
         from_cmask: C.CMask.player, // note: really for player shield. todo: ugh so confusing.

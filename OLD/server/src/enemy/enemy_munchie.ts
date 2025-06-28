@@ -31,7 +31,6 @@ const Munchie: Lemk.EnemyMk = {
             anim: anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_MUNCHIE_HP,
-            damage: K.ENEMY_MUNCHIE_DAMAGE,
             weapons: weapons,
             flight_pattern: flight_pattern,
             gem_count: K.ENEMY_MUNCHIE_GEM_COUNT,

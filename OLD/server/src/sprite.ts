@@ -86,7 +86,7 @@ export function spriteJSON(s: Sprite): object {
     };
 }
 
-export interface HpSprite extends Sprite, HitPoints, Damage {
+export interface HpSprite extends Sprite, HitPoints {
     // explicitly not extending S.CollidableSprite here
     // because the players and enemies inside shields
     // aren't collidable - they die when their shield does.
@@ -233,7 +233,7 @@ export interface Weapon {
     shot_mk(db: GDB.GameDB, src: Fighter, forced: boolean): U.O<GDB.Identity>;
 }
 
-export interface Shot extends CollidableSprite, Facing {
+export interface Shot extends CollidableSprite, Facing, Damage {
     life_msec: number;
 }
 

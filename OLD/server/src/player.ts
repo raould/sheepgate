@@ -440,7 +440,6 @@ export function add_shield(db: GDB.GameDB, player: S.Player) {
         enlarge: G.v2d_mk(1.5, 1.8),
         fighter: player,
         hp_init: K.PLAYER_HP,
-        damage: K.PLAYER_HP,
         comment: `player-shield-${player.dbid}`,
         ignores: new Map([
             [C.CMask.people, C.Reaction.ignore],
