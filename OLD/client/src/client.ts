@@ -55,7 +55,8 @@ let inputs: {commands: {[k:string]:boolean}, keys: {[k:string]:boolean}} = {
     commands: {}, keys: {}
 };
 // todo: unfortunately if is_stepping is true at the start, things break. fix it!
-let debugging_state: any = { is_stepping: false, is_drawing: false, is_annotating: false };
+// match: server's client_db.ts & level_type_a.ts
+let debugging_state: any = { is_drawing: false, is_stepping: false, is_annotating: false };
 let particles: {[k:string]:AbstractParticleGenerator} = {};
 let socket_ws: any;
 let h5canvas: any;

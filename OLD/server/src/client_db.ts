@@ -7,6 +7,7 @@ import * as Cmd from './commands';
 export interface ClientDB {
     client_id: number;
     inputs: Cmd.Inputs;
-    debugging_state: { is_stepping: boolean, is_drawing: boolean };
+    // match: client.
+    debugging_state: { is_stepping: boolean, is_drawing: boolean, is_annotating: boolean };
     storage_json?: string | undefined;
 }

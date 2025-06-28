@@ -288,15 +288,18 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 
     update_impl(next: GDB.GameDB) {
 	// debugging...
-	if (next.local.client_db.inputs.commands[Cmd.CommandType.debug_win_level]) {
+	// match: client.
+	const cdbg = next.local.client_db.debugging_state;
+	const is_debugging = cdbg.is_drawing || cdbg.is_stepping || cdbg.is_annotating;
+	if (is_debugging && next.local.client_db.inputs.commands[Cmd.CommandType.debug_win_level]) {
 	    this.state = Gs.StepperState.completed;
 	    return;
 	}
-	if (next.local.client_db.inputs.commands[Cmd.CommandType.debug_lose_level]) {
+	if (is_debugging && next.local.client_db.inputs.commands[Cmd.CommandType.debug_lose_level]) {
 	    this.state = Gs.StepperState.lost;
 	    return;
 	}
-	if (next.local.client_db.inputs.commands[Cmd.CommandType.debug_smite]) {
+	if (is_debugging && next.local.client_db.inputs.commands[Cmd.CommandType.debug_smite]) {
 	    Object.values(next.shared.items.enemies).forEach(e => {
 		const sid = e.shield_id;
 		if (U.exists(sid)) {
@@ -435,7 +438,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    client_db: {
 		client_id: K.INVALID_CLIENT_ID,
 		inputs: {commands:{}, keys: {}},
-		debugging_state: { is_stepping: false, is_drawing: false },
+		debugging_state: { is_stepping: false, is_drawing: false, is_annotating: false },
 	    },
 	    // normally NOT ok to use just {} for prev_db, but prev_db gets auto set up by the abstract base class.
 	    prev_db: {} as GDB.GameDB,
