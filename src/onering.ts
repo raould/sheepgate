@@ -116,8 +116,8 @@ const ThrustSpec: CommandSpec = { command: CommandType.thrust, is_singular: fals
 const key2cmd_default: { [k: string]: CommandSpec } = {
     // standard gameplay commands.
     Escape:     PauseSpec,
-    p:     	PauseSpec,
-    P:     	PauseSpec,
+    p:          PauseSpec,
+    P:          PauseSpec,
     " ":        FireSpec,
     z:          FireSpec,
     Z:          FireSpec,
@@ -125,8 +125,8 @@ const key2cmd_default: { [k: string]: CommandSpec } = {
     ArrowUp:    UpSpec,
     w:          UpSpec,
     W:          UpSpec,
-    k:		UpSpec,
-    K:		UpSpec,
+    k:          UpSpec,
+    K:          UpSpec,
     ArrowDown:  DownSpec,
     s:          DownSpec,
     S:          DownSpec,
@@ -445,8 +445,6 @@ function renderSounds(db: any) {
             sound.play(sfx);
         }
 	else {
-	    // note: i guess there is a race condition on loading sounds
-	    // because sometimes right after loading this error will happen.
 	    console.error("!! no resource for", sfx.sfx_id);
 	}
     });
@@ -602,10 +600,10 @@ function renderFx(gdb: any) {
 function renderBg(gdb: any) {
     renderDrawing(gdb, gdb.permanent_bg_drawing);
     for (const s of Object.values(gdb.items.bgFar)) {
-        renderSprite(gdb, s);
+        renderSprite(gdb, s, gdb.xyround);
     }
     for (const s of Object.values(gdb.items.bgNear)) {
-        renderSprite(gdb, s);
+        renderSprite(gdb, s, gdb.xyround);
     }
 }
 
@@ -657,7 +655,7 @@ function renderHud(gdb: any) {
 }
 
 function renderHudDrawing(gdb: any) {
-    // note: the radar and other HUD items are drawn
+    // note / match: the radar and other HUD items are drawn
     // in screen space, not in game world space.
     // so "wrap" is always ignored. :-\
     const drawing = gdb.hud_drawing;
@@ -1400,7 +1398,7 @@ function loadImages() {
     loadImage(`enemies/cbm3/cbm33.png`);
     loadImage(`enemies/cbm4/cbm41.png`);
     loadImage(`enemies/cbm4/cbm42.png`);
-    
+
     [...Array(10).keys()].forEach(i => {
 	loadImage(`gem/gem${i+1}.png`)
     });
@@ -1459,13 +1457,13 @@ function loadImages() {
     loadImage("bg/ma_far.png");
     loadImage("bg/mal_far.png");
     loadImage("bg/mar_far.png");
-    loadImage("bg/ma_cbm_far.png");
-    loadImage("bg/mal_cbm_far.png");
-    loadImage("bg/mar_cbm_far.png");
+    loadImage("bg/ma_cbm2_far.png");
+    loadImage("bg/mal_cbm2_far.png");
+    loadImage("bg/mar_cbm2_far.png");
     loadImage("bg/ma_near.png");
     loadImage("bg/ma_near2.png");
     loadImage("bg/ma_near3.png");
-    loadImage("bg/ma_near_cbm.png");
+    loadImage("bg/ma_cbm_near.png");
 
     loadImage("danger.png");
 
