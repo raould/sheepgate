@@ -26,16 +26,17 @@ import * as T from './toast';
 // note: this whole way of populating is almost completely and utterly precisely what i don't want to do.
 
 export function populate(db: GDB.GameDB, cluster_count: number) {
+    // some per-level determinism.
+    const rnd = new Rnd.RandomImpl(db.shared.level_index1);
     if (db.shared.level_index1 == 1) {
-        populate_near_base(db, cluster_count);
+        populate_near_base(db, cluster_count, rnd);
     }
     else {
-        populate_random(db, cluster_count);
+        populate_random(db, cluster_count, rnd);
     }
 }
 
-function populate_near_base(db: GDB.GameDB, cluster_count: number) {
-    const rnd = new Rnd.RandomImpl(db.shared.level_index1); // some per-level determinism.
+function populate_near_base(db: GDB.GameDB, cluster_count: number, rnd: Rnd.Random) {
     const gs = db.shared.items.ground;
     const base = db.shared.items.base;
     D.assert(!!base);
@@ -55,33 +56,32 @@ function populate_near_base(db: GDB.GameDB, cluster_count: number) {
     }   
 }
 
-function populate_random(db: GDB.GameDB, cluster_count: number) {
-    const rnd = new Rnd.RandomImpl(db.shared.level_index1); // some per-level determinism.
-    // funny how sometimes i don't bother to check for undefined.
+function populate_random(db: GDB.GameDB, cluster_count: number, rnd: Rnd.Random) {
+    // note: because wrapping, the biggest distance is like the smallest.
+
     const gs = db.shared.items.ground;
     const base = db.shared.items.base;
-    const index = gs.findIndex(g => G.rects_are_overlapping(base, g)) + 2;
     D.assert(!!base);
-    D.assert(index >= 0);
     D.assert(cluster_count <= gs.length);
+
+    // put people near-to-far from the base, interleaving right & left sides.
     const grounds = gs
           .filter(g => g.ground_type == Gr.GroundType.land)
-          .filter(g => !G.rects_are_overlapping(base, g));
+          .filter(g => !G.rects_are_overlapping(base, g))
+
+    // don't populate right next to base, people look too lazy then.
+    // because wrapping.
+    grounds.pop(); 
+    grounds.shift();
+
     let population_count = 0;
-    // try to prefer putting the people not too far from the base.
     while (cluster_count > 0) {
-        const g = rnd.array_item(grounds);
-        if (g != null && g.ground_type == Gr.GroundType.land) {
-	    const d = Math.abs(g.lt.x - base.lt.x);
-	    if (d > K.TILE_WIDTH * 2) { // not too close.
-		const df = U.t10(0, db.shared.world.bounds0.x, d);
-		const roll = rnd.boolean(df);
-		if (roll) {
-		    population_count += add_people_cluster(db, g, rnd);
-		    cluster_count--;
-		}
-	    }
-        }
+	const g = grounds.pop();
+	grounds.reverse(); // because wrapping.
+	if (g != null && g.ground_type == Gr.GroundType.land) {
+	    population_count += add_people_cluster(db, g, rnd);
+	    cluster_count--;
+	}
     }
 }
 
@@ -92,15 +92,13 @@ function add_people_cluster(db: GDB.GameDB, g: Gr.Ground, rnd: Rnd.Random): numb
     // for more or less room, but ha ha, whatever! we don't have
     // lavs/sea enabled now anyway.)
     // also this is hacky crap to allow room for (max 3) people in a row.
-    const mt = G.rect_mt(g);
-    const fudge_range = g.size.x * 0.4;
-    const ov = G.v2d_mk(fudge_range, 0);
-    const dst = rnd.v2d_around(mt, ov);
-    add_person(db, dst, 0, rnd);
+    const gmt = G.rect_mt(g);
+    add_person(db, gmt);
+    const ox = K.PEOPLE_SIZE.x * 2;
     if (rnd.boolean()) {
-	add_sheep(db, dst, rnd.float_range(-fudge_range, -fudge_range/2), rnd);
+	add_sheep(db, G.v2d_add_x(gmt, ox));
     } else {
-	add_sheep(db, dst, rnd.float_range(fudge_range, fudge_range/2), rnd);
+	add_sheep(db, G.v2d_add_x(gmt, -ox));
     }
     return 2;
 }
@@ -110,11 +108,10 @@ interface PersonPrivate extends S.Person {
     anim: A.ResourceAnimator | undefined;
 }
 
-function add_person(db: GDB.GameDB, mb: G.V2D, off_x: number, rnd: Rnd.Random) {
-    const offset_x = G.v2d_mk(off_x, rnd.float_range(-2, 2));
+function add_person(db: GDB.GameDB, mb: G.V2D): void {
+    // hard coded hack to look good. todo: ground should have hidden hotspots instead.
     const lt = G.v2d_sub(
-        G.v2d_add(mb, offset_x),
-        // hard coded hack to look good. todo: ground should have hidden hotspots instead.
+	mb,
         G.v2d_mk(K.PEOPLE_SIZE.x / 2, K.PEOPLE_SIZE.x * 0.75)
     );
     // todo: note: the whole beaming/rescue thing has a lot of state transitions
@@ -134,11 +131,10 @@ function add_person(db: GDB.GameDB, mb: G.V2D, off_x: number, rnd: Rnd.Random) {
     );
 }
 
-function add_sheep(db: GDB.GameDB, mb: G.V2D, off_x: number, rnd: Rnd.Random) {
-    const offset_x = G.v2d_mk(off_x, rnd.float_range(-2, 2));
+function add_sheep(db: GDB.GameDB, mb: G.V2D) {
+    // hard coded hack to look good. todo: ground should have hidden hotspots instead.
     const lt = G.v2d_sub(
-        G.v2d_add(mb, offset_x),
-        // hard coded hack to look good. todo: ground should have hidden hotspots instead.
+	mb,
         G.v2d_mk(K.SHEEP_SIZE.x / 2, K.SHEEP_SIZE.y * 0.6)
     );
     // todo: sheep beam up vs. down animations, too.

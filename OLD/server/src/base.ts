@@ -97,11 +97,10 @@ function animator_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): A.ResourceAnim
 }
 
 function pick_base_tile(db: GDB.GameDB): U.O<G.Rect> {
-    const rnd = new Rnd.RandomImpl(db.shared.level_index1);
     let ground = db.shared.items.ground;
     let r: U.O<G.Rect> = undefined;
-    while (r == null) {
-        const g = rnd.array_item(ground);
+    for (let i = 0; i < ground.length && r == null; ++i) {
+	const g = ground[i];
         // match: people assumes the base must be on a land tile.
         if (g != null && g.ground_type == Gr.GroundType.land) {
             r = g;

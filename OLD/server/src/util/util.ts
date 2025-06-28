@@ -335,3 +335,14 @@ export function findCycles(v: any): string {
     );
     return j;
 }
+
+export function zip<T>(a: T[], b: T[]): T[] {
+    const l = a.length >= b.length ? a : b;
+    const s = l === a ? b : a;
+    const z: T[] = [];
+    l.forEach((e, i) => {
+	z.push(e);
+	if (i < s.length) { z.push(s[i]); }
+    });
+    return z;
+}

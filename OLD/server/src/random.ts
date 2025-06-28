@@ -62,11 +62,11 @@ export class RandomImpl implements Random {
     constructor(seed?: number, private readonly trace: boolean = false) {
         const thiseed = seed || Date.now();
         this.s = S.xorshift7(thiseed.toString());
-        !!this.trace && D.log(seed, thiseed);
+        this.trace && D.log(seed, thiseed);
     }
     private double(): number {
         const d = this.s.double();
-        !!this.trace && D.log(d);
+        this.trace && D.log(d);
         return d;
     }
     boolean(chance: number = 0.5): boolean {
