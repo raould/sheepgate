@@ -22,7 +22,7 @@ import { RGBA } from '../color';
 import { DebugGraphics } from '../debug_graphics';
 
 export interface EnemySpec {
-    kind: string,
+    fighter_kind: string,
     lt?: G.V2D,
     anim: A.AnimatorDimensions,
     rank: S.Rank,
@@ -68,7 +68,7 @@ function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: Enemy
     return A.warpin_mk(
         db,
         {
-	    kind: spec.kind,
+	    fighter_kind: spec.fighter_kind,
             duration_msec: K.WARPIN_TOTAL_MSEC,
             rect,
             resource_id: db.uncloned.images.lookup(resource_id),
@@ -102,7 +102,7 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
             // todo: hard-coded #s here maybe should be world height %ages instead.
             const e: EnemyPrivate = {
                 dbid: dbid,
-		kind: spec.kind,
+		fighter_kind: fighter_spec.kind,
                 comment: `enemy-${dbid}-${spec.rank}`,
                 ...rect,
                 facing: F.DefaultFacing,

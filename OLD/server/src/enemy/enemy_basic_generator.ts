@@ -60,8 +60,8 @@ function add_generator(
 }
 
 function count_kind(db: GDB.GameDB, kind: string): number {
-    const alive = Object.values(db.shared.items.enemies).filter(e => e.kind == kind).length;
-    const warping = Object.values(db.shared.items.warpin).filter(e => e.kind == kind).length;
+    const alive = Object.values(db.shared.items.enemies).filter(e => e.fighter_kind == kind).length;
+    const warping = Object.values(db.shared.items.warpin).filter(e => e.fighter_kind == kind).length;
     return alive + warping;
 }
 

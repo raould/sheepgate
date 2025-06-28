@@ -73,7 +73,7 @@ export function anim2sprite(dbid: GDB.DBID, anim: ResourceAnimator, rect: G.Rect
 }
 
 export interface WarpinSpec {
-    kind: string,
+    fighter_kind: string,
     duration_msec: number;
     rect: G.Rect;
     resource_id: string;
@@ -103,7 +103,7 @@ export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
     const dbid = GDB.id_mk();
     const rect = G.rect_scale_mid(spec.rect, 1.25);
     return {
-	kind: spec.kind,
+	fighter_kind: spec.fighter_kind,
         dbid: dbid,
         comment: `warpin-${dbid}`,
 	...rect,

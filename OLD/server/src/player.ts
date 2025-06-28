@@ -24,6 +24,7 @@ const thrust_sfx: So.Sfx = {
 };
 
 export type PlayerSpec = {
+    player_kind: S.PlayerKind;
     facing: F.Facing;
     lt: G.V2D;
 }
@@ -37,12 +38,12 @@ interface PlayerSpritePrivate extends S.Player {
     step_resource_id(db: GDB.GameDB, delta_acc_x: number): void;
 }
 
-export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, player_kind: S.PlayerKind,spec: any): S.Sprite {
+export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.Sprite {
     const images = db.uncloned.images;
     // x-backwards from the ship, yes.
     const left_rid = images.lookup("player/p1_s_right.png");
     const right_rid = images.lookup("player/p1_s_left.png");
-    const size = get_shadow_size(player_kind);
+    const size = get_shadow_size(spec.player_kind);
     const shadow = {
 	dbid: dbid,
 	comment: `player-shadow-${dbid}`,
@@ -77,23 +78,24 @@ export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, player_kind: S.
     return shadow;
 }
 
-export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, player_kind: S.PlayerKind, spec: PlayerSpec): S.Player {
+export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.Player {
     const p: PlayerSpritePrivate = {
         ...spec,
         dbid,
-	kind: "player",
+	fighter_kind: "player",
         comment: `player-${dbid}`,
         lt: spec.lt,
 	lt_wiggle: spec.lt,
-        size: get_player_size(player_kind),
+        size: get_player_size(spec.player_kind),
         vel: G.v2d_mk_0(),
         acc: G.v2d_mk_0(),
         alpha: 1,
         rank: S.Rank.player,
-        still_anim: still_anim_mk(db, player_kind),
-        thrusting_anim: thrusting_anim_mk(db, player_kind),
+        still_anim: still_anim_mk(db, spec.player_kind),
+        thrusting_anim: thrusting_anim_mk(db, spec.player_kind),
         type_flags: Tf.TF.playerShip,
         weapons: weapons_mk(),
+	explosion_kind: spec.player_kind === S.PlayerKind.cbm ? S.ExplosionKind.cbm : S.ExplosionKind.regular,
         lifecycle: GDB.Lifecycle.alive,
         step(db: GDB.GameDB) {
             // regular physics movement for x, heuristic for y.
