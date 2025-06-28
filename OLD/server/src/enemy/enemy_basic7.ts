@@ -33,7 +33,7 @@ const Basic7: Lemk.EnemyMk = {
 	    db.shared.world.gameport.world_bounds.size.y * 0.3
 	);
 	const spec: Emk.EnemySpec = {
-	    kind: "basic7",
+	    fighter_kind: "basic7",
             anim: anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_BASIC_HP,

@@ -134,20 +134,20 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	this.db.shared.items.player = Pl.player_mk(
 	    this.db,
 	    GDB.id_mk(),
-	    player_kind,
 	    {
+		player_kind,
 		facing: F.Facing.right,
-		lt: lt,
+		lt,
 	    }
 	);
 	Pl.add_shield(this.db, this.db.shared.items.player);
 	this.db.shared.items.player_shadow = Pl.player_shadow_mk(
 	    this.db,
 	    GDB.id_mk(),
-	    player_kind,
 	    {
+		player_kind,
 		facing: F.Facing.right,
-		lt: lt,
+		lt,
 	    }
 	);
     }
@@ -204,11 +204,11 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	return far_spec0;
     }
 
-    private init_adv_from_konfig(konfig: U.O<LevelEnemyKonfig>, kind: string): U.O<Eag.EnemyGeneratorSpec> {
+    private init_adv_from_konfig(konfig: U.O<LevelEnemyKonfig>, fighter_kind: string): U.O<Eag.EnemyGeneratorSpec> {
 	if (U.exists(konfig)) {
 	    return {
-		kind: kind,
-		comment: `enemy-gen-${kind}`,
+		fighter_kind: fighter_kind,
+		comment: `enemy-gen-${fighter_kind}`,
 		generations: konfig?.count,
 		max_alive: konfig?.limit,
 		delay_msec: konfig?.delay_msec,
@@ -219,11 +219,11 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    }
 	}
     }
-    private init_basic_from_konfig(konfig: U.O<LevelEnemyKonfig>, kind: string): U.O<Ebg.EnemyGeneratorSpec> {
+    private init_basic_from_konfig(konfig: U.O<LevelEnemyKonfig>, fighter_kind: string): U.O<Ebg.EnemyGeneratorSpec> {
 	if (U.exists(konfig)) {
 	    return {
-		kind: kind,
-		comment: `enemy-gen-${kind}`,
+		fighter_kind: fighter_kind,
+		comment: `enemy-gen-${fighter_kind}`,
 		generations: konfig?.count,
 		max_alive: konfig?.limit,
 		delay_msec: konfig?.delay_msec,

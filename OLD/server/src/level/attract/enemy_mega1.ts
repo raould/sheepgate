@@ -34,7 +34,7 @@ const Mega: Lemk.EnemyMk = {
             SIZE,
     	    WARPIN_RESOURCE_ID,
             {
-		kind: "mega",
+		fighter_kind: "mega",
 	anim: anim,
 		rank: S.Rank.mega,
 		hp_init: K.ENEMY_MEGA_HP,

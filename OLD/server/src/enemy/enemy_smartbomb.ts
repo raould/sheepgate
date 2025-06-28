@@ -21,7 +21,7 @@ export function smartbomb_mk(db: GDB.GameDB, lt: G.V2D): U.O<S.Enemy> {
     const flight_pattern = new Fp.TargetPlayer(db, 500, G.v2d_mk_nn(0.0005));
     const rect = G.rect_mk(lt, SIZE);
     const spec = {
-	kind: "smartbomb",
+	fighter_kind: "smartbomb",
         lt: lt,
         anim: anim,
         rank: S.Rank.small,

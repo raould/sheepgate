@@ -30,6 +30,7 @@ export interface EnemySpec {
     spawn_strong?: boolean,
     damage: number,
     weapons: S.Arsenal,
+    explosion_kind?: S.ExplosionKind, // default is S.ExplosionKind.regular
     flight_pattern: Fp.FlightPattern,
     gem_count: number,
     shield_alpha?: number,
@@ -102,7 +103,7 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
             // todo: hard-coded #s here maybe should be world height %ages instead.
             const e: EnemyPrivate = {
                 dbid: dbid,
-		fighter_kind: fighter_spec.kind,
+		fighter_kind: spec.fighter_kind,
                 comment: `enemy-${dbid}-${spec.rank}`,
                 ...rect,
                 facing: F.DefaultFacing,
@@ -114,6 +115,7 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
                 mass: S.rank2mass(spec.rank),
                 type_flags: Tf.TF.enemyShip,
                 weapons: spec.weapons,
+		explosion_kind: spec.explosion_kind ?? S.ExplosionKind.regular,
                 z_back_to_front_ids: spec.anim.z_back_to_front_ids(db, F.DefaultFacing, false, 1),
                 alpha: 1,
                 lifecycle: GDB.Lifecycle.alive,

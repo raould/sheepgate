@@ -36,7 +36,7 @@ const Basic8: Lemk.EnemyMk = {
 	);
 	const flight_pattern = new Fp.BuzzPlayer(db, acc);
 	const spec: Emk.EnemySpec = {
-	    kind: "basic8",
+	    fighter_kind: "basic8",
             anim: anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_BASIC_HP,

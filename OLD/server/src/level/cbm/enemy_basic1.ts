@@ -29,7 +29,8 @@ const Basic1: Lemk.EnemyMk = {
 	const acc = G.v2d_mk(0.0003, 0.0006);
 	const flight_pattern = new Fp.BuzzPlayer(db, acc);
 	const spec: Emk.EnemySpec = {
-	    kind: "cbm2",
+	    fighter_kind: "cbm2",
+	    explosion_kind: S.ExplosionKind.cbm,
             anim: anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_BASIC_HP,
