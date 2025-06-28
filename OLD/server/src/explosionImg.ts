@@ -19,14 +19,18 @@ interface ExplosionImgPrivate extends S.Explosion {
     get_anim(): U.O<ExplosionAnimation>;
 }
 
-function frames_mk_helper(images: GDB.ImageResources, dir: string, base: string, start_n: number, end_n: number): string[] {
-    const count = end_n - start_n + 1;
+function frames_mk_helper(images: GDB.ImageResources, dir: string, base: string, start: number, end: number, pad?: number): string[] {
+    const count = end - start + 1;
     return [...Array(count).keys()]
-	.map(i => images.lookup(`${dir}/${base}${i+start_n}.png`));
+	.map(i => {
+	    const n = i + start;
+	    const padded = pad == null ? String(n) : String(n).padStart(pad, '0');
+	    return images.lookup(`${dir}/${base}${padded}.png`);
+	});
 }
 
 function frames_mkA(images: GDB.ImageResources): string[] {
-    return frames_mk_helper(images, "explosionA", "tile", 0, 11);
+    return frames_mk_helper(images, "explosionA", "tile", 0, 11, 3);
 }
 
 function frames_mkB(images: GDB.ImageResources): string[] {

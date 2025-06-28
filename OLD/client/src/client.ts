@@ -1489,13 +1489,13 @@ function loadImages() {
 
     loadImage("danger.png");
 
-    loadExplosionA("explosionA", "tile", 0, 11, 3);
-    loadExplosionA("explosionB", "ex", 1, 6);
-    loadExplosionA("explosionCbm", "cboom", 0, 6);
+    loadExplosion("explosionA", "tile", 0, 11, 3);
+    loadExplosion("explosionB", "exB", 1, 6);
+    loadExplosion("explosionCbm", "cboom", 0, 6);
 }
 
 // match: todo: share this code with the server.
-function loadExplosionA(dir: string, base: string, start: number, end: number, pad?: number) {
+function loadExplosion(dir: string, base: string, start: number, end: number, pad?: number) {
     for (let n = start; n <= end; ++n) {
         const tail = (pad == null ? String(n) : String(n).padStart(pad, '0')) + ".png"
         const file = dir + "/" + base + tail;
