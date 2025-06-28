@@ -600,10 +600,10 @@ function renderFx(gdb: any) {
 function renderBg(gdb: any) {
     renderDrawing(gdb, gdb.permanent_bg_drawing);
     for (const s of Object.values(gdb.items.bgFar)) {
-        renderSprite(gdb, s);
+        renderSprite(gdb, s, gdb.xyround);
     }
     for (const s of Object.values(gdb.items.bgNear)) {
-        renderSprite(gdb, s);
+        renderSprite(gdb, s, gdb.xyround);
     }
 }
 
