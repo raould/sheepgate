@@ -30,7 +30,7 @@ const Small: Lemk.EnemyMk = {
 	    G.v2d_mk_nn(0.0005)
 	);
 	const spec: Emk.EnemySpec = {
-            kind: "small",
+            fighter_kind: "small",
 	anim: anim,
             rank: S.Rank.small,
             hp_init: K.ENEMY_SMALL_HP,

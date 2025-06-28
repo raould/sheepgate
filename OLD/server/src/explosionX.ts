@@ -21,7 +21,7 @@ interface ExplosionBPrivate extends S.Explosion {
 }
 
 export function explosionX_mk(db: GDB.GameDB, spec: ExplosionBSpec): S.Explosion {
-    animations[spec.dbid] = new ExplosionAnimation(db, spec, K.EXPLOSIONB_MSEC);
+    animations[spec.dbid] = new ExplosionAnimation(db, spec, K.EXPLOSION_MSEC * 3); // dramatic!
     const e: ExplosionBPrivate = {
         ...spec,
         get anim(): U.O<ExplosionAnimation> {

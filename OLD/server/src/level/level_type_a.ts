@@ -44,6 +44,7 @@ export interface LevelEnemyKonfig {
 }
 
 export interface LevelKonfig {
+    player_kind: S.PlayerKind;
     Eb1?: LevelEnemyKonfig,
     Eb2?: LevelEnemyKonfig,
     Eb3?: LevelEnemyKonfig,
@@ -52,12 +53,15 @@ export interface LevelKonfig {
     Eb6?: LevelEnemyKonfig,
     Eb7?: LevelEnemyKonfig,
     Eb8?: LevelEnemyKonfig,
+    Ebs1?: LevelEnemyKonfig, // 's'pecial e.g. cbm.
+    Ebs2?: LevelEnemyKonfig, // 's'pecial e.g. cbm.
     Ep?: LevelEnemyKonfig,
     Es?: LevelEnemyKonfig,
     Em?: LevelEnemyKonfig,
     Ehm?: LevelEnemyKonfig,
     BG_COLOR: RGBA,
     people_cluster_count: number,
+    ground_kind: Gr.GroundKind,
 };
 
 interface FarSpec0 {
@@ -88,10 +92,10 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	D.log(`new level_type_a for index1 ${index1}!`);
 	this.state = Gs.StepperState.running;
         this.reminder_cycle = HCycle.newFromRed(90 / K.FRAME_MSEC_DT);
-	const far_spec0 = this.far_spec0_mk();
-	this.db = this.db_mk(far_spec0, score);
-	this.init_bg(far_spec0);
-	this.init_player();
+	const far_spec0 = this.far_spec0_mk(konfig.ground_kind);
+	this.db = this.db_mk(far_spec0, score, konfig.player_kind);
+	this.init_bg(far_spec0, konfig.ground_kind);
+	this.init_player(konfig.player_kind);
 	this.init_enemies();
 
 	// prime the history pump with a minimal copy.
@@ -102,7 +106,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	this.db.shared.sfx.push({ sfx_id: K.BEGIN_SFX });
     }
 
-    private db_mk(far_spec0: FarSpec0[], score: number): GDB.GameDB {
+    private db_mk(far_spec0: FarSpec0[], score: number, player_kind: S.PlayerKind): GDB.GameDB {
 	// match: ground level, mountains, world height, etc. K.TILE_WIDTH.
 	// match: project_far_specs()
 	const world_size = G.v2d_mk(
@@ -111,7 +115,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	);
 	
 	const dbc = this.sharedCore_mk(world_size);
-	const uncloned = this.uncloned_mk(dbc, this.index1, world_size);
+	const uncloned = this.uncloned_mk(dbc, this.index1, world_size, player_kind);
 	const local = this.local_mk(dbc, this.index1, score, world_size);
 	const shared = this.sharedItems_mk(dbc, uncloned.images);
 	return {
@@ -121,7 +125,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	};
     }
 
-    private init_player() {
+    private init_player(player_kind: S.PlayerKind) {
 	const b = this.db.shared.items.base;
 	D.assert(!!b);
 	const lt = G.v2d_mk(
@@ -132,8 +136,9 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    this.db,
 	    GDB.id_mk(),
 	    {
+		player_kind,
 		facing: F.Facing.right,
-		lt: lt,
+		lt,
 	    }
 	);
 	Pl.add_shield(this.db, this.db.shared.items.player);
@@ -141,28 +146,30 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    this.db,
 	    GDB.id_mk(),
 	    {
+		player_kind,
 		facing: F.Facing.right,
-		lt: lt,
+		lt,
 	    }
 	);
     }
 
-    private init_bg(far_spec0: FarSpec0[]) {
+    private init_bg(far_spec0: FarSpec0[], ground_kind: Gr.GroundKind) {
 	Sk.sky_mk(this.db);
 	const far_spec_images: Gr.FarSpec[] = far_spec0.map((e: FarSpec0): Gr.FarSpec => ({
 	    ...e,
 	    images_spec: { resource_id: this.db.uncloned.images.lookup(e.resource_name) }
 	}));
-	Gr.bg_mk(this.db, far_spec_images);
-	Gr.ground_mk(this.db, far_spec_images);
-	B.base_add(this.db);
+	Gr.bg_mk(this.db, far_spec_images, ground_kind);
+	Gr.ground_mk(this.db, far_spec_images, ground_kind);
+	B.base_add(this.db, ground_kind);
 	Po.populate(
 	    this.db,
 	    this.konfig.people_cluster_count
 	);
     }
 
-    far_spec0_mk(): FarSpec0[] {
+    far_spec0_mk(ground_kind: Gr.GroundKind): FarSpec0[] {
+	const cbm = ground_kind === Gr.GroundKind.cbm ? "cbm_" : "";
 	// todo: extract out the x calculations,
 	// make something more interesting,
 	// make it so the world can fit more far's
@@ -170,22 +177,22 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	const alpha = 0.2;
 	const far_spec0 = [
 	    {
-		resource_name: "bg/mal_far.png",
+		resource_name: `bg/mal_${cbm}far.png`,
 		type: Gr.BgFarType.mountain,
 		alpha: alpha
 	    },
 	    {
-		resource_name: "bg/ma_far.png",
+		resource_name: `bg/ma_${cbm}far.png`,
 		type: Gr.BgFarType.mountain,
 		alpha: alpha
 	    },
 	    {
-		resource_name: "bg/ma_far.png",
+		resource_name: `bg/ma_${cbm}far.png`,
 		type: Gr.BgFarType.mountain,
 		alpha: alpha
 	    },
 	    {
-		resource_name: "bg/mar_far.png",
+		resource_name: `bg/mar_${cbm}far.png`,
 		type: Gr.BgFarType.mountain,
 		alpha: alpha
 	    },
@@ -199,11 +206,11 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	return far_spec0;
     }
 
-    private init_adv_from_konfig(konfig: U.O<LevelEnemyKonfig>, kind: string): U.O<Eag.EnemyGeneratorSpec> {
+    private init_adv_from_konfig(konfig: U.O<LevelEnemyKonfig>, fighter_kind: string): U.O<Eag.EnemyGeneratorSpec> {
 	if (U.exists(konfig)) {
 	    return {
-		kind: kind,
-		comment: `enemy-gen-${kind}`,
+		fighter_kind: fighter_kind,
+		comment: `enemy-gen-${fighter_kind}`,
 		generations: konfig?.count,
 		max_alive: konfig?.limit,
 		delay_msec: konfig?.delay_msec,
@@ -214,11 +221,11 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    }
 	}
     }
-    private init_basic_from_konfig(konfig: U.O<LevelEnemyKonfig>, kind: string): U.O<Ebg.EnemyGeneratorSpec> {
+    private init_basic_from_konfig(konfig: U.O<LevelEnemyKonfig>, fighter_kind: string): U.O<Ebg.EnemyGeneratorSpec> {
 	if (U.exists(konfig)) {
 	    return {
-		kind: kind,
-		comment: `enemy-gen-${kind}`,
+		fighter_kind: fighter_kind,
+		comment: `enemy-gen-${fighter_kind}`,
 		generations: konfig?.count,
 		max_alive: konfig?.limit,
 		delay_msec: konfig?.delay_msec,
@@ -253,6 +260,8 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	basics.push(this.init_basic_from_konfig(this.konfig.Eb6, "basic6"));
 	basics.push(this.init_basic_from_konfig(this.konfig.Eb7, "basic7"));
 	basics.push(this.init_basic_from_konfig(this.konfig.Eb8, "basic8"));
+	basics.push(this.init_basic_from_konfig(this.konfig.Ebs1, "basic-special-1"));
+	basics.push(this.init_basic_from_konfig(this.konfig.Ebs2, "basic-special-2"));
 	D.assert(basics.length > 0, "no basic enemies found?!");
 	Ebg.add_generators(
 	    this.db,
@@ -399,8 +408,9 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	return shared;
     }
 
-    private uncloned_mk(dbc: GDB.DBSharedCore, index1: number, world_size: G.V2D): any {
-	const collision_spacey_pad = K.PLAYER_SHIP_SIZE.y * 5; // match: empirical player constraints.
+    private uncloned_mk(dbc: GDB.DBSharedCore, index1: number, world_size: G.V2D, player_kind: S.PlayerKind): any {
+	const player_size = Pl.get_player_size(player_kind);
+	const collision_spacey_pad = player_size.y * 5; // match: empirical player constraints.
 	const collision_bounds = G.rect_mk(
 	    G.v2d_mk(0, -collision_spacey_pad),
 	    G.v2d_mk(world_size.x, world_size.y + collision_spacey_pad)

@@ -5,6 +5,8 @@ import * as Hse from './menu/high_score_entry_screen';
 import * as Hst from './menu/high_score_table_screen';
 import * as Cdb from './client_db';
 import * as Db from './db';
+import * as P from './player';
+import * as S from './sprite';
 import * as Cmd from './commands';
 import * as Gs from './game_stepper';
 import * as Hs from './high_scores';
@@ -23,6 +25,7 @@ import * as L4 from './level/level4/level4';
 import * as L5 from './level/level5/level5';
 import * as L6 from './level/level6/level6';
 import * as L7 from './level/level7/level7';
+import * as Lcbm from './level/cbm/cbm';
 
 const TRACK1_SFX = { sfx_id: K.TRACK1_SFX, gain: 0.3, singleton: true };
 
@@ -62,6 +65,7 @@ interface GamePrivate extends Game {
 type LevelMk = (level_index: number, score: number, high_score: Hs.HighScore) => Lis.LevelInScreens;
 // match: konfig.ts
 const level_mks: LevelMk[] = [
+    (i: number, score: number, hi: Hs.HighScore) => Lcbm.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L1.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L2.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L3.level_mk(i, score, hi),
@@ -231,13 +235,14 @@ class GameInstructions implements Gs.Stepper {
 	const x = G.rect_w(K.SCREEN_RECT)*0.1;
 	const y = G.rect_h(K.SCREEN_RECT)*0.2;
 	const yo = Math.sin((this.stepper.mdb.shared.tick + x)/40) * K.d2s(5);
+	const size = P.get_player_size(S.PlayerKind.cow);
 	return {
             wrap: false,
             image_located: {
                 resource_id: "images/player/cowR.png",
                 rect: G.rect_mk(
 		    G.v2d_mk(x, y + yo),
-		    K.PLAYER_COW_SIZE,
+		    size,
 		),
             },
 	    comment: "player",

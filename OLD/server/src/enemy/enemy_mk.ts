@@ -22,7 +22,7 @@ import { RGBA } from '../color';
 import { DebugGraphics } from '../debug_graphics';
 
 export interface EnemySpec {
-    kind: string,
+    fighter_kind: string,
     lt?: G.V2D,
     anim: A.AnimatorDimensions,
     rank: S.Rank,
@@ -30,6 +30,7 @@ export interface EnemySpec {
     spawn_strong?: boolean,
     damage: number,
     weapons: S.Arsenal,
+    explosion_kind?: S.ExplosionKind, // default is S.ExplosionKind.regular
     flight_pattern: Fp.FlightPattern,
     gem_count: number,
     shield_alpha?: number,
@@ -68,7 +69,7 @@ function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: Enemy
     return A.warpin_mk(
         db,
         {
-	    kind: spec.kind,
+	    fighter_kind: spec.fighter_kind,
             duration_msec: K.WARPIN_TOTAL_MSEC,
             rect,
             resource_id: db.uncloned.images.lookup(resource_id),
@@ -102,7 +103,7 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
             // todo: hard-coded #s here maybe should be world height %ages instead.
             const e: EnemyPrivate = {
                 dbid: dbid,
-		kind: spec.kind,
+		fighter_kind: spec.fighter_kind,
                 comment: `enemy-${dbid}-${spec.rank}`,
                 ...rect,
                 facing: F.DefaultFacing,
@@ -114,6 +115,7 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
                 mass: S.rank2mass(spec.rank),
                 type_flags: Tf.TF.enemyShip,
                 weapons: spec.weapons,
+		explosion_kind: spec.explosion_kind ?? S.ExplosionKind.regular,
                 z_back_to_front_ids: spec.anim.z_back_to_front_ids(db, F.DefaultFacing, false, 1),
                 alpha: 1,
                 lifecycle: GDB.Lifecycle.alive,

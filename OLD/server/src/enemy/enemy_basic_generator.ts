@@ -7,7 +7,7 @@ import * as U from '../util/util';
 // doesn't care how many other enemies of types exist.
 
 export interface EnemyGeneratorSpec {
-    kind: string,
+    fighter_kind: string,
     generations: number;
     max_alive: number;
     comment: string;
@@ -59,15 +59,15 @@ function add_generator(
     );
 }
 
-function count_kind(db: GDB.GameDB, kind: string): number {
-    const alive = Object.values(db.shared.items.enemies).filter(e => e.kind == kind).length;
-    const warping = Object.values(db.shared.items.warpin).filter(e => e.kind == kind).length;
+function count_kind(db: GDB.GameDB, fighter_kind: string): number {
+    const alive = Object.values(db.shared.items.enemies).filter(e => e.fighter_kind == fighter_kind).length;
+    const warping = Object.values(db.shared.items.warpin).filter(e => e.fighter_kind == fighter_kind).length;
     return alive + warping;
 }
 
 function should_generate(db: GDB.GameDB, spec: EnemyGeneratorSpec, counts: EnemyGenerationCounts): boolean {
     const available = counts.generated < spec.generations;
-    const room = count_kind(db, spec.kind) < spec.max_alive;
+    const room = count_kind(db, spec.fighter_kind) < spec.max_alive;
     return available && room;
 }
 

@@ -212,6 +212,7 @@ function on_death_fx(db: GDB.GameDB, shield: ShieldPrivate, fighter: S.Fighter) 
             return Exi.explosionImg_mk(db, {
                 dbid: dbid,
                 comment: `explosionImg-${dbid}`,
+		explosion_kind: fighter.explosion_kind,
                 ...r,
                 type_flags: type_flags,
                 rank: fighter.rank,

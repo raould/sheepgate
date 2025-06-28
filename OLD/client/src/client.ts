@@ -457,15 +457,15 @@ function renderSounds(db: any) {
     db.sfx = [];
 }
 
-function renderSpriteImage(gdb: any, s: any) {
+function renderSpriteImage(gdb: any, s: any, xyround?: number) {
     const zs: Array<string>|undefined = s.z_back_to_front_ids;
     if (zs != null) {
-        zs.forEach(z => renderSpriteImageLayer(gdb, s, z))
+        zs.forEach(z => renderSpriteImageLayer(gdb, s, z, xyround))
     }
-    renderSpriteImageLayer(gdb, s, s.resource_id);
+    renderSpriteImageLayer(gdb, s, s.resource_id, xyround);
 }
 
-function renderSpriteImageLayer(gdb: any, s: any, resource_id: string) {
+function renderSpriteImageLayer(gdb: any, s: any, resource_id: string, xyround?: number) {
     const gameport = gdb.world.gameport;
     const world_bounds = gdb.world.bounds0;
     if (resource_id != null && s.alpha > 0) {
@@ -481,10 +481,16 @@ function renderSpriteImageLayer(gdb: any, s: any, resource_id: string) {
             }
             const img: any = images[resource_id];
             if (img != null) {
+		let x = Math.floor(wr.lt.x + ss.x);
+		let y = Math.floor(wr.lt.y + ss.y);
+		if (xyround != null) {
+		    x = Math.floor(x/xyround)*xyround;
+		    y = Math.floor(y/xyround)*xyround;
+		}
                 cx2d.drawImage(
 		    img,
 		    0, 0, img.width, img.height,
-		    Math.floor(wr.lt.x + ss.x), Math.floor(wr.lt.y + ss.y),
+		    x, y,
 		    Math.floor(wr.size.x), Math.floor(wr.size.y),
 		);
             }
@@ -501,11 +507,11 @@ function renderSpriteImageLayer(gdb: any, s: any, resource_id: string) {
     }
 }
 
-function renderSprite(gdb: any, s: any) {
+function renderSprite(gdb: any, s: any, xyround?: number) {
     if (s.alpha > Number.MIN_VALUE) { // match: server
-	renderSpriteImage(gdb, s);
+	renderSpriteImage(gdb, s, xyround);
 	// match: i do want the drawing on top ie for player's shield_bar.
-	renderDrawing(gdb, s.drawing);
+	renderDrawing(gdb, s.drawing); // todo: xyround. ugh.
 	if (s != null && debugging_state.is_drawing) {
             renderRects(
 		gdb,
@@ -525,7 +531,7 @@ function renderSprite(gdb: any, s: any) {
 function renderPlayer(gdb: any) {
     const p = gdb.items.player;
     if (p != null) {
-        renderSprite(gdb, p);
+        renderSprite(gdb, p, gdb.xyround);
     }
     // note: player shadow drawn later to be on z-top.
 }
@@ -533,61 +539,61 @@ function renderPlayer(gdb: any) {
 function renderPlayerShadow(gdb: any) {
     const s = gdb.items.player_shadow;
     if (s != null) {
-	renderSprite(gdb, s);
+	renderSprite(gdb, s, gdb.xyround);
     }
 }
 
 function renderPeople(gdb: any) {
     for (const p of Object.values(gdb.items.people)) {
-        renderSprite(gdb, p);
+        renderSprite(gdb, p, gdb.xyround);
     }
 }
 
 function renderGems(gdb: any) {
     for (const g of Object.values(gdb.items.gems)) {
-        renderSprite(gdb, g);
+        renderSprite(gdb, g, gdb.xyround);
     }
 }
 
 function renderWarpin(gdb: any) {
     for (const w of Object.values(gdb.items.warpin)) {
-        renderSprite(gdb, w);
+        renderSprite(gdb, w, gdb.xyround);
     }
 }
 
 function renderEnemies(gdb: any) {
     for (const e of Object.values(gdb.items.enemies)) {
-        renderSprite(gdb, e);
+        renderSprite(gdb, e, gdb.xyround);
     }
 }
 
 function renderMunchies(gdb: any) {
     for (const m of Object.values(gdb.items.munchies)) {
-        renderSprite(gdb, m);
+        renderSprite(gdb, m, gdb.xyround);
     }
 }
 
 function renderShields(gdb: any) {
     for (const s of Object.values(gdb.items.shields)) {
-        renderSprite(gdb, s);
+        renderSprite(gdb, s, gdb.xyround);
     }
 }
 
 function renderExplosions(gdb: any) {
     for (const s of Object.values(gdb.items.explosions)) {
-        renderSprite(gdb, s);
+        renderSprite(gdb, s, gdb.xyround);
     }
 }
 
 function renderShots(gdb: any) {
     for (const s of Object.values(gdb.items.shots)) {
-        renderSprite(gdb, s);
+        renderSprite(gdb, s, gdb.xyround);
     }
 }
 
 function renderFx(gdb: any) {
     for (const x of Object.values(gdb.items.fx)) {
-        renderSprite(gdb, x);
+        renderSprite(gdb, x, gdb.xyround);
     }
 }
 
@@ -610,7 +616,7 @@ function renderGround(gdb: any) {
 
 function renderSky(gdb: any) {
     for (const s of Object.values(gdb.items.sky)) {
-        renderSprite(gdb, s);
+        renderSprite(gdb, s, gdb.xyround);
     }
 }
 
@@ -1272,9 +1278,14 @@ function loadImages() {
 	loadImage(`player/cow${dir}T1.png`);
 	loadImage(`player/cow${dir}T2.png`);
     });
+    loadImage(`player/cbml.png`);
+    loadImage(`player/cbmlt.png`);
+    loadImage(`player/cbmr.png`);
+    loadImage(`player/cbmrt.png`);
 
     [1,2,3,4].forEach(anim => {
         loadImage(`ground/base${anim}.png`);
+        loadImage(`ground/base_cbm_${anim}.png`);
     });
 
     loadImage("enemies/munchies/mr1.png");
@@ -1417,6 +1428,18 @@ function loadImages() {
 	loadImage(`enemies/e29/e7m${anim}.png`);
     });
 
+    loadImage(`enemies/cbm1/cbm11.png`);
+    loadImage(`enemies/cbm1/cbm12.png`);
+    loadImage(`enemies/cbm2/cbm2l1.png`);
+    loadImage(`enemies/cbm2/cbm2l2.png`);
+    loadImage(`enemies/cbm2/cbm2r1.png`);
+    loadImage(`enemies/cbm2/cbm2r2.png`);
+    loadImage(`enemies/cbm3/cbm31.png`);
+    loadImage(`enemies/cbm3/cbm32.png`);
+    loadImage(`enemies/cbm3/cbm33.png`);
+    loadImage(`enemies/cbm4/cbm41.png`);
+    loadImage(`enemies/cbm4/cbm42.png`);
+
     [...Array(10).keys()].forEach(i => {
 	loadImage(`gem/gem${i+1}.png`)
     });
@@ -1441,6 +1464,12 @@ function loadImages() {
     loadImage("shots/bullet_shot_2l.png");
     loadImage("shots/bullet_shot_3r.png");
     loadImage("shots/bullet_shot_3l.png");
+    loadImage("shots/bullet_shot_cbm_r.png");
+    loadImage("shots/bullet_shot_cbm_l.png");
+    loadImage("shots/bullet_shot_cbm_2r.png");
+    loadImage("shots/bullet_shot_cbm_2l.png");
+    loadImage("shots/bullet_shot_cbm_3r.png");
+    loadImage("shots/bullet_shot_cbm_3l.png");
 
     loadImage("clouds/c_big.png");
     loadImage("clouds/c_middle.png");
@@ -1449,6 +1478,10 @@ function loadImages() {
     loadImage("ground/ga_sr.png");
     loadImage("ground/ga_sl.png");
     loadImage("ground/sa.png");
+    loadImage("ground/ga_cbm.png");
+    loadImage("ground/ga_cbm_sr.png");
+    loadImage("ground/ga_cbm_sl.png");
+    loadImage("ground/sa_cbm.png");
     loadImage("people/standing.png");
     loadImage("people/waving1.png");
     loadImage("people/waving2.png");
@@ -1465,22 +1498,25 @@ function loadImages() {
     loadImage("bg/ma_far.png");
     loadImage("bg/mal_far.png");
     loadImage("bg/mar_far.png");
+    loadImage("bg/ma_cbm_far.png");
+    loadImage("bg/mal_cbm_far.png");
+    loadImage("bg/mar_cbm_far.png");
     loadImage("bg/ma_near.png");
     loadImage("bg/ma_near2.png");
     loadImage("bg/ma_near3.png");
+    loadImage("bg/ma_near_cbm.png");
 
     loadImage("danger.png");
 
-    loadExplosionA("explosionA", "tile", 0, 11, 3);
-    Array.from({length: 6}, (v, i) => i+1).forEach((i) => {
-	loadImage(`explosionB/exB${i}.png`)
-    });
+    loadExplosion("explosionA", "tile", 0, 11, 3);
+    loadExplosion("explosionB", "exB", 1, 6);
+    loadExplosion("explosionCbm", "cboom", 0, 6);
 }
 
 // match: todo: share this code with the server.
-function loadExplosionA(dir: string, base: string, start: number, end: number, pad: number) {
+function loadExplosion(dir: string, base: string, start: number, end: number, pad?: number) {
     for (let n = start; n <= end; ++n) {
-        const tail = String(n).padStart(pad, '0') + ".png"
+        const tail = (pad == null ? String(n) : String(n).padStart(pad, '0')) + ".png"
         const file = dir + "/" + base + tail;
         loadImage(file);
     }

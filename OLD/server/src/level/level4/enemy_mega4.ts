@@ -13,7 +13,7 @@ import * as Lemk from '../enemy_mk';
 import * as K from '../../konfig';
 
 // match: sprite animation.
-const SIZE = K.vd2si(G.v2d_scale_v2d_i(G.v2d_mk(200, 75), G.v2d_mk(0.5, 0.5)));
+const SIZE = K.vd2si(G.v2d_scale_v2d_i(G.v2d_mk(200, 75), G.v2d_mk(0.4, 0.4)));
 const WARPIN_RESOURCE_ID = "enemies/e21/gg1l.png";
 const Mega: Lemk.EnemyMk = {
     SIZE,
@@ -39,7 +39,7 @@ const Mega: Lemk.EnemyMk = {
             SIZE,
     	    WARPIN_RESOURCE_ID,
             {
-		kind: "mega",
+		fighter_kind: "mega",
 	anim: anim,
 		rank: S.Rank.mega,
 		hp_init: K.ENEMY_MEGA_HP,

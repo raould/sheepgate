@@ -13,7 +13,7 @@ import * as K from '../konfig';
 import * as Rnd from '../random';
 
 // match: sprite animation.
-const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(16, 16), 1));
+const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(16, 16), 2));
 const WARPIN_RESOURCE_ID = "enemies/pods/sprite_1.png";
 const Pod: Lemk.EnemyMk = {
     SIZE,
@@ -22,7 +22,7 @@ const Pod: Lemk.EnemyMk = {
 	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
 	const flight_pattern = new Fp.BuzzPlayer(db, G.v2d_mk(0.0001, 0.0001));
 	const spec: Emk.EnemySpec = {
-	    kind: "pod",
+	    fighter_kind: "pod",
             anim: anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_POD_HP,
@@ -90,7 +90,7 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
                         ...images.lookup_range_n(n => `enemies/pods/sprite_${n}.png`, 0, 3)
 		    ],
 		    starting_mode: A.MultiImageStartingMode.hold,
-		    ending_mode: A.MultiImageEndingMode.loop
+		    ending_mode: A.MultiImageEndingMode.bounce
                 }
 	    )
         });

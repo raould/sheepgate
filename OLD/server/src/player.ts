@@ -24,6 +24,7 @@ const thrust_sfx: So.Sfx = {
 };
 
 export type PlayerSpec = {
+    player_kind: S.PlayerKind;
     facing: F.Facing;
     lt: G.V2D;
 }
@@ -37,16 +38,17 @@ interface PlayerSpritePrivate extends S.Player {
     step_resource_id(db: GDB.GameDB, delta_acc_x: number): void;
 }
 
-export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: any): S.Sprite {
+export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.Sprite {
     const images = db.uncloned.images;
     // x-backwards from the ship, yes.
     const left_rid = images.lookup("player/p1_s_right.png");
     const right_rid = images.lookup("player/p1_s_left.png");
+    const size = get_shadow_size(spec.player_kind);
     const shadow = {
 	dbid: dbid,
 	comment: `player-shadow-${dbid}`,
 	lt: spec.lt,
-	size: K.PLAYER_SHADOW_SIZE,
+	size,
 	vel: G.v2d_mk_0(),
 	acc: G.v2d_mk_0(),
 	alpha: 1,
@@ -60,7 +62,7 @@ export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: any): S.S
 		    this.resource_id = F.on_facing(this.facing, left_rid, right_rid);
 		    this.lt = G.v2d_set_y(
 			player.lt,
-			K.GAMEPORT_RECT.size.y - K.PLAYER_SHADOW_SIZE.y * 2
+			K.GAMEPORT_RECT.size.y - size.y * 2
 		    );
 		}
 	    );
@@ -80,19 +82,20 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
     const p: PlayerSpritePrivate = {
         ...spec,
         dbid,
-	kind: "player",
+	fighter_kind: "player",
         comment: `player-${dbid}`,
         lt: spec.lt,
 	lt_wiggle: spec.lt,
-        size: K.PLAYER_COW_SIZE,
+        size: get_player_size(spec.player_kind),
         vel: G.v2d_mk_0(),
         acc: G.v2d_mk_0(),
         alpha: 1,
         rank: S.Rank.player,
-        still_anim: still_anim_mk(db),
-        thrusting_anim: thrusting_anim_mk(db),
+        still_anim: still_anim_mk(db, spec.player_kind),
+        thrusting_anim: thrusting_anim_mk(db, spec.player_kind),
         type_flags: Tf.TF.playerShip,
-        weapons: weapons_mk(),
+        weapons: weapons_mk(spec.player_kind),
+	explosion_kind: spec.player_kind === S.PlayerKind.cbm ? S.ExplosionKind.cbm : S.ExplosionKind.regular,
         lifecycle: GDB.Lifecycle.alive,
         step(db: GDB.GameDB) {
             // regular physics movement for x, heuristic for y.
@@ -236,9 +239,10 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
     return p;
 }
 
-function weapons_mk(): { [k: string]: S.Weapon } {
+function weapons_mk(player_kind: S.PlayerKind): { [k: string]: S.Weapon } {
     return {
         w1: Pw.player_weapon_mk({
+	    player_kind,
             clip_spec: {
                 reload_spec: {
                     duration_msec: K.PLAYER_WEAPON_CLIP_COOLDOWN_MSEC,
@@ -262,36 +266,135 @@ function weapons_mk(): { [k: string]: S.Weapon } {
     };
 }
 
-function still_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
-    const images = db.uncloned.images;
-    return A.facing_animator_mk(
-        db.shared.sim_now,
-        {
-            resource_id: images.lookup("player/cowL.png"),
-        },
-        {
-            resource_id: images.lookup("player/cowR.png"),
-        },
-    );
+function get_shadow_size(player_kind: S.PlayerKind): G.V2D {
+    switch (player_kind) {
+    case S.PlayerKind.ship: {
+	return K.vd2si(G.v2d_mk(76, 10));
+    }
+    case S.PlayerKind.cow: {
+	return K.vd2si(G.v2d_mk(76, 10));
+    }
+    case S.PlayerKind.cbm: {
+	return K.vd2si(G.v2d_mk(76, 10));
+    }
+    }	
 }
 
-function thrusting_anim_mk(db: GDB.GameDB): A.FacingResourceAnimator {
+
+export function get_player_size(player_kind: S.PlayerKind): G.V2D {
+    switch (player_kind) {
+    case S.PlayerKind.ship: {
+	return K.vd2si(G.v2d_mk(76, 25));
+    }
+    case S.PlayerKind.cow: {
+	return K.vd2si(G.v2d_scale_i(G.v2d_mk(32, 16), 2.4));
+    }
+    case S.PlayerKind.cbm: {
+	return K.vd2si(G.v2d_scale_i(G.v2d_mk(112, 70), 0.8));
+    }
+    }	
+}
+
+function still_anim_mk(db: GDB.GameDB, player_kind: S.PlayerKind): A.FacingResourceAnimator {
     const images = db.uncloned.images;
-    return A.facing_animator_mk(
-        db.shared.sim_now,
-        {
-            frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
-            resource_ids: images.lookup_range_n((n) => `player/cowLT${n}.png`, 1, 2),
-            starting_mode: A.MultiImageStartingMode.hold,
-            ending_mode: A.MultiImageEndingMode.loop
-        },
-        {
-            frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
-            resource_ids: images.lookup_range_n((n) => `player/cowRT${n}.png`, 1, 2),
-            starting_mode: A.MultiImageStartingMode.hold,
-            ending_mode: A.MultiImageEndingMode.loop
-        },
-    );
+    switch (player_kind) {
+    case S.PlayerKind.ship: {
+	return A.facing_animator_mk(
+            db.shared.sim_now,
+	    {
+		frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
+		resource_ids: images.lookup_range_a((a) => `player/p1_${a}_left.png`, ['a', 'b', 'c']),
+		starting_mode: A.MultiImageStartingMode.hold,
+		ending_mode: A.MultiImageEndingMode.loop
+	    },
+	    {
+		frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
+		resource_ids: images.lookup_range_a((a) => `player/p1_${a}_right.png`, ['a', 'b', 'c']),
+		starting_mode: A.MultiImageStartingMode.hold,
+		ending_mode: A.MultiImageEndingMode.loop
+	    },
+	);
+    }
+    case S.PlayerKind.cow: {
+	return A.facing_animator_mk(
+            db.shared.sim_now,
+            {
+		resource_id: images.lookup("player/cowL.png"),
+	    },
+	    {
+		resource_id: images.lookup("player/cowR.png"),
+	    }
+	);
+    }
+    case S.PlayerKind.cbm: {
+	return A.facing_animator_mk(
+            db.shared.sim_now,
+            {
+		resource_id: images.lookup("player/cbml.png"),
+            },
+            {
+		resource_id: images.lookup("player/cbmr.png"),
+            },
+	);
+    }
+    }
+}
+
+function thrusting_anim_mk(db: GDB.GameDB, player_kind: S.PlayerKind): A.FacingResourceAnimator {
+    const images = db.uncloned.images;
+    switch (player_kind) {
+    case S.PlayerKind.ship: {
+	return A.facing_animator_mk(
+            db.shared.sim_now,
+            {
+		frame_msec: K.PLAYER_ANIM_FRAME_MSEC/2,
+		resource_ids: images.lookup_range_a((a) => `player/p1_f${a}_left.png`, ['a', 'b', 'c']),
+		starting_mode: A.MultiImageStartingMode.hold,
+		ending_mode: A.MultiImageEndingMode.loop
+	    },
+	    {
+		frame_msec: K.PLAYER_ANIM_FRAME_MSEC/2,
+		resource_ids: images.lookup_range_a((a) => `player/p1_f${a}_right.png`, ['a', 'b', 'c']),
+		starting_mode: A.MultiImageStartingMode.hold,
+		ending_mode: A.MultiImageEndingMode.loop
+	    }
+	);
+    }
+    case S.PlayerKind.cow: {
+	return A.facing_animator_mk(
+            db.shared.sim_now,
+            {
+		frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
+		resource_ids: images.lookup_range_n((n) => `player/cowLT${n}.png`, 1, 2),
+		starting_mode: A.MultiImageStartingMode.hold,
+		ending_mode: A.MultiImageEndingMode.loop
+	    },
+	    {
+		frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
+		resource_ids: images.lookup_range_n((n) => `player/cowRT${n}.png`, 1, 2),
+		starting_mode: A.MultiImageStartingMode.hold,
+		ending_mode: A.MultiImageEndingMode.loop
+	    }
+	);
+    }
+    case S.PlayerKind.cbm: {
+	return A.facing_animator_mk(
+            db.shared.sim_now,
+            {
+		frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
+		resource_ids: [images.lookup("player/cbmlt.png"), images.lookup("player/cbmlt.png")],
+		starting_mode: A.MultiImageStartingMode.hold,
+		ending_mode: A.MultiImageEndingMode.loop
+            },
+            {
+		frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
+		resource_ids: [images.lookup("player/cbmrt.png"), images.lookup("player/cbmrt.png")],
+		starting_mode: A.MultiImageStartingMode.hold,
+		ending_mode: A.MultiImageEndingMode.loop
+            },
+	);
+    }
+    }
 }
 
 function get_player_acc_x(player: S.Player, db: GDB.GameDB): number {

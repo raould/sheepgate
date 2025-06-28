@@ -12,6 +12,7 @@ import * as Rnd from './random';
 import * as _ from 'lodash';
 
 export interface PlayerWeaponSpec extends C.Masked {
+    player_kind: S.PlayerKind;
     clip_spec: Cd.ClipSpec;
     shot_damage: number;
     shot_speed: number;
@@ -66,21 +67,22 @@ export function player_weapon_mk(spec: PlayerWeaponSpec): S.Weapon {
 		return lt;
 	    })();
 	    const images = db.uncloned.images;
+	    const cbm = spec.player_kind === S.PlayerKind.cbm ? "cbm_" : "";
 	    const anims = [
 		A.facing_animator_mk(
 		    now,
-		    { resource_id: images.lookup("shots/bullet_shot_l.png") },
-		    { resource_id: images.lookup("shots/bullet_shot_r.png") },
+		    { resource_id: images.lookup(`shots/bullet_shot_${cbm}l.png`) },
+		    { resource_id: images.lookup(`shots/bullet_shot_${cbm}r.png`) },
 		),
 		A.facing_animator_mk(
 		    now,
-		    { resource_id: images.lookup("shots/bullet_shot_2l.png") },
-		    { resource_id: images.lookup("shots/bullet_shot_2r.png") },
+		    { resource_id: images.lookup(`shots/bullet_shot_${cbm}2l.png`) },
+		    { resource_id: images.lookup(`shots/bullet_shot_${cbm}2r.png`) },
 		),
 		A.facing_animator_mk(
 		    now,
-		    { resource_id: images.lookup("shots/bullet_shot_3l.png") },
-		    { resource_id: images.lookup("shots/bullet_shot_3r.png") },
+		    { resource_id: images.lookup(`shots/bullet_shot_${cbm}3l.png`) },
+		    { resource_id: images.lookup(`shots/bullet_shot_${cbm}3r.png`) },
 		)
 	    ];
 	    const anim = U.element_looped(anims, anim_index++)!;

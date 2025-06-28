@@ -23,7 +23,7 @@ export function spec_mk(db: GDB.GameDB): Emk.EnemySpec {
     );
     const flight_pattern = new Fp.TargetPlayer(db, 500, acc);
     return {
-	kind: "swarmer",
+	fighter_kind: "swarmer",
         anim: anim,
         rank: S.Rank.basic,
         hp_init: K.ENEMY_SWARMER_HP,

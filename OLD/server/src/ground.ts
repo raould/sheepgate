@@ -8,6 +8,11 @@ import * as U from './util/util';
 import * as D from './debug';
 import * as _ from 'lodash';
 
+export enum GroundKind {
+    regular,
+    cbm,
+}
+
 export enum BgFarType {
     mountain,
     sea, // lava, water, etc.
@@ -124,15 +129,24 @@ function far2far_specs(db: GDB.GameDB, far_specs: FarSpec[]): FarSpec[] {
     return specs;
 }
 
-function far2near_specs(db: GDB.GameDB, far_specs: FarSpec[]): NearSpec[] {
+function far2near_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: GroundKind): NearSpec[] {
     const images = db.uncloned.images;
     const sea: UnlocatedSpec<BgNearType> = {
         images_spec: {resource_id: K.EMPTY_IMAGE_RESOURCE_ID},
         type: BgNearType.sea,
         alpha: 1
     };
-    const city_images = [images.lookup("bg/ma_near.png"), images.lookup("bg/ma_near2.png"), images.lookup("bg/ma_near3.png")];
-    const city_image = city_images[(db.shared.level_index1-1) % 3];
+    const city_image = (() => {
+	switch (ground_kind) {
+	case GroundKind.regular: {
+	    const city_images = [images.lookup("bg/ma_near.png"), images.lookup("bg/ma_near2.png"), images.lookup("bg/ma_near3.png")];
+	    return city_images[(db.shared.level_index1-1) % 3];
+	}
+	case GroundKind.cbm: {
+	    return images.lookup("bg/ma_near_cbm.png")
+	}
+	}
+    })();
     const city: UnlocatedSpec<BgNearType> = {
         // todo: 'city' stuff seems to never be used really for ma_*, so either test & use, or delete?
         images_spec: { resource_id: city_image },
@@ -162,15 +176,15 @@ function far2near_specs(db: GDB.GameDB, far_specs: FarSpec[]): NearSpec[] {
     return specs;
 }
 
-function far2ground_specs(db: GDB.GameDB, far_specs: FarSpec[]): GroundSpec[] {
+function far2ground_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: GroundKind): GroundSpec[] {
     const images = db.uncloned.images;
     const sea: UnlocatedSpec<GroundType> = {
-        images_spec: {resource_id: images.lookup("ground/sa.png")},
+        images_spec: {resource_id: ground_kind === GroundKind.cbm ? images.lookup("ground/sa_cbm.png") : images.lookup("ground/sa.png")},
         type: GroundType.land,
         alpha: 1
     };
     const land: UnlocatedSpec<GroundType> = {
-        images_spec: {resource_id: images.lookup("ground/ga.png")},
+        images_spec: {resource_id: ground_kind === GroundKind.cbm ? images.lookup("ground/ga_cbm.png") : images.lookup("ground/ga.png")},
         type: GroundType.land,
         alpha: 1
     };
@@ -195,7 +209,7 @@ function far2ground_specs(db: GDB.GameDB, far_specs: FarSpec[]): GroundSpec[] {
         const left = U.element_looped(specs, i-1);
         const mid = U.element_looped(specs, i);
         const right = U.element_looped(specs, i+1);
-        const refined = refine_ground(images, left, mid, right);
+        const refined = refine_ground(images, left, mid, right, ground_kind);
         if (refined != null) {
             specs[i] = refined;
         }
@@ -205,18 +219,19 @@ function far2ground_specs(db: GDB.GameDB, far_specs: FarSpec[]): GroundSpec[] {
     return specs;
 }
 
-function refine_ground(images: GDB.ImageResources, left: U.O<GroundSpec>, mid: U.O<GroundSpec>, right: U.O<GroundSpec>): U.O<GroundSpec> {
+function refine_ground(images: GDB.ImageResources, left: U.O<GroundSpec>, mid: U.O<GroundSpec>, right: U.O<GroundSpec>, ground_kind: GroundKind): U.O<GroundSpec> {
+    const cbm = ground_kind === GroundKind.cbm ? "cbm_" : "";
     if (mid?.type == GroundType.land) {
         if (left?.type == GroundType.sea) {
             return {
                 ...mid,
-                images_spec: {resource_id: images.lookup("ground/ga_sl.png")}
+                images_spec: {resource_id: images.lookup(`ground/ga_${cbm}sl.png`)}
             }
         }
         else if(right?.type == GroundType.sea) {
             return {
                 ...mid,
-                images_spec: {resource_id: images.lookup("ground/ga_sr.png")}
+                images_spec: {resource_id: images.lookup(`ground/ga_${cbm}sr.png`)}
             }
         }
         else {
@@ -244,13 +259,13 @@ export function p2d_max_ys(db: GDB.GameDB, p: G.P2D): number {
     return maxy;
 }
 
-export function ground_mk(db: GDB.GameDB, far_specs: FarSpec[]) {
-    add_ground_tiles(db, far_specs);
+export function ground_mk(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: GroundKind) {
+    add_ground_tiles(db, far_specs, ground_kind);
 }
 
-function add_ground_tiles(db: GDB.GameDB, far_specs: FarSpec[]) {
+function add_ground_tiles(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: GroundKind) {
     const size = K.GROUND_SIZE; // match: max_y().i.
-    const ground_specs = far2ground_specs(db, far_specs);
+    const ground_specs = far2ground_specs(db, far_specs, ground_kind);
     ground_specs.forEach((spec: GroundSpec, i: number) => {    
         // note/todo: these are not Collidables because we'll do that another way.
         const animator = A.animator_mk(db.shared.sim_now, spec.images_spec);
@@ -287,7 +302,7 @@ function add_ground_tiles(db: GDB.GameDB, far_specs: FarSpec[]) {
     });
 }
 
-export function bg_mk(db: GDB.GameDB, far_specs: FarSpec[]) {
+export function bg_mk(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: GroundKind) {
     // setting the two background layers down by some arbitrary amount
     // so they layer nicely behind the real ground tiles that
     // have a little transparency at their top since they aren't
@@ -309,7 +324,7 @@ export function bg_mk(db: GDB.GameDB, far_specs: FarSpec[]) {
         K.BG_NEAR_BG_SIZE,
         ground2near_scale,
         "bg-n",
-        far2near_specs(db, far_specs)
+        far2near_specs(db, far_specs, ground_kind)
     );
 }
 
