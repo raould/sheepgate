@@ -12,7 +12,7 @@ import * as Lemk from '../enemy_mk';
 import * as K from '../../konfig';
 
 // match: sprite animation.
-const SIZE = K.vd2si(G.v2d_scale_i(G.v2d_mk(77, 54), 0.8));
+const SIZE = K.vd2si(G.v2d_scale_i(G.v2d_mk(77, 54), 1));
 const WARPIN_RESOURCE_ID = "enemies/cbm1/cbm11.png";
 const Small: Lemk.EnemyMk = {
     SIZE,
@@ -74,7 +74,7 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
             animator: A.animator_mk(
                 db.shared.sim_now,
                 {
-                    frame_msec: 120,
+                    frame_msec: 160,
                     resource_ids: [
                         ...images.lookup_range_n(n => `enemies/cbm1/cbm1${n}.png`, 1, 2)
                     ],

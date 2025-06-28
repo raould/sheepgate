@@ -373,7 +373,6 @@ function bg_make_layer<T, S extends Spec<T>>(
                                 // the window a little bit. farther away bg means slower moving
                                 // means shifting more towards the window.
                                 // so confusing, so hacky, i know vs. just a real projection matrix!
-                                // todo: do i have to fix that we lose sprites at the world boundaries?
                                 const wx = G.rect_mid(db.shared.world.gameport.world_bounds).x;
                                 const dx = wx * parallax_factor;
                                 const lt2 = G.v2d_add(this.original_pos, G.v2d_mk(dx, 0));
