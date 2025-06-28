@@ -61,7 +61,7 @@ export interface LevelKonfig {
     Ehm?: LevelEnemyKonfig,
     BG_COLOR: RGBA,
     people_cluster_count: number,
-    near_kind: Gr.GroundNearKind,
+    ground_kind: Gr.GroundKind,
 };
 
 interface FarSpec0 {
@@ -92,9 +92,9 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	D.log(`new level_type_a for index1 ${index1}!`);
 	this.state = Gs.StepperState.running;
         this.reminder_cycle = HCycle.newFromRed(90 / K.FRAME_MSEC_DT);
-	const far_spec0 = this.far_spec0_mk();
+	const far_spec0 = this.far_spec0_mk(konfig.ground_kind);
 	this.db = this.db_mk(far_spec0, score, konfig.player_kind);
-	this.init_bg(far_spec0, konfig.near_kind);
+	this.init_bg(far_spec0, konfig.ground_kind);
 	this.init_player(konfig.player_kind);
 	this.init_enemies();
 
@@ -153,13 +153,13 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	);
     }
 
-    private init_bg(far_spec0: FarSpec0[], near_kind: Gr.GroundNearKind) {
+    private init_bg(far_spec0: FarSpec0[], ground_kind: Gr.GroundKind) {
 	Sk.sky_mk(this.db);
 	const far_spec_images: Gr.FarSpec[] = far_spec0.map((e: FarSpec0): Gr.FarSpec => ({
 	    ...e,
 	    images_spec: { resource_id: this.db.uncloned.images.lookup(e.resource_name) }
 	}));
-	Gr.bg_mk(this.db, far_spec_images, near_kind);
+	Gr.bg_mk(this.db, far_spec_images, ground_kind);
 	Gr.ground_mk(this.db, far_spec_images);
 	B.base_add(this.db);
 	Po.populate(
@@ -168,7 +168,8 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	);
     }
 
-    far_spec0_mk(): FarSpec0[] {
+    far_spec0_mk(ground_kind: Gr.GroundKind): FarSpec0[] {
+	const cbm = ground_kind === Gr.GroundKind.cbm ? "cbm_" : "";
 	// todo: extract out the x calculations,
 	// make something more interesting,
 	// make it so the world can fit more far's
@@ -176,22 +177,22 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	const alpha = 0.2;
 	const far_spec0 = [
 	    {
-		resource_name: "bg/mal_far.png",
+		resource_name: `bg/mal_${cbm}far.png`,
 		type: Gr.BgFarType.mountain,
 		alpha: alpha
 	    },
 	    {
-		resource_name: "bg/ma_far.png",
+		resource_name: `bg/ma_${cbm}far.png`,
 		type: Gr.BgFarType.mountain,
 		alpha: alpha
 	    },
 	    {
-		resource_name: "bg/ma_far.png",
+		resource_name: `bg/ma_${cbm}far.png`,
 		type: Gr.BgFarType.mountain,
 		alpha: alpha
 	    },
 	    {
-		resource_name: "bg/mar_far.png",
+		resource_name: `bg/mar_${cbm}far.png`,
 		type: Gr.BgFarType.mountain,
 		alpha: alpha
 	    },

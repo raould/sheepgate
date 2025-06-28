@@ -1397,7 +1397,9 @@ function loadImages() {
     loadImage(`enemies/cbm3/cbm31.png`);
     loadImage(`enemies/cbm3/cbm32.png`);
     loadImage(`enemies/cbm3/cbm33.png`);
-
+    loadImage(`enemies/cbm4/cbm41.png`);
+    loadImage(`enemies/cbm4/cbm42.png`);
+    
     [...Array(10).keys()].forEach(i => {
 	loadImage(`gem/gem${i+1}.png`)
     });
@@ -1452,6 +1454,9 @@ function loadImages() {
     loadImage("bg/ma_far.png");
     loadImage("bg/mal_far.png");
     loadImage("bg/mar_far.png");
+    loadImage("bg/ma_cbm_far.png");
+    loadImage("bg/mal_cbm_far.png");
+    loadImage("bg/mar_cbm_far.png");
     loadImage("bg/ma_near.png");
     loadImage("bg/ma_near2.png");
     loadImage("bg/ma_near3.png");
