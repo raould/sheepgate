@@ -169,7 +169,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
     }
 
     far_spec0_mk(ground_kind: Gr.GroundKind): FarSpec0[] {
-	const cbm = ground_kind === Gr.GroundKind.cbm ? "cbm_" : "";
+	const cbm = ground_kind === Gr.GroundKind.cbm ? "cbm2_" : "";
 	// todo: extract out the x calculations,
 	// make something more interesting,
 	// make it so the world can fit more far's

@@ -290,7 +290,7 @@ export function get_player_size(player_kind: S.PlayerKind): G.V2D {
 	return K.vd2si(G.v2d_scale_i(G.v2d_mk(32, 16), 2.4));
     }
     case S.PlayerKind.cbm: {
-	return K.vd2si(G.v2d_scale_i(G.v2d_mk(112, 70), 0.8));
+	return K.vd2si(G.v2d_scale_i(G.v2d_mk(56, 35), 1.5));
     }
     }	
 }

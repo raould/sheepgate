@@ -143,7 +143,7 @@ function far2near_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Groun
 	    return city_images[(db.shared.level_index1-1) % 3];
 	}
 	case GroundKind.cbm: {
-	    return images.lookup("bg/ma_near_cbm.png")
+	    return images.lookup("bg/ma_cbm_near.png")
 	}
 	}
     })();
