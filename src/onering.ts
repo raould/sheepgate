@@ -227,7 +227,7 @@ abstract class AbstractParticleGenerator {
     ostep = 5; // four floats per particle: ox, oy, ovx, ovy, size.
     particles: Float32Array;
 
-    constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/, particles_mk: (self: AbstractParticleGenerator) => void) {
+    constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/, public xyround: number|undefined, particles_mk: (self: AbstractParticleGenerator) => void) {
         this.particles = new Float32Array(this.count * this.ostep);
 	particles_mk(this);
     }
@@ -247,8 +247,12 @@ abstract class AbstractParticleGenerator {
             const vx = this.particles[i + this.ovx];
             const vy = this.particles[i + this.ovy];
 	    const size = this.particles[i + this.osize];
-            const x1 = x0 + vx * elapsed_msec;
-            const y1 = y0 + vy * elapsed_msec;
+            let x1 = x0 + vx * elapsed_msec;
+            let y1 = y0 + vy * elapsed_msec;
+	    if (this.xyround != null) {
+		x1 = Math.floor(x1/this.xyround)*this.xyround;
+		y1 = Math.floor(y1/this.xyround)*this.xyround
+	    }
             const sxy = v2sv_wrapped({x:x1, y:y1}, gdb.world.gameport, gdb.world.bounds0, true);
             // nifty trails, arbitrary hard-coded hacked values.
 	    const dx = (x1 - x0) * 5;
@@ -267,8 +271,8 @@ abstract class AbstractParticleGenerator {
 }
 
 class ParticlesEllipseGenerator extends AbstractParticleGenerator {
-    constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/) {
-	super(count, duration_msec, start_msec, speed, bounds,
+    constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/, public xyround: number|undefined) {
+	super(count, duration_msec, start_msec, speed, bounds, xyround,
 	      (self) => {
 		  const mx = bounds.lt.x + bounds.size.x/2;
 		  const my = bounds.lt.y + bounds.size.y/2;
@@ -302,8 +306,8 @@ const P8 = [
 
 // trying to still make it biased in favor or horizontalness.
 class ParticlesEightGenerator extends AbstractParticleGenerator {
-    constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/) {
-	super(count, duration_msec, start_msec, speed, bounds,
+    constructor(public count: number, public duration_msec: number, public start_msec: number, public speed: number, public bounds: any/*G.Rect*/, public xyround: number|undefined) {
+	super(count, duration_msec, start_msec, speed, bounds, xyround,
 	      (self) => {
 		  const mx = bounds.lt.x + bounds.size.x/2;
 		  const my = bounds.lt.y + bounds.size.y/2;
@@ -1101,6 +1105,7 @@ function applyParticles(gdb: any) {
                     gdb.sim_now,
                     pspec.speed,
                     pspec.bounds,
+		    gdb.xyround
 		);
 	    }
 	    else {
@@ -1110,6 +1115,7 @@ function applyParticles(gdb: any) {
                     gdb.sim_now,
                     pspec.speed,
                     pspec.bounds,
+		    gdb.xyround
 		);
 	    }
         }
