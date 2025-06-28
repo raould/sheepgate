@@ -177,7 +177,7 @@ export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(d2si(80) * 2); // match: a
 // so the value used to reduce the size of the zone after reversing is used for stepping inside
 // the zone, too. got that? :-\
 // note: the dynamics here aren't as good as real stargate, either :-(
-export const GAMEPORT_PLAYER_ZONE_STEP_X = d2s(0.4); // K but must be per-dt, not per-frame.
+export const GAMEPORT_PLAYER_ZONE_STEP_X = d2s(0.45); // K but must be per-dt, not per-frame.
 export const GAMEPORT_SHAKE = d2si(4); // K
 
 export const OFF_SCREEN = G.v2d_mk_nn(-Number.MAX_SAFE_INTEGER);
@@ -282,7 +282,7 @@ export const BALL_SHOT_SIZE = vd2si(G.v2d_mk(6, 6)); // W
 // note: explosions should have slightly different timings
 // so they don't appear in lock-step e.g. when things crash
 // into each other.
-export const EXPLOSION_MSEC = 500; // K
+export const EXPLOSION_MSEC = 750; // K
 
 // pixels/dt? pixels/sec? i dunno!
 export const DRAG_ACC = vd2s(G.v2d_mk(-0.0025, -0.005)); // L

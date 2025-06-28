@@ -30,8 +30,8 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
 };
 
 const ATTRACT_MOVES = [Cmd.CommandType.up, Cmd.CommandType.down, undefined];
-const LEET = "5H33PGAT3";
-const SHEEP = "SHEEPGATE";
+const LEET = "5 H 3 3 P G A T 3";
+const SHEEP = "S H E E P G A T E";
 const titleLatch = new Rnd.RandomBoolDuration(0.1, 1000, 7*1000);
 
 class LevelImpl extends Lta.AbstractLevelTypeA {
@@ -112,7 +112,7 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 	this.db.shared.hud_drawing.texts.push({
 	    wrap: true,
 	    fillStyle: RGBA.CYAN,
-	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.36, K.GAMEPORT_RECT.size.y * 0.5),
+	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.275, K.GAMEPORT_RECT.size.y * 0.5),
 	    font: `${K.d2si(80)}px ${K.MENU_FONT}`,
 	    text: titleLatch.test(this.db.shared.sim_now) ? LEET : SHEEP,
 	    comment: "demo-title",

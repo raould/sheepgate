@@ -12,6 +12,7 @@ import * as U from './util/util';
 // note: i bet this was all done in like 4 lines of machine code in Defender/Stargate.
 // the dynamics here aren't as good as real stargate, either.
 // todo: i have seen bugs where the player breaks free of the zone somehow.
+// note: yeah i have no idea how this works any more.
 
 export function gameport_step(db: GDB.GameDB) {
     U.if_lets(
@@ -84,14 +85,16 @@ function step_x(db: GDB.GameDB, p: S.Player) {
     const sign = F.f2x(p.facing);
     const diff_x = pm.x - target.x;
     const ahead = U.sign(diff_x) == sign;
-    // if (ahead) {
-    // 	const dtsf = K.GAMEPORT_PLAYER_ZONE_STEP_X * db.local.frame_dt;
-    //     const step_x = Math.min(Math.abs(diff_x / 2), dtsf) * sign;
-    //     G.rect_move_mut(
-    //         db.shared.world.gameport.world_bounds,
-    //         G.v2d_mk_x0(step_x)
-    //     );
-    // }
+
+    // ????????????????????????????????????????????????? any more ???
+    if (ahead) {
+    	const dtsf = K.GAMEPORT_PLAYER_ZONE_STEP_X * db.local.frame_dt;
+        const step_x = Math.min(Math.abs(diff_x / 2), dtsf) * sign;
+        G.rect_move_mut(
+            db.shared.world.gameport.world_bounds,
+            G.v2d_mk_x0(step_x)
+        );
+    }
 }
 
 function player_to_zone(db: GDB.GameDB, player: S.Player, gameport: G.Rect): [G.V2D/*target*/, G.V2D/*leading*/] {
