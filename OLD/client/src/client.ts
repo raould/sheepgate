@@ -1433,6 +1433,9 @@ function loadImages() {
     loadImage(`enemies/cbm2/cbm2l2.png`);
     loadImage(`enemies/cbm2/cbm2r1.png`);
     loadImage(`enemies/cbm2/cbm2r2.png`);
+    loadImage(`enemies/cbm3/cbm31.png`);
+    loadImage(`enemies/cbm3/cbm32.png`);
+    loadImage(`enemies/cbm3/cbm33.png`);
 
     [...Array(10).keys()].forEach(i => {
 	loadImage(`gem/gem${i+1}.png`)
@@ -1458,6 +1461,12 @@ function loadImages() {
     loadImage("shots/bullet_shot_2l.png");
     loadImage("shots/bullet_shot_3r.png");
     loadImage("shots/bullet_shot_3l.png");
+    loadImage("shots/bullet_shot_cbm_r.png");
+    loadImage("shots/bullet_shot_cbm_l.png");
+    loadImage("shots/bullet_shot_cbm_2r.png");
+    loadImage("shots/bullet_shot_cbm_2l.png");
+    loadImage("shots/bullet_shot_cbm_3r.png");
+    loadImage("shots/bullet_shot_cbm_3l.png");
 
     loadImage("clouds/c_big.png");
     loadImage("clouds/c_middle.png");

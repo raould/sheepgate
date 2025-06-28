@@ -94,7 +94,7 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
         still_anim: still_anim_mk(db, spec.player_kind),
         thrusting_anim: thrusting_anim_mk(db, spec.player_kind),
         type_flags: Tf.TF.playerShip,
-        weapons: weapons_mk(),
+        weapons: weapons_mk(spec.player_kind),
 	explosion_kind: spec.player_kind === S.PlayerKind.cbm ? S.ExplosionKind.cbm : S.ExplosionKind.regular,
         lifecycle: GDB.Lifecycle.alive,
         step(db: GDB.GameDB) {
@@ -239,9 +239,10 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
     return p;
 }
 
-function weapons_mk(): { [k: string]: S.Weapon } {
+function weapons_mk(player_kind: S.PlayerKind): { [k: string]: S.Weapon } {
     return {
         w1: Pw.player_weapon_mk({
+	    player_kind,
             clip_spec: {
                 reload_spec: {
                     duration_msec: K.PLAYER_WEAPON_CLIP_COOLDOWN_MSEC,

@@ -5,7 +5,7 @@ import * as S from '../../sprite';
 import * as Lta from '../level_type_a';
 import * as Lis from '../level_in_screens';
 import * as Gr from '../../ground';
-import Ecbm from './enemy_basic1';
+import Ecbm1 from './enemy_basic1';
 import Es from './enemy_small1';
 import Em from './enemy_mega1';
 import Ehm from './enemy_hypermega1';
@@ -18,7 +18,7 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     return {
 	player_kind: S.PlayerKind.cbm,
 	near_kind: Gr.GroundNearKind.cbm,
-	Ebs1: { mk: Ecbm.warpin_mk, count: 10 + buf, limit: 5 + buf, delay_msec: 1000, tick_msec: 3*1000 },
+	Ebs1: { mk: Ecbm1.warpin_mk, count: 10 + buf, limit: 4 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Es: { mk: Es.warpin_mk, count: 5 + buf, limit: 3 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Em: { mk: Em.warpin_mk, count: 2 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Ehm: { mk: Ehm.warpin_mk, count: 1 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 5*1000 },
