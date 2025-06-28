@@ -112,7 +112,7 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 	this.db.shared.hud_drawing.texts.push({
 	    wrap: true,
 	    fillStyle: RGBA.CYAN,
-	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.275, K.GAMEPORT_RECT.size.y * 0.5),
+	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.24, K.GAMEPORT_RECT.size.y * 0.5),
 	    font: `${K.d2si(80)}px ${K.MENU_FONT}`,
 	    text: titleLatch.test(this.db.shared.sim_now) ? LEET : SHEEP,
 	    comment: "demo-title",
