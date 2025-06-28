@@ -7,6 +7,7 @@ and keep finding things i did that are super confusing.
 this code base is consisently inconsistent.
 
 and by 'bounty' i just mean a very heart-felt, "thank you!"
+* bounty: fix collision to update the 'next' frame, then take hp/hp_init damage, not full damage.
 * bounty: fix aesthetics/physics of player reversing direction.
 * bounty: player can break free of their 'zone' sometimes!
 * bounty: player wrapping can freak out sometimes!
