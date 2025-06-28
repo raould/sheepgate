@@ -65,10 +65,10 @@ interface GamePrivate extends Game {
 type LevelMk = (level_index: number, score: number, high_score: Hs.HighScore) => Lis.LevelInScreens;
 // match: konfig.ts
 const level_mks: LevelMk[] = [
+    (i: number, score: number, hi: Hs.HighScore) => Lcbm.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L1.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L2.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L3.level_mk(i, score, hi),
-    (i: number, score: number, hi: Hs.HighScore) => Lcbm.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L4.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L5.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L6.level_mk(i, score, hi),

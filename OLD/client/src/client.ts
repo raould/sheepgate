@@ -1285,6 +1285,7 @@ function loadImages() {
 
     [1,2,3,4].forEach(anim => {
         loadImage(`ground/base${anim}.png`);
+        loadImage(`ground/base_cbm_${anim}.png`);
     });
 
     loadImage("enemies/munchies/mr1.png");
@@ -1477,6 +1478,10 @@ function loadImages() {
     loadImage("ground/ga_sr.png");
     loadImage("ground/ga_sl.png");
     loadImage("ground/sa.png");
+    loadImage("ground/ga_cbm.png");
+    loadImage("ground/ga_cbm_sr.png");
+    loadImage("ground/ga_cbm_sl.png");
+    loadImage("ground/sa_cbm.png");
     loadImage("people/standing.png");
     loadImage("people/waving1.png");
     loadImage("people/waving2.png");

@@ -17,8 +17,8 @@ interface BasePrivate extends S.Base {
     beam_down_rect: G.Rect;
 }
 
-export function base_add(db: GDB.GameDB) {
-    const base = base_mk(db);
+export function base_add(db: GDB.GameDB, ground_kind: Gr.GroundKind) {
+    const base = base_mk(db, ground_kind);
     D.assert(base != null);
     if (base != null) {
         db.shared.items.base = base
@@ -26,11 +26,11 @@ export function base_add(db: GDB.GameDB) {
     }
 }
 
-function base_mk(db: GDB.GameDB): U.O<S.Base> {
+function base_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): U.O<S.Base> {
     let base: U.O<S.Base>;
     const ground_tile = pick_base_tile(db);
     if (ground_tile != null) {
-        const animator = animator_mk(db);
+        const animator = animator_mk(db, ground_kind);
         const z_back_to_front_ids = animator.z_back_to_front_ids(db);
         // hacky hard coded centeringish of the base in the ground tile, moved up a bit.
         const base_lt = G.v2d_sub(
@@ -80,7 +80,8 @@ function base_mk(db: GDB.GameDB): U.O<S.Base> {
     return base;
 }
 
-function animator_mk(db: GDB.GameDB): A.ResourceAnimator {
+function animator_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): A.ResourceAnimator {
+    const cbm = ground_kind === Gr.GroundKind.cbm ? "_cbm_" : "";
     const images = db.uncloned.images;
     return new A.MultiImageAnimator(
         db.shared.sim_now,
@@ -89,7 +90,7 @@ function animator_mk(db: GDB.GameDB): A.ResourceAnimator {
             ending_mode: A.MultiImageEndingMode.loop,
             frame_msec: 100,
             resource_ids: [
-                ...images.lookup_range_n((n) => `ground/base${n}.png`, 1, 4)
+                ...images.lookup_range_n((n) => `ground/base${cbm}${n}.png`, 1, 4)
             ]
         }
     );

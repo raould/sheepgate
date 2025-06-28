@@ -160,8 +160,8 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    images_spec: { resource_id: this.db.uncloned.images.lookup(e.resource_name) }
 	}));
 	Gr.bg_mk(this.db, far_spec_images, ground_kind);
-	Gr.ground_mk(this.db, far_spec_images);
-	B.base_add(this.db);
+	Gr.ground_mk(this.db, far_spec_images, ground_kind);
+	B.base_add(this.db, ground_kind);
 	Po.populate(
 	    this.db,
 	    this.konfig.people_cluster_count
