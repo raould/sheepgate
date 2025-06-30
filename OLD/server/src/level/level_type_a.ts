@@ -365,7 +365,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    const reminder: Dr.DrawText = {
 		wrap: false,
 		// hard-coded eye-balled positioning.
-		lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.335, K.GAMEPORT_RECT.size.y/2),
+		lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.4, K.GAMEPORT_RECT.size.y/2),
 		font: RESCUE_FONT,
 		fillStyle: this.reminder_cycle.next().setAlpha01(
 		    U.t01(0, K.PEOPLE_REMINDER_TIMEOUT, this.people_reminder_timeout)
