@@ -25,11 +25,19 @@ const thrust_sfx: So.Sfx = {
 
 export type PlayerSpec = {
     player_kind: S.PlayerKind;
+    disable_beaming: boolean;
+    facing: F.Facing;
+    lt: G.V2D;
+}
+
+export type PlayerShadowSpec = {
+    player_kind: S.PlayerKind;
     facing: F.Facing;
     lt: G.V2D;
 }
 
 interface PlayerSpritePrivate extends S.Player {
+    disable_beaming: boolean;
     lt_wiggle: G.V2D;
     lifecycle: GDB.Lifecycle;
     still_anim: A.FacingResourceAnimator;
@@ -38,7 +46,7 @@ interface PlayerSpritePrivate extends S.Player {
     step_resource_id(db: GDB.GameDB, delta_acc_x: number): void;
 }
 
-export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.Sprite {
+export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerShadowSpec): S.Sprite {
     const images = db.uncloned.images;
     // x-backwards from the ship, yes.
     const left_rid = images.lookup("player/p1_s_right.png");
@@ -155,8 +163,10 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
 	// means it is pretty fragile/sensitive vs. how it looks on the screen, doesn't allow for much gap,
 	// e.g. is annoying for sheep.
         on_collide(db: GDB.GameDB, c: S.CollidableSprite): void {
-            this.maybe_beam_up_person(db, c);
-            this.maybe_beam_down_to_base(db, c);
+	    if (this.disable_beaming !== true) {
+		this.maybe_beam_up_person(db, c);
+		this.maybe_beam_down_to_base(db, c);
+	    }
         },
         on_death(_:GDB.GameDB) {},
         toJSON() {

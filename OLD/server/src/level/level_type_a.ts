@@ -45,6 +45,7 @@ export interface LevelEnemyKonfig {
 
 export interface LevelKonfig {
     player_kind: S.PlayerKind;
+    player_disable_beaming?: boolean; // default falsy.
     Eb1?: LevelEnemyKonfig,
     Eb2?: LevelEnemyKonfig,
     Eb3?: LevelEnemyKonfig,
@@ -95,7 +96,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	const far_spec0 = this.far_spec0_mk(konfig.ground_kind);
 	this.db = this.db_mk(far_spec0, score, konfig.player_kind);
 	this.init_bg(far_spec0, konfig.ground_kind);
-	this.init_player(konfig.player_kind);
+	this.init_player(konfig.player_kind, !!konfig.player_disable_beaming);
 	this.init_enemies();
 
 	// prime the history pump with a minimal copy.
@@ -125,7 +126,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	};
     }
 
-    private init_player(player_kind: S.PlayerKind) {
+    private init_player(player_kind: S.PlayerKind, disable_beaming: boolean) {
 	const b = this.db.shared.items.base;
 	D.assert(!!b);
 	const lt = G.v2d_mk(
@@ -137,6 +138,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    GDB.id_mk(),
 	    {
 		player_kind,
+		disable_beaming,
 		facing: F.Facing.right,
 		lt,
 	    }
@@ -245,6 +247,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	// this is going to be a crappy half-hard-coded state machine hack.
 
 	const spec: Eag.AddGeneratorsSpec = {}
+	// @ts-ignore-error eyeroll
 	if (K.DEBUG_HACK_ONLY_HYPERMEGA !== true) {
 	    spec.pod = this.init_adv_from_konfig(this.konfig.Ep, "pod");
 	    spec.small = this.init_adv_from_konfig(this.konfig.Es, "small");
@@ -254,6 +257,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	Eag.add_generators(this.db, spec);
 
 	const basics: U.O<Ebg.EnemyGeneratorSpec>[] = [];
+	// @ts-ignore-error eyeroll
 	if (K.DEBUG_HACK_ONLY_HYPERMEGA !== true) {
 	    basics.push(this.init_basic_from_konfig(this.konfig.Eb1, "basic1"));
 	    basics.push(this.init_basic_from_konfig(this.konfig.Eb2, "basic2"));
