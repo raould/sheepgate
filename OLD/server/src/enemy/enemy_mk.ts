@@ -34,6 +34,7 @@ export interface EnemySpec {
     flight_pattern: Fp.FlightPattern,
     gem_count: number,
     shield_alpha?: number,
+    shield_scale?: G.V2D,
     flying_sfx?: So.Sfx,
     hardpoint_left?: (r: G.Rect) => G.V2D,
     hardpoint_right?: (r: G.Rect) => G.V2D,
@@ -230,7 +231,7 @@ function add_shield(db: GDB.GameDB, enemy: EnemyPrivate, spec: EnemySpec) {
     const images = db.uncloned.images;
     Sh.add_fighter_shield(db, {
         resource_id: images.lookup("shield/shield2.png"),
-        enlarge: K.SHIELD_SCALE,
+        enlarge: spec.shield_scale ?? K.SHIELD_SCALE,
         fighter: enemy,
         hp_init: spec.hp_init,
 	spawn_strong: spec.spawn_strong,

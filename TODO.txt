@@ -59,6 +59,7 @@ really really todo, maybe?
 * funny how sometimes i made a 'spec' type and other times just a lot of arguments.
 
 next-feature-short-list, in no order:
+
 * ha ha check all the bugs and todo's... bad stuff. see all the code notes below. :-(
   [not any enforced ordering]
 * should really be using proper 2d (3x3) matricies for everything, duh. :-(

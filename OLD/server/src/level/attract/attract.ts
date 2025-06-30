@@ -21,6 +21,7 @@ import * as Hs from '../../high_scores';
 const LKfn = (level_index: number): Lta.LevelKonfig => {
     return {
 	player_kind: S.PlayerKind.cow,
+	player_disable_beaming: true,
 	ground_kind: Gr.GroundKind.regular,
 	Eb1: { mk: Eb1.warpin_mk, count: Number.MAX_SAFE_INTEGER, limit: 4, delay_msec: 1000, tick_msec: 1*1000 },
 	Es: { mk: Es.warpin_mk, count: Number.MAX_SAFE_INTEGER, limit: 3, delay_msec: 1000, tick_msec: 5*1000 },

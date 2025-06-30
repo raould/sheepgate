@@ -6,6 +6,9 @@ import { RGBA } from './color';
 
 export const ARCADE_MODE = true;
 
+// super testing hack! beware!
+export const DEBUG_HACK_ONLY_HYPERMEGA = false;
+
 // todo: what would be better is to have types for the different
 // kinds of values, and to have all this in a dict, and then
 // map all the dict values through scaling that is custom per type.

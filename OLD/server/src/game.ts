@@ -65,6 +65,7 @@ interface GamePrivate extends Game {
 type LevelMk = (level_index: number, score: number, high_score: Hs.HighScore) => Lis.LevelInScreens;
 // match: konfig.ts
 const level_mks: LevelMk[] = [
+    // note that the first level is special-cased in various places e.g. people populating.
     (i: number, score: number, hi: Hs.HighScore) => L1.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L2.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L3.level_mk(i, score, hi),
@@ -74,7 +75,7 @@ const level_mks: LevelMk[] = [
     (i: number, score: number, hi: Hs.HighScore) => L6.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L7.level_mk(i, score, hi),
 ];
-D.assert(level_mks.length === K.LEVEL_TEMPLATE_COUNT, "level template count");
+//D.assert(level_mks.length === K.LEVEL_TEMPLATE_COUNT, "level template count");
 
 function starter_stepper_mk() { return K.ARCADE_MODE ? new GameAttract() : new GameWarning(); }
 

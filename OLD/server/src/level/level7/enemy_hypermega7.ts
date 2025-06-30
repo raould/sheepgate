@@ -43,6 +43,7 @@ const Hypermega: Lemk.EnemyMk = {
 		hp_init: K.ENEMY_HYPERMEGA_HP,
 		damage: K.ENEMY_HYPERMEGA_DAMAGE,
 		weapons: weapons,
+		shield_scale: G.v2d_mk_nn(1.2),
 		flight_pattern: flight_pattern,
 		gem_count: K.ENEMY_HYPERMEGA_GEM_COUNT
             }
