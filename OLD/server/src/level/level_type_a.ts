@@ -245,24 +245,28 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	// this is going to be a crappy half-hard-coded state machine hack.
 
 	const spec: Eag.AddGeneratorsSpec = {}
-	spec.pod = this.init_adv_from_konfig(this.konfig.Ep, "pod");
-	spec.small = this.init_adv_from_konfig(this.konfig.Es, "small");
-	spec.mega = this.init_adv_from_konfig(this.konfig.Em, "mega");
+	if (K.DEBUG_HACK_ONLY_HYPERMEGA !== true) {
+	    spec.pod = this.init_adv_from_konfig(this.konfig.Ep, "pod");
+	    spec.small = this.init_adv_from_konfig(this.konfig.Es, "small");
+	    spec.mega = this.init_adv_from_konfig(this.konfig.Em, "mega");
+	}
 	spec.hypermega = this.init_adv_from_konfig(this.konfig.Ehm, "hypermega");
 	Eag.add_generators(this.db, spec);
 
 	const basics: U.O<Ebg.EnemyGeneratorSpec>[] = [];
-	basics.push(this.init_basic_from_konfig(this.konfig.Eb1, "basic1"));
-	basics.push(this.init_basic_from_konfig(this.konfig.Eb2, "basic2"));
-	basics.push(this.init_basic_from_konfig(this.konfig.Eb3, "basic3"));
-	basics.push(this.init_basic_from_konfig(this.konfig.Eb4, "basic4"));
-	basics.push(this.init_basic_from_konfig(this.konfig.Eb5, "basic5"));
-	basics.push(this.init_basic_from_konfig(this.konfig.Eb6, "basic6"));
-	basics.push(this.init_basic_from_konfig(this.konfig.Eb7, "basic7"));
-	basics.push(this.init_basic_from_konfig(this.konfig.Eb8, "basic8"));
-	basics.push(this.init_basic_from_konfig(this.konfig.Ebs1, "basic-special-1"));
-	basics.push(this.init_basic_from_konfig(this.konfig.Ebs2, "basic-special-2"));
-	D.assert(basics.length > 0, "no basic enemies found?!");
+	if (K.DEBUG_HACK_ONLY_HYPERMEGA !== true) {
+	    basics.push(this.init_basic_from_konfig(this.konfig.Eb1, "basic1"));
+	    basics.push(this.init_basic_from_konfig(this.konfig.Eb2, "basic2"));
+	    basics.push(this.init_basic_from_konfig(this.konfig.Eb3, "basic3"));
+	    basics.push(this.init_basic_from_konfig(this.konfig.Eb4, "basic4"));
+	    basics.push(this.init_basic_from_konfig(this.konfig.Eb5, "basic5"));
+	    basics.push(this.init_basic_from_konfig(this.konfig.Eb6, "basic6"));
+	    basics.push(this.init_basic_from_konfig(this.konfig.Eb7, "basic7"));
+	    basics.push(this.init_basic_from_konfig(this.konfig.Eb8, "basic8"));
+	    basics.push(this.init_basic_from_konfig(this.konfig.Ebs1, "basic-special-1"));
+	    basics.push(this.init_basic_from_konfig(this.konfig.Ebs2, "basic-special-2"));
+	    D.assert(basics.length > 0, "no basic enemies found?!");
+	}
 	Ebg.add_generators(
 	    this.db,
 	    basics.filter(b => U.exists(b)) as Ebg.EnemyGeneratorSpec[]

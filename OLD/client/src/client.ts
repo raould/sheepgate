@@ -1276,7 +1276,7 @@ function loadImages() {
     ['left', 'right'].forEach(dir => {
         ['a', 'b', 'c'].forEach(anim => {
             loadImage(`player/p1_${anim}_${dir}.png`);
-            loadImage(`player/p1_f${anim}_${dir}.png`);
+            loadImage(`player/p1_t${anim}_${dir}.png`);
         })
         loadImage(`player/p1_s_${dir}.png`);
     });

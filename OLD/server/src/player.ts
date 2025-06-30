@@ -347,14 +347,14 @@ function thrusting_anim_mk(db: GDB.GameDB, player_kind: S.PlayerKind): A.FacingR
 	return A.facing_animator_mk(
             db.shared.sim_now,
             {
-		frame_msec: K.PLAYER_ANIM_FRAME_MSEC/2,
-		resource_ids: images.lookup_range_a((a) => `player/p1_f${a}_left.png`, ['a', 'b', 'c']),
+		frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
+		resource_ids: images.lookup_range_a((a) => `player/p1_t${a}_left.png`, ['a', 'b', 'c']),
 		starting_mode: A.MultiImageStartingMode.hold,
 		ending_mode: A.MultiImageEndingMode.loop
 	    },
 	    {
-		frame_msec: K.PLAYER_ANIM_FRAME_MSEC/2,
-		resource_ids: images.lookup_range_a((a) => `player/p1_f${a}_right.png`, ['a', 'b', 'c']),
+		frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
+		resource_ids: images.lookup_range_a((a) => `player/p1_t${a}_right.png`, ['a', 'b', 'c']),
 		starting_mode: A.MultiImageStartingMode.hold,
 		ending_mode: A.MultiImageEndingMode.loop
 	    }

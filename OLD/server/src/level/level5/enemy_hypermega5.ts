@@ -38,11 +38,12 @@ const Hypermega: Lemk.EnemyMk = {
     	    WARPIN_RESOURCE_ID,
             {
 		fighter_kind: "hypermega",
-	anim: anim,
+		anim: anim,
 		rank: S.Rank.hypermega,
 		hp_init: K.ENEMY_HYPERMEGA_HP,
 		damage: K.ENEMY_HYPERMEGA_DAMAGE,
 		weapons: weapons,
+		shield_scale: G.v2d_mk_nn(1.3),
 		flight_pattern: flight_pattern,
 		gem_count: K.ENEMY_HYPERMEGA_GEM_COUNT
             }
