@@ -337,11 +337,11 @@ class ParticlesEightGenerator extends AbstractParticleGenerator {
 			  self.particles[i + self.oy] = iy;
 			  const ivx = ix - mx;
 			  const ivy = iy - my;
-			  const ySlower = y != 0 ? 0.4 : 1; // ellipsizeringish.
+			  const ySlower = y != 0 ? 0.4 : 1; // squashingish.
 			  const d = Math.sqrt(ivx * ivx + ivy * ivy);
 			  self.particles[i + self.ovx] = ivx/d * spd;
 			  self.particles[i + self.ovy] = ivy/d * spd*ySlower;
-			  self.particles[i + self.osize] = 6;
+			  self.particles[i + self.osize] = 3;
 		      }
 		  }
 	      });
