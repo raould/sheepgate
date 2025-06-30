@@ -38,9 +38,12 @@ export function safe_lt_vs_player(db: GDB.GameDB, rank: S.Rank, size: G.V2D, rnd
     const p = GDB.get_player(db);
     if (U.exists(p)) {
 	if (rank >= S.Rank.hypermega) {
-	    lt = G.v2d_mk(
-		p.lt.x + db.shared.world.bounds0.x/3,
-		lt.y,
+	    lt = G.v2d_wrapH(
+		G.v2d_mk(
+		    p.lt.x + db.shared.world.bounds0.x/3,
+		    lt.y,
+		),
+		db.shared.world.bounds0
 	    )
 	}
 	else {
