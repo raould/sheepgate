@@ -13,7 +13,7 @@ import * as K from '../../konfig';
 
 // match: sprite animation.
 const SIZE = K.vd2si(G.v2d_scale_i(G.v2d_mk(80, 80), 1.5));
-const WARPIN_RESOURCE_ID = "enemies/e10hm/e10_hm1.png";
+const WARPIN_RESOURCE_ID = "enemies/e10hm/e10_hm3.png";
 const Hypermega: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
