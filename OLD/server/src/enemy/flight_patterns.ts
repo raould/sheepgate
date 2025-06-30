@@ -18,7 +18,9 @@ import { DebugGraphics } from '../debug_graphics';
 // todo: these should be sure not to make the
 // sprites go off screen or anything else silly. :-(
 // fix the logic, it is all kinda incorrect crap, unfortunately.
-
+// all the random padding hacks are because i haven't set up
+// a good way to iteratively visually debug wtf this all is doing
+// vs. what i really want it to do, apologies, so sad, indictment.
 const TOP_PAD = 10;
 const BOTTOM_PAD = 50;
 
@@ -33,12 +35,12 @@ function rect_in_bounds_y(db: GDB.GameDB, r: G.Rect, top_pad: number, bottom_pad
     // have to make sure the (1) enemy, (2) shield, (3) hp bar are visible.
     // todo: this is all a hack, is not really accurate.
     const lt = G.rect_lt(r);
-    const rh = G.rect_h(r);
-    const sh = rh * K.SHIELD_SCALE.y;
+    const rv = G.rect_h(r);
+    const sv = rv * K.SHIELD_SCALE.y;
     // try to avoid overlapping the top of the screen.
-    const min_y = K.SHIELD_BAR_HEIGHT + K.SHIELD_BAR_OFFSET_Y + sh/2 + top_pad;
+    const min_y = K.SHIELD_BAR_HEIGHT + K.SHIELD_BAR_OFFSET_Y + sv/2 + top_pad;
     // try to avoid overlapping the ground, also try to avoid overlapping the base.
-    const max_y = db.shared.world.ground_y - (K.BASE_SIZE.y * K.BASE_SHIELD_SCALE.y) - sh - bottom_pad;
+    const max_y = db.shared.world.ground_y - (K.BASE_SIZE.y * K.BASE_SHIELD_SCALE.y) - sv - bottom_pad;
     const y = Math.max(min_y, Math.min(max_y, lt.y));
     return G.rect_set_lt(r, G.v2d_set_y(lt, y));
 }

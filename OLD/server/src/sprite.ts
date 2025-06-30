@@ -155,6 +155,28 @@ export interface FighterKind {
     // e.g. all basic1's in a level; all megas in a level.
     // (a little bit just because we don't have nominal typing.)
     fighter_kind: string;
+
+    /* effing typescript. trying to get stronger typing via a union was an utter DX fail.
+       "basic1" |
+	"basic2" |
+	"basic3" |
+	"basic4" |
+	"basic5" |
+	"basic6" |
+	"basic7" |
+	"basic8" |
+	"cbm2" |
+	"hm_basic1" |
+	"hm_basic2" |
+	"hypermega" |
+	"mega" |
+	"munchie" |
+	"player" |
+	"pod" |
+	"small" |
+	"smartbomb" |
+	"swarmer";
+    */
 }
 
 export interface Warpin extends Sprite, Ranked, FighterKind { // only fx, no hp.

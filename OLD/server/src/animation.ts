@@ -73,7 +73,7 @@ export function anim2sprite(dbid: GDB.DBID, anim: ResourceAnimator, rect: G.Rect
 }
 
 export interface WarpinSpec {
-    fighter_kind: string,
+    fighter_kind: string
     duration_msec: number;
     rect: G.Rect;
     resource_id: string;
@@ -123,7 +123,7 @@ export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
         toJSON() {
             return S.spriteJSON(this);
         }
-    };
+    } as S.Warpin;
 }
 
 // todo: the naming from here on down sucks because

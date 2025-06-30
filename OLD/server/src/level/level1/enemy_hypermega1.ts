@@ -12,8 +12,8 @@ import * as Lemk from '../enemy_mk';
 import * as K from '../../konfig';
 
 // match: sprite animation.
-const SIZE = K.vd2si(G.v2d_mk(80, 80));
-const WARPIN_RESOURCE_ID = "enemies/e10hm/e10_hm1.png";
+const SIZE = K.vd2si(G.v2d_scale_i(G.v2d_mk(80, 80), 1.5));
+const WARPIN_RESOURCE_ID = "enemies/e10hm/e10_hm3.png";
 const Hypermega: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
@@ -77,7 +77,7 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
                         ...images.lookup_range_n(n => `enemies/e10hm/e10_hm${n}.png`, 1, 5)
                     ],
                     starting_mode: A.MultiImageStartingMode.hold,
-                    ending_mode: A.MultiImageEndingMode.loop
+                    ending_mode: A.MultiImageEndingMode.bounce
                 }
             )
         });

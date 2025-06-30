@@ -2,6 +2,8 @@
 import * as GDB from './game_db';
 import * as U from './util/util';
 
+// oopsy 'generator' is such a bad confusing misleading name to use since this thing is e.g. not even async.
+
 export interface TickingGeneratorSpec<T> {
     // if generations is not specified, that means 'never ending'.
     // if generations is specified, it is a 1-based count.
