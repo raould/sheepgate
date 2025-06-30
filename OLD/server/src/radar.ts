@@ -20,6 +20,7 @@ export function step(db: GDB.GameDB) {
             render_base(db, db.shared.items.base, player);
             render_people(db, player);
             render_player(db, player);
+	    render_gameport(db);
         }
     );
 }
@@ -96,6 +97,62 @@ function render_ground(db: GDB.GameDB) {
         p1: p1
     });
     // todo: i have no idea how to do the buildings or mountains.
+}
+
+function render_gameport(db: GDB.GameDB) {
+    const ww = db.shared.world.bounds0.x;
+    const gw = db.shared.world.gameport.world_bounds.size.x;
+    const ow = (ww-gw)/2 * db.local.hud.radar.scale.x;
+    const r = G.rect_inset(
+	db.local.hud.radar.rect,
+	G.v2d_mk(ow, 0)
+    );
+    db.shared.hud_drawing.lines.push({
+	wrap: false,
+	line_width: K.RADAR_GAMEPORT_NOTCH_WIDTH,
+	color: K.RADAR_OUTLINE_COLOR,
+	p0: r.lt,
+	p1: G.v2d_add_y(r.lt, K.RADAR_GAMEPORT_NOTCH_LENGTH)
+    });
+    const lb = G.rect_lb(r);
+    db.shared.hud_drawing.lines.push({
+	wrap: false,
+	line_width: K.RADAR_GAMEPORT_NOTCH_WIDTH,
+	color: K.RADAR_OUTLINE_COLOR,
+	p0: lb,
+	p1: G.v2d_add_y(lb, -K.RADAR_GAMEPORT_NOTCH_LENGTH)
+    });
+    const rt = G.rect_rt(r);
+    db.shared.hud_drawing.lines.push({
+	wrap: false,
+	line_width: K.RADAR_GAMEPORT_NOTCH_WIDTH,
+	color: K.RADAR_OUTLINE_COLOR,
+	p0: rt,
+	p1: G.v2d_add_y(rt, K.RADAR_GAMEPORT_NOTCH_LENGTH)
+    });
+    const rb = G.rect_rb(r);
+    db.shared.hud_drawing.lines.push({
+	wrap: false,
+	line_width: K.RADAR_GAMEPORT_NOTCH_WIDTH,
+	color: K.RADAR_OUTLINE_COLOR,
+	p0: rb,
+	p1: G.v2d_add_y(rb, -K.RADAR_GAMEPORT_NOTCH_LENGTH)
+    });
+
+    db.shared.hud_drawing.lines.push({
+	wrap: false,
+	line_width: K.RADAR_GAMEPORT_NOTCH_WIDTH,
+	color: K.RADAR_OUTLINE_COLOR,
+	p0: r.lt,
+	p1: rt,
+    });
+    db.shared.hud_drawing.lines.push({
+	wrap: false,
+	line_width: K.RADAR_GAMEPORT_NOTCH_WIDTH,
+	color: K.RADAR_OUTLINE_COLOR,
+	p0: lb,
+	p1: rb,
+    });
 }
 
 function render_player(db: GDB.GameDB, sprite: S.Player) {

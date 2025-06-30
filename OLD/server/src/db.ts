@@ -23,6 +23,7 @@ export type DBKind = "Menu" | "Game";
 // vs. "gameport.screen_bounds" means "gameport.bounds_in_screen: ScreenCoords"
 
 export interface World {
+    // note: there is only ever translation, no scaling between world and gameport.
     // todo: also, types to differentiate point vs. vector vs. dimensions, etc.
     // the bounds of the whole game world.
     bounds0: G.V2D;
