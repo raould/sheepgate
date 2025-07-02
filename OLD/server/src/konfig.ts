@@ -134,6 +134,8 @@ D.assert_fn(G.rect_b(RADAR_RECT),G.rect_b(HUD_VISIBLE_RECT), (a,b)=>a==b);
 export const RADAR_MID = G.rect_mid(RADAR_RECT);
 // hacky fudge arbitrary inset so the blips don't go under the border vertically, so much.
 export const RADAR_SAFE_RECT = G.rect_inset(RADAR_RECT, G.v2d_mk_0y(d2si(10)));
+export const RADAR_GAMEPORT_NOTCH_LENGTH = d2si(5);
+export const RADAR_GAMEPORT_NOTCH_WIDTH = d2si(3);
 
 const HUD_SIDE_SIZE = G.v2d_scale_v2d(
     G.v2d_sub(
@@ -186,10 +188,12 @@ export const GAMEPORT_SHAKE = d2si(4); // K
 export const OFF_SCREEN = G.v2d_mk_nn(-Number.MAX_SAFE_INTEGER);
 
 export const HUD_FILL_COLOR = RGBA.BLACK; // K
-export const HUD_OUTLINE_COLOR = RGBA.new01(0.3, 0, 0); // K
+export const HUD_OUTLINE_COLOR = RGBA.DARK_GRAY; // K
 export const RADAR_FILL_COLOR = RGBA.BLACK;
-export const RADAR_OUTLINE_COLOR = RGBA.new01(1, 0, 0); // K
+export const RADAR_OUTLINE_COLOR = RGBA.new01(0, 0.4, 0.8); // K
 export const RADAR_RECT_MIN_SIZE = G.v2d_mk_nn(4);
+export const RADAR_GROUND_COLOR = RGBA.GRAY;
+export const RADAR_PEOPLE_COLOR = RGBA.YELLOW;
 export const DANGER_HPT_THRESHOLD = 0.5; // K
 export const DANGER_COLOR = RGBA.MAGENTA.setAlpha01(0.5); // K
 export const DANGER_RECT_WIDTH = d2si(10); // K
@@ -255,6 +259,7 @@ export const BG_LAYER_SCALE = 2;
 // note/todo: odd that i set this to MAX but the player can still die when crashing into other shields?!
 export const PLAYER_HP = 40;
 
+// attempting to be somewhat color-deficiency accessible.
 export const BAD_COLOR = RGBA.new0255(202, 0, 32);
 export const GOOD_COLOR = RGBA.new0255(5, 133, 176);
 export const PLAYER_COLOR = RGBA.new0255(255, 255, 128);

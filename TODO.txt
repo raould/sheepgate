@@ -25,6 +25,8 @@ really really todo, maybe?
 +++ per-level high scores?
 +++ show level # in hud.
 
+* the only consistent thing is that the code is inconsistent.
+
 * pause keys are broken in key2cmd_hotrod?!
 
 * the idea is that the db exists for the current frame, gets cloned into a 'next' frame db,
