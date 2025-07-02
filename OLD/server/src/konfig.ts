@@ -69,7 +69,7 @@ export const FRAME_MSEC_DT = 1000 / FPS; // K
 // we'll probably-maybe need y scrolling.)
 
 // external code should ideally use SCREEN_RECT below
-export const DESIGN_SIZE = G.v2d_mk(1280, 540); // K
+export const DESIGN_SIZE = G.v2d_mk(1152, 540); // K
 // TODO: want to get up closer to 4K.
 export const D2S = 1;
 export function d2s(d: number): number {
