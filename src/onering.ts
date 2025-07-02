@@ -1463,16 +1463,12 @@ function loadImages() {
     loadImage("bg/ma_far.png");
     loadImage("bg/mal_far.png");
     loadImage("bg/mar_far.png");
-    loadImage("bg/ma_cbm2_far.png");
-    loadImage("bg/mal_cbm2_far.png");
-    loadImage("bg/mar_cbm2_far.png");
     loadImage("bg/ma_cbm3.png");
     loadImage("bg/mal_cbm3.png");
     loadImage("bg/mar_cbm3.png");
     loadImage("bg/ma_near.png");
     loadImage("bg/ma_near2.png");
     loadImage("bg/ma_near3.png");
-    loadImage("bg/ma_cbm_near.png");
     loadImage("bg/ma_cbm3_near.png");
 
     loadImage("danger.png");
