@@ -69,7 +69,7 @@ export const FRAME_MSEC_DT = 1000 / FPS; // K
 // we'll probably-maybe need y scrolling.)
 
 // external code should ideally use SCREEN_RECT below
-export const DESIGN_SIZE = G.v2d_mk(1024, 540); // K
+export const DESIGN_SIZE = G.v2d_mk(1152, 540); // K
 // TODO: want to get up closer to 4K.
 export const D2S = 1;
 export function d2s(d: number): number {
@@ -182,7 +182,7 @@ export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(d2si(80) * 2); // match: a
 // so the value used to reduce the size of the zone after reversing is used for stepping inside
 // the zone, too. got that? :-\
 // note: the dynamics here aren't as good as real stargate, either :-(
-export const GAMEPORT_PLAYER_ZONE_STEP_X = d2s(0.45); // K but must be per-dt, not per-frame.
+export const GAMEPORT_PLAYER_ZONE_STEP_X = d2s(0.6); // K but must be per-dt, not per-frame.
 export const GAMEPORT_SHAKE = d2si(4); // K
 
 export const OFF_SCREEN = G.v2d_mk_nn(-Number.MAX_SAFE_INTEGER);
