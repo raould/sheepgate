@@ -171,7 +171,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
     }
 
     far_spec0_mk(ground_kind: Gr.GroundKind): FarSpec0[] {
-	const cbm = ground_kind === Gr.GroundKind.cbm ? "cbm2_" : "";
+	const cbm = ground_kind === Gr.GroundKind.cbm;
 	// todo: extract out the x calculations,
 	// make something more interesting,
 	// make it so the world can fit more far's
@@ -179,22 +179,22 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	const alpha = 0.2;
 	const far_spec0 = [
 	    {
-		resource_name: `bg/mal_${cbm}far.png`,
+		resource_name: cbm ? "bg/mal_cbm3.png" : "bg/mal_far.png",
 		type: Gr.BgFarType.mountain,
 		alpha: alpha
 	    },
 	    {
-		resource_name: `bg/ma_${cbm}far.png`,
+		resource_name: cbm ? "bg/ma_cbm3.png" : "bg/ma_far.png",
 		type: Gr.BgFarType.mountain,
 		alpha: alpha
 	    },
 	    {
-		resource_name: `bg/ma_${cbm}far.png`,
+		resource_name: cbm ? "bg/ma_cbm3.png" : "bg/ma_far.png",
 		type: Gr.BgFarType.mountain,
 		alpha: alpha
 	    },
 	    {
-		resource_name: `bg/mar_${cbm}far.png`,
+		resource_name: cbm ? "bg/mar_cbm3.png" : "bg/mar_far.png",
 		type: Gr.BgFarType.mountain,
 		alpha: alpha
 	    },
