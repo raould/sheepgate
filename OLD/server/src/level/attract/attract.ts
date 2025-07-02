@@ -41,6 +41,7 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
     hypermega_snapshot: S.ImageSized;
     exit: boolean = false;
     moves: Cmd.CommandType[] = [];
+    timeout: number = 3 * 1000;
 
     constructor(readonly index1: number, konfig: Lta.LevelKonfig, score: number, high_score: Hs.HighScore) {
 	super(index1, konfig, score, high_score);
@@ -61,6 +62,9 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 
     update_impl(next: GDB.GameDB) {
 	super.update_impl(next);
+	if (this.timeout > 0) {
+	    this.timeout -= next.local.frame_dt;
+	}
 	if (this.exit) {
 	    this.state = Gs.StepperState.completed;	    
 	}
@@ -69,10 +73,10 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
     merge_client_db(cnew: Cdb.ClientDB) {
 	super.merge_client_db(cnew);
 	if (Object.keys(cnew.inputs.keys).length > 0) {
-	    this.exit = true;
+	    this.exit = this.timeout <= 0;
 	}
 	if (cnew.inputs.commands[Cmd.CommandType.click]) {
-	    this.exit = true;
+	    this.exit = this.timeout <= 0;
 	}
     }
 
@@ -102,18 +106,19 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 	    s.hp = s.hp_init;
 	}
 	const color = Math.floor(this.db.shared.sim_now / 2000) % 2 === 0 ? RGBA.YELLOW : RGBA.MAGENTA;
+	const text = this.timeout <= 0 ? "PRESS ANY BUTTON TO PLAY!" : "        LOADING...";
 	this.db.shared.hud_drawing.texts.push({
 	    wrap: true,
 	    fillStyle: color,
-	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.4, K.GAMEPORT_RECT.size.y * 0.6),
-	    font: `${K.d2si(20)}px ${K.MENU_FONT}`,
-	    text: "PRESS ANY BUTTON TO PLAY!",
+	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.34, K.GAMEPORT_RECT.size.y * 0.6),
+	    font: `${K.d2si(40)}px ${K.MENU_FONT}`,
+	    text,
 	    comment: "demo-instructions",
 	});
 	this.db.shared.hud_drawing.texts.push({
 	    wrap: true,
 	    fillStyle: RGBA.CYAN,
-	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.24, K.GAMEPORT_RECT.size.y * 0.5),
+	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.28, K.GAMEPORT_RECT.size.y * 0.5),
 	    font: `${K.d2si(80)}px ${K.MENU_FONT}`,
 	    text: titleLatch.test(this.db.shared.sim_now) ? LEET : SHEEP,
 	    comment: "demo-title",
