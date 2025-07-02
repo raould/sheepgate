@@ -174,7 +174,7 @@ export const ENEMY_FIRING_RECT = G.rect_inset(
 );
 
 export const GAMEPORT_PLAYER_ZONE_MIN_WIDTH = d2si(80); // match: approx player sprite sizes.
-export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(d2si(80) * 2); // match: approx player sprite sizes.
+export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(d2si(80) * 3); // match: approx player sprite sizes.
 // match: if PLAYER_DELTA_*_ACC changes then these will likely need adjustment.
 // note: the x value is more tricky as it is used in more than one way during GAMEPORT update.
 // that is because when the player ship transitions from being outside the default zone
