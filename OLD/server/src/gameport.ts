@@ -58,7 +58,7 @@ function apply_step(db: GDB.GameDB, p: S.Player) {
     step_x(db, p);
 }
 
-function limit_x(db: GDB.GameDB, pm: G.V2D, target: G.V2D, leading: G.V2D) {
+function jump_x(db: GDB.GameDB, pm: G.V2D, target: G.V2D, leading: G.V2D) {
     // if the player moved outside the zone, jump so they are on the correct edge.
     const maybe_jump = !G.v2d_inside_x(pm, target, leading);
     if (maybe_jump) {
@@ -69,42 +69,27 @@ function limit_x(db: GDB.GameDB, pm: G.V2D, target: G.V2D, leading: G.V2D) {
     }    
 }
 
-function step_x(db: GDB.GameDB, p: S.Player) {
+function step_x(db: GDB.GameDB, player: S.Player) {
     // if the player is 'ahead' of the zone, given their facing, then make
     // sure they don't escape the player zone even if they are thrusting.
     // todo: seen bugs tho.
     const vp = db.shared.world.gameport.world_bounds;
-    const pm = G.rect_mid(p);
-    const [target, leading] = player_to_zone(db, p, vp);
+    const pm = G.rect_mid(player);
+    const [target, leading] = facing_to_zone(db, player.facing, vp);
     DebugGraphics.add_point(DebugGraphics.get_frame(), target);
     DebugGraphics.add_point(DebugGraphics.get_frame(), leading);
-    limit_x(db, pm, target, leading);
-
-    // step toward them in the zone, so they move
-    // 'back' away from the 'leading' toward the 'target' edge.
-    const sign = F.f2x(p.facing);
-    const diff_x = pm.x - target.x;
-    const ahead = U.sign(diff_x) == sign;
-
-    // ????????????????????????????????????????????????? any more ???
-    if (ahead) {
-    	const dtsf = K.GAMEPORT_PLAYER_ZONE_STEP_X * db.local.frame_dt;
-        const step_x = Math.min(Math.abs(diff_x / 2), dtsf) * sign;
-        G.rect_move_mut(
-            db.shared.world.gameport.world_bounds,
-            G.v2d_mk_x0(step_x)
-        );
-    }
+    jump_x(db, pm, target, leading);
 }
 
-function player_to_zone(db: GDB.GameDB, player: S.Player, gameport: G.Rect): [G.V2D/*target*/, G.V2D/*leading*/] {
+function facing_to_zone(db: GDB.GameDB, facing: F.Facing, gameport: G.Rect): [G.V2D/*target*/, G.V2D/*leading*/] {
     const vp = db.shared.world.gameport.world_bounds;
-    const target = F.on_facing(player.facing,
+    const target = F.on_facing(facing,
         G.v2d_sub(G.rect_rm(vp), K.GAMEPORT_PLAYER_ZONE_INSET),
         G.v2d_add(G.rect_lm(vp), K.GAMEPORT_PLAYER_ZONE_INSET)
     );
     const delta = G.v2d_mk_x0(
-        F.on_facing(player.facing,
+        F.on_facing(
+	    facing,
             -db.local.player_zone_width,
             db.local.player_zone_width
         )
@@ -118,7 +103,7 @@ function set_player_zone_width(db: GDB.GameDB, p0: S.Player, p1: S.Player) {
     // todo: i've seen a bug where the leading zone point is lost / way off screen!?
     if (p0.facing != p1.facing) {
         const vp = db.shared.world.gameport.world_bounds;
-        const [target, _] = player_to_zone(db, p1, vp);
+        const [target, _] = facing_to_zone(db, p1.facing, vp);
         db.local.player_zone_width = Math.abs(G.v2d_sub(G.rect_mid(p1), target).x);
     }
 }
