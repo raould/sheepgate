@@ -1447,6 +1447,10 @@ function loadImages() {
     loadImage("ground/ga_cbm_sr.png");
     loadImage("ground/ga_cbm_sl.png");
     loadImage("ground/sa_cbm.png");
+    loadImage("ground/ga_zx.png");
+    loadImage("ground/ga_zx_sr.png");
+    loadImage("ground/ga_zx_sl.png");
+    loadImage("ground/sa_zx.png");
     loadImage("people/standing.png");
     loadImage("people/waving1.png");
     loadImage("people/waving2.png");
