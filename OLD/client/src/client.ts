@@ -1285,10 +1285,14 @@ function loadImages() {
 	loadImage(`player/cow${dir}T1.png`);
 	loadImage(`player/cow${dir}T2.png`);
     });
-    loadImage(`player/cbml.png`);
-    loadImage(`player/cbmlt.png`);
-    loadImage(`player/cbmr.png`);
-    loadImage(`player/cbmrt.png`);
+    loadImage("player/cbml.png");
+    loadImage("player/cbmlt.png");
+    loadImage("player/cbmr.png");
+    loadImage("player/cbmrt.png");
+    loadImage("player/zxL1.png");
+    loadImage("player/zxR1.png");
+    loadImage("player/zxL1T.png");
+    loadImage("player/zxR1T.png");
 
     [1,2,3,4].forEach(anim => {
         loadImage(`ground/base${anim}.png`);

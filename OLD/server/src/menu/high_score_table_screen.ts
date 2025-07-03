@@ -24,7 +24,7 @@ export class HighScoreTableScreen extends Sz.SizzlerScreen {
         super({
 	    title: "HIGH SCORES",
 	    skip_text: K.USER_SKIP_TEXT,
-	    user_skip_after_msec: 1000,
+	    user_skip_after_msec: K.user_wait_msec(1000),
 	    bg_color: RGBA.DARK_BLUE,
 	    timeout: 30*1000
 	});

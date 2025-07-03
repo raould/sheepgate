@@ -26,6 +26,7 @@ import * as L5 from './level/level5/level5';
 import * as L6 from './level/level6/level6';
 import * as L7 from './level/level7/level7';
 import * as Lcbm from './level/cbm/cbm';
+import * as Lzx from './level/zx/zx';
 
 const TRACK1_SFX = { sfx_id: K.TRACK1_SFX, gain: 0.3, singleton: true };
 
@@ -66,6 +67,7 @@ type LevelMk = (level_index: number, score: number, high_score: Hs.HighScore) =>
 // match: konfig.ts
 const level_mks: LevelMk[] = [
     // note that the first level is special-cased in various places e.g. people populating.
+    (i: number, score: number, hi: Hs.HighScore) => Lzx.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L1.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L2.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L3.level_mk(i, score, hi),
@@ -213,7 +215,7 @@ class GameInstructions implements Gs.Stepper {
 	    animated: true,
 	    bg_color: RGBA.DARK_BLUE,
 	    top_offset_y: K.d2si(40),
-	    user_skip_after_msec: 1000,
+	    user_skip_after_msec: K.user_wait_msec(1000),
 	});
 	this.stepper.mdb.shared.sfx.push({ sfx_id: K.SYNTH_C_SFX });
 	this.qr = {

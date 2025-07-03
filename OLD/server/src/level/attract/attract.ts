@@ -41,7 +41,7 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
     hypermega_snapshot: S.ImageSized;
     exit: boolean = false;
     moves: Cmd.CommandType[] = [];
-    timeout: number = 3 * 1000;
+    timeout: number = K.user_wait_msec(3 * 1000);
 
     constructor(readonly index1: number, konfig: Lta.LevelKonfig, score: number, high_score: Hs.HighScore) {
 	super(index1, konfig, score, high_score);

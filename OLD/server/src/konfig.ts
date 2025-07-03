@@ -6,8 +6,12 @@ import { RGBA } from './color';
 
 export const ARCADE_MODE = true;
 
-// super testing hack! beware!
+// super testing hacks! beware!
 export const DEBUG_HACK_ONLY_HYPERMEGA = false;
+export const DEBUG_NO_USER_WAIT = true;
+export function user_wait_msec(msec: number): number {
+    return DEBUG_NO_USER_WAIT ? 0 : msec;
+}
 
 // todo: what would be better is to have types for the different
 // kinds of values, and to have all this in a dict, and then

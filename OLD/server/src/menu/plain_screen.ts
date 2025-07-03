@@ -32,7 +32,7 @@ export class PlainScreen implements M.Menu {
     
     constructor(spec: PlainScreenSpec) {
 	this.bg_color = spec.bg_color;
-	this.user_skip_after_msec = spec.user_skip_after_msec ?? 0;
+	this.user_skip_after_msec = K.user_wait_msec(spec.user_skip_after_msec ?? 0);
         this.mdb = Mdb.menudb_mk(this.bg_color);
 
         this.add_text(

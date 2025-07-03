@@ -185,7 +185,8 @@ export interface Warpin extends Sprite, Ranked, FighterKind { // only fx, no hp.
 
 export enum ExplosionKind {
     regular,
-    cbm
+    cbm,
+    zx,
 };
 
 export interface Explosion extends Sprite, Ranked, Tf.Flagged { // only fx, no hp.
@@ -203,6 +204,7 @@ export enum PlayerKind {
     ship,
     cow,
     cbm,
+    zx,
 };
 
 export interface Player extends Fighter {

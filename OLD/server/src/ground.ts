@@ -11,6 +11,7 @@ import * as _ from 'lodash';
 export enum GroundKind {
     regular,
     cbm,
+    zx,
 }
 
 export enum BgFarType {
@@ -145,6 +146,10 @@ function far2near_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Groun
 	case GroundKind.cbm: {
 	    return images.lookup("bg/ma_cbm3_near.png")
 	}
+	case GroundKind.zx: {
+	    // TODO
+	    return images.lookup("bg/ma_cbm3_near.png")
+	}
 	}
     })();
     const city: UnlocatedSpec<BgNearType> = {
@@ -179,11 +184,13 @@ function far2near_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Groun
 function far2ground_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: GroundKind): GroundSpec[] {
     const images = db.uncloned.images;
     const sea: UnlocatedSpec<GroundType> = {
+	// TODO: zx
         images_spec: {resource_id: ground_kind === GroundKind.cbm ? images.lookup("ground/sa_cbm.png") : images.lookup("ground/sa.png")},
         type: GroundType.land,
         alpha: 1
     };
     const land: UnlocatedSpec<GroundType> = {
+	// TODO: zx
         images_spec: {resource_id: ground_kind === GroundKind.cbm ? images.lookup("ground/ga_cbm.png") : images.lookup("ground/ga.png")},
         type: GroundType.land,
         alpha: 1
@@ -220,6 +227,7 @@ function far2ground_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Gro
 }
 
 function refine_ground(images: GDB.ImageResources, left: U.O<GroundSpec>, mid: U.O<GroundSpec>, right: U.O<GroundSpec>, ground_kind: GroundKind): U.O<GroundSpec> {
+    // TODO: zx
     const cbm = ground_kind === GroundKind.cbm ? "cbm_" : "";
     if (mid?.type == GroundType.land) {
         if (left?.type == GroundType.sea) {

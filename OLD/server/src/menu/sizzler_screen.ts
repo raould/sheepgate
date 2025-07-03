@@ -46,7 +46,7 @@ export class SizzlerScreen implements M.Menu {
 	this.mdb = Mdb.menudb_mk(this.bg_color);
 	this.title = spec.title;
 	this.skip_text = spec.skip_text;
-	this.user_skip_after_msec = spec.user_skip_after_msec ?? 0;
+	this.user_skip_after_msec = K.user_wait_msec(spec.user_skip_after_msec ?? 0);
 	this.animated = spec.animated ?? true;
 	this.timeout = spec.timeout;
 	this.hide_user_skip_msg = spec.hide_user_skip_msg ?? false;
