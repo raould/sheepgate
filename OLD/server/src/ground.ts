@@ -147,8 +147,7 @@ function far2near_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Groun
 	    return images.lookup("bg/ma_cbm3_near.png")
 	}
 	case GroundKind.zx: {
-	    // TODO
-	    return images.lookup("bg/ma_cbm3_near.png")
+	    return images.lookup("bg/ma_zx_near.png")
 	}
 	}
     })();
@@ -183,18 +182,56 @@ function far2near_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Groun
 
 function far2ground_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: GroundKind): GroundSpec[] {
     const images = db.uncloned.images;
-    const sea: UnlocatedSpec<GroundType> = {
-	// TODO: zx
-        images_spec: {resource_id: ground_kind === GroundKind.cbm ? images.lookup("ground/sa_cbm.png") : images.lookup("ground/sa.png")},
-        type: GroundType.land,
-        alpha: 1
-    };
-    const land: UnlocatedSpec<GroundType> = {
-	// TODO: zx
-        images_spec: {resource_id: ground_kind === GroundKind.cbm ? images.lookup("ground/ga_cbm.png") : images.lookup("ground/ga.png")},
-        type: GroundType.land,
-        alpha: 1
-    };
+    const sea: UnlocatedSpec<GroundType> = (() => {
+	switch (ground_kind) {
+	case GroundKind.regular: {
+	    return {
+		images_spec: { resource_id: images.lookup("ground/sa.png") },
+		type: GroundType.land,
+		alpha: 1
+	    };
+	}
+	case GroundKind.cbm: {
+	    return {
+		images_spec: { resource_id: images.lookup("ground/sa_cbm.png") },
+		type: GroundType.land,
+		alpha: 1
+	    };
+	}
+	case GroundKind.zx: {
+	    return {
+		images_spec: { resource_id: images.lookup("ground/sa_zx.png") },
+		type: GroundType.land,
+		alpha: 1
+	    };
+	}
+	}
+    })();
+    const land: UnlocatedSpec<GroundType> = (() => {
+	switch (ground_kind) {
+	case GroundKind.regular: {
+	    return {
+		images_spec: { resource_id: images.lookup("ground/ga.png") },
+		type: GroundType.land,
+		alpha: 1
+	    };
+	}
+	case GroundKind.cbm: {
+	    return {
+		images_spec: { resource_id: images.lookup("ground/ga_cbm.png") },
+		type: GroundType.land,
+		alpha: 1
+	    };
+	}
+	case GroundKind.zx: {
+	    return {
+		images_spec: { resource_id: images.lookup("ground/ga_zx.png") },
+		type: GroundType.land,
+		alpha: 1
+	    };
+	}
+	}
+    })();
     const specs = project_far_specs<GroundType>(
         db,
         far_specs,

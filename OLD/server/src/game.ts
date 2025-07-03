@@ -68,10 +68,10 @@ type LevelMk = (level_index: number, score: number, high_score: Hs.HighScore) =>
 const level_mks: LevelMk[] = [
     // note that the first level is special-cased in various places e.g. people populating.
     (i: number, score: number, hi: Hs.HighScore) => Lzx.level_mk(i, score, hi),
+    (i: number, score: number, hi: Hs.HighScore) => Lcbm.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L1.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L2.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L3.level_mk(i, score, hi),
-    (i: number, score: number, hi: Hs.HighScore) => Lcbm.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L4.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L5.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L6.level_mk(i, score, hi),
