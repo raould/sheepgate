@@ -23,6 +23,7 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
 	    skip_text,
 	    bg_color,
 	    timeout: 10*1000
+	    user_skip_after_msec: 1000,
 	});
 	this.mdb.shared.sfx.push({ sfx_id: K.SYNTH_D_SFX });
 	this.attract = {

@@ -213,6 +213,7 @@ class GameInstructions implements Gs.Stepper {
 	    animated: true,
 	    bg_color: RGBA.DARK_BLUE,
 	    top_offset_y: K.d2si(40),
+	    user_skip_after_msec: 1000,
 	});
 	this.stepper.mdb.shared.sfx.push({ sfx_id: K.SYNTH_C_SFX });
 	this.qr = {

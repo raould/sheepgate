@@ -117,6 +117,7 @@ class LevelWithScreen_EndScreen implements SubState {
 	"IT AIN'T OVER!",
     ];
     static LOST_PHRASES = [
+	"USE THE SCANNER, LUKE!",
 	"NICE TRY!",
 	"INSERT COIN!",
 	"WAH WAH WAAH!",
