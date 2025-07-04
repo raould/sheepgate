@@ -10,6 +10,7 @@ const FONT_SIZE = K.d2si(40);
 
 export class LevelStartScreen extends Sz.SizzlerScreen {
     attract: any;
+    image_specs: [S.ImageSized, string][];
 
     constructor(
 	title: string,
@@ -34,6 +35,11 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
 	    },
 	    comment: "attract",
 	};
+	this.image_specs = [
+	    [this.es, "LIGHT"],
+	    [this.em, "MEGA"],
+	    [this.ehm, "HYPERMEGA"],
+	];
     }
 
     step() {
@@ -48,24 +54,12 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
         const x_start = G.rect_w(this.mdb.shared.world.screen) / 2 - x_spacing;
         const y = G.rect_h(this.mdb.shared.world.screen) * 0.6;
 
-        const specs: [S.ImageSized, string][] = [[this.es, "LIGHT"], [this.em, "MEGA"], [this.ehm, "HYPERMEGA"]];
-        specs.forEach((spec, i) => {
+	const xs = this.image_specs.map((spec, i) => {
             const [image_sized, name] = spec;
 
-	    // ---------- labels ----------
-            // todo: use measure_text().
             const offset_x = name.length / 2 * (FONT_SIZE/3);
             const txy = G.v2d_mk(x_start + x_spacing*i - offset_x, y);
-            const t: Dr.DrawText = {
-                lb: txy,
-                text: this.step_string(name),
-                font: `${FONT_SIZE}px ${K.MENU_FONT}`,
-                fillStyle: this.body_cycle.current(),
-                wrap: false,
-            };
-            this.mdb.shared.frame_drawing.texts.push(t);
-
-	    // ---------- images ----------
+	    
 	    const x = x_start + x_spacing*i;
 	    const yo = Math.sin((this.mdb.shared.tick + x)/30) * K.d2s(3);
 	    const offset = K.vd2s(G.v2d_mk(0, 110));
@@ -77,6 +71,23 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
                 G.v2d_2_rect(image_sized.size),
                 G.rect_mk_centered(ixy, image_sized.size)
             );
+
+	    return { image_sized, name, txy, rect };
+	}).reverse();
+
+        xs.forEach(({ image_sized, name, txy, rect }, i) => {
+	    // ---------- labels ----------
+            // todo: use measure_text().
+            const t: Dr.DrawText = {
+                lb: txy,
+                text: this.step_string(name),
+                font: `${FONT_SIZE}px ${K.MENU_FONT}`,
+                fillStyle: this.body_cycle.current(),
+                wrap: false,
+            };
+            this.mdb.shared.frame_drawing.texts.push(t);
+
+	    // ---------- images ----------
             this.mdb.shared.frame_drawing.images.push({
                 wrap: false,
                 image_located: {

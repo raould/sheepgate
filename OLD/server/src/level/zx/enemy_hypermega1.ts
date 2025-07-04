@@ -10,24 +10,27 @@ import * as Fp from '../../enemy/flight_patterns';
 import * as Emk from '../../enemy/enemy_mk';
 import * as Lemk from '../enemy_mk';
 import * as K from '../../konfig';
+import * as Esbw from '../../enemy/enemy_smartbomb_weapon';
 
 // match: sprite animation.
-const SIZE = K.vd2si(G.v2d_scale_i(G.v2d_mk(69, 68), 1.3));
-const WARPIN_RESOURCE_ID = "enemies/zx4/zx4R1.png";
+const SIZE = K.vd2si(G.v2d_scale_i(G.v2d_mk(95, 88), 3));
+const WARPIN_RESOURCE_ID = "enemies/zxBoss/zxBoss1.png";
 const Hypermega: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
 	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
 	const [ewsl, ewsr] = Ebw.scale_specs(db.shared.level_index1, S.Rank.hypermega, true);
+	const ewsb = Esbw.get_spec();
 	const weapons = {
             'wl': Ebw.weapon_mk(ewsl),
             'wr': Ebw.weapon_mk(ewsr),
+            'wsb': Esbw.weapon_mk(ewsb),
 	};
 	const flight_pattern = new Fp.DecendAndGoSine(
 	    db,
 	    SIZE,
-	    G.v2d_mk_nn(0.0001)
+	    G.v2d_mk_nn(0.00005)
 	);
 	return Emk.warpin_mk_enemy(
             db,
@@ -61,14 +64,10 @@ function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     return A.dimension_spec_mk(db, frames);
 }
 
-function f2s(f: F.Facing): string {
-    return F.on_facing(f, "L", "R");
-}
 const tspecs: Array<[number, string]> = [[1,""]];
 function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.DimensionsFrame[] {
     const table: A.DimensionsFrame[] = [];
     const images = db.uncloned.images;
-    const fstr = f2s(facing);
     tspecs.forEach(spec => {
         const [t, _] = spec;
         table.push({
@@ -80,10 +79,10 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
                 {
 		    frame_msec: 80,
 		    resource_ids: [
-                        ...images.lookup_range_n(n => `enemies/zx4/zx4${fstr}${n}.png`, 1, 3)
+                        ...images.lookup_range_n(n => `enemies/zxBoss/zxBoss${n}.png`, 1, 4)
 		    ],
 		    starting_mode: A.MultiImageStartingMode.hold,
-		    ending_mode: A.MultiImageEndingMode.loop
+		    ending_mode: A.MultiImageEndingMode.bounce
                 }
 	    )
         });
