@@ -1452,6 +1452,11 @@ function loadImages() {
     loadImage(`enemies/cbm4/cbm41.png`);
     loadImage(`enemies/cbm4/cbm42.png`);
 
+    loadImage("enemies/zx1/zx1.png");
+    loadImage("enemies/zx1/zx2.png");
+    loadImage("enemies/zx1/zx3.png");
+    loadImage("enemies/zx1/zx4.png");
+
     [...Array(10).keys()].forEach(i => {
 	loadImage(`gem/gem${i+1}.png`)
     });

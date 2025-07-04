@@ -1243,10 +1243,14 @@ function loadImages() {
 	loadImage(`player/cow${dir}T1.png`);
 	loadImage(`player/cow${dir}T2.png`);
     });
-    loadImage(`player/cbml.png`);
-    loadImage(`player/cbmlt.png`);
-    loadImage(`player/cbmr.png`);
-    loadImage(`player/cbmrt.png`);
+    loadImage("player/cbml.png");
+    loadImage("player/cbmlt.png");
+    loadImage("player/cbmr.png");
+    loadImage("player/cbmrt.png");
+    loadImage("player/zxL1.png");
+    loadImage("player/zxR1.png");
+    loadImage("player/zxL1T.png");
+    loadImage("player/zxR1T.png");
 
     [1,2,3,4].forEach(anim => {
         loadImage(`ground/base${anim}.png`);
@@ -1406,6 +1410,11 @@ function loadImages() {
     loadImage(`enemies/cbm4/cbm41.png`);
     loadImage(`enemies/cbm4/cbm42.png`);
 
+    loadImage("enemies/zx1/zx1.png");
+    loadImage("enemies/zx1/zx2.png");
+    loadImage("enemies/zx1/zx3.png");
+    loadImage("enemies/zx1/zx4.png");
+
     [...Array(10).keys()].forEach(i => {
 	loadImage(`gem/gem${i+1}.png`)
     });
@@ -1471,10 +1480,14 @@ function loadImages() {
     loadImage("bg/ma_cbm3.png");
     loadImage("bg/mal_cbm3.png");
     loadImage("bg/mar_cbm3.png");
+    loadImage("bg/ma_zx.png");
+    loadImage("bg/mal_zx.png");
+    loadImage("bg/mar_zx.png");
     loadImage("bg/ma_near.png");
     loadImage("bg/ma_near2.png");
     loadImage("bg/ma_near3.png");
     loadImage("bg/ma_cbm3_near.png");
+    loadImage("bg/ma_zx_near.png");
 
     loadImage("danger.png");
 

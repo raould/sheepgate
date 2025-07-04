@@ -41,6 +41,12 @@ function frames_mkCbm(images: GDB.ImageResources): string[] {
     return frames_mk_helper(images, "explosionCbm", "cboom", 0, 6);
 }
 
+function frames_mkZx(images: GDB.ImageResources): string[] {
+    // todo
+    // return frames_mk_helper(images, "explosionZx", "zxboom", 0, 6);
+    return frames_mk_helper(images, "explosionCbm", "cboom", 0, 6);
+}
+
 function frames_mk_mk(explosion_kind: S.ExplosionKind): FramesMk {
     switch(explosion_kind) {
     case S.ExplosionKind.regular: {
@@ -49,8 +55,10 @@ function frames_mk_mk(explosion_kind: S.ExplosionKind): FramesMk {
     case S.ExplosionKind.cbm: {
 	return frames_mkCbm;
     }
+    case S.ExplosionKind.zx: {
+	return frames_mkZx;
     }
-    return () => [];
+    }
 }
 
 export function explosionImg_mk(db: GDB.GameDB, spec: ExplosionImgSpec): S.Explosion {

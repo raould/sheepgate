@@ -13,8 +13,8 @@ import * as K from '../../konfig';
 import * as Rnd from '../../random';
 
 // match: sprite animation.
-const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(20, 20), 2));
-const WARPIN_RESOURCE_ID = "enemies/cbm2/cbm2r1.png";
+const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(24, 24), 3));
+const WARPIN_RESOURCE_ID = "enemies/zx1/zx1.png";
 const Basic1: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
@@ -29,8 +29,8 @@ const Basic1: Lemk.EnemyMk = {
 	const acc = G.v2d_mk(0.0003, 0.0006);
 	const flight_pattern = new Fp.BuzzPlayer(db, acc);
 	const spec: Emk.EnemySpec = {
-	    fighter_kind: "cbm2",
-	    explosion_kind: S.ExplosionKind.cbm,
+	    fighter_kind: "zx1",
+	    explosion_kind: S.ExplosionKind.zx,
             anim: anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_BASIC_HP,
@@ -60,15 +60,10 @@ function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     return A.dimension_spec_mk(db, frames);
 }
 
-function f2s(f: F.Facing): string {
-    return F.on_facing(f, "l", "r");
-}
-
 const tspecs: Array<[number, string]> = [[1,""]];
 function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.DimensionsFrame[] {
     const table: A.DimensionsFrame[] = [];
     const images = db.uncloned.images;
-    const fstr = f2s(facing);
     tspecs.forEach(spec => {
         const [t, _] = spec;
         table.push({
@@ -80,10 +75,10 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
                 {
 		    frame_msec: 80,
 		    resource_ids: [
-                        ...images.lookup_range_n(n => `enemies/cbm2/cbm2${fstr}${n}.png`, 1, 2)
+                        ...images.lookup_range_n(n => `enemies/zx1/zx${n}.png`, 1, 4)
 		    ],
 		    starting_mode: A.MultiImageStartingMode.hold,
-		    ending_mode: A.MultiImageEndingMode.bounce
+		    ending_mode: A.MultiImageEndingMode.loop
                 }
 	    )
         });
