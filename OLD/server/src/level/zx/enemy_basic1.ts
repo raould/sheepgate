@@ -13,7 +13,7 @@ import * as K from '../../konfig';
 import * as Rnd from '../../random';
 
 // match: sprite animation.
-const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(24, 24), 3));
+const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(24, 24), 2));
 const WARPIN_RESOURCE_ID = "enemies/zx1/zx1.png";
 const Basic1: Lemk.EnemyMk = {
     SIZE,
@@ -26,7 +26,7 @@ const Basic1: Lemk.EnemyMk = {
 	const weapons = {
             'w': Ebw.weapon_mk(ews),
 	};
-	const acc = G.v2d_mk(0.0003, 0.0006);
+	const acc = G.v2d_mk(0.00005, 0.00005);
 	const flight_pattern = new Fp.BuzzPlayer(db, acc);
 	const spec: Emk.EnemySpec = {
 	    fighter_kind: "zx1",

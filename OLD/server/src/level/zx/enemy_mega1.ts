@@ -5,30 +5,35 @@ import * as G from '../../geom';
 import * as A from '../../animation';
 import * as U from '../../util/util';
 import * as F from '../../facing';
-import * as Ebw from '../../enemy/enemy_ball_weapon';
+import * as Ebw from '../../enemy/enemy_bullet_weapon';
 import * as Fp from '../../enemy/flight_patterns';
 import * as Emk from '../../enemy/enemy_mk';
 import * as Lemk from '../enemy_mk';
 import * as K from '../../konfig';
+import * as Rnd from '../../random';
 
 // match: sprite animation.
-const SIZE = K.vd2si(G.v2d_mk(82, 53));
-const WARPIN_RESOURCE_ID = "enemies/cbm3/cbm31.png";
+const SIZE = K.vd2si(G.v2d_scale_i(G.v2d_mk(55, 34), 1.5));
+const WARPIN_RESOURCE_ID = "enemies/zx3/zxR.png";
 const Mega: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
 	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
-	const [ewsl, ewsr] = Ebw.scale_specs(db.shared.level_index1, S.Rank.mega, true);
+	const [ewsl, ewsr] = Ebw.scale_specs(db.shared.level_index1, S.Rank.mega);
 	const weapons = {
             'wl': Ebw.weapon_mk(ewsl),
             'wr': Ebw.weapon_mk(ewsr),
 	};
-	const flight_pattern = new Fp.DecendAndGoSine(
-	    db,
-	    SIZE,
-	    G.v2d_mk_nn(0.001)
+	const acc_base = G.v2d_mk(
+            K.PLAYER_DELTA_X_ACC * 0.3,
+            K.PLAYER_DELTA_X_ACC * 0.1
 	);
+	const acc = Rnd.singleton.v2d_around(
+            acc_base,
+            G.v2d_scale(acc_base, 0.5)
+	);
+	const flight_pattern = new Fp.BuzzPlayer(db, acc);
 	return Emk.warpin_mk_enemy(
             db,
             SIZE,
@@ -51,34 +56,59 @@ export default Mega;
 
 function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     const frames: A.DimensionsFrame[] = [
-        ...t2a_facing_mk(db, true, F.Facing.left),
-        ...t2a_facing_mk(db, true, F.Facing.right),
-        ...t2a_facing_mk(db, false, F.Facing.left),
-        ...t2a_facing_mk(db, false, F.Facing.right),
+        ...t2a_thrusting_facing_mk(db, F.Facing.left),
+        ...t2a_thrusting_facing_mk(db, F.Facing.right),
+        ...t2a_still_facing_mk(db, F.Facing.left),
+        ...t2a_still_facing_mk(db, F.Facing.right),
     ];
     return A.dimension_spec_mk(db, frames);
 }
 
+function f2s(f: F.Facing): string {
+    return F.on_facing(f, "L", "R");
+}
+
 const tspecs: Array<[number, string]> = [[1,""]];
-function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.DimensionsFrame[] {
+function t2a_thrusting_facing_mk(db: GDB.GameDB, facing: F.Facing): A.DimensionsFrame[] {
     const table: A.DimensionsFrame[] = [];
     const images = db.uncloned.images;
+    const fstr = f2s(facing);
+    tspecs.forEach(spec => {
+        const [t, _] = spec;
+        table.push({
+            facing: facing,
+            thrusting: true,
+            t: t,
+            animator: A.animator_mk(
+                db.shared.sim_now,
+                {
+                    frame_msec: 50,
+                    resource_ids: [
+                        images.lookup(`enemies/zx3/zx${fstr}.png`),
+                        images.lookup(`enemies/zx3/zx${fstr}T.png`),
+                    ],
+                    starting_mode: A.MultiImageStartingMode.hold,
+                    ending_mode: A.MultiImageEndingMode.loop
+                }
+            )
+        });
+    });
+    return table;
+}
+
+function t2a_still_facing_mk(db: GDB.GameDB, facing: F.Facing): A.DimensionsFrame[] {
+    const table: A.DimensionsFrame[] = [];
+    const images = db.uncloned.images;
+    const fstr = f2s(facing);
     tspecs.forEach(spec => {
         const [t, _] = spec;
         table.push({
             facing,
-            thrusting,
+            thrusting: false,
             t,
             animator: A.animator_mk(
                 db.shared.sim_now,
-                {
-                    frame_msec: 100,
-                    resource_ids: [
-                        ...images.lookup_range_n(n => `enemies/cbm3/cbm3${n}.png`, 1, 3)
-                    ],
-                    starting_mode: A.MultiImageStartingMode.hold,
-                    ending_mode: A.MultiImageEndingMode.bounce
-                }
+                { resource_id: images.lookup(`enemies/zx3/zx${fstr}.png`) }
             )
         });
     });
