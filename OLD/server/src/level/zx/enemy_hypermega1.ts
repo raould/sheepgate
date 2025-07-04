@@ -12,8 +12,8 @@ import * as Lemk from '../enemy_mk';
 import * as K from '../../konfig';
 
 // match: sprite animation.
-const SIZE = K.vd2si(G.v2d_scale_i(G.v2d_mk(90, 90), 1));
-const WARPIN_RESOURCE_ID = "enemies/cbm4/cbm41.png";
+const SIZE = K.vd2si(G.v2d_scale_i(G.v2d_mk(69, 68), 1.3));
+const WARPIN_RESOURCE_ID = "enemies/zx4/zx4R1.png";
 const Hypermega: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
@@ -27,7 +27,7 @@ const Hypermega: Lemk.EnemyMk = {
 	const flight_pattern = new Fp.DecendAndGoSine(
 	    db,
 	    SIZE,
-	    G.v2d_mk_nn(0.001)
+	    G.v2d_mk_nn(0.0001)
 	);
 	return Emk.warpin_mk_enemy(
             db,
@@ -41,6 +41,7 @@ const Hypermega: Lemk.EnemyMk = {
 		hp_init: K.ENEMY_HYPERMEGA_HP,
 		damage: K.ENEMY_HYPERMEGA_DAMAGE,
 		weapons: weapons,
+		shield_scale: G.v2d_mk_nn(1.3),
 		flight_pattern: flight_pattern,
 		gem_count: K.ENEMY_HYPERMEGA_GEM_COUNT
             }
@@ -60,27 +61,31 @@ function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     return A.dimension_spec_mk(db, frames);
 }
 
+function f2s(f: F.Facing): string {
+    return F.on_facing(f, "L", "R");
+}
 const tspecs: Array<[number, string]> = [[1,""]];
 function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.DimensionsFrame[] {
     const table: A.DimensionsFrame[] = [];
     const images = db.uncloned.images;
+    const fstr = f2s(facing);
     tspecs.forEach(spec => {
         const [t, _] = spec;
         table.push({
             facing: facing,
             thrusting: thrusting,
             t: t,
-            animator: A.animator_mk(
+	    animator: A.animator_mk(
                 db.shared.sim_now,
                 {
-                    frame_msec: 120,
-                    resource_ids: [
-                        ...images.lookup_range_n(n => `enemies/cbm4/cbm4${n}.png`, 1, 2)
-                    ],
-                    starting_mode: A.MultiImageStartingMode.hold,
-                    ending_mode: A.MultiImageEndingMode.loop
+		    frame_msec: 80,
+		    resource_ids: [
+                        ...images.lookup_range_n(n => `enemies/zx4/zx4${fstr}${n}.png`, 1, 3)
+		    ],
+		    starting_mode: A.MultiImageStartingMode.hold,
+		    ending_mode: A.MultiImageEndingMode.loop
                 }
-            )
+	    )
         });
     });
     return table;
