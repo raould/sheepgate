@@ -1456,6 +1456,10 @@ function loadImages() {
     loadImage("enemies/zx1/zx2.png");
     loadImage("enemies/zx1/zx3.png");
     loadImage("enemies/zx1/zx4.png");
+    loadImage("enemies/zx2/zx1.png");
+    loadImage("enemies/zx2/zx2.png");
+    loadImage("enemies/zx2/zx3.png");
+    loadImage("enemies/zx2/zx4.png");
 
     [...Array(10).keys()].forEach(i => {
 	loadImage(`gem/gem${i+1}.png`)
