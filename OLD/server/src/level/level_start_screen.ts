@@ -8,9 +8,16 @@ import { RGBA } from '../color';
 
 const FONT_SIZE = K.d2si(40);
 
+interface Spec {
+    image_sized: S.ImageSized;
+    name: string;
+    txy: G.V2D;
+    rect: G.Rect;
+}
+
 export class LevelStartScreen extends Sz.SizzlerScreen {
     attract: any;
-    image_specs: [S.ImageSized, string][];
+    specs: Spec[];
 
     constructor(
 	title: string,
@@ -35,28 +42,17 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
 	    },
 	    comment: "attract",
 	};
-	this.image_specs = [
-	    [this.es, "LIGHT"],
-	    [this.em, "MEGA"],
-	    [this.ehm, "HYPERMEGA"],
-	];
-    }
-
-    step() {
-        super.step();
-        this.mdb.shared.frame_drawing.images.push(this.attract);
-        this.step_enemies();
-    }
-
-    step_enemies() {
-        // surprise! this is a horrible hard-coded mess.
+	// surprise! this is a horrible hard-coded mess.
         const x_spacing = K.d2si(150);
         const x_start = G.rect_w(this.mdb.shared.world.screen) / 2 - x_spacing;
         const y = G.rect_h(this.mdb.shared.world.screen) * 0.6;
-
-	const xs = this.image_specs.map((spec, i) => {
-            const [image_sized, name] = spec;
-
+	// left to right on the screen.
+	const image_specs = [
+	    {name: "LIGHT", image_sized: this.es},
+	    {name: "MEGA", image_sized: this.em},
+	    {name: "HYPERMEGA", image_sized: this.ehm},
+	];
+	this.specs = image_specs.map(({name, image_sized}, i) => {
             const offset_x = name.length / 2 * (FONT_SIZE/3);
             const txy = G.v2d_mk(x_start + x_spacing*i - offset_x, y);
 	    
@@ -73,9 +69,17 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
             );
 
 	    return { image_sized, name, txy, rect };
-	}).reverse();
+	}).reverse(); // right to left for z-ordering.
+    }
 
-        xs.forEach(({ image_sized, name, txy, rect }, i) => {
+    step() {
+        super.step();
+        this.mdb.shared.frame_drawing.images.push(this.attract);
+        this.step_enemies();
+    }
+
+    step_enemies() {
+        this.specs.forEach(({ image_sized, name, txy, rect }, i) => {
 	    // ---------- labels ----------
             // todo: use measure_text().
             const t: Dr.DrawText = {
