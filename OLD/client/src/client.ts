@@ -1297,6 +1297,7 @@ function loadImages() {
     [1,2,3,4].forEach(anim => {
         loadImage(`ground/base${anim}.png`);
         loadImage(`ground/base_cbm_${anim}.png`);
+        loadImage(`ground/base_zx_${anim}.png`);
     });
 
     loadImage("enemies/munchies/mr1.png");
