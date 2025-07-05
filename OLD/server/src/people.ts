@@ -28,7 +28,7 @@ import * as T from './toast';
 export function populate(db: GDB.GameDB, cluster_count: number) {
     // some per-level determinism.
     const rnd = new Rnd.RandomImpl(db.shared.level_index1);
-    if (db.shared.level_index1 == 1) {
+    if (false) { //db.shared.level_index1 == 1) {
         populate_near_base(db, cluster_count, rnd);
     }
     else {

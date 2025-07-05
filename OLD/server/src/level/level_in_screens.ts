@@ -64,7 +64,8 @@ class LevelWithScreen_StartScreen implements SubState {
             mega,
             hypermega,
 	    // todo: wish i could use the level's bg_color.
-            RGBA.BLACK
+            RGBA.BLACK,	    
+	    level.get_step_loading(),
         );
         this.next_state = new LevelWithScreen_Level(index1, level);
     }

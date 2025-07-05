@@ -1,6 +1,6 @@
 /* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as Is from './menu/instructions_screen';
-import * as Ps from './menu/plain_screen';
+import * as Ms from './menu/menu_screen';
 import * as Hse from './menu/high_score_entry_screen';
 import * as Hst from './menu/high_score_table_screen';
 import * as Cdb from './client_db';
@@ -168,10 +168,10 @@ class GameAttract implements Gs.Stepper {
 }
 
 class GameWarning implements Gs.Stepper {
-    stepper: Ps.PlainScreen;
+    stepper: Ms.MenuScreen;
 
     constructor() {
-        this.stepper = new Ps.PlainScreen({
+        this.stepper = new Ms.MenuScreen({
 	    title: "WARNING",
 	    skip_text: "CONTINUE: SPACE - Z - ENTER",
 	    instructions: WARNING_INSTRUCTIONS,

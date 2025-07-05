@@ -1,6 +1,6 @@
 /* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as K from '../konfig';
-import * as Sz from './sizzler_screen';
+import * as Ms from './menu_screen';
 import * as G from '../geom';
 import { RGBA, HCycle } from '../color';
 
@@ -18,7 +18,7 @@ export interface InstructionsScreenSpec {
     user_skip_after_msec?: number, // default is 0.
 }
 
-export class InstructionsScreen extends Sz.SizzlerScreen {
+export class InstructionsScreen extends Ms.MenurScreen {
     instructions: string[];
     top: G.V2D;
     line_height: number;
@@ -27,6 +27,7 @@ export class InstructionsScreen extends Sz.SizzlerScreen {
     constructor(spec: InstructionsScreenSpec) {
         super({
 	    ...spec,
+	    sizzler: true,
 	    title: spec.title,
 	    skip_text: spec.hide_user_skip_msg ? undefined : K.USER_SKIP_TEXT,
 	});

@@ -1,9 +1,10 @@
 /* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
-import * as Sz from '../menu/sizzler_screen';
+import * as Ms from '../menu/menu_screen';
 import * as S from '../sprite';
 import * as G from '../geom';
 import * as K from '../konfig';
 import * as Dr from '../drawing';
+import * as MDB from '../menu/menu_db';
 import { RGBA } from '../color';
 
 const FONT_SIZE = K.d2si(40);
@@ -15,7 +16,7 @@ interface Spec {
     rect: G.Rect;
 }
 
-export class LevelStartScreen extends Sz.SizzlerScreen {
+export class LevelStartScreen extends Ms.MenuScreen {
     attract: any;
     specs: Spec[];
 
@@ -25,7 +26,9 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
 	private readonly es: S.ImageSized,
 	private readonly em: S.ImageSized,
 	private readonly ehm: S.ImageSized,
-	bg_color: RGBA) {
+	bg_color: RGBA,
+	private step_loading?: (mdb: MDB.MenuDB) => void
+    ) {
         super({
 	    title,
 	    skip_text,
@@ -38,7 +41,7 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
 	    wrap: false,
 	    image_located: {
 		resource_id: "images/attract.png",
-		rect: K.SCREEN_RECT
+		rect: K.SCREEN_RECT,
 	    },
 	    comment: "attract",
 	};
@@ -76,6 +79,7 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
         super.step();
         this.mdb.shared.frame_drawing.images.push(this.attract);
         this.step_enemies();
+	this.step_loading?.(this.mdb);
     }
 
     step_enemies() {

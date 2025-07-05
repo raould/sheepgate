@@ -15,7 +15,8 @@ import { RGBA, HCycle } from '../color';
 
 export const MESSAGE_MESC = 500;
 
-export interface SizzlerScreenSpec {
+export interface MenuScreenSpec {
+    sizzler?: boolean, // default is false.
     title?: string,
     skip_text?: string,
     user_skip_after_msec?: number, // default is 0.
@@ -26,7 +27,8 @@ export interface SizzlerScreenSpec {
     ignore_user_skip?: boolean, // default is false.
 }
 
-export class SizzlerScreen implements M.Menu {
+export class MenuScreen implements M.Menu {
+    sizzer: boolean;
     bg_color: RGBA;
     mdb: Mdb.MenuDB;
     state: Gs.StepperState;
@@ -41,7 +43,8 @@ export class SizzlerScreen implements M.Menu {
     ignore_user_skip: boolean;
     animated: boolean;
 
-    constructor(spec: SizzlerScreenSpec) {
+    constructor(spec: MenuScreenSpec) {
+	this.sizzler = !!spec.sizzler;
 	this.bg_color = spec.bg_color;
 	this.mdb = Mdb.menudb_mk(this.bg_color);
 	this.title = spec.title;
@@ -141,16 +144,18 @@ export class SizzlerScreen implements M.Menu {
             }
         );
         const rnd_inner = new Rnd.RandomImpl(this.elapsed);
-        Dr.addSizzlerRect(
-            this.mdb.shared.frame_drawing,
-            {
-                wrap: false,
-                color: this.header_cycle.current().setAlpha01(0.7),
-                line_width: K.d2si(2),
-                rect: G.rect_inset(this.mdb.shared.world.screen, K.vd2si(G.v2d_mk_nn(25))),
-            },
-            50, K.d2s(1.5), rnd_inner
-        );
+	if (this.sizzler) {
+            Dr.addSizzlerRect(
+		this.mdb.shared.frame_drawing,
+		{
+                    wrap: false,
+                    color: this.header_cycle.current().setAlpha01(0.7),
+                    line_width: K.d2si(2),
+                    rect: G.rect_inset(this.mdb.shared.world.screen, K.vd2si(G.v2d_mk_nn(25))),
+		},
+		50, K.d2s(1.5), rnd_inner
+            );
+	}
     }
 
     // the menu db api is bad news.

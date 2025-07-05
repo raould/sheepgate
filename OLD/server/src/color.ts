@@ -47,7 +47,7 @@ export class RGBA {
     a01: number;
     hex: string;
 
-    public static randomRGB(r: Rnd.RandomImpl): RGBA {
+    public static randomRGB(r: Rnd.RandomImpl = Rnd.singleton): RGBA {
         return new RGBA(
             r.float_0_1(),
             r.float_0_1(),

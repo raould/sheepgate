@@ -1,6 +1,9 @@
 /* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import { RGBA } from '../../color';
+import * as Rnd from '../../random';
+import * as MDB from '../../menu/menu_db';
 import * as K from '../../konfig';
+import * as G from '../../geom';
 import * as S from '../../sprite';
 import * as Lta from '../level_type_a';
 import * as Lis from '../level_in_screens';
@@ -19,11 +22,11 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
 	player_kind: S.PlayerKind.zx,
 	ground_kind: Gr.GroundKind.zx,
 	Ebs1: { mk: Ezx1.warpin_mk, count: 10 + buf, limit: 6 + buf, delay_msec: 1000, tick_msec: 3*1000 },
-	// Es: { mk: Es.warpin_mk, count: 5 + buf, limit: 2 + buf, delay_msec: 1000, tick_msec: 3*1000 },
-	// Em: { mk: Em.warpin_mk, count: 4 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 3*1000 },
-	// Ehm: { mk: Ehm.warpin_mk, count: 2 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 5*1000 },
+	Es: { mk: Es.warpin_mk, count: 5 + buf, limit: 2 + buf, delay_msec: 1000, tick_msec: 3*1000 },
+	Em: { mk: Em.warpin_mk, count: 4 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 3*1000 },
+	Ehm: { mk: Ehm.warpin_mk, count: 2 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 5*1000 },
 	BG_COLOR: RGBA.new01(0, 0.05, 0.01),
-	people_cluster_count: 1 + buf,
+	people_cluster_count: 3 + buf,
     };
 };
 
@@ -52,6 +55,22 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
     step() {
 	super.step();
 	this.db.shared.xyround = 8;
+    }
+
+    get_step_loading() {
+	return (mdb: MDB.MenuDB) => {
+	    mdb.shared.frame_drawing.rects.push({
+		wrap: false,
+		color: RGBA.randomRGB(),
+		line_width: 0,
+		is_filled: true,
+		rect: G.rect_mk(
+		    G.v2d_mk(0, 0),
+		    K.SCREEN_BOUNDS0
+		),
+		comment: "loading-border",
+	    });
+	}
     }
 }
 

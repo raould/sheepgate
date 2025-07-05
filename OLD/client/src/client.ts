@@ -1493,19 +1493,12 @@ function loadImages() {
     loadImage("shots/ball_shot8a.png");
     loadImage("shots/ball_shot8b.png");
     loadImage("shots/enemy_bullet.png");
-    loadImage("shots/bullet_shot_r.png");
-    loadImage("shots/bullet_shot_l.png");
-    loadImage("shots/bullet_shot_2r.png");
-    loadImage("shots/bullet_shot_2l.png");
-    loadImage("shots/bullet_shot_3r.png");
-    loadImage("shots/bullet_shot_3l.png");
-    loadImage("shots/bullet_shot_cbm_r.png");
-    loadImage("shots/bullet_shot_cbm_l.png");
-    loadImage("shots/bullet_shot_cbm_2r.png");
-    loadImage("shots/bullet_shot_cbm_2l.png");
-    loadImage("shots/bullet_shot_cbm_3r.png");
-    loadImage("shots/bullet_shot_cbm_3l.png");
-
+    ["l", "r", "2l", "2r", "3l", "3r"].forEach(n => {
+	loadImage(`shots/bullet_shot_${n}.png`);
+	loadImage(`shots/bullet_shot_cbm_${n}.png`);
+	loadImage(`shots/bullet_shot_zx_${n}.png`);
+    });
+    
     loadImage("clouds/c_big.png");
     loadImage("clouds/c_middle.png");
     loadImage("clouds/c_small.png");

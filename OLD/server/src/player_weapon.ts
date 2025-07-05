@@ -67,24 +67,28 @@ export function player_weapon_mk(spec: PlayerWeaponSpec): S.Weapon {
 		return lt;
 	    })();
 	    const images = db.uncloned.images;
-	    const cbm = spec.player_kind === S.PlayerKind.cbm ? "cbm_" : "";
-	    const anims = [
-		A.facing_animator_mk(
+	    const templater = (() => {
+		switch (spec.player_kind) {
+		case S.PlayerKind.ship:
+		case S.PlayerKind.cow: {
+		    return (n:string) => `shots/bullet_shot_${n}.png`;
+		}
+		case S.PlayerKind.cbm: {
+		    return (n:string) => `shots/bullet_shot_cbm_${n}.png`;
+		}
+		case S.PlayerKind.zx: {
+		    return (n:string) => `shots/bullet_shot_zx_${n}.png`;
+		}
+		}
+	    })();
+	    const anims = ["l", "r", "2l", "2r", "3l", "3r"].map(n => {
+		return A.facing_animator_mk(
 		    now,
-		    { resource_id: images.lookup(`shots/bullet_shot_${cbm}l.png`) },
-		    { resource_id: images.lookup(`shots/bullet_shot_${cbm}r.png`) },
-		),
-		A.facing_animator_mk(
-		    now,
-		    { resource_id: images.lookup(`shots/bullet_shot_${cbm}2l.png`) },
-		    { resource_id: images.lookup(`shots/bullet_shot_${cbm}2r.png`) },
-		),
-		A.facing_animator_mk(
-		    now,
-		    { resource_id: images.lookup(`shots/bullet_shot_${cbm}3l.png`) },
-		    { resource_id: images.lookup(`shots/bullet_shot_${cbm}3r.png`) },
-		)
-	    ];
+		    { resource_id: images.lookup(templater(n)) },
+		    { resource_id: images.lookup(templater(n)) },
+		);
+	    });
+
 	    const anim = U.element_looped(anims, anim_index++)!;
 	    const vel = G.v2d_scale(F.f2v(src.facing), spec.shot_speed)
 	    // is the player aiming in the same direction as their velocity?

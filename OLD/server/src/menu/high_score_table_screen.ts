@@ -1,5 +1,5 @@
 /* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
-import * as Sz from './sizzler_screen';
+import * as Ms from './menu_screen';
 import * as G from '../geom';
 import * as K from '../konfig';
 import * as Hs from '../high_scores';
@@ -19,9 +19,10 @@ const MUSIC_SFX = {
     singleton: true,
 };
 
-export class HighScoreTableScreen extends Sz.SizzlerScreen {
+export class HighScoreTableScreen extends Ms.MenuScreen {
     constructor(private readonly table: Hs.HighScores, emit_table: boolean = false) {
         super({
+	    sizzler: true,
 	    title: "HIGH SCORES",
 	    skip_text: K.USER_SKIP_TEXT,
 	    user_skip_after_msec: K.user_wait_msec(1000),
