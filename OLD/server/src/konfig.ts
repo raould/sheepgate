@@ -94,7 +94,8 @@ const SCREEN_ASPECT = G.v2d_aspect(SCREEN_BOUNDS0);
 D.assert(Uf.eqf(DESIGN_ASPECT, SCREEN_ASPECT));
 // 'design scale' to 'screen scale'.
 D.assert(D2S >= 1);
-const SCREEN_RECT0 = G.v2d_2_rect(SCREEN_BOUNDS0);
+// note: don't use this one, generally, use (the inset) SCREEN_RECT.
+export const SCREEN_RECT0 = G.v2d_2_rect(SCREEN_BOUNDS0);
 // todo: overscan only sorta works, if it gets too big
 // you see rendering popin and other grossness.
 // and it doesn't scale the world rendering down

@@ -16,17 +16,19 @@ import { RGBA, HCycle } from '../color';
 export const MESSAGE_MESC = 500;
 
 export interface SizzlerScreenSpec {
+    sizzle?: boolean, // default is true.
     title?: string,
     skip_text?: string,
     user_skip_after_msec?: number, // default is 0.
     bg_color: RGBA,
-    animated?: boolean, // default is true.
+    rez?: boolean, // default is true.
     timeout?: number, // default is never.
     hide_user_skip_msg?: boolean;
     ignore_user_skip?: boolean, // default is false.
 }
 
 export class SizzlerScreen implements M.Menu {
+    sizzle: boolean;
     bg_color: RGBA;
     mdb: Mdb.MenuDB;
     state: Gs.StepperState;
@@ -39,15 +41,16 @@ export class SizzlerScreen implements M.Menu {
     user_skip_after_msec: number;
     hide_user_skip_msg: boolean;
     ignore_user_skip: boolean;
-    animated: boolean;
+    rez: boolean;
 
     constructor(spec: SizzlerScreenSpec) {
+	this.sizzle = spec.sizzle ?? true;
 	this.bg_color = spec.bg_color;
 	this.mdb = Mdb.menudb_mk(this.bg_color);
 	this.title = spec.title;
 	this.skip_text = spec.skip_text;
 	this.user_skip_after_msec = K.user_wait_msec(spec.user_skip_after_msec ?? 0);
-	this.animated = spec.animated ?? true;
+	this.rez = spec.rez ?? true;
 	this.timeout = spec.timeout;
 	this.hide_user_skip_msg = spec.hide_user_skip_msg ?? false;
 	this.ignore_user_skip = spec.ignore_user_skip ?? false;
@@ -85,7 +88,7 @@ export class SizzlerScreen implements M.Menu {
     }
 
     step_string(text: string, delay_msec: number = 0): string {
-        if (this.animated) {
+        if (this.rez) {
             return Tx.rez_text(text, this.elapsed / (MESSAGE_MESC + delay_msec));
         }
         else {
@@ -117,7 +120,7 @@ export class SizzlerScreen implements M.Menu {
     step_user_skip() {
         if (!this.hide_user_skip_msg &&
 	    U.exists(this.skip_text) &&
-	    (!this.animated || this.elapsed > this.user_skip_after_msec)) {
+	    (!this.rez || this.elapsed > this.user_skip_after_msec)) {
             const center = G.v2d_mk(this.mdb.shared.world.bounds0.x * 0.5, this.mdb.shared.world.bounds0.y * 0.9);
             this.step_text(this.skip_text, center, K.d2si(40), this.header_cycle);
         }
@@ -132,6 +135,7 @@ export class SizzlerScreen implements M.Menu {
     }
 
     step_border() {
+	if (!this.sizzle) { return; }
         this.mdb.shared.frame_drawing.rects.push(
             {
                 wrap: false,
@@ -142,14 +146,14 @@ export class SizzlerScreen implements M.Menu {
         );
         const rnd_inner = new Rnd.RandomImpl(this.elapsed);
         Dr.addSizzlerRect(
-            this.mdb.shared.frame_drawing,
-            {
+	    this.mdb.shared.frame_drawing,
+	    {
                 wrap: false,
                 color: this.header_cycle.current().setAlpha01(0.7),
                 line_width: K.d2si(2),
                 rect: G.rect_inset(this.mdb.shared.world.screen, K.vd2si(G.v2d_mk_nn(25))),
-            },
-            50, K.d2s(1.5), rnd_inner
+	    },
+	    50, K.d2s(1.5), rnd_inner
         );
     }
 

@@ -1,5 +1,6 @@
 /* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import { RGBA } from '../../color';
+import * as MDB from '../../menu/menu_db';
 import * as K from '../../konfig';
 import * as S from '../../sprite';
 import * as Lta from '../level_type_a';
@@ -47,6 +48,18 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 	    size: Ehm.SIZE,
 	    resource_id: images.lookup(Ehm.WARPIN_RESOURCE_ID)
 	};
+    }
+
+    get_starting_fx(): (mdb: MDB.MenuDB) => void {
+	return (mdb: MDB.MenuDB): void => {
+	    mdb.shared.frame_drawing.rects.push({
+		wrap: false,
+		color: RGBA.randomRGB(),
+		is_filled: true,
+		rect: K.SCREEN_RECT0,
+		comment: "zx-loading-bg",
+	    });
+	}
     }
 
     step() {

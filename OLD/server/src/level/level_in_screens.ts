@@ -49,48 +49,25 @@ export class LevelInScreens implements Gs.Stepper {
     }
 }
 
-class LevelWithScreen_StartScreen implements SubState {
-    start_screen: M.Menu;
+class LevelWithScreen_StartScreen extends Lss.LevelStartScreen implements SubState {
     next_state: SubState;
 
     constructor(private readonly index1: number, private readonly level: Lv.Level) {
-        const small = level.small_snapshot;
-        const mega = level.mega_snapshot;
-        const hypermega = level.hypermega_snapshot;
-        this.start_screen = new Lss.LevelStartScreen(
+        super(
             `LEVEL ${index1} START!`,
 	    K.USER_SKIP_TEXT,
-            small,
-            mega,
-            hypermega,
+            level.small_snapshot,
+            level.mega_snapshot,
+            level.hypermega_snapshot,
 	    // todo: wish i could use the level's bg_color.
-            RGBA.BLACK
+            RGBA.BLACK,
+	    level.get_starting_fx(),
         );
         this.next_state = new LevelWithScreen_Level(index1, level);
     }
 
-    get_state(): Gs.StepperState {
-        return this.start_screen.get_state();
-    }
-
     get_next_state(): U.O<SubState> {
         return this.next_state;
-    }
-
-    merge_client_db(cnew: Cdb.ClientDB): void {
-        this.start_screen.merge_client_db(cnew);
-    }
-
-    step(): void {
-        this.start_screen.step();
-    }
-
-    get_db(): Db.DB<Db.World> {
-	return this.start_screen.get_db();
-    }
-
-    stringify(): string {
-        return this.start_screen.stringify();
     }
 }
 

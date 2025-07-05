@@ -1,5 +1,6 @@
 /* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as Sz from '../menu/sizzler_screen';
+import * as MDB from '../menu/menu_db';
 import * as S from '../sprite';
 import * as G from '../geom';
 import * as K from '../konfig';
@@ -25,8 +26,11 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
 	private readonly es: S.ImageSized,
 	private readonly em: S.ImageSized,
 	private readonly ehm: S.ImageSized,
-	bg_color: RGBA) {
+	bg_color: RGBA,
+	private starting_fx: (menu: MDB.MenuDB) => void,
+    ) {
         super({
+	    sizzle: false,
 	    title,
 	    skip_text,
 	    bg_color,
@@ -38,7 +42,10 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
 	    wrap: false,
 	    image_located: {
 		resource_id: "images/attract.png",
-		rect: K.SCREEN_RECT
+		rect: G.rect_inset(
+		    K.SCREEN_RECT,
+		    G.v2d_mk(20, 15)
+		)
 	    },
 	    comment: "attract",
 	};
@@ -76,6 +83,7 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
         super.step();
         this.mdb.shared.frame_drawing.images.push(this.attract);
         this.step_enemies();
+	this.starting_fx(this.mdb);
     }
 
     step_enemies() {
