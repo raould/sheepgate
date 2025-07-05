@@ -4,14 +4,16 @@ import * as Uf from './util/util_feq';
 import * as G from './geom';
 import { RGBA } from './color';
 
-export const ARCADE_MODE = true;
-
-// super testing hacks! beware!
+// !!!!!!!!!! be careful with these
+// super local testing hacks! beware!
+// they should be committed only as false!
 export const DEBUG_HACK_ONLY_HYPERMEGA = false;
-export const DEBUG_NO_USER_WAIT = true;
+export const DEBUG_NO_USER_WAIT = false;
 export function user_wait_msec(msec: number): number {
     return DEBUG_NO_USER_WAIT ? 0 : msec;
 }
+
+export const ARCADE_MODE = false;
 
 // todo: what would be better is to have types for the different
 // kinds of values, and to have all this in a dict, and then
