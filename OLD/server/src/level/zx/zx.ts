@@ -54,25 +54,30 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 
     get_starting_fx(): (mdb: MDB.MenuDB) => void {
 	return (mdb: MDB.MenuDB): void => {
-	    const seed = Math.floor(mdb.shared.tick / 2000);
-	    //console.log(mdb.shared.tick, seed);
+	    const seed = Math.floor(mdb.shared.sim_now / K.FPS*2);
 	    let rnd = new Rnd.RandomImpl(seed);
 	    let striper = false;
+	    let color = RGBA.RED;
 	    let lastY = 0;
-	    let nextYOfn = () => K.d2si(rnd.int_range(10, 20));
+	    let nextYOfn = () => K.d2si(
+		rnd.boolean(0.6) ?
+		    rnd.int_range(14, 16) :
+		    rnd.int_range(3, 20)
+	    );
 	    for (let y = lastY + nextYOfn();
 		 y < K.SCREEN_BOUNDS0.y;
 		 y = lastY + nextYOfn()) {
 		if (striper) {
 		    mdb.shared.frame_drawing.rects.push({
 			wrap: false,
-			color: rnd.boolean() ? RGBA.YELLOW : RGBA.RED,
+			color,
 			is_filled: true,
 			rect: G.rect_mk(
 			    G.v2d_mk(0, lastY),
 			    G.v2d_mk(K.SCREEN_BOUNDS0.x, y-lastY)
 			)
 		    });
+		    color = color === RGBA.RED ? RGBA.YELLOW : RGBA.RED;
 		}
 		striper = !striper;
 		lastY = y;
