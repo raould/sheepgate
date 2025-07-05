@@ -152,7 +152,6 @@ function far2near_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Groun
 	}
     })();
     const city: UnlocatedSpec<BgNearType> = {
-        // todo: 'city' stuff seems to never be used really for ma_*, so either test & use, or delete?
         images_spec: { resource_id: city_image },
         type: BgNearType.city,
         alpha: 1
@@ -264,19 +263,30 @@ function far2ground_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Gro
 }
 
 function refine_ground(images: GDB.ImageResources, left: U.O<GroundSpec>, mid: U.O<GroundSpec>, right: U.O<GroundSpec>, ground_kind: GroundKind): U.O<GroundSpec> {
-    // TODO: zx
-    const cbm = ground_kind === GroundKind.cbm ? "cbm_" : "";
+    const templater = (side: string) => {
+	switch (ground_kind) {
+	case GroundKind.regular: {
+	    return `ground/ga_${side}.png`;
+	}
+	case GroundKind.cbm: {
+	    return `ground/ga_cbm_${side}.png`;
+	}
+	case GroundKind.zx: {
+	    return `ground/ga_zx_${side}.png`;
+	}
+	}
+    };
     if (mid?.type == GroundType.land) {
         if (left?.type == GroundType.sea) {
             return {
                 ...mid,
-                images_spec: {resource_id: images.lookup(`ground/ga_${cbm}sl.png`)}
+                images_spec: {resource_id: templater("sl")}
             }
         }
         else if(right?.type == GroundType.sea) {
             return {
                 ...mid,
-                images_spec: {resource_id: images.lookup(`ground/ga_${cbm}sr.png`)}
+                images_spec: {resource_id: templater("sr")}
             }
         }
         else {
