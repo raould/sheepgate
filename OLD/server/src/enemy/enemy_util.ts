@@ -27,15 +27,10 @@ export function can_shoot_in_bounds(db: GDB.GameDB, enemy: S.Enemy): boolean {
     );
 }
 
-// todo: this doesn't actaually work right: things do sometimes still overlap or are too close, wtf!!!!!!!!!!!!!!!
 export function safe_lt(db: GDB.GameDB, rank: S.Rank, size: G.V2D, rnd: Rnd.Random, lt: G.V2D | undefined): G.V2D {
-    console.log("safe_lt.1", lt);
     const sltve = safe_lt_vs_enemy(db, size, rnd, lt);
-    console.log("safe_lt.2", sltve);
     const sltvp = safe_lt_vs_player(db, rank, size, rnd, sltve);
-    console.log("safe_lt.3", sltvp);
     const sltw = G.v2d_wrapH(sltvp, db.shared.world.bounds0); // todo: no idea any more where/when i do/not have to wrap.
-    console.log("safe_lt.4", sltw);
     return sltw;
 }
 
