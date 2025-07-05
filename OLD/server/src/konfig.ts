@@ -308,7 +308,6 @@ export const PLAYER_DELTA_X_ACC = d2s(0.0015); // K
 export const PLAYER_DELTA_Y_VEL = d2s(0.2); // K
 
 export const PLAYER_BEAM_MAX_VEL2 = d2s(0.2); // K
-export const PEOPLE_SIZE = vd2si(G.v2d_mk_nn(32)); // K
 export const SHEEP_SIZE = vd2si(
     G.v2d_scale_v2d_i(
 	G.v2d_mk(20, 26),
