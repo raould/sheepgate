@@ -9,7 +9,7 @@ export class LevelEndScreen extends Is.InstructionsScreen {
 	super({
 	    ...spec,
 	    timeout: spec.timeout ?? 10*1000,
-	    user_skip_after_msec: 1000,
+	    user_skip_after_msec: K.user_wait_msec(1000),
 	});
 	this.mdb.shared.sfx.push({ sfx_id: K.SYNTH_A_SFX });
     }

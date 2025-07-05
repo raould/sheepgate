@@ -287,9 +287,11 @@ function get_shadow_size(player_kind: S.PlayerKind): G.V2D {
     case S.PlayerKind.cbm: {
 	return K.vd2si(G.v2d_mk(76, 10));
     }
-    }	
+    case S.PlayerKind.zx: {
+	return K.vd2si(G.v2d_mk(76, 10));
+    }
+    }
 }
-
 
 export function get_player_size(player_kind: S.PlayerKind): G.V2D {
     switch (player_kind) {
@@ -301,6 +303,9 @@ export function get_player_size(player_kind: S.PlayerKind): G.V2D {
     }
     case S.PlayerKind.cbm: {
 	return K.vd2si(G.v2d_scale_i(G.v2d_mk(56, 35), 1.5));
+    }
+    case S.PlayerKind.zx: {
+	return K.vd2si(G.v2d_scale_i(G.v2d_mk(28, 18), 3.5));
     }
     }	
 }
@@ -344,6 +349,17 @@ function still_anim_mk(db: GDB.GameDB, player_kind: S.PlayerKind): A.FacingResou
             },
             {
 		resource_id: images.lookup("player/cbmr.png"),
+            },
+	);
+    }
+    case S.PlayerKind.zx: {
+	return A.facing_animator_mk(
+            db.shared.sim_now,
+            {
+		resource_id: images.lookup("player/zxL1.png"),
+            },
+            {
+		resource_id: images.lookup("player/zxR1.png"),
             },
 	);
     }
@@ -391,16 +407,21 @@ function thrusting_anim_mk(db: GDB.GameDB, player_kind: S.PlayerKind): A.FacingR
 	return A.facing_animator_mk(
             db.shared.sim_now,
             {
-		frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
-		resource_ids: [images.lookup("player/cbmlt.png"), images.lookup("player/cbmlt.png")],
-		starting_mode: A.MultiImageStartingMode.hold,
-		ending_mode: A.MultiImageEndingMode.loop
+		resource_id: images.lookup("player/cbmlt.png"),
             },
             {
-		frame_msec: K.PLAYER_ANIM_FRAME_MSEC,
-		resource_ids: [images.lookup("player/cbmrt.png"), images.lookup("player/cbmrt.png")],
-		starting_mode: A.MultiImageStartingMode.hold,
-		ending_mode: A.MultiImageEndingMode.loop
+		resource_id: images.lookup("player/cbmrt.png"),
+            },
+	);
+    }
+    case S.PlayerKind.zx: {
+	return A.facing_animator_mk(
+            db.shared.sim_now,
+            {
+		resource_id: images.lookup("player/zxL1T.png"),
+            },
+            {
+		resource_id: images.lookup("player/zxR1T.png"),
             },
 	);
     }

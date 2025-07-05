@@ -16,23 +16,23 @@ export function convert255to1(n: number): number {
 }
 
 export class RGBA {
-    static RED = RGBA.new01(1, 0, 0);
-    static DARK_RED = RGBA.new01(0.15, 0, 0);
-    static GREEN = RGBA.new01(0, 1, 0);
-    static DARK_GREEN = RGBA.new01(0, 0.15, 0);
-    static BLUE = RGBA.new01(0, 0, 1);
-    static DARK_BLUE = RGBA.new01(0, 0, 0.15);
-    static CYAN = RGBA.new01(0, 1, 1);
-    static DARK_CYAN = RGBA.new01(0, 0.15, 0.15);
-    static MAGENTA = RGBA.new01(1, 0, 1);
-    static DARK_MAGENTA = RGBA.new01(0.15, 0, 0.15);
-    static YELLOW = RGBA.new01(1, 1, 0);
-    static DARK_YELLOW = RGBA.new01(0.15, 0.15, 0);
-    static BLACK = RGBA.new01(0, 0, 0);
-    static WHITE = RGBA.new01(1, 1, 1);
-    static GRAY = RGBA.new01(0.5, 0.5, 0.5);
-    static DARK_GRAY = RGBA.new01(0.15, 0.15, 0.15);
-    static CYCLES = [
+    static readonly RED = RGBA.new01(1, 0, 0);
+    static readonly DARK_RED = RGBA.new01(0.15, 0, 0);
+    static readonly GREEN = RGBA.new01(0, 1, 0);
+    static readonly DARK_GREEN = RGBA.new01(0, 0.15, 0);
+    static readonly BLUE = RGBA.new01(0, 0, 1);
+    static readonly DARK_BLUE = RGBA.new01(0, 0, 0.15);
+    static readonly CYAN = RGBA.new01(0, 1, 1);
+    static readonly DARK_CYAN = RGBA.new01(0, 0.15, 0.15);
+    static readonly MAGENTA = RGBA.new01(1, 0, 1);
+    static readonly DARK_MAGENTA = RGBA.new01(0.15, 0, 0.15);
+    static readonly YELLOW = RGBA.new01(1, 1, 0);
+    static readonly DARK_YELLOW = RGBA.new01(0.15, 0.15, 0);
+    static readonly BLACK = RGBA.new01(0, 0, 0);
+    static readonly WHITE = RGBA.new01(1, 1, 1);
+    static readonly GRAY = RGBA.new01(0.5, 0.5, 0.5);
+    static readonly DARK_GRAY = RGBA.new01(0.15, 0.15, 0.15);
+    static readonly CYCLES = [
         RGBA.RED,
         RGBA.MAGENTA,
         RGBA.BLUE,
@@ -47,7 +47,7 @@ export class RGBA {
     a01: number;
     hex: string;
 
-    public static randomRGB(r: Rnd.RandomImpl): RGBA {
+    public static randomRGB(r: Rnd.RandomImpl = Rnd.singleton): RGBA {
         return new RGBA(
             r.float_0_1(),
             r.float_0_1(),

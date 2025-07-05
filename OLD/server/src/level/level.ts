@@ -1,6 +1,7 @@
 /* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as Db from '../db';
 import * as GDB from '../game_db';
+import * as MDB from '../menu/menu_db';
 import * as Cdb from '../client_db';
 import * as Gs from '../game_stepper';
 import * as K from '../konfig';
@@ -35,6 +36,8 @@ export interface Level extends Gs.Stepper {
     db: GDB.GameDB;
 
     get_scoring(): Sc.Scoring;
+
+    get_starting_fx(): (mdb: MDB.MenuDB) => void;
 }
 
 export abstract class AbstractLevel implements Level {
@@ -92,6 +95,10 @@ export abstract class AbstractLevel implements Level {
         catch (err) {
             D.log(`ERROR: debug_dump() failed. ${err}`);
         }
+    }
+
+    get_starting_fx(): (mdb: MDB.MenuDB) => void {
+	return () => {};
     }
 
     step() {

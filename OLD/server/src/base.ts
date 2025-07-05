@@ -81,7 +81,19 @@ function base_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): U.O<S.Base> {
 }
 
 function animator_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): A.ResourceAnimator {
-    const cbm = ground_kind === Gr.GroundKind.cbm ? "_cbm_" : "";
+    const templater = (() => {
+	switch (ground_kind) {
+	case Gr.GroundKind.regular: {
+	    return (n: number) => `ground/base${n}.png`;
+	}
+	case Gr.GroundKind.cbm: {
+	    return (n: number) => `ground/base_cbm_${n}.png`;
+	}
+	case Gr.GroundKind.zx: {
+	    return (n: number) => `ground/base_zx_${n}.png`;
+	}
+	}
+    })();
     const images = db.uncloned.images;
     return new A.MultiImageAnimator(
         db.shared.sim_now,
@@ -90,7 +102,7 @@ function animator_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): A.ResourceAnim
             ending_mode: A.MultiImageEndingMode.loop,
             frame_msec: 100,
             resource_ids: [
-                ...images.lookup_range_n((n) => `ground/base${cbm}${n}.png`, 1, 4)
+                ...images.lookup_range_n((n) => templater(n), 1, 4)
             ]
         }
     );

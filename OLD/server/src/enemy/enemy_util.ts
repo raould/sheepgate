@@ -27,36 +27,42 @@ export function can_shoot_in_bounds(db: GDB.GameDB, enemy: S.Enemy): boolean {
     );
 }
 
-// todo: this doesn't actaually work right: things do sometimes still overlap or are too close, wtf!!!!!!!!!!!!!!!
 export function safe_lt(db: GDB.GameDB, rank: S.Rank, size: G.V2D, rnd: Rnd.Random, lt: G.V2D | undefined): G.V2D {
-    const slt = safe_lt_vs_enemy(db, size, rnd, lt);
-    safe_lt_vs_player(db, rank, size, rnd, slt);
-    return G.v2d_wrapH(slt, db.shared.world.bounds0); // todo: no idea any more where/when i do/not have to wrap.
+    const sltve = safe_lt_vs_enemy(db, size, rnd, lt);
+    const sltvp = safe_lt_vs_player(db, rank, size, rnd, sltve);
+    const sltw = G.v2d_wrapH(sltvp, db.shared.world.bounds0); // todo: no idea any more where/when i do/not have to wrap.
+    return sltw;
 }
 
-export function safe_lt_vs_player(db: GDB.GameDB, rank: S.Rank, size: G.V2D, rnd: Rnd.Random, lt: G.V2D) {
-    const p = GDB.get_player(db);
-    if (U.exists(p)) {
-	if (rank >= S.Rank.hypermega) {
-	    lt = G.v2d_wrapH(
-		G.v2d_mk(
-		    p.lt.x + db.shared.world.bounds0.x/3,
-		    lt.y,
-		),
-		db.shared.world.bounds0
-	    )
-	}
-	else {
-            const rect = G.rect_mk(lt, size);
-	    const padded_scale = G.v2d_scale(K.SHIELD_SCALE, 1.2);
-            const padded = G.rect_scale_mid_v2d(p, padded_scale);
-	    const hit = G.rects_are_overlapping_wrapH(rect, p, db.shared.world.bounds0);
-            if (hit) {
-		// move horizontally to avoid the hit.
-		lt.x = p.lt.x + size.x * (5 * F.f2x(p.facing));
+export function safe_lt_vs_player(db: GDB.GameDB, rank: S.Rank, size: G.V2D, rnd: Rnd.Random, lt: G.V2D): G.V2D {
+    let slt = lt;
+    U.if_let(
+	GDB.get_player(db),
+	player => {
+	    if (rank >= S.Rank.hypermega) {
+		slt = G.v2d_wrapH(
+		    G.v2d_mk(
+			player.lt.x + db.shared.world.bounds0.x/3,
+			lt.y,
+		    ),
+		    db.shared.world.bounds0
+		);
+	    }
+	    else {
+		const rect = G.rect_mk(lt, size);
+		const padded_scale = G.v2d_scale(K.SHIELD_SCALE, 1.2);
+		const padded = G.rect_scale_mid_v2d(player, padded_scale);
+		const hit = G.rects_are_overlapping_wrapH(rect, player, db.shared.world.bounds0);
+		if (hit) {
+		    slt = G.v2d_set_x(
+			slt,
+			player.lt.x + size.x * (5 * F.f2x(player.facing))
+		    );
+		}
 	    }
 	}
-    }
+    );
+    return slt;
 }
 
 // avoid overlapping with existing enemies.

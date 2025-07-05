@@ -11,6 +11,7 @@ import * as _ from 'lodash';
 export enum GroundKind {
     regular,
     cbm,
+    zx,
 }
 
 export enum BgFarType {
@@ -145,10 +146,12 @@ function far2near_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Groun
 	case GroundKind.cbm: {
 	    return images.lookup("bg/ma_cbm3_near.png")
 	}
+	case GroundKind.zx: {
+	    return images.lookup("bg/ma_zx_near.png")
+	}
 	}
     })();
     const city: UnlocatedSpec<BgNearType> = {
-        // todo: 'city' stuff seems to never be used really for ma_*, so either test & use, or delete?
         images_spec: { resource_id: city_image },
         type: BgNearType.city,
         alpha: 1
@@ -178,16 +181,56 @@ function far2near_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Groun
 
 function far2ground_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: GroundKind): GroundSpec[] {
     const images = db.uncloned.images;
-    const sea: UnlocatedSpec<GroundType> = {
-        images_spec: {resource_id: ground_kind === GroundKind.cbm ? images.lookup("ground/sa_cbm.png") : images.lookup("ground/sa.png")},
-        type: GroundType.land,
-        alpha: 1
-    };
-    const land: UnlocatedSpec<GroundType> = {
-        images_spec: {resource_id: ground_kind === GroundKind.cbm ? images.lookup("ground/ga_cbm.png") : images.lookup("ground/ga.png")},
-        type: GroundType.land,
-        alpha: 1
-    };
+    const sea: UnlocatedSpec<GroundType> = (() => {
+	switch (ground_kind) {
+	case GroundKind.regular: {
+	    return {
+		images_spec: { resource_id: images.lookup("ground/sa.png") },
+		type: GroundType.land,
+		alpha: 1
+	    };
+	}
+	case GroundKind.cbm: {
+	    return {
+		images_spec: { resource_id: images.lookup("ground/sa_cbm.png") },
+		type: GroundType.land,
+		alpha: 1
+	    };
+	}
+	case GroundKind.zx: {
+	    return {
+		images_spec: { resource_id: images.lookup("ground/sa_zx.png") },
+		type: GroundType.land,
+		alpha: 1
+	    };
+	}
+	}
+    })();
+    const land: UnlocatedSpec<GroundType> = (() => {
+	switch (ground_kind) {
+	case GroundKind.regular: {
+	    return {
+		images_spec: { resource_id: images.lookup("ground/ga.png") },
+		type: GroundType.land,
+		alpha: 1
+	    };
+	}
+	case GroundKind.cbm: {
+	    return {
+		images_spec: { resource_id: images.lookup("ground/ga_cbm.png") },
+		type: GroundType.land,
+		alpha: 1
+	    };
+	}
+	case GroundKind.zx: {
+	    return {
+		images_spec: { resource_id: images.lookup("ground/ga_zx.png") },
+		type: GroundType.land,
+		alpha: 1
+	    };
+	}
+	}
+    })();
     const specs = project_far_specs<GroundType>(
         db,
         far_specs,
@@ -220,18 +263,30 @@ function far2ground_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Gro
 }
 
 function refine_ground(images: GDB.ImageResources, left: U.O<GroundSpec>, mid: U.O<GroundSpec>, right: U.O<GroundSpec>, ground_kind: GroundKind): U.O<GroundSpec> {
-    const cbm = ground_kind === GroundKind.cbm ? "cbm_" : "";
+    const templater = (side: string) => {
+	switch (ground_kind) {
+	case GroundKind.regular: {
+	    return `ground/ga_${side}.png`;
+	}
+	case GroundKind.cbm: {
+	    return `ground/ga_cbm_${side}.png`;
+	}
+	case GroundKind.zx: {
+	    return `ground/ga_zx_${side}.png`;
+	}
+	}
+    };
     if (mid?.type == GroundType.land) {
         if (left?.type == GroundType.sea) {
             return {
                 ...mid,
-                images_spec: {resource_id: images.lookup(`ground/ga_${cbm}sl.png`)}
+                images_spec: {resource_id: templater("sl")}
             }
         }
         else if(right?.type == GroundType.sea) {
             return {
                 ...mid,
-                images_spec: {resource_id: images.lookup(`ground/ga_${cbm}sr.png`)}
+                images_spec: {resource_id: templater("sr")}
             }
         }
         else {

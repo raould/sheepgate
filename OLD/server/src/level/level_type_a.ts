@@ -72,6 +72,8 @@ interface FarSpec0 {
     alpha: number
 }
 
+type PreFarSpec0 = Omit<FarSpec0, "x">;
+
 // there might be variations of levels, this represents
 // the core mechanisms for one kind/type/config/category/style
 // of levels, called "TypeA".
@@ -170,6 +172,84 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	);
     }
 
+    private far_spec0_mk_left(ground_kind: Gr.GroundKind, alpha: number): PreFarSpec0 {
+	switch (ground_kind) {
+	case Gr.GroundKind.regular: {
+	    return {
+		resource_name: "bg/mal_far.png",
+		type: Gr.BgFarType.mountain,
+		alpha: alpha
+	    };
+	}
+	case Gr.GroundKind.cbm: {
+	    return {
+		resource_name: "bg/mal_cbm3.png",
+		type: Gr.BgFarType.mountain,
+		alpha: alpha
+	    };
+	}
+	case Gr.GroundKind.zx: {
+	    return {
+		resource_name: "bg/mal_zx.png",
+		type: Gr.BgFarType.mountain,
+		alpha: alpha
+	    }
+	}
+	}
+    }
+
+    private far_spec0_mk_right(ground_kind: Gr.GroundKind, alpha: number): PreFarSpec0 {
+	switch (ground_kind) {
+	case Gr.GroundKind.regular: {
+	    return {
+		resource_name: "bg/mar_far.png",
+		type: Gr.BgFarType.mountain,
+		alpha: alpha
+	    };
+	}
+	case Gr.GroundKind.cbm: {
+	    return {
+		resource_name: "bg/mar_cbm3.png",
+		type: Gr.BgFarType.mountain,
+		alpha: alpha
+	    };
+	}
+	case Gr.GroundKind.zx: {
+	    return {
+		resource_name: "bg/mar_zx.png",
+		type: Gr.BgFarType.mountain,
+		alpha: alpha
+	    }
+	}
+	}
+    }
+
+    private far_spec0_mk_middle(ground_kind: Gr.GroundKind, alpha: number): PreFarSpec0 {
+	switch (ground_kind) {
+	case Gr.GroundKind.regular: {
+	    return {
+		resource_name: "bg/ma_far.png",
+		type: Gr.BgFarType.mountain,
+		alpha: alpha
+	    };
+	}
+	case Gr.GroundKind.cbm: {
+	    return {
+		resource_name: "bg/ma_cbm3.png",
+		type: Gr.BgFarType.mountain,
+		alpha: alpha
+	    };
+	}
+	case Gr.GroundKind.zx: {
+	    return {
+		resource_name: "bg/ma_zx.png",
+		type: Gr.BgFarType.mountain,
+		alpha: alpha
+	    }
+	}
+	}
+    }
+
     far_spec0_mk(ground_kind: Gr.GroundKind): FarSpec0[] {
 	const cbm = ground_kind === Gr.GroundKind.cbm;
 	// todo: extract out the x calculations,
@@ -177,35 +257,15 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	// make it so the world can fit more far's
 	// w/out getting too large.
 	const alpha = 0.2;
-	const far_spec0 = [
-	    {
-		resource_name: cbm ? "bg/mal_cbm3.png" : "bg/mal_far.png",
-		type: Gr.BgFarType.mountain,
-		alpha: alpha
-	    },
-	    {
-		resource_name: cbm ? "bg/ma_cbm3.png" : "bg/ma_far.png",
-		type: Gr.BgFarType.mountain,
-		alpha: alpha
-	    },
-	    {
-		resource_name: cbm ? "bg/ma_cbm3.png" : "bg/ma_far.png",
-		type: Gr.BgFarType.mountain,
-		alpha: alpha
-	    },
-	    {
-		resource_name: cbm ? "bg/mar_cbm3.png" : "bg/mar_far.png",
-		type: Gr.BgFarType.mountain,
-		alpha: alpha
-	    },
-	    {
-		resource_name: K.EMPTY_IMAGE_RESOURCE_ID,
-		type: Gr.BgFarType.empty,
-		alpha: alpha
-	    },
-	]
-	      .map((f, i): FarSpec0 => ({ ...f, x: K.BG_FAR_BG_SIZE.x * i }));
-	return far_spec0;
+	const pre_far_spec0: PreFarSpec0[] = [
+	    this.far_spec0_mk_left(ground_kind, alpha),
+	    this.far_spec0_mk_middle(ground_kind, alpha),
+	    this.far_spec0_mk_middle(ground_kind, alpha),
+	    this.far_spec0_mk_right(ground_kind, alpha),
+	];
+	return pre_far_spec0.map((f: PreFarSpec0, i: number): FarSpec0 => {
+	    return { ...f, x: K.BG_FAR_BG_SIZE.x * i }
+	});
     }
 
     private init_adv_from_konfig(konfig: U.O<LevelEnemyKonfig>, fighter_kind: string): U.O<Eag.EnemyGeneratorSpec> {

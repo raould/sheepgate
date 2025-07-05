@@ -1,8 +1,8 @@
 /* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as U from './util/util';
 import * as G from './geom';
-import * as S from 'seedrandom';
 import * as D from './debug';
+import seedrandom from 'seedrandom';
 
 // todo: remove all the leading "next_" boilerplate.
 // todo: rename 'singleton' to something shorter e.g. 'inst'.
@@ -58,14 +58,14 @@ function return_non_zero(n: number, non_zero: boolean, sign: number): number {
 }
 
 export class RandomImpl implements Random {
-    s: S.prng;
+    rnd: any;
     constructor(seed?: number, private readonly trace: boolean = false) {
-        const thiseed = seed || Date.now();
-        this.s = S.xorshift7(thiseed.toString());
+        let thiseed = Math.floor(seed ?? Date.now());
+        this.rnd = seedrandom(thiseed.toString());
         this.trace && D.log(seed, thiseed);
     }
     private double(): number {
-        const d = this.s.double();
+        const d = this.rnd();
         this.trace && D.log(d);
         return d;
     }

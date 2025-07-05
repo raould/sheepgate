@@ -24,7 +24,7 @@ export class HighScoreTableScreen extends Sz.SizzlerScreen {
         super({
 	    title: "HIGH SCORES",
 	    skip_text: K.USER_SKIP_TEXT,
-	    user_skip_after_msec: 1000,
+	    user_skip_after_msec: K.user_wait_msec(1000),
 	    bg_color: RGBA.DARK_BLUE,
 	    timeout: 30*1000
 	});
@@ -51,7 +51,7 @@ export class HighScoreTableScreen extends Sz.SizzlerScreen {
             const ms = Tx.measure_text(String(high_score.score), FONT_SIZE);
             const v_offset = (Math.max(mi.y, ms.y) + 5) * index;
 
-            const t = ((this.elapsed / (this.mdb.frame_dt*100)) + ((10-index)/10)) % 1;
+            const t = ((this.mdb.shared.sim_now / (this.mdb.frame_dt*100)) + ((10-index)/10)) % 1;
             const wiggle = A.ease_in_out(t, -20, 20);
 
             const hi_offset = -1 * mi.x - wiggle - 25;

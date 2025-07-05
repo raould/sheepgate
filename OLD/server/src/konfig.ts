@@ -4,10 +4,16 @@ import * as Uf from './util/util_feq';
 import * as G from './geom';
 import { RGBA } from './color';
 
-export const ARCADE_MODE = true;
-
-// super testing hack! beware!
+// !!!!!!!!!! be careful with these
+// super local testing hacks! beware!
+// they should be committed only as false!
 export const DEBUG_HACK_ONLY_HYPERMEGA = false;
+export const DEBUG_NO_USER_WAIT = false;
+export function user_wait_msec(msec: number): number {
+    return DEBUG_NO_USER_WAIT ? 0 : msec;
+}
+
+export const ARCADE_MODE = false;
 
 // todo: what would be better is to have types for the different
 // kinds of values, and to have all this in a dict, and then
@@ -90,7 +96,8 @@ const SCREEN_ASPECT = G.v2d_aspect(SCREEN_BOUNDS0);
 D.assert(Uf.eqf(DESIGN_ASPECT, SCREEN_ASPECT));
 // 'design scale' to 'screen scale'.
 D.assert(D2S >= 1);
-const SCREEN_RECT0 = G.v2d_2_rect(SCREEN_BOUNDS0);
+// note: don't use this one, generally, use (the inset) SCREEN_RECT.
+export const SCREEN_RECT0 = G.v2d_2_rect(SCREEN_BOUNDS0);
 // todo: overscan only sorta works, if it gets too big
 // you see rendering popin and other grossness.
 // and it doesn't scale the world rendering down
@@ -423,6 +430,6 @@ export const DEFFX_SFX = "sounds/deffx.ogg";
 
 // match: game.ts
 // used to scale things across levels.
-export const LEVEL_TEMPLATE_COUNT = 8;
+export const LEVEL_TEMPLATE_COUNT = 9;
 
 export const USER_SKIP_TEXT = "PRESS [FIRE] TO CONTINUE";

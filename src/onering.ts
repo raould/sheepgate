@@ -331,11 +331,11 @@ class ParticlesEightGenerator extends AbstractParticleGenerator {
 			  self.particles[i + self.oy] = iy;
 			  const ivx = ix - mx;
 			  const ivy = iy - my;
-			  const ySlower = y != 0 ? 0.4 : 1; // ellipsizeringish.
+			  const ySlower = y != 0 ? 0.4 : 1; // squashingish.
 			  const d = Math.sqrt(ivx * ivx + ivy * ivy);
 			  self.particles[i + self.ovx] = ivx/d * spd;
 			  self.particles[i + self.ovy] = ivy/d * spd*ySlower;
-			  self.particles[i + self.osize] = 6;
+			  self.particles[i + self.osize] = 3;
 		      }
 		  }
 	      });
@@ -1243,14 +1243,19 @@ function loadImages() {
 	loadImage(`player/cow${dir}T1.png`);
 	loadImage(`player/cow${dir}T2.png`);
     });
-    loadImage(`player/cbml.png`);
-    loadImage(`player/cbmlt.png`);
-    loadImage(`player/cbmr.png`);
-    loadImage(`player/cbmrt.png`);
+    loadImage("player/cbml.png");
+    loadImage("player/cbmlt.png");
+    loadImage("player/cbmr.png");
+    loadImage("player/cbmrt.png");
+    loadImage("player/zxL1.png");
+    loadImage("player/zxR1.png");
+    loadImage("player/zxL1T.png");
+    loadImage("player/zxR1T.png");
 
     [1,2,3,4].forEach(anim => {
         loadImage(`ground/base${anim}.png`);
         loadImage(`ground/base_cbm_${anim}.png`);
+        loadImage(`ground/base_zx_${anim}.png`);
     });
 
     loadImage("enemies/munchies/mr1.png");
@@ -1405,6 +1410,29 @@ function loadImages() {
     loadImage(`enemies/cbm4/cbm41.png`);
     loadImage(`enemies/cbm4/cbm42.png`);
 
+    loadImage("enemies/zx1/zx1.png");
+    loadImage("enemies/zx1/zx2.png");
+    loadImage("enemies/zx1/zx3.png");
+    loadImage("enemies/zx1/zx4.png");
+    loadImage("enemies/zx2/zx1.png");
+    loadImage("enemies/zx2/zx2.png");
+    loadImage("enemies/zx2/zx3.png");
+    loadImage("enemies/zx2/zx4.png");
+    loadImage("enemies/zx3/zxL.png");
+    loadImage("enemies/zx3/zxR.png");
+    loadImage("enemies/zx3/zxLT.png");
+    loadImage("enemies/zx3/zxRT.png");
+    loadImage("enemies/zx4/zx4L1.png");
+    loadImage("enemies/zx4/zx4L2.png");
+    loadImage("enemies/zx4/zx4L3.png");
+    loadImage("enemies/zx4/zx4R1.png");
+    loadImage("enemies/zx4/zx4R2.png");
+    loadImage("enemies/zx4/zx4R3.png");
+
+    [...Array(4).keys()].forEach(i => {
+	loadImage(`enemies/zxBoss/zxBoss${i+1}.png`);
+    });
+
     [...Array(10).keys()].forEach(i => {
 	loadImage(`gem/gem${i+1}.png`)
     });
@@ -1447,6 +1475,10 @@ function loadImages() {
     loadImage("ground/ga_cbm_sr.png");
     loadImage("ground/ga_cbm_sl.png");
     loadImage("ground/sa_cbm.png");
+    loadImage("ground/ga_zx.png");
+    loadImage("ground/ga_zx_sr.png");
+    loadImage("ground/ga_zx_sl.png");
+    loadImage("ground/sa_zx.png");
     loadImage("people/standing.png");
     loadImage("people/waving1.png");
     loadImage("people/waving2.png");
@@ -1466,10 +1498,14 @@ function loadImages() {
     loadImage("bg/ma_cbm3.png");
     loadImage("bg/mal_cbm3.png");
     loadImage("bg/mar_cbm3.png");
+    loadImage("bg/ma_zx.png");
+    loadImage("bg/mal_zx.png");
+    loadImage("bg/mar_zx.png");
     loadImage("bg/ma_near.png");
     loadImage("bg/ma_near2.png");
     loadImage("bg/ma_near3.png");
     loadImage("bg/ma_cbm3_near.png");
+    loadImage("bg/ma_zx_near.png");
 
     loadImage("danger.png");
 

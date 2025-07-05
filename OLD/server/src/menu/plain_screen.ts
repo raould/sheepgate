@@ -1,6 +1,6 @@
 /* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as M from './menu';
-import * as Mdb from './menu_db';
+import * as MDB from './menu_db';
 import * as Cdb from '../client_db';
 import * as Db from '../db';
 import * as Gs from '../game_stepper';
@@ -25,15 +25,14 @@ export interface PlainScreenSpec {
 
 export class PlainScreen implements M.Menu {
     bg_color: RGBA;
-    mdb: Mdb.MenuDB;
+    mdb: MDB.MenuDB;
     state: Gs.StepperState;
-    elapsed: number;
     user_skip_after_msec: number;
     
     constructor(spec: PlainScreenSpec) {
 	this.bg_color = spec.bg_color;
-	this.user_skip_after_msec = spec.user_skip_after_msec ?? 0;
-        this.mdb = Mdb.menudb_mk(this.bg_color);
+	this.user_skip_after_msec = K.user_wait_msec(spec.user_skip_after_msec ?? 0);
+        this.mdb = MDB.menudb_mk(this.bg_color);
 
         this.add_text(
 	    spec.title,
@@ -61,7 +60,6 @@ export class PlainScreen implements M.Menu {
             );
         });
         this.state = Gs.StepperState.running;
-	this.elapsed = 0;
     }
 
     add_text(text: string, color: RGBA, center: G.V2D, size: number) {
@@ -78,7 +76,7 @@ export class PlainScreen implements M.Menu {
     }
 
     merge_client_db(cdb2: Cdb.ClientDB): void {
-        if (this.elapsed > this.user_skip_after_msec && !!cdb2.inputs.commands[Cmd.CommandType.fire]) {
+        if (this.mdb.shared.sim_now > this.user_skip_after_msec && !!cdb2.inputs.commands[Cmd.CommandType.fire]) {
             this.state = Gs.StepperState.completed;
         }
     }
@@ -88,13 +86,13 @@ export class PlainScreen implements M.Menu {
     }
 
     step() {
-        this.elapsed += this.mdb.frame_dt;
+	MDB.next_frame(this.mdb);
     }
 
     // the menu db api is bad news.
 
     get_db(): Db.DB<Db.World> {
-	return Mdb.next_frame(this.mdb).shared;
+	return this.mdb.shared;
     }
 
     stringify(): string {

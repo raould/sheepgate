@@ -26,6 +26,7 @@ import * as L5 from './level/level5/level5';
 import * as L6 from './level/level6/level6';
 import * as L7 from './level/level7/level7';
 import * as Lcbm from './level/cbm/cbm';
+import * as Lzx from './level/zx/zx';
 
 const TRACK1_SFX = { sfx_id: K.TRACK1_SFX, gain: 0.3, singleton: true };
 
@@ -73,7 +74,9 @@ const level_mks: LevelMk[] = [
     (i: number, score: number, hi: Hs.HighScore) => L4.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L5.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L6.level_mk(i, score, hi),
+    (i: number, score: number, hi: Hs.HighScore) => Lzx.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L7.level_mk(i, score, hi),
+
 ];
 //D.assert(level_mks.length === K.LEVEL_TEMPLATE_COUNT, "level template count");
 
@@ -213,7 +216,7 @@ class GameInstructions implements Gs.Stepper {
 	    animated: true,
 	    bg_color: RGBA.DARK_BLUE,
 	    top_offset_y: K.d2si(40),
-	    user_skip_after_msec: 1000,
+	    user_skip_after_msec: K.user_wait_msec(1000),
 	});
 	this.stepper.mdb.shared.sfx.push({ sfx_id: K.SYNTH_C_SFX });
 	this.qr = {

@@ -11,6 +11,7 @@
         "sourceMap": true,
         "strict": true,
 	"target": "ES2019",
+	"esModuleInterop": true,
 	"paths": {
 	    "@server/*": ["./OLD/server/src/*"],
 	    "@client/*": ["./OLD/client/src/*"],
