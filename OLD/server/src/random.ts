@@ -61,7 +61,6 @@ export class RandomImpl implements Random {
     rnd: any;
     constructor(seed?: number, private readonly trace: boolean = false) {
         let thiseed = Math.floor(seed ?? Date.now());
-	if (thiseed === 0) { thiseed = 0x42; }
         this.rnd = seedrandom(thiseed.toString());
         this.trace && D.log(seed, thiseed);
     }
