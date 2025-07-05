@@ -1488,6 +1488,10 @@ function loadImages() {
     loadImage("people/tp3.png");
     loadImage("people/tp4.png");
     loadImage("people/tp5.png");
+    loadImage("people/mw0.png");
+    loadImage("people/mw1a.png");
+    loadImage("people/mw1b.png");
+    loadImage("people/mw2.png");
     loadImage("people/skull.png");
     Array.from({length: 4}, (_v, i) => i+1).forEach(i => loadImage(`people/sheep${i}.png`));
     Array.from({length: 10}, (_v, i) => i+1).forEach(i => loadImage(`people/sheepT${i}.png`));

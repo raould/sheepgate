@@ -25,18 +25,18 @@ import * as T from './toast';
 
 // note: this whole way of populating is almost completely and utterly precisely what i don't want to do.
 
-export function populate(db: GDB.GameDB, cluster_count: number) {
+export function populate(db: GDB.GameDB, ground_kind: Gr.GroundKind, cluster_count: number) {
     // some per-level determinism.
     const rnd = new Rnd.RandomImpl(db.shared.level_index1);
     if (db.shared.level_index1 == 1) {
-        populate_near_base(db, cluster_count, rnd);
+        populate_near_base(db, ground_kind, cluster_count, rnd);
     }
     else {
-        populate_random(db, cluster_count, rnd);
+        populate_random(db, ground_kind, cluster_count, rnd);
     }
 }
 
-function populate_near_base(db: GDB.GameDB, cluster_count: number, rnd: Rnd.Random) {
+function populate_near_base(db: GDB.GameDB, ground_kind: Gr.GroundKind, cluster_count: number, rnd: Rnd.Random) {
     const gs = db.shared.items.ground;
     const base = db.shared.items.base;
     D.assert(!!base);
@@ -50,13 +50,13 @@ function populate_near_base(db: GDB.GameDB, cluster_count: number, rnd: Rnd.Rand
     while (remaining > 0) {
         const g = U.element_looped(gs, index);
         if (g?.ground_type == Gr.GroundType.land) {
-            population_count += add_people_cluster(db, g, rnd);
+            population_count += add_people_cluster(db, ground_kind, g, rnd);
             remaining--;
         }
     }   
 }
 
-function populate_random(db: GDB.GameDB, cluster_count: number, rnd: Rnd.Random) {
+function populate_random(db: GDB.GameDB, ground_kind: Gr.GroundKind, cluster_count: number, rnd: Rnd.Random) {
     // note: because wrapping, the biggest distance is like the smallest.
 
     const gs = db.shared.items.ground;
@@ -79,13 +79,13 @@ function populate_random(db: GDB.GameDB, cluster_count: number, rnd: Rnd.Random)
 	const g = grounds.pop();
 	grounds.reverse(); // because wrapping.
 	if (g != null && g.ground_type == Gr.GroundType.land) {
-	    population_count += add_people_cluster(db, g, rnd);
+	    population_count += add_people_cluster(db, ground_kind, g, rnd);
 	    cluster_count--;
 	}
     }
 }
 
-function add_people_cluster(db: GDB.GameDB, g: Gr.Ground, rnd: Rnd.Random): number {
+function add_people_cluster(db: GDB.GameDB, ground_kind: Gr.GroundKind, g: Gr.Ground, rnd: Rnd.Random): number {
     // [todo: do we even have lava any more? ... no]
     // (keeping away from the edges that might have a little sea/lava.
     // todo: ideally we'd check the type of the tile and then adjust
@@ -93,7 +93,7 @@ function add_people_cluster(db: GDB.GameDB, g: Gr.Ground, rnd: Rnd.Random): numb
     // lavs/sea enabled now anyway.)
     // also this is hacky crap to allow room for (max 3) people in a row.
     const gmt = G.rect_mt(g);
-    add_person(db, gmt);
+    add_person(db, ground_kind, gmt);
     const ox = K.PEOPLE_SIZE.x * 2;
     if (rnd.boolean()) {
 	add_sheep(db, G.v2d_add_x(gmt, ox));
@@ -108,12 +108,24 @@ interface PersonPrivate extends S.Person {
     anim: A.ResourceAnimator | undefined;
 }
 
-function add_person(db: GDB.GameDB, mb: G.V2D): void {
+function add_person(db: GDB.GameDB, ground_kind: Gr.GroundKind, mb: G.V2D): void {
     // hard coded hack to look good. todo: ground should have hidden hotspots instead.
     const lt = G.v2d_sub(
 	mb,
         G.v2d_mk(K.PEOPLE_SIZE.x / 2, K.PEOPLE_SIZE.x * 0.75)
     );
+    const size = (() => {
+	switch (ground_kind) {
+	case Gr.GroundKind.regular:
+	case Gr.GroundKind.cbm: {
+	    return K.vd2si(G.v2d_mk_nn(32));
+	}
+	case Gr.GroundKind.zx: {
+	    return K.vd2si(G.v2d_scale_i(G.v2d_mk(14, 20), 2));
+	}
+	}
+    })();
+
     // todo: note: the whole beaming/rescue thing has a lot of state transitions
     // which means it has a lot of code which means it gets confusing and buggy.
     // i am trying to split out the stages into their own instances so that
@@ -122,9 +134,9 @@ function add_person(db: GDB.GameDB, mb: G.V2D): void {
     GDB.add_sprite_dict_id_mut(
         db.shared.items.people,
         (dbid: GDB.DBID): S.Person => waiting_mk(
-	    db, dbid, lt, K.PEOPLE_SIZE,
-	    person_standing_anim_mk(db),
-	    person_waving_anim_mk(db),
+	    db, dbid, lt, size,
+	    person_standing_anim_mk(db, ground_kind),
+	    person_waving_anim_mk(db, ground_kind),
 	    person_beam_up_anim_mk,
 	    person_beam_down_anim_mk
 	)
@@ -244,23 +256,53 @@ function waiting_mk(
     return s as S.Person;
 }
 
-function person_standing_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
+function person_standing_anim_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): A.ResourceAnimator {
     const images = db.uncloned.images;
+    const id = (() => {
+	switch (ground_kind) {
+	case Gr.GroundKind.regular:
+	case Gr.GroundKind.cbm: {
+	    return "people/standing.png";
+	}
+	case Gr.GroundKind.zx: {
+	    return "people/mw0.png";
+	}
+	}
+    })();
     const spec: A.SingleImageSpec = {
-        resource_id: images.lookup("people/standing.png"),
+        resource_id: images.lookup(id)
     };
     return new A.SingleImageAnimator(db.shared.sim_now, spec);
 }
 
-function person_waving_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
+function person_waving_anim_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): A.ResourceAnimator {
     const images = db.uncloned.images;
-    const spec: A.MultiImageSpec = {
-        starting_mode: A.MultiImageStartingMode.hold,
-        ending_mode: A.MultiImageEndingMode.loop,
-        offset_msec: Rnd.singleton.float_range(0, 250),
-        frame_msec: Rnd.singleton.float_around(125, 25),
-        resource_ids: images.lookup_range_n((n) => `people/waving${n}.png`, 1, 2)
-    };
+    const spec: A.MultiImageSpec = (() => {
+	switch (ground_kind) {
+	case Gr.GroundKind.regular:
+	case Gr.GroundKind.cbm: {
+	    return {
+		starting_mode: A.MultiImageStartingMode.hold,
+		ending_mode: A.MultiImageEndingMode.loop,
+		offset_msec: Rnd.singleton.float_range(0, 250),
+		frame_msec: Rnd.singleton.float_around(125, 25),
+		resource_ids: images.lookup_range_n((n) => `people/waving${n}.png`, 1, 2)
+	    };
+	}
+	case Gr.GroundKind.zx: {
+	    return {
+		starting_mode: A.MultiImageStartingMode.hold,
+		ending_mode: A.MultiImageEndingMode.loop,
+		offset_msec: Rnd.singleton.float_range(0, 250),
+		frame_msec: Rnd.singleton.float_around(125, 25),
+		resource_ids: [
+		    "mw0", "mw1a", "mw2", "mw1a",
+		    "mw0", "mw1b", "mw2", "mw1b"
+		].map(n => images.lookup(`people/${n}.png`)),
+	    };
+	}
+	}
+    })();
     const anim = new A.MultiImageAnimator(db.shared.sim_now, spec);
     return anim;
 }

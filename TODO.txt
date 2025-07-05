@@ -37,11 +37,16 @@ really really todo, maybe?
 
 * hilariously / inevitably, the 'db' has become a big ball of mud; very confusing.
   the various kinds of DBs are not of compatible types e.g. GDB.GameDB doesn't extend Db.DB<W>?!
-  also the way the client is hard-coded to know the db structure is bad.
+
+* also the way the client is hard-coded to know the db structure is bad.
   better if the client was dumb and only iterated over a draw list kind of thing.
 
 * if you see something that is badly named and you are like, "i cannot believe somebody
   would have named something that badly," let me tell you i am right there with ya.
+
+* too many Kinds now, they could really all be one?
+
+* all the Kinds switch statements kind of points to OOP being better if i could refactor.
 
 * there's lots of misc stuff that started out trying to support more complex things
   like multiple beam up/downs at once, or the 't' of enemy damage, that ended
