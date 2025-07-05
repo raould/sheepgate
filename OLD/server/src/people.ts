@@ -135,11 +135,13 @@ function add_person(db: GDB.GameDB, ground_kind: Gr.GroundKind, mb: G.V2D): void
     GDB.add_sprite_dict_id_mut(
         db.shared.items.people,
         (dbid: GDB.DBID): S.Person => waiting_mk(
-	    db, dbid, lt, size,
+	    db, dbid,
+	    ground_kind,
+	    lt, size,
 	    person_standing_anim_mk(db, ground_kind),
 	    person_waving_anim_mk(db, ground_kind),
 	    person_beam_up_anim_mk,
-	    person_beam_down_anim_mk
+	    person_beam_down_anim_mk,
 	)
     );
 }
@@ -154,7 +156,9 @@ function add_sheep(db: GDB.GameDB, mb: G.V2D) {
     GDB.add_sprite_dict_id_mut(
         db.shared.items.people,
         (dbid: GDB.DBID): S.Person => waiting_mk(
-	    db, dbid, lt, K.SHEEP_SIZE,
+	    db, dbid,
+	    ground_kind,
+	    lt, K.SHEEP_SIZE,
 	    sheep_standing_anim_mk(db),
 	    sheep_waving_anim_mk(db),
 	    sheep_beam_up_anim_mk,
@@ -166,12 +170,13 @@ function add_sheep(db: GDB.GameDB, mb: G.V2D) {
 function waiting_mk(
     db: GDB.GameDB,
     dbid: GDB.DBID,
+    ground_kind: Gr.Ground_Kind,
     lt: G.V2D,
     size: G.V2D,
     standing_anim: A.ResourceAnimator,
     waving_anim: A.ResourceAnimator,
-    beam_up_anim_mk: (db: GDB.GameDB, dbid: GDB.DBID, src: S.Person) => S.Sprite,
-    beam_down_anim_mk: (db: GDB.GameDB, dbid: GDB.DBID, rect: G.Rect, on_end: GDB.Callback) => S.Sprite,
+    beam_up_anim_mk: (db: GDB.GameDB, dbid: GDB.DBID, ground_kind: Gr.GroundKind, src: S.Person) => S.Sprite,
+    beam_down_anim_mk: (db: GDB.GameDB, dbid: GDB.DBID, ground_kind: Gr.GroundKind, rect: G.Rect, on_end: GDB.Callback) => S.Sprite,
 ): S.Person {
     const s: PersonPrivate = {
         dbid: dbid,
@@ -213,7 +218,7 @@ function waiting_mk(
 	    this.beaming_state = S.BeamingState.beaming_up;
             GDB.add_sprite_dict_id_mut(
                 db.shared.items.fx,
-                (dbid: GDB.DBID): S.Sprite => beam_up_anim_mk(db, dbid, this)
+                (dbid: GDB.DBID): S.Sprite => beam_up_anim_mk(db, dbid, ground_kind, this)
             );
             db.shared.sfx.push({ sfx_id: K.BEAMUP_SFX, gain: 0.35 });
         },
@@ -225,6 +230,7 @@ function waiting_mk(
                 (dbid: GDB.DBID): S.Sprite => beam_down_anim_mk(
                     db,
                     dbid,
+		    ground_kind,
 		    down_rect,
 		    (db: GDB.GameDB) => {
 			on_end(db);
@@ -349,7 +355,7 @@ function person_beam_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, src: S.Person): 
     };
 }
 
-export function person_beam_down_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, rect: G.Rect, on_end: GDB.Callback): S.Sprite {
+export function person_beam_down_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_kind: Gr.GroundKind, rect: G.Rect, on_end: GDB.Callback): S.Sprite {
     const images = db.uncloned.images;
     const resources = images.lookup_range_n((n) => `people/tp${n}.png`, 5, 0);
     const spec: A.MultiImageSpec = {
@@ -388,7 +394,7 @@ function sheep_beam_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, src: S.Person): S
     };
 }
 
-export function sheep_beam_down_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, rect: G.Rect, on_end: GDB.Callback): S.Sprite {
+export function sheep_beam_down_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_kind: Gr.GroundKind, rect: G.Rect, on_end: GDB.Callback): S.Sprite {
     const images = db.uncloned.images;
     const resources = images.lookup_range_n((n) => `people/sheepT${n}.png`, 5, 1);
     const spec: A.MultiImageSpec = {
