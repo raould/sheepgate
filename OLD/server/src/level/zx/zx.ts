@@ -2,10 +2,12 @@
 import { RGBA } from '../../color';
 import * as MDB from '../../menu/menu_db';
 import * as K from '../../konfig';
+import * as G from '../../geom';
 import * as S from '../../sprite';
 import * as Lta from '../level_type_a';
 import * as Lis from '../level_in_screens';
 import * as Gr from '../../ground';
+import * as Rnd from '../../random';
 import Ezx1 from './enemy_basic1';
 import Es from './enemy_small1';
 import Em from './enemy_mega1';
@@ -57,8 +59,27 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 		color: RGBA.randomRGB(),
 		is_filled: true,
 		rect: K.SCREEN_RECT0,
-		comment: "zx-loading-bg",
 	    });
+	    let striper = false;
+	    let lastY = 0;
+	    let nextYOfn = () => K.d2si(Rnd.singleton.int_range(5, 10));
+	    for (let y = lastY + nextYOfn();
+		 y < K.SCREEN_BOUNDS0.y;
+		 y = lastY + nextYOfn()) {
+		if (striper) {
+		    mdb.shared.frame_drawing.rects.push({
+			wrap: false,
+			color: Rnd.singleton.boolean() ? RGBA.YELLOW : RGBA.BLACK,
+			is_filled: true,
+			rect: G.rect_mk(
+			    G.v2d_mk(0, lastY),
+			    G.v2d_mk(K.SCREEN_BOUNDS0.x, y-lastY)
+			)
+		    });
+		}
+		striper = !striper;
+		lastY = y;
+	    }
 	}
     }
 
