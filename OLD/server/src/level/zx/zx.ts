@@ -54,22 +54,19 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 
     get_starting_fx(): (mdb: MDB.MenuDB) => void {
 	return (mdb: MDB.MenuDB): void => {
-	    mdb.shared.frame_drawing.rects.push({
-		wrap: false,
-		color: RGBA.randomRGB(),
-		is_filled: true,
-		rect: K.SCREEN_RECT0,
-	    });
+	    const seed = Math.floor(mdb.shared.tick / 2000);
+	    //console.log(mdb.shared.tick, seed);
+	    let rnd = new Rnd.RandomImpl(seed);
 	    let striper = false;
 	    let lastY = 0;
-	    let nextYOfn = () => K.d2si(Rnd.singleton.int_range(5, 10));
+	    let nextYOfn = () => K.d2si(rnd.int_range(10, 20));
 	    for (let y = lastY + nextYOfn();
 		 y < K.SCREEN_BOUNDS0.y;
 		 y = lastY + nextYOfn()) {
 		if (striper) {
 		    mdb.shared.frame_drawing.rects.push({
 			wrap: false,
-			color: Rnd.singleton.boolean() ? RGBA.YELLOW : RGBA.BLACK,
+			color: rnd.boolean() ? RGBA.YELLOW : RGBA.RED,
 			is_filled: true,
 			rect: G.rect_mk(
 			    G.v2d_mk(0, lastY),
