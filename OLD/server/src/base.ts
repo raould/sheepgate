@@ -2,6 +2,7 @@
 import * as GDB from './game_db';
 import * as G from './geom';
 import * as Gr from './ground';
+import * as Po from './people';
 import * as S from './sprite';
 import * as K from './konfig';
 import * as A from './animation';
@@ -28,6 +29,7 @@ export function base_add(db: GDB.GameDB, ground_kind: Gr.GroundKind) {
 
 function base_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): U.O<S.Base> {
     let base: U.O<S.Base>;
+    let person_size = Po.person_size(ground_kind);
     const ground_tile = pick_base_tile(db);
     if (ground_tile != null) {
         const animator = animator_mk(db, ground_kind);
@@ -40,11 +42,11 @@ function base_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): U.O<S.Base> {
         const rect = G.rect_mk(base_lt, K.BASE_SIZE);
 	const beam_down_center = G.v2d_add(
 	    G.rect_mid(rect),
-	    G.v2d_mk(0, K.PEOPLE_SIZE.y*0.25)
+	    G.v2d_mk(0, person_size.y*0.25)
 	);
 	const beam_down_rect = G.rect_scale_mid_v2d(
 	    G.rect_mk(beam_down_center, G.v2d_mk_1()),
-	    K.PEOPLE_SIZE
+	    person_size
 	);
         // hacky hard coded centeringish of the person in the base doorway.
         base = GDB.id_mut(

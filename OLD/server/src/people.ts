@@ -25,6 +25,18 @@ import * as T from './toast';
 
 // note: this whole way of populating is almost completely and utterly precisely what i don't want to do.
 
+export function person_size(ground_kind: Gr.GroundKind): G.V2D {
+    switch (ground_kind) {
+    case Gr.GroundKind.regular:
+    case Gr.GroundKind.cbm: {
+	return K.vd2si(G.v2d_mk_nn(32));
+    }
+    case Gr.GroundKind.zx: {
+	return K.vd2si(G.v2d_scale_i(G.v2d_mk(14, 20), 2));
+    }
+    }
+}
+
 export function populate(db: GDB.GameDB, ground_kind: Gr.GroundKind, cluster_count: number) {
     // some per-level determinism.
     const rnd = new Rnd.RandomImpl(db.shared.level_index1);
@@ -94,7 +106,7 @@ function add_people_cluster(db: GDB.GameDB, ground_kind: Gr.GroundKind, g: Gr.Gr
     // also this is hacky crap to allow room for (max 3) people in a row.
     const gmt = G.rect_mt(g);
     add_person(db, ground_kind, gmt);
-    const ox = K.PEOPLE_SIZE.x * 2;
+    const ox = person_size(ground_kind).x * 2;
     if (rnd.boolean()) {
 	add_sheep(db, G.v2d_add_x(gmt, ox));
     } else {
@@ -110,22 +122,11 @@ interface PersonPrivate extends S.Person {
 
 function add_person(db: GDB.GameDB, ground_kind: Gr.GroundKind, mb: G.V2D): void {
     // hard coded hack to look good. todo: ground should have hidden hotspots instead.
+    const size = person_size(ground_kind);
     const lt = G.v2d_sub(
 	mb,
-        G.v2d_mk(K.PEOPLE_SIZE.x / 2, K.PEOPLE_SIZE.x * 0.75)
+        G.v2d_mk(size.x / 2, size.x * 0.75)
     );
-    const size = (() => {
-	switch (ground_kind) {
-	case Gr.GroundKind.regular:
-	case Gr.GroundKind.cbm: {
-	    return K.vd2si(G.v2d_mk_nn(32));
-	}
-	case Gr.GroundKind.zx: {
-	    return K.vd2si(G.v2d_scale_i(G.v2d_mk(14, 20), 2));
-	}
-	}
-    })();
-
     // todo: note: the whole beaming/rescue thing has a lot of state transitions
     // which means it has a lot of code which means it gets confusing and buggy.
     // i am trying to split out the stages into their own instances so that
