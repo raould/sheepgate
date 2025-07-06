@@ -194,15 +194,15 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
 	    const y = G.rect_mid(this).y
 	    const line: Dr.DrawLine = {
 		wrap: false,
-		line_width: K.d2si(6),
-		color: RGBA.randomRGB(),
+		line_width: K.d2si(3),
+		color: RGBA.MAGENTA,
 		p0: G.v2d_mk(blt.x, y),
 		p1: G.v2d_mk(this.lt.x, y),
 	    };
 	    this.bounce_msec = db.shared.sim_now;
 	    this.bounce_fx = Dr.sizzlerLine_mk(
 		line,
-		15,
+		20,
 		K.d2si(5),
 		Rnd.singleton
 	    );
