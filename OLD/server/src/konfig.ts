@@ -8,8 +8,8 @@ export const ARCADE_MODE = false;
 
 // !!!!!!!!!! be careful with these
 // super local testing hacks! beware!
-// they should be committed only as false!
-export const DEBUG_NO_USER_WAIT = true;
+// they should be git-committed only as false!
+export const DEBUG_NO_USER_WAIT = false;
 export function user_wait_msec(msec: number): number {
     return DEBUG_NO_USER_WAIT ? 0 : msec;
 }
