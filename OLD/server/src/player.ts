@@ -250,6 +250,22 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
 }
 
 function weapons_mk(player_kind: S.PlayerKind): { [k: string]: S.Weapon } {
+    const shot_size = (() => {
+	switch (player_kind) {
+	case S.PlayerKind.ship: {
+	    return K.PLAYER_SHOT_SIZE;
+	}
+	case S.PlayerKind.cow: {
+	    return K.PLAYER_SHOT_SIZE;
+	}
+	case S.PlayerKind.cbm: {
+	    G.v2d_scale_y(K.PLAYER_SHOT_SIZE, 2);
+	}
+	case S.PlayerKind.zx: {
+	    return G.v2d_scale_y(K.PLAYER_SHOT_SIZE, 2);
+	}
+	}
+    })();
     return {
         w1: Pw.player_weapon_mk({
 	    player_kind,
@@ -268,7 +284,7 @@ function weapons_mk(player_kind: S.PlayerKind): { [k: string]: S.Weapon } {
             // todo: hacking this to be long so that it is less
             // likely to skip overthings and thus not collide,
             // which is obviously really not an ok 'fix'.
-            shot_size: K.PLAYER_SHOT_SIZE,
+            shot_size,
             shot_life_msec: K.PLAYER_SHOT_LIFE_MSEC,
             in_cmask: C.CMask.playerShot,
             from_cmask: C.CMask.enemy,
