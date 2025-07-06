@@ -168,6 +168,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	B.base_add(this.db, ground_kind);
 	Po.populate(
 	    this.db,
+	    ground_kind,
 	    this.konfig.people_cluster_count
 	);
     }

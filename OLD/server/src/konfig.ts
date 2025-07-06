@@ -4,16 +4,16 @@ import * as Uf from './util/util_feq';
 import * as G from './geom';
 import { RGBA } from './color';
 
+export const ARCADE_MODE = false;
+
 // !!!!!!!!!! be careful with these
 // super local testing hacks! beware!
-// they should be committed only as false!
-export const DEBUG_HACK_ONLY_HYPERMEGA = false;
+// they should be git-committed only as false!
 export const DEBUG_NO_USER_WAIT = false;
 export function user_wait_msec(msec: number): number {
     return DEBUG_NO_USER_WAIT ? 0 : msec;
 }
-
-export const ARCADE_MODE = false;
+export const DEBUG_HACK_ONLY_HYPERMEGA = false;
 
 // todo: what would be better is to have types for the different
 // kinds of values, and to have all this in a dict, and then
@@ -308,7 +308,6 @@ export const PLAYER_DELTA_X_ACC = d2s(0.0015); // K
 export const PLAYER_DELTA_Y_VEL = d2s(0.2); // K
 
 export const PLAYER_BEAM_MAX_VEL2 = d2s(0.2); // K
-export const PEOPLE_SIZE = vd2si(G.v2d_mk_nn(32)); // K
 export const SHEEP_SIZE = vd2si(
     G.v2d_scale_v2d_i(
 	G.v2d_mk(20, 26),
