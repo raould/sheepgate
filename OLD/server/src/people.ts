@@ -108,9 +108,9 @@ function add_people_cluster(db: GDB.GameDB, ground_kind: Gr.GroundKind, g: Gr.Gr
     add_person(db, ground_kind, gmt);
     const ox = person_size(ground_kind).x * 2;
     if (rnd.boolean()) {
-	add_sheep(db, G.v2d_add_x(gmt, ox));
+	add_sheep(db, ground_kind, G.v2d_add_x(gmt, ox));
     } else {
-	add_sheep(db, G.v2d_add_x(gmt, -ox));
+	add_sheep(db, ground_kind, G.v2d_add_x(gmt, -ox));
     }
     return 2;
 }
@@ -146,7 +146,7 @@ function add_person(db: GDB.GameDB, ground_kind: Gr.GroundKind, mb: G.V2D): void
     );
 }
 
-function add_sheep(db: GDB.GameDB, mb: G.V2D) {
+function add_sheep(db: GDB.GameDB, ground_kind: Gr.GroundKind, mb: G.V2D) {
     // hard coded hack to look good. todo: ground should have hidden hotspots instead.
     const lt = G.v2d_sub(
 	mb,
@@ -170,7 +170,7 @@ function add_sheep(db: GDB.GameDB, mb: G.V2D) {
 function waiting_mk(
     db: GDB.GameDB,
     dbid: GDB.DBID,
-    ground_kind: Gr.Ground_Kind,
+    ground_kind: Gr.GroundKind,
     lt: G.V2D,
     size: G.V2D,
     standing_anim: A.ResourceAnimator,
@@ -335,17 +335,34 @@ function sheep_waving_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
     return anim;
 }
 
-function person_beam_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, src: S.Person): S.Sprite {
+function person_beam_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_kind: Gr.GroundKind, src: S.Person): S.Sprite {
     // there's a lot of hard-coded twiddling of values in here to make it look less bad, sorry.
     const images = db.uncloned.images;
-    const resources = images.lookup_range_n((n) => `people/tp${n}.png`, 0, 5);
-    const spec: A.MultiImageSpec = {
-        offset_msec: Rnd.singleton.float_range(0, 250),
-        starting_mode: A.MultiImageStartingMode.hold,
-        ending_mode: A.MultiImageEndingMode.hide,
-        frame_msec: K.TELEPORT_ANIM_FRAME_MSEC,
-        resource_ids: resources
-    };
+    const spec = (() => {
+	switch (ground_kind) {
+	case Gr.GroundKind.regular:
+	case Gr.GroundKind.cbm: {
+	    const resources = images.lookup_range_n((n) => `people/tp${n}.png`, 0, 5);
+	    return {
+		offset_msec: Rnd.singleton.float_range(0, 250),
+		starting_mode: A.MultiImageStartingMode.hold,
+		ending_mode: A.MultiImageEndingMode.hide,
+		frame_msec: K.TELEPORT_ANIM_FRAME_MSEC,
+		resource_ids: resources
+	    };
+	}
+	case Gr.GroundKind.zx: {
+	    const resources = images.lookup_range_n((n) => `people/mwt${n}.png`, 1, 6);
+	    return {
+		offset_msec: Rnd.singleton.float_range(0, 250),
+		starting_mode: A.MultiImageStartingMode.hold,
+		ending_mode: A.MultiImageEndingMode.hide,
+		frame_msec: K.TELEPORT_ANIM_FRAME_MSEC,
+		resource_ids: resources
+	    };
+	}	    
+	}
+    })();
     const anim = new A.MultiImageAnimator(db.shared.sim_now, spec);
     const sprite = A.anim_sprite_mk(db, anim, src);
     return {
@@ -357,13 +374,32 @@ function person_beam_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, src: S.Person): 
 
 export function person_beam_down_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_kind: Gr.GroundKind, rect: G.Rect, on_end: GDB.Callback): S.Sprite {
     const images = db.uncloned.images;
-    const resources = images.lookup_range_n((n) => `people/tp${n}.png`, 5, 0);
-    const spec: A.MultiImageSpec = {
-        starting_mode: A.MultiImageStartingMode.hold,
-        ending_mode: A.MultiImageEndingMode.hide,
-        frame_msec: K.TELEPORT_ANIM_FRAME_MSEC,
-        resource_ids: resources
-    };
+    const spec = (() => {
+	switch (ground_kind) {
+	case Gr.GroundKind.regular:
+	case Gr.GroundKind.cbm: {
+	    const resources = images.lookup_range_n((n) => `people/tp${n}.png`, 5, 0);
+	    return {
+		offset_msec: Rnd.singleton.float_range(0, 250),
+		starting_mode: A.MultiImageStartingMode.hold,
+		ending_mode: A.MultiImageEndingMode.hide,
+		frame_msec: K.TELEPORT_ANIM_FRAME_MSEC,
+		resource_ids: resources
+	    };
+	}
+	case Gr.GroundKind.zx: {
+	    const resources = images.lookup_range_n((n) => `people/mwt${n}.png`, 6, 1);
+	    resources.push(images.lookup("people/mw2.png"));
+	    return {
+		offset_msec: Rnd.singleton.float_range(0, 250),
+		starting_mode: A.MultiImageStartingMode.hold,
+		ending_mode: A.MultiImageEndingMode.hide,
+		frame_msec: K.TELEPORT_ANIM_FRAME_MSEC,
+		resource_ids: resources
+	    };
+	}	    
+	}
+    })();
     const anim = new A.MultiImageAnimator(db.shared.sim_now, spec);
     const events = new A.ResourceAnimatorEvents(anim, {on_end: on_end});
     const sprite = A.anim_sprite_mk(db, events, rect);
@@ -374,7 +410,7 @@ export function person_beam_down_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_
     };
 }
 
-function sheep_beam_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, src: S.Person): S.Sprite {
+function sheep_beam_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_kind: Gr.GroundKind, src: S.Person): S.Sprite {
     // there's a lot of hard-coded twiddling of values in here to make it look less bad, sorry.
     const images = db.uncloned.images;
     const resources = images.lookup_range_n((n) => `people/sheepT${n}.png`, 1, 10);
