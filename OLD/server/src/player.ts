@@ -16,6 +16,10 @@ import * as K from './konfig';
 import * as Sc from './scoring';
 import * as So from './sound';
 import * as Rnd from './random';
+import * as Dr from './drawing';
+import { RGBA } from './color';
+
+const BOUNCE_MSEC = 250;
 
 const thrust_sfx: So.Sfx = {
     sfx_id: K.THRUST_SFX,
@@ -44,6 +48,8 @@ interface PlayerSpritePrivate extends S.Player {
     thrusting_anim: A.FacingResourceAnimator;
     step_pos(db: GDB.GameDB, delta_acc_x: number, delta_vel_y: number): void;
     step_resource_id(db: GDB.GameDB, delta_acc_x: number): void;
+    bounce_fx?: U.O<Dr.DrawLine[]>;
+    bounce_msec?: U.O<number>;
 }
 
 export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerShadowSpec): S.Sprite {
@@ -115,6 +121,15 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
 	    if (delta_acc_x != 0) {
 		db.shared.sfx.push(thrust_sfx);
 	    }
+	    if (U.exists(this.bounce_fx) && U.exists(this.bounce_msec)) {
+		const dt = db.shared.sim_now - this.bounce_msec;
+		const alpha = U.t10(0, BOUNCE_MSEC, dt);
+		this.bounce_fx.forEach(line => line.color = line.color.setAlpha01(alpha));
+		db.shared.frame_drawing.lines.push(...this.bounce_fx);
+		if (dt > BOUNCE_MSEC) {
+		    this.bounce_fx = undefined;
+		}
+	    }
         },
         step_pos(db: GDB.GameDB, delta_acc_x: number, delta_vel_y: number) {
             // note: jsyk this entire wall of text is the result
@@ -168,6 +183,31 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
 		this.maybe_beam_down_to_base(db, c);
 	    }
         },
+	bounce(db: GDB.GameDB, c: S.Sprite): void {
+	    const dx = this.lt.x - c.lt.x;
+	    const sign = U.sign(dx);
+	    const bdx = sign * Rnd.singleton.int_around(
+		K.SCREEN_BOUNDS0.x * 0.5,
+		K.SCREEN_BOUNDS0.x * 0.1
+	    );
+	    const blt = G.v2d_add_x(this.lt, bdx);
+	    const y = G.rect_mid(this).y
+	    const line: Dr.DrawLine = {
+		wrap: false,
+		line_width: K.d2si(6),
+		color: RGBA.randomRGB(),
+		p0: G.v2d_mk(blt.x, y),
+		p1: G.v2d_mk(this.lt.x, y),
+	    };
+	    this.bounce_msec = db.shared.sim_now;
+	    this.bounce_fx = Dr.sizzlerLine_mk(
+		line,
+		15,
+		K.d2si(5),
+		Rnd.singleton
+	    );
+	    this.lt = blt;
+	},
         on_death(_:GDB.GameDB) {},
         toJSON() {
             return S.spriteJSON(this);

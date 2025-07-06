@@ -145,7 +145,9 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
                 },
                 on_collide(db: GDB.GameDB, sprite: S.CollidableSprite) {
                     const reaction = C.ignores_test(this, sprite);
-		    // note: also see the code after the switch().
+                    // note: the player has an extra hard-coded ability to crash through enemies somewhat.
+                    U.if_let(spec.on_collide, c => c(this, db, sprite, reaction));
+                    U.if_let(this.get_wrapped(db), w => w.on_collide(db, sprite));
                     switch (reaction) {
                     case C.Reaction.ignore: {
                         break;
@@ -177,18 +179,10 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
 		    }
 		    case C.Reaction.bounce: {
 			this.hp -= Math.max(1, sprite.damage * 0.2); // no free lunch.
-			U.if_let(this.get_wrapped(db), w => {
-			    const dir = U.sign(this.lt.x - sprite.lt.x);
-			    const ox = K.d2si(K.SCREEN_BOUNDS0.x * 0.5);
-			    G.v2d_set_x_mut(w.lt, w.lt.x + dir * ox);
-			    G.v2d_set_x_mut(this.lt, this.lt.x + dir * ox);
-			});
+			U.if_let(this.get_wrapped(db), w => w.bounce?.(db, sprite));
 			break;
 		    }
                     }
-                    // note: the player has an extra hard-coded ability to crash through enemies somewhat.
-                    U.if_let(spec.on_collide, c => c(this, db, sprite, reaction));
-                    U.if_let(this.get_wrapped(db), w => w.on_collide(db, sprite));
                 },
                 get_lifecycle(_: GDB.GameDB): GDB.Lifecycle {
                     return this.hp > 0 ? GDB.Lifecycle.alive : GDB.Lifecycle.dead;

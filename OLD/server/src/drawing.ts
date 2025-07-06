@@ -38,15 +38,21 @@ export function drawing_mk(): Drawing {
     };
 }
 
-export function addSizzlerLine(drawing: Drawing, drawLine: DrawLine, segment_count: number, sizzle_width: number, rnd: Rnd.Random=_rnd) {
+export function sizzlerLine_mk(
+    draw_line: DrawLine,
+    segment_count: number,
+    sizzle_width: number,
+    rnd: Rnd.Random=_rnd
+): DrawLine[] {
+    const lines: DrawLine[] = [];
     segment_count = Math.max(1, segment_count);
-    const v = G.v2d_sub(drawLine.p1, drawLine.p0);
+    const v = G.v2d_sub(draw_line.p1, draw_line.p0);
     const step = G.v2d_scale(v, 1/segment_count);
     const p = G.v2d_scale(G.v2d_norm(G.v2d_perp_anti_cw(v)), sizzle_width);
-    let c0 = drawLine.p0;
+    let c0 = draw_line.p0;
     for (let i = 1; i < segment_count-1; ++i) {
         const c1 = G.v2d_add(
-            drawLine.p0,
+            draw_line.p0,
             G.v2d_scale(step, i)
         );
         const o = G.v2d_scale(
@@ -54,18 +60,36 @@ export function addSizzlerLine(drawing: Drawing, drawLine: DrawLine, segment_cou
             rnd.float_neg1_1() * sizzle_width
         );
         const c1o = G.v2d_add(c1, o);
-        drawing.lines.push({
-            ...drawLine,
+	lines.push({
+            ...draw_line,
             p0: c0,
             p1: c1o
         });
         c0 = c1o;
     }
-    drawing.lines.push({
-        ...drawLine,
+    lines.push({
+        ...draw_line,
         p0: c0,
-        p1: drawLine.p1
+        p1: draw_line.p1
     });
+    return lines;
+}
+
+export function addSizzlerLine(
+    drawing: Drawing,
+    draw_line: DrawLine,
+    segment_count: number,
+    sizzle_width: number,
+    rnd: Rnd.Random=_rnd
+) {
+    drawing.lines.push(
+	...sizzlerLine_mk(
+	    draw_line,
+	    segment_count,
+	    sizzle_width,
+	    rnd
+	)
+    );
 }
 
 export function addSizzlerRect(drawing: Drawing, drawRect: DrawRect, segment_count: number, sizzle_width: number, rnd: Rnd.Random=_rnd) {

@@ -198,6 +198,7 @@ export interface Fighter extends Sprite, Ranked, Facing, Tf.Flagged, Shielded, F
     // todo: these should really come from magic pixels in the image resources.
     get_weapon_hardpoint(weapon_type: WeaponType, facing: F.Facing): G.V2D;
     explosion_kind: ExplosionKind;
+    bounce?(db: GDB.GameDB, other: Sprite): void;
 }
 
 export enum PlayerKind {
