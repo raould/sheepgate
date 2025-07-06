@@ -45,7 +45,7 @@ export function shot_mk(db: GDB.GameDB, src: S.Fighter, spec: ShotSpec): U.O<S.S
             step(db: GDB.GameDB) {
                 this.step_pos(db);
                 this.step_anim(db);
-                !!spec.step && spec.step(db, dbid);
+                spec.step?.(db, dbid);
             },
             step_pos(db: GDB.GameDB) {
                 const dt = db.local.frame_dt;
@@ -61,12 +61,9 @@ export function shot_mk(db: GDB.GameDB, src: S.Fighter, spec: ShotSpec): U.O<S.S
                 this.z_back_to_front_ids = spec.anim.z_back_to_front_ids(db, this.facing);
             },
             collide(db: GDB.GameDB, dsts: Set<S.CollidableSprite>) {
-                shot_maybe_collide(
-                    db, this, dsts,
-                    (d: GDB.GameDB, c: S.CollidableSprite) => {
-                        this.hp -= c.damage;
-                    }
-                );
+		console.log("shot.collide?");
+		this.hp = 0;
+		this.damage = 0;
             },
             get_lifecycle(db: GDB.GameDB): GDB.Lifecycle {
                 // todo: it would be nice not to have this hardcoded player's shot special case here!
@@ -100,15 +97,3 @@ export function shot_mk(db: GDB.GameDB, src: S.Fighter, spec: ShotSpec): U.O<S.S
         })
     );
 }
-
-// note: match: implementations take into account the world wrapping.
-export function shot_maybe_collide(db: GDB.GameDB, shot: S.CollidableSprite, dsts: Set<S.CollidableSprite>, on_collide: (d:GDB.GameDB, c: S.CollidableSprite)=>void): boolean {
-    let did = false;
-    dsts.forEach(d => {
-        D.assert(d != null, () => `shot_maybe_ellipse_collide missing a sprite`);
-        on_collide(db, d);
-        did = true;
-    });
-    return did;
-}
-

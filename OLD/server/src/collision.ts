@@ -9,19 +9,21 @@ import * as U from './util/util';
 
 export enum CMask {
     none = 0,
-    FIRST = 1 << 0,
-    general = FIRST,
+    general = 1 << 0,
     player = 1 << 1,
     people = 1 << 2,
     base = 1 << 3,
     enemy = 1 << 4,
-    gem = 1 << 5,
+    // so big the player bounces off of it.
+    // otherwise it would immeidately kill them
+    // which sucks in a game with no extra lives.
+    enemy_bounce = 1 << 5,
+    gem = 1 << 6,
     // unlike shields which just use 'player' or 'enemy' or 'base',
     // different shot types shouldn't actually collide so
     // they are all put into their own shot layers. confusing!
-    playerShot = 1 << 6,
-    enemyShot = 1 << 7,
-    LAST = base,
+    playerShot = 1 << 7,
+    enemyShot = 1 << 8,
 }
 
 export interface Masked {
@@ -36,6 +38,7 @@ export enum Reaction {
     ignore, // no visible reaction at all, but might trigger something e.g. teleport.
     fx,     // a visible reaction, but there's no harm taken.
     hp,     // harm taken, and maybe some kind of visible reaction as well.
+    bounce, // bounce off, no damage: for hypermega vs. player.
 }
 
 export interface Ignores {

@@ -35,6 +35,7 @@ export interface EnemySpec {
     gem_count: number,
     shield_alpha?: number,
     shield_scale?: G.V2D,
+    in_cmask? : C.CMask, // default is C.Cmask.enemy
     flying_sfx?: So.Sfx,
     hardpoint_left?: (r: G.Rect) => G.V2D,
     hardpoint_right?: (r: G.Rect) => G.V2D,
@@ -237,7 +238,7 @@ function add_shield(db: GDB.GameDB, enemy: EnemyPrivate, spec: EnemySpec) {
 	spawn_strong: spec.spawn_strong,
         damage: spec.damage,
         comment: `enemy-FF-shield-${enemy.dbid}`,
-        in_cmask: C.CMask.enemy,
+        in_cmask: spec.in_cmask ?? C.CMask.enemy,
         from_cmask: C.CMask.player | C.CMask.playerShot,
         alpha: spec.shield_alpha,
     });

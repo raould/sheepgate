@@ -177,6 +177,11 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
 			}
                         break;
 		    }
+		    case C.Reaction.bounce: {
+			this.hp -= Math.max(1, sprite.damage * 0.2); // no free lunch.
+			U.if_let(this.get_wrapped(db), w => w.bounce?.(db, sprite));
+			break;
+		    }
                     }
                 },
                 get_lifecycle(_: GDB.GameDB): GDB.Lifecycle {
