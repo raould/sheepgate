@@ -493,17 +493,18 @@ export function add_shield(db: GDB.GameDB, player: S.Player) {
             [C.CMask.people, C.Reaction.ignore],
             [C.CMask.base, C.Reaction.ignore],
             [C.CMask.gem, C.Reaction.fx],
+	    [C.CMask.enemy_bounce, C.Reaction.bounce],
         ]),
         in_cmask: C.CMask.player,
         // C.CMask.people & C.CMask.base are to allow for teleporting.
-        from_cmask: C.CMask.enemy | C.CMask.enemyShot | C.CMask.gem | C.CMask.people | C.CMask.base,
-        on_collide(thiz: S.Shield<S.Player>, db: GDB.GameDB, c: S.CollidableSprite, __: C.Reaction) {
+        from_cmask: C.CMask.enemy | C.CMask.enemy_bounce | C.CMask.enemyShot | C.CMask.gem | C.CMask.people | C.CMask.base,
+        on_collide(thiz: S.Shield<S.Player>, db: GDB.GameDB, c: S.CollidableSprite, reaction: C.Reaction) {
             if (U.has_bits_eq(c.type_flags, Tf.TF.gem)) {
                 thiz.hp = Math.min(thiz.hp_init, thiz.hp + K.GEM_HP_BONUS);
                 db.shared.sfx.push({ sfx_id: K.GEM_COLLECT_SFX });
             }
             // note: the player has an extra hard-coded ability to crash through enemies somewhat.
-            if (U.has_bits_eq(c.type_flags, Tf.TF.enemyShield)) {
+	    if (reaction === C.Reaction.hp && U.has_bits_eq(c.type_flags, Tf.TF.enemyShield)) {
                 c.hp -= c.hp;
             }
         }            

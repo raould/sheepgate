@@ -5,6 +5,7 @@ import * as G from '../../geom';
 import * as A from '../../animation';
 import * as U from '../../util/util';
 import * as F from '../../facing';
+import * as C from '../../collision';
 import * as Ebw from '../../enemy/enemy_ball_weapon';
 import * as Fp from '../../enemy/flight_patterns';
 import * as Emk from '../../enemy/enemy_mk';
@@ -13,7 +14,7 @@ import * as K from '../../konfig';
 import * as Esbw from '../../enemy/enemy_smartbomb_weapon';
 
 // match: sprite animation.
-const SIZE = K.vd2si(G.v2d_scale_i(G.v2d_mk(95, 88), 3));
+const SIZE = K.vd2si(G.v2d_scale_v2d(G.v2d_mk(95, 88), G.v2d_mk(2,3)));
 const WARPIN_RESOURCE_ID = "enemies/zxBoss/zxBoss1.png";
 const Hypermega: Lemk.EnemyMk = {
     SIZE,
@@ -38,6 +39,7 @@ const Hypermega: Lemk.EnemyMk = {
     	    WARPIN_RESOURCE_ID,
             {
 		fighter_kind: "hypermega",
+		in_cmask: C.CMask.enemy_bounce,
 		explosion_kind: S.ExplosionKind.cbm,
 		anim: anim,
 		rank: S.Rank.hypermega,
