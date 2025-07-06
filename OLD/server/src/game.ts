@@ -78,7 +78,7 @@ const level_mks: LevelMk[] = [
     (i: number, score: number, hi: Hs.HighScore) => L7.level_mk(i, score, hi),
 
 ];
-//D.assert(level_mks.length === K.LEVEL_TEMPLATE_COUNT, "level template count");
+D.assert(level_mks.length === K.LEVEL_TEMPLATE_COUNT, "level template count");
 
 function starter_stepper_mk() { return K.ARCADE_MODE ? new GameAttract() : new GameWarning(); }
 
