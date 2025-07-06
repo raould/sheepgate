@@ -287,7 +287,7 @@ function weapons_mk(player_kind: S.PlayerKind): { [k: string]: S.Weapon } {
             shot_size,
             shot_life_msec: K.PLAYER_SHOT_LIFE_MSEC,
             in_cmask: C.CMask.playerShot,
-            from_cmask: C.CMask.enemy,
+            from_cmask: C.CMask.enemy | C.CMask.enemy_bounce,
         })
     };
 }

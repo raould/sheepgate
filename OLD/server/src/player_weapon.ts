@@ -69,6 +69,7 @@ export function player_weapon_mk(spec: PlayerWeaponSpec): S.Weapon {
 	    const images = db.uncloned.images;
 	    const cbm = spec.player_kind === S.PlayerKind.cbm ? "cbm_" : "";
 	    const anims = [
+		// todo: maybe zx some day.
 		A.facing_animator_mk(
 		    now,
 		    { resource_id: images.lookup(`shots/bullet_shot_${cbm}l.png`) },

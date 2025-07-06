@@ -5,6 +5,7 @@ import * as G from '../../geom';
 import * as A from '../../animation';
 import * as U from '../../util/util';
 import * as F from '../../facing';
+import * as C from '../../collision';
 import * as Ebw from '../../enemy/enemy_ball_weapon';
 import * as Fp from '../../enemy/flight_patterns';
 import * as Emk from '../../enemy/enemy_mk';
@@ -35,6 +36,7 @@ const Hypermega: Lemk.EnemyMk = {
     	    WARPIN_RESOURCE_ID,
             {
 		fighter_kind: "hypermega",
+		in_cmask: C.CMask.enemy_bounce,
 		anim: anim,
 		rank: S.Rank.hypermega,
 		hp_init: K.ENEMY_HYPERMEGA_HP,

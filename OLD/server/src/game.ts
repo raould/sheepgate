@@ -66,7 +66,6 @@ interface GamePrivate extends Game {
 type LevelMk = (level_index: number, score: number, high_score: Hs.HighScore) => Lis.LevelInScreens;
 // match: konfig.ts
 const level_mks: LevelMk[] = [
-    (i: number, score: number, hi: Hs.HighScore) => LZX.level_mk(i, score, hi),
     // note that the first level is special-cased in various places e.g. people populating.
     (i: number, score: number, hi: Hs.HighScore) => L1.level_mk(i, score, hi),
     (i: number, score: number, hi: Hs.HighScore) => L2.level_mk(i, score, hi),

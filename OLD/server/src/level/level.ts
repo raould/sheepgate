@@ -305,6 +305,7 @@ export abstract class AbstractLevel implements Level {
         const r: C.Reports = next.uncloned.collision.get_reports();
         r.forEach((dsts: Set<S.CollidableSprite>, src: S.CollidableSprite) => {
             if (src != null && dsts != null && dsts.size > 0) {
+		console.log(src.comment, [...dsts].map(d=>d.comment));
                 src.collide(next, dsts);
             }
         });
