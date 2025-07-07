@@ -36,4 +36,7 @@ export function menudb_mk(bg_color: RGBA): MenuDB {
 export function next_frame(mdb: MenuDB): void {
     mdb.shared.tick++;
     mdb.shared.sim_now += K.FRAME_MSEC_DT;
+
+    // clear out non-long-lived things.
+    mdb.shared.sfx = [];
 }

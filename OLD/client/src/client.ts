@@ -1208,7 +1208,7 @@ function loadSound(resource: string, base64: string) {
 		    sourceNode.loop = !!sfx.singleton;
 		    sourceNode.playbackRate.value = sfx.playback_rate ?? 1;
 		    sourceNode.start();
-		    // the sound was not already playing.
+		    // the sound was not already playing so register the new sfx_id.
 		    if (!!sfx.singleton && !singletonSounds.has(sfx_id)) {
 			singletonSounds.set(sfx_id, sourceNode);
 		    }

@@ -348,6 +348,7 @@ export abstract class AbstractLevel implements Level {
         prev.local.prev_db = {} as GDB.GameDB;
         prev.shared.hud_drawing = Dr.drawing_mk();
         prev.shared.frame_drawing = Dr.drawing_mk();
+        prev.shared.sfx = [];
         // todo: !!! optimize/avoid this cloning somehow !!!
         const next_local: GDB.DBLocal = _.cloneDeep(prev.local);
         const next_shared: GDB.DBShared = _.cloneDeep(prev.shared);
@@ -357,7 +358,6 @@ export abstract class AbstractLevel implements Level {
             shared: next_shared
         };
         next.local.prev_db = prev;
-        next.shared.sfx = [];
         return next;
     }
 
