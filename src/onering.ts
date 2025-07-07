@@ -51,7 +51,7 @@ const STORAGE_KEY = "_sheepgate";
 let inputs: {commands: {[k:string]:boolean}, keys: {[k:string]:boolean}} = {
     commands: {}, keys: {}
 };
-let debugging_state: any = { is_stepping: false, is_drawing: false, is_annotating: false };
+let debugging_state: any = { is_drawing: false, is_stepping: false, is_annotating: false };
 let particles: {[k:string]:AbstractParticleGenerator} = {};
 let h5canvas: any;
 let cx2d: any;
@@ -1166,7 +1166,7 @@ function loadSound(resource: string, base64: string) {
 		    sourceNode.loop = !!sfx.singleton;
 		    sourceNode.playbackRate.value = sfx.playback_rate ?? 1;
 		    sourceNode.start();
-		    // the sound was not already playing.
+		    // the sound was not already playing so register the new sfx_id.
 		    if (!!sfx.singleton && !singletonSounds.has(sfx_id)) {
 			singletonSounds.set(sfx_id, sourceNode);
 		    }
