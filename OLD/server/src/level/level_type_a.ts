@@ -173,6 +173,14 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	);
     }
 
+    private far_spec0_mk_empty(ground_kind: Gr.GroundKind, alpha: number): PreFarSpec0 {
+	return {
+	    resource_name: K.EMPTY_IMAGE_RESOURCE_ID,
+	    type: Gr.BgFarType.empty,
+	    alpha: alpha
+	};
+    }
+
     private far_spec0_mk_left(ground_kind: Gr.GroundKind, alpha: number): PreFarSpec0 {
 	switch (ground_kind) {
 	case Gr.GroundKind.regular: {
@@ -261,8 +269,8 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	const pre_far_spec0: PreFarSpec0[] = [
 	    this.far_spec0_mk_left(ground_kind, alpha),
 	    this.far_spec0_mk_middle(ground_kind, alpha),
-	    this.far_spec0_mk_middle(ground_kind, alpha),
 	    this.far_spec0_mk_right(ground_kind, alpha),
+	    this.far_spec0_mk_empty(ground_kind, alpha),
 	];
 	return pre_far_spec0.map((f: PreFarSpec0, i: number): FarSpec0 => {
 	    return { ...f, x: K.BG_FAR_BG_SIZE.x * i }
