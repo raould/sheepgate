@@ -107,6 +107,9 @@ export interface Dict<E> {
 }
 
 // omfexpletiveg i so utterly effing hate javascript.
+// i really wish i was using Maps instead of {}jects.
+// but then Maps kind of suck in their own ways, too.
+
 export function count_dict(d: O<Dict<any>>): number {
     return d == null ? 0 : Object.keys(d).length;
 }

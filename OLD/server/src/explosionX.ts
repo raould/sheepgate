@@ -13,7 +13,8 @@ import * as U from './util/util';
 export type ExplosionBSpec = Omit<U.FieldsOnly<S.Explosion>, "resource_id" | "drawing">;
 
 // keep animations outside of explosion instance so we don't json the animation instances.
-// allows for only one explosion B animation per dbid.
+// (uh todo: doesn't that mean we have to not do that for other sprites too, then?)
+// only allows for one explosion A animation per dbid.
 const animations: { [k: string/*DbId*/]: ExplosionAnimation } = {};
 
 interface ExplosionBPrivate extends S.Explosion {

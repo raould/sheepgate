@@ -43,8 +43,8 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
     moves: Cmd.CommandType[] = [];
     timeout: number = K.user_wait_msec(3 * 1000);
 
-    constructor(readonly index1: number, konfig: Lta.LevelKonfig, score: number, high_score: Hs.HighScore) {
-	super(index1, konfig, score, high_score);
+    constructor(readonly index1: number, konfig: Lta.LevelKonfig, score: number, lives: number, high_score: Hs.HighScore) {
+	super(index1, konfig, score, lives, high_score);
 	const images = this.db.uncloned.images;
 	this.small_snapshot = {
 	    size: Es.SIZE,
@@ -136,6 +136,7 @@ export function level_mk(): LevelImpl {
 	1,
 	LK,
 	0,
+	1,
 	new Hs.HighScore("DEMO", 1)
     );
     return level;

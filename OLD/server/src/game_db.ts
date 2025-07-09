@@ -166,8 +166,6 @@ export function stringify(db: GameDB): string {
     return json;
 }
 
-export type StateModifier = (db: GameDB) => U.O<Gs.StepperState>;
-
 // todo: figure out how best to manage what things
 // should vs. should not be cloned across simulation steps.
 // and all the semantic nunace around it all.
@@ -189,7 +187,6 @@ export interface DBLocal {
     frame_dt: number;
     // help track fps. currently not using 'prev' db fwiw.
     fps_marker: { tick: number, msec: number };
-    state_modifiers: StateModifier[],
     ticking_generators: U.Dict<Tkg.TickingGenerator<unknown>>,
     // note: the generators should be running from the start
     // of the level until they individually expire, otherwise
@@ -231,6 +228,7 @@ export interface DBSharedCore extends Db.DB<GameWorld> { // todo: better name.
     // note: inherited stuff like frame_drawing.
 
     level_index1: number; // 1-based.
+    player_lives: number; // 1-based.
     screen_shake: G.V2D;
     fps: number;    
     hud_drawing: Dr.Drawing; // match: these are always in screen space!
@@ -270,7 +268,8 @@ export interface DBSharedItems {
 
     // only a single-player game thus far.
     player: U.O<S.Player>; 
-    player_shadow: U.O<S.Sprite>; 
+    player_shadow: U.O<S.Sprite>;
+    player_explosions: U.Dict<S.Explosion>;
 
     // todo: deconflate the fact that in several ways
     // this is an unholy conflation of model & view.
@@ -299,6 +298,7 @@ export function debug_dump_items(db: GameDB, msg?: string) {
         db.shared.sim_now,
         msg || "",
         `player=${db.shared.items.player != null}`,
+        `#player_explosions=${U.count_dict(db.shared.items.player_explosions)}`,
         `#warpin=${U.count_dict(db.shared.items.warpin)}`,
         `#enemies=${U.count_dict(db.shared.items.enemies)}`,
         `#munchies=${U.count_dict(db.shared.items.munchies)}`,
@@ -324,6 +324,7 @@ export function assert_dbitems(db: GameDB) {
     const items = db.shared.items;
     // note: dicts should pretty much always be there anyway, even if empty.
     // was using this for debugging something once, left it all in.
+    D.assert(items.player_explosions != null, () => "missing player_explosions");
     D.assert(items.warpin != null, () => "missing warpin");
     D.assert(items.enemies != null, () => "missing enemies");
     D.assert(items.munchies != null, () => "missing munchies");
@@ -346,6 +347,7 @@ export function assert_dbitems(db: GameDB) {
 export function get_sprite(db: GameDB, sid: U.O<DBID>): U.O<S.Sprite> {
     if (U.exists(sid)) {
 	const p = db.shared.items.player;
+	const px = db.shared.items.player_explosions[sid];
 	const w = db.shared.items.warpin[sid];
 	const e = db.shared.items.enemies[sid];
 	const m = db.shared.items.munchies[sid];
@@ -356,7 +358,7 @@ export function get_sprite(db: GameDB, sid: U.O<DBID>): U.O<S.Sprite> {
 	const pp = db.shared.items.people[sid];
 	const gg = db.shared.items.gems[sid];
 	const fx = db.shared.items.fx[sid];
-	const most = (p?.dbid == sid ? p : undefined) || w || e || m || h || s || x || b || pp || gg || fx;
+	const most = (p?.dbid == sid ? p : undefined) || px || w || e || m || h || s || x || b || pp || gg || fx;
 	return most;
     }
     return undefined;
@@ -489,7 +491,7 @@ export function reap_items(db: GameDB) {
     // match: !!! DBSharedItems !!!
     // note that some things are either never reap'd or reap'd differently:
     // player, sky, bgFar, bgNear, ground, base, particles, drawing. 
-    for (const t of ['warpin', 'enemies', 'munchies', 'shields', 'shots', 'explosions', 'fx', 'people', 'gems']) {
+    for (const t of ['player_explosions', 'warpin', 'enemies', 'munchies', 'shields', 'shots', 'explosions', 'fx', 'people', 'gems']) {
         reap_named(db, db.shared.items, t);
     }
 }

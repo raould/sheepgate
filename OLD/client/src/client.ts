@@ -588,6 +588,9 @@ function renderExplosions(gdb: any) {
     for (const s of Object.values(gdb.items.explosions)) {
         renderSprite(gdb, s, gdb.xyround);
     }
+    for (const s of Object.values(gdb.items.player_explosions)) {
+        renderSprite(gdb, s, gdb.xyround);
+    }
 }
 
 function renderShots(gdb: any) {

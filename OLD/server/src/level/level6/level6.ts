@@ -38,8 +38,8 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
     mega_snapshot: S.ImageSized;
     hypermega_snapshot: S.ImageSized;
 
-    constructor(readonly index1: number, konfig: Lta.LevelKonfig, score: number, high_score: Hs.HighScore) {
-	super(index1, konfig, score, high_score);
+    constructor(readonly index1: number, konfig: Lta.LevelKonfig, score: number, lives: number, high_score: Hs.HighScore) {
+	super(index1, konfig, score, lives, high_score);
 	const images = this.db.uncloned.images;
 	this.small_snapshot = {
 	    size: Es.SIZE,
@@ -56,9 +56,9 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
     }
 }
 
-export function level_mk(level_index: number, score: number, high_score: Hs.HighScore): Lis.LevelInScreens {
+export function level_mk(level_index: number, score: number, lives: number, high_score: Hs.HighScore): Lis.LevelInScreens {
     const LK = LKfn(level_index);
-    const level = new LevelImpl(level_index, LK, score, high_score);
+    const level = new LevelImpl(level_index, LK, score, lives, high_score);
     const lis = new Lis.LevelInScreens(level_index, level);
     return lis;
 }
