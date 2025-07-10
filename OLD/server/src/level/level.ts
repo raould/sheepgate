@@ -424,7 +424,6 @@ export abstract class AbstractLevel implements Level {
 	// painter's algorithm.
 	this.update_alerts(next);
         Rdr.step(next);
-	//this.add_stats_text(next, `${next.shared.player_lives} LIVES`, 20);
         this.update_hud_right(next);
         this.update_hud_left(next);
     }
