@@ -43,8 +43,8 @@ const WARNING_INSTRUCTIONS = [
 
 // the leading blank lines are a hack, yes :-(
 const MAIN_INSTRUCTIONS = [
-    "RETURN CREATURES TO BASE.",
     "DEFEAT ALL ENEMIES.",
+    "RETURN CREATURES TO BASE.",
     " ",
     " ",
     "MOVE: WASD - ARROWS - VI",
