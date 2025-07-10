@@ -157,7 +157,6 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
                         break;
 		    }
                     case C.Reaction.hp: {
-			console.log(this.comment, this.hp, sprite.damage);
 			if (this.spawn_strong === true) { // e.g. swarmers.
 			    this.spawn_strong = undefined;
 			}
