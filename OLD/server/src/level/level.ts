@@ -29,15 +29,17 @@ export interface Level extends Gs.Stepper {
     small_snapshot: S.ImageSized;
     mega_snapshot: S.ImageSized;
     hypermega_snapshot: S.ImageSized;
-
     // todo:
     // ideally THIS db stuff NEEDS TO BE SPLIT UP INTO
     // inter-level data (ie konfig) vs. intra-level data.
     db: GDB.GameDB;
 
-    get_scoring(): Sc.Scoring;
-
     get_starting_fx(): (mdb: MDB.MenuDB) => void;
+
+    // todo: these are clearly indicments.
+    get_scoring(): Sc.Scoring;
+    get_lives(): number;
+    reset_player(): void;
 }
 
 export abstract class AbstractLevel implements Level {
@@ -46,12 +48,12 @@ export abstract class AbstractLevel implements Level {
     abstract mega_snapshot: S.ImageSized;
     abstract hypermega_snapshot: S.ImageSized;
     abstract db: GDB.GameDB;
+    abstract high_score: Hs.HighScore;
+    
     abstract get_state(): Gs.StepperState;
     abstract update_impl(next: GDB.GameDB): void;
     abstract get_scoring(): Sc.Scoring;
-
-    constructor(private readonly high_score: Hs.HighScore) {
-    }
+    abstract get_lives(): number;
 
     get_db(): Db.DB<Db.World> {
 	return this.db.shared;
@@ -59,6 +61,18 @@ export abstract class AbstractLevel implements Level {
 
     stringify(): string {
         return GDB.stringify(this.db);
+    }
+
+    abstract reset_player(): void;
+
+    private is_player_alive(next: GDB.GameDB): boolean {
+	const p = GDB.get_player(next);
+	return U.exists(p) && p.get_lifecycle(next) === GDB.Lifecycle.alive;
+    }
+
+    protected get_is_player_dying(next: GDB.GameDB): boolean {
+	return !this.is_player_alive(next) &&
+	    U.count_dict(next.shared.items.player_explosions) > 0;
     }
 
     merge_client_db(cdb2: Cdb.ClientDB) {
@@ -124,9 +138,12 @@ export abstract class AbstractLevel implements Level {
         // done in certain orders anyway, i think,
         // to keep the behaviour really right!
 
+	// todo: player lives would be better decremented via an event?
+	const was_alive = this.is_player_alive(next);
+
         // update old shots before players add new ones
         // so that we do not also move the new ones an extra first time.
-        this.update_shots(next);
+        was_alive && this.update_shots(next);
 
         // todo: decide what the right ordering is here;
         // when should these things be using the previous
@@ -134,27 +151,31 @@ export abstract class AbstractLevel implements Level {
         // todo: be warned that the ordering is fragile
         // e.g. the update_impl() deciding won/lost.
 
-        this.update_generators(next);
+        was_alive && this.update_generators(next);
         this.update_player(next);
-        this.update_people(next);
-        this.update_gems(next);
-        this.update_viewport(next);
-        this.update_warpins(next);
-        this.update_enemies(next);
-	this.update_munchies(next)
+        was_alive && this.update_people(next);
         this.update_explosions(next);
-        this.update_sky(next);
-        this.update_ground(next);
-        this.update_bg(next);
+        this.update_viewport(next);
+        was_alive && this.update_gems(next);
+        was_alive && this.update_warpins(next);
+        was_alive && this.update_enemies(next);
+	was_alive && this.update_munchies(next)
+        was_alive && this.update_sky(next);
+        was_alive && this.update_ground(next);
+        was_alive && this.update_bg(next);
+
         this.update_collisions(next);
-        this.update_fx(next);
 
         // update shields after the things they
         // wrap are updated, including via collisions,
         // because the shields need to "bisync".
         this.update_shields(next);
 
+        this.update_fx(next);
+
         this.reap(next);
+	const is_alive = this.is_player_alive(next);
+	this.update_player_lives(next, was_alive, is_alive);
 
         // in case things went really wrong, which they have in the past.
         GDB.assert_dbitems(next);
@@ -169,6 +190,12 @@ export abstract class AbstractLevel implements Level {
         this.update_screen_shake(next);
         next.shared.debug_graphics = DebugGraphics.get_graphics();
         this.clear_single_shot_commands(next);
+    }
+
+    private update_player_lives(next: GDB.GameDB, was_alive: boolean, is_alive: boolean) {
+	if (was_alive && !is_alive) {
+	    next.shared.player_lives--;
+	}
     }
 
     private move_shots(next: GDB.GameDB) {
@@ -258,6 +285,7 @@ export abstract class AbstractLevel implements Level {
 
     private update_explosions(next: GDB.GameDB) {
         Object.values(next.shared.items.explosions).forEach(x => x.step(next));
+        Object.values(next.shared.items.player_explosions).forEach(x => x.step(next));
     }
 
     private update_sky(next: GDB.GameDB) {
@@ -396,8 +424,8 @@ export abstract class AbstractLevel implements Level {
 	// painter's algorithm.
 	this.update_alerts(next);
         Rdr.step(next);
-        this.update_scores(next);
-        this.update_stats(next);
+        this.update_hud_right(next);
+        this.update_hud_left(next);
     }
 
     private clear_hud(next: GDB.GameDB) {
@@ -418,45 +446,39 @@ export abstract class AbstractLevel implements Level {
         // match: radar has to draw on top appropriately.
     }
 
-    private update_scores(next: GDB.GameDB) {
-        this.update_player_score(next);
-        this.update_high_score(next);
-    }
-
-    private update_high_score(next: GDB.GameDB) {
+    private add_hud_text(next: GDB.GameDB, side_lt: G.V2D, text: string, y: number) {
         const lb = G.v2d_add(
-            next.local.hud.right.lt,
-            G.v2d_mk(5, 20) // yes hard coded eyeballed.
+            side_lt,
+            G.v2d_mk(10, y) // yes hard coded eyeballed.
         );
-        const text = Math.floor(next.shared.sim_now / 3000) % 2 == 0 ?
-            String(this.high_score.score) : this.high_score.callsign;
         const t: Dr.DrawText = {
             lb: lb,
             text: text,
-            font: K.SCORE_FONT,
+            font: K.HUD_MESSAGE_FONT,
             fillStyle: RGBA.WHITE,
             wrap: false,
         };
         next.shared.hud_drawing.texts.push(t);
-    }
+    }    
 
-    private update_player_score(next: GDB.GameDB) {
+    private add_hud_left_text(next: GDB.GameDB, text: string, y: number) {
+	this.add_hud_text(next, next.local.hud.left.lt, text, y);
+    }    
+
+    private add_hud_right_text(next: GDB.GameDB, text: string, y: number) {
+	this.add_hud_text(next, next.local.hud.right.lt, text, y);
+    }    
+
+    private update_hud_right(next: GDB.GameDB) {
+	this.add_hud_right_text(next, `LIVES: ${next.shared.player_lives}`, 20);
         next.local.scoring.step(next);
-        const lb = G.v2d_add(
-            next.local.hud.left.lt,
-            G.v2d_mk(5, 20) // yes hard coded eyeballed.
-        );
-        const t: Dr.DrawText = {
-            lb: lb,
-            text: String(next.local.scoring.score),
-            font: K.SCORE_FONT,
-            fillStyle: RGBA.WHITE,
-            wrap: false,
-        };
-        next.shared.hud_drawing.texts.push(t);
+	this.add_hud_right_text(next, `SCORE: ${next.local.scoring.score}`, 40);
+        const hi_text = Math.floor(next.shared.sim_now / 3000) % 2 == 0 ?
+              String(this.high_score.score) : this.high_score.callsign;
+	this.add_hud_right_text(next, `HI: ${hi_text}`, 60);
     }
 
-    private update_stats(next: GDB.GameDB) {
+    private update_hud_left(next: GDB.GameDB) {
         const more_enemies =
 	      U.count_dict(next.local.enemy_generators) > 0 ||
               U.count_dict(next.shared.items.enemies) > 0;
@@ -464,29 +486,14 @@ export abstract class AbstractLevel implements Level {
         const more_people = U.count_dict(next.shared.items.people) > 0;
 
         if (more_enemies) {
-            add_text("DEFEAT ALL ENEMIES", 40);
+            this.add_hud_left_text(next, "DEFEAT ALL ENEMIES", 20);
         }
         if (carrying) {
-            add_text("DROP PERSON AT BASE", 60);
+            this.add_hud_left_text(next, "DROP PERSON AT BASE", 60);
         }
         else if (more_people) {
-            add_text("PICK UP A PERSON", 60);
+            this.add_hud_left_text(next, "PICK UP A PERSON", 60);
         }
-
-        function add_text(text: string, y: number) {
-            const lb = G.v2d_add(
-                next.local.hud.left.lt,
-                G.v2d_mk(5, y) // yes hard coded eyeballed.
-            );
-            const t: Dr.DrawText = {
-                lb: lb,
-                text: text,
-                font: K.HUD_MESSAGE_FONT,
-                fillStyle: RGBA.WHITE,
-                wrap: false,
-            };
-            next.shared.hud_drawing.texts.push(t);
-        }    
     }
 
     protected update_alerts(next: GDB.GameDB) {
@@ -530,10 +537,14 @@ export abstract class AbstractLevel implements Level {
     private update_screen_shake(next: GDB.GameDB) {
         // shake is an evil globalish value for the client to globally use
         // to make some global drawing adjustment effects (globally).
-        // todo: this should ideally fade as the explosion fades,
+        // (todo: this should ideally fade as the explosion fades,
         // which means the explosion needs to expose some timing,
-        // or the explosions needs to be the ones to apply the shake?
-        if (Object.values(next.shared.items.explosions).some(e => e.rank >= S.Rank.hypermega)) {
+        // or the explosions needs to be the ones to apply the shake?)
+	const hm = Object.values(next.shared.items.explosions).some((e) => {
+	    return e.rank >= S.Rank.hypermega;
+	});
+	const p = U.count_dict(next.shared.items.player_explosions) > 0;
+        if (hm || p) {
             next.shared.screen_shake = Gr.v2d_random_inxy(Rnd.singleton, K.GAMEPORT_SHAKE, K.GAMEPORT_SHAKE);
         }
         else {

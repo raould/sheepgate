@@ -89,27 +89,39 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 
     get_state(): Gs.StepperState { return this.state; }
     get_scoring(): Sc.Scoring { return this.db.local.scoring; }
+    get_lives(): number { return this.db.shared.player_lives; }
 
-    constructor(public readonly index1: number, private readonly konfig: LevelKonfig, score: number, high_score: Hs.HighScore) {
-	super(high_score);
+    constructor(public readonly index1: number, private readonly konfig: LevelKonfig, score: number, lives: number, public high_score: Hs.HighScore) {
+	super();
 	D.log(`new level_type_a for index1 ${index1}!`);
 	this.state = Gs.StepperState.running;
         this.reminder_cycle = HCycle.newFromRed(90 / K.FRAME_MSEC_DT);
-	const far_spec0 = this.far_spec0_mk(konfig.ground_kind);
-	this.db = this.db_mk(far_spec0, score, konfig.player_kind);
-	this.init_bg(far_spec0, konfig.ground_kind);
-	this.init_player(konfig.player_kind, !!konfig.player_disable_beaming);
-	this.init_enemies();
+	this.db = this.db_mk(score, lives);
+    }
+
+    // todo: this is horrible mutable badness.
+    reset_player(): void {
+	this.state = Gs.StepperState.running;
+        this.reminder_cycle = HCycle.newFromRed(90 / K.FRAME_MSEC_DT);
+	this.db = this.db_mk(this.get_scoring().score, this.get_lives());
+    }
+
+    private db_mk(score: number, lives: number): GDB.GameDB {
+	const far_spec0 = this.far_spec0_mk(this.konfig.ground_kind);
+	const db = this.db_mk0(far_spec0, score, lives, this.konfig.player_kind);
+	this.init_bg(db, far_spec0, this.konfig.ground_kind);
+	this.init_player(db, this.konfig.player_kind, !!this.konfig.player_disable_beaming);
+	this.init_enemies(db);
 
 	// prime the history pump with a minimal copy.
 	// note: duh, if anything above needs db.local.prev_db
 	// then they will be broken because it is undefined there.
-	this.db.local.prev_db = _.cloneDeep(this.db);
+	db.local.prev_db = _.cloneDeep(db);
 
-	this.db.shared.sfx.push({ sfx_id: K.BEGIN_SFX });
+	return db;
     }
 
-    private db_mk(far_spec0: FarSpec0[], score: number, player_kind: S.PlayerKind): GDB.GameDB {
+    private db_mk0(far_spec0: FarSpec0[], score: number, lives: number, player_kind: S.PlayerKind): GDB.GameDB {
 	// match: ground level, mountains, world height, etc. K.TILE_WIDTH.
 	// match: project_far_specs()
 	const world_size = G.v2d_mk(
@@ -117,7 +129,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    K.GAMEPORT_RECT.size.y
 	);
 	
-	const dbc = this.sharedCore_mk(world_size);
+	const dbc = this.sharedCore_mk(world_size, lives);
 	const uncloned = this.uncloned_mk(dbc, this.index1, world_size, player_kind);
 	const local = this.local_mk(dbc, this.index1, score, world_size);
 	const shared = this.sharedItems_mk(dbc, uncloned.images);
@@ -128,15 +140,15 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	};
     }
 
-    private init_player(player_kind: S.PlayerKind, disable_beaming: boolean) {
-	const b = this.db.shared.items.base;
+    private init_player(db: GDB.GameDB, player_kind: S.PlayerKind, disable_beaming: boolean) {
+	const b = db.shared.items.base;
 	D.assert(!!b);
 	const lt = G.v2d_mk(
-	    this.db.shared.items.base.lt.x,
+	    db.shared.items.base.lt.x,
 	    K.GAMEPORT_RECT.lt.y + K.GAMEPORT_RECT.size.y * 0.60,
 	);
-	this.db.shared.items.player = Pl.player_mk(
-	    this.db,
+	db.shared.items.player = Pl.player_mk(
+	    db,
 	    GDB.id_mk(),
 	    {
 		player_kind,
@@ -145,9 +157,9 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		lt,
 	    }
 	);
-	Pl.add_shield(this.db, this.db.shared.items.player);
-	this.db.shared.items.player_shadow = Pl.player_shadow_mk(
-	    this.db,
+	Pl.add_shield(db, db.shared.items.player);
+	db.shared.items.player_shadow = Pl.player_shadow_mk(
+	    db,
 	    GDB.id_mk(),
 	    {
 		player_kind,
@@ -157,17 +169,17 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	);
     }
 
-    private init_bg(far_spec0: FarSpec0[], ground_kind: Gr.GroundKind) {
-	Sk.sky_mk(this.db);
+    private init_bg(db: GDB.GameDB, far_spec0: FarSpec0[], ground_kind: Gr.GroundKind) {
+	Sk.sky_mk(db);
 	const far_spec_images: Gr.FarSpec[] = far_spec0.map((e: FarSpec0): Gr.FarSpec => ({
 	    ...e,
-	    images_spec: { resource_id: this.db.uncloned.images.lookup(e.resource_name) }
+	    images_spec: { resource_id: db.uncloned.images.lookup(e.resource_name) }
 	}));
-	Gr.bg_mk(this.db, far_spec_images, ground_kind);
-	Gr.ground_mk(this.db, far_spec_images, ground_kind);
-	B.base_add(this.db, ground_kind);
+	Gr.bg_mk(db, far_spec_images, ground_kind);
+	Gr.ground_mk(db, far_spec_images, ground_kind);
+	B.base_add(db, ground_kind);
 	Po.populate(
-	    this.db,
+	    db,
 	    ground_kind,
 	    this.konfig.people_cluster_count
 	);
@@ -308,7 +320,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	}
     }
 
-    private init_enemies() {
+    private init_enemies(db: GDB.GameDB) {
 	// note: i don't have nor am ever likely to implement a
 	// general solution that keeps track of all the #'s and types
 	// of enemies generated & defeated so that these generators
@@ -323,7 +335,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    spec.mega = this.init_adv_from_konfig(this.konfig.Em, "mega");
 	}
 	spec.hypermega = this.init_adv_from_konfig(this.konfig.Ehm, "hypermega");
-	Eag.add_generators(this.db, spec);
+	Eag.add_generators(db, spec);
 
 	const basics: U.O<Ebg.EnemyGeneratorSpec>[] = [];
 	// @ts-ignore-error eyeroll
@@ -341,7 +353,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    D.assert(basics.length > 0, "no basic enemies found?!");
 	}
 	Ebg.add_generators(
-	    this.db,
+	    db,
 	    basics.filter(b => U.exists(b)) as Ebg.EnemyGeneratorSpec[]
 	);
     }
@@ -390,11 +402,8 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	if (this.state == Gs.StepperState.running) {
 	    // the player bought the farm?
 	    if (GDB.get_player(next) == null) {
-		if (!Object.values(next.shared.items.explosions).some(e => U.has_bits(e.type_flags, Tf.TF.playerExplosion))) {
-		    // todo: permadeath vs. more player lives left? intro state of new life.
-		    this.state = Gs.StepperState.lost;
-		    return;
-		}
+		this.state = this.get_is_player_dying(next) ? Gs.StepperState.running : Gs.StepperState.lost;
+		return;
 	    }
 	    // all tasks accomplished?
 	    if (this.are_all_enemies_done(next)) {
@@ -447,7 +456,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	}
     }
 
-    private sharedCore_mk(world_size: G.V2D): GDB.DBSharedCore {
+    private sharedCore_mk(world_size: G.V2D, lives: number): GDB.DBSharedCore {
 	// *** warning: note that all of shared round-trips with the client! ***
 	const ground_y = world_size.y - K.GROUND_SIZE.y;
 	const shared: GDB.DBSharedCore = {
@@ -474,6 +483,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		};
 	    })(),
 	    level_index1: this.index1,
+	    player_lives: lives,
 	    bg_color: this.konfig.BG_COLOR,
 	    screen_shake: G.v2d_mk_0(),
 	    tick: 0,
@@ -521,7 +531,6 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    prev_db: {} as GDB.GameDB,
 	    frame_dt: 0,
 	    fps_marker: { tick: 0, msec: 0 },
-	    state_modifiers: [],
 	    ticking_generators: {},
 	    enemy_generators: {},
 	    player_zone_width: K.GAMEPORT_PLAYER_ZONE_MIN_WIDTH,
@@ -546,6 +555,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    items: {
 		player: undefined,
 		player_shadow: undefined,
+		player_explosions: {},
 		warpin: {},
 		enemies: {},
 		munchies: {},

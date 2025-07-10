@@ -115,13 +115,15 @@ next-feature-short-list, in no order:
 NOTE:
 * do try to avoid relying on pure red or green, out of some basic accessibility respect.
 
-DO THESE NOW/NEXT:
+DO THESE NOW/NEXT: (maybe?)
 
 + hud proximity warning markers for the hypermega.
 + enemy shots already can intersect people, so make people killable? :(
 
+-999) the inter-level data is not designed well.
+-998) should clip sprites that are off-screen ya know?
+-997) very bad the way player_lives is handled because it isn't explicitly in any of the state machines.
 -9) info in the level either needs to go in the db (ie scoring) or the level needs to be passed into step()s.
--8) add Toasts for: the Rescue reminder; pts up saving people.
 -7) a better way to do the bloody screen state machine.
 -6) ugh isn't "!!" technically dangerous?
 -5) the basic vs. adv enemy generators are not good, i would like the adv to no start until most/all basic are spawned.
@@ -130,7 +132,6 @@ DO THESE NOW/NEXT:
     * literally hacking it to use Number.MIN_VALUE in server & client.
 -3) good thing i am utterly consistent in naming in code.
 -3.5) the hard coding of image names and counts between server and client?!@#?!?@!?
--2) support gamepads.
 -1.5) the client uses 'any' too much, i forget why.
       * because i never set up shared types from the server e.g. V2D etc.
 -1) the entire simulation step is crap: has too many things that *do* get modified,

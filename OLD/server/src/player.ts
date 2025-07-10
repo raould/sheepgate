@@ -68,21 +68,23 @@ export function player_shadow_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSha
 	alpha: 1,
 	facing: spec.facing,
 	resource_id: F.on_facing(spec.facing, left_rid, right_rid),
+	lifecycle: GDB.Lifecycle.alive,
         step(db: GDB.GameDB) {
-	    U.if_let(
+	    U.if_let_safe(
 		GDB.get_player(db),
-		player => {
+		(player) => {
 		    this.facing = player.facing;
 		    this.resource_id = F.on_facing(this.facing, left_rid, right_rid);
 		    this.lt = G.v2d_set_y(
 			player.lt,
 			K.GAMEPORT_RECT.size.y - size.y * 2
 		    );
-		}
+		},
+		() => { this.lifecycle = GDB.Lifecycle.dead; }
 	    );
 	},
         get_lifecycle(_:GDB.GameDB): GDB.Lifecycle {
-            return GDB.Lifecycle.alive;
+            return this.lifecycle;
         },
         on_death(_:GDB.GameDB) {},
         toJSON() {

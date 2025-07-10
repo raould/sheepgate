@@ -63,20 +63,19 @@ interface GamePrivate extends Game {
     stepper: Gs.Stepper;
 }
 
-type LevelMk = (level_index: number, score: number, high_score: Hs.HighScore) => Lis.LevelInScreens;
+type LevelMk = (level_index: number, score: number, lives: number, high_score: Hs.HighScore) => Lis.LevelInScreens;
 // match: konfig.ts
 const level_mks: LevelMk[] = [
     // note that the first level is special-cased in various places e.g. people populating.
-    (i: number, score: number, hi: Hs.HighScore) => L1.level_mk(i, score, hi),
-    (i: number, score: number, hi: Hs.HighScore) => L2.level_mk(i, score, hi),
-    (i: number, score: number, hi: Hs.HighScore) => L3.level_mk(i, score, hi),
-    (i: number, score: number, hi: Hs.HighScore) => LCBM.level_mk(i, score, hi),
-    (i: number, score: number, hi: Hs.HighScore) => L4.level_mk(i, score, hi),
-    (i: number, score: number, hi: Hs.HighScore) => L5.level_mk(i, score, hi),
-    (i: number, score: number, hi: Hs.HighScore) => L6.level_mk(i, score, hi),
-    (i: number, score: number, hi: Hs.HighScore) => LZX.level_mk(i, score, hi),
-    (i: number, score: number, hi: Hs.HighScore) => L7.level_mk(i, score, hi),
-
+    (i: number, score: number, lives: number, hi: Hs.HighScore) => L1.level_mk(i, score, lives, hi),
+    (i: number, score: number, lives: number, hi: Hs.HighScore) => L2.level_mk(i, score, lives, hi),
+    (i: number, score: number, lives: number, hi: Hs.HighScore) => L3.level_mk(i, score, lives, hi),
+    (i: number, score: number, lives: number, hi: Hs.HighScore) => LCBM.level_mk(i, score, lives, hi),
+    (i: number, score: number, lives: number, hi: Hs.HighScore) => L4.level_mk(i, score, lives, hi),
+    (i: number, score: number, lives: number, hi: Hs.HighScore) => L5.level_mk(i, score, lives, hi),
+    (i: number, score: number, lives: number, hi: Hs.HighScore) => L6.level_mk(i, score, lives, hi),
+    (i: number, score: number, lives: number, hi: Hs.HighScore) => LZX.level_mk(i, score, lives, hi),
+    (i: number, score: number, lives: number, hi: Hs.HighScore) => L7.level_mk(i, score, lives, hi),
 ];
 D.assert(level_mks.length === K.LEVEL_TEMPLATE_COUNT, "level template count");
 
@@ -364,7 +363,7 @@ class GameLevels implements Gs.Stepper {
     
     constructor(private readonly high_score: Hs.HighScore) {
         this.index = 0; // hard to grep find this when you don't know.
-        this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, 0, this.high_score);
+        this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, 0, K.PLAYER_LIVES, this.high_score);
     }
 
     get_state(): Gs.StepperState {
@@ -403,7 +402,8 @@ class GameLevels implements Gs.Stepper {
                 // todo: maybe pull the score fully out so internally levels always start at score=0.
                 // it would mean the rendering for the score would have to also be changed.
                 const score = (this.stepper as Lis.LevelInScreens).level.get_scoring().score;
-                this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, score, this.high_score);
+		const lives = (this.stepper as Lis.LevelInScreens).level.get_lives();
+                this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, score, lives, this.high_score);
             }
         }
     }

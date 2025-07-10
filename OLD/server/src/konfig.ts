@@ -93,9 +93,9 @@ export function vd2si(ds: G.V2D): G.V2D {
 export const SCREEN_BOUNDS0 = vd2si(DESIGN_SIZE);
 const DESIGN_ASPECT = G.v2d_aspect(DESIGN_SIZE);
 const SCREEN_ASPECT = G.v2d_aspect(SCREEN_BOUNDS0);
-D.assert(Uf.eqf(DESIGN_ASPECT, SCREEN_ASPECT));
+D.assert(Uf.eqf(DESIGN_ASPECT, SCREEN_ASPECT), "aspect");
 // 'design scale' to 'screen scale'.
-D.assert(D2S >= 1);
+D.assert(D2S >= 1, "d2s");
 // note: don't use this one, generally, use (the inset) SCREEN_RECT.
 export const SCREEN_RECT0 = G.v2d_2_rect(SCREEN_BOUNDS0);
 // todo: overscan only sorta works, if it gets too big
@@ -111,7 +111,7 @@ export const SCREEN_RECT = G.rect_inset(SCREEN_RECT0, OVERSCAN_INSET);
 export const GAME_FONT = 'gamefont'; // K
 export const MENU_FONT = 'menufont'; // K
 export const SCORE_FONT = `${d2si(20)}px ${GAME_FONT}`;
-export const HUD_MESSAGE_FONT = `${d2si(12)}px ${GAME_FONT}`;
+export const HUD_MESSAGE_FONT = `${d2si(14)}px ${GAME_FONT}`;
 
 // todo: all the screen -> hud/gameport would be better done with 2d 3x3 matricies.
 
@@ -136,8 +136,8 @@ export const HUD_VISIBLE_RECT = G.rect_inset(
 // radar is centered in the HUD and has to leave room for other hud information on the sides.
 const RADAR_HUD_INSET = vd2si(G.v2d_mk_x0(175));
 export const RADAR_RECT = G.rect_inset(HUD_VISIBLE_RECT, RADAR_HUD_INSET);
-D.assert_fn(G.rect_w(RADAR_RECT), G.rect_w(HUD_VISIBLE_RECT), (a,b)=>a<=b);
-D.assert_fn(G.rect_b(RADAR_RECT),G.rect_b(HUD_VISIBLE_RECT), (a,b)=>a==b);
+D.assert_fn(G.rect_w(RADAR_RECT), G.rect_w(HUD_VISIBLE_RECT), (a,b)=>a<=b, "radar1");
+D.assert_fn(G.rect_b(RADAR_RECT),G.rect_b(HUD_VISIBLE_RECT), (a,b)=>a==b, "radar2");
 export const RADAR_MID = G.rect_mid(RADAR_RECT);
 // hacky fudge arbitrary inset so the blips don't go under the border vertically, so much.
 export const RADAR_SAFE_RECT = G.rect_inset(RADAR_RECT, G.v2d_mk_0y(d2si(10)));
@@ -170,8 +170,8 @@ export const GAMEPORT_RECT = G.rect_mk(
         G.rect_h(SCREEN_RECT) - G.rect_h(HUDPORT_RECT)
     )
 );
-D.assert(G.rect_w(HUDPORT_RECT) == G.rect_w(GAMEPORT_RECT));
-D.assert(G.rect_h(SCREEN_RECT) - (G.rect_h(HUDPORT_RECT) + G.rect_h(GAMEPORT_RECT)) <= 0.01);
+D.assert(G.rect_w(HUDPORT_RECT) == G.rect_w(GAMEPORT_RECT), "hud vs. gameport");
+D.assert(G.rect_h(SCREEN_RECT) - (G.rect_h(HUDPORT_RECT) + G.rect_h(GAMEPORT_RECT)) <= 0.01, "screen vs. hud");
 
 // apparently trying to avoid having enemies shoot when too close to the sides.
 export const ENEMY_FIRING_INSET = vd2si(G.v2d_mk(20, 0));
@@ -239,9 +239,9 @@ export const BG_NEAR_BG_SIZE = G.v2d_mk(TILE_WIDTH, d2si(80)); // L
 // thus far, there must be BG_LAYER_SCALE*BG_LAYER_SCALE ground tiles for every single far bg tile.
 // thus far, there must be BG_LAYER_SCALE ground tiles for every single near bg tile.
 export const GROUND_SIZE = G.v2d_mk(TILE_WIDTH, d2si(40)); // L
-D.assert_eqeq(BG_NEAR_BG_SIZE.x, TILE_WIDTH);
-D.assert_eqeq(BG_NEAR_BG_SIZE.x, TILE_WIDTH);
-D.assert_eqeq(GROUND_SIZE.x, TILE_WIDTH);
+D.assert_eqeq(BG_NEAR_BG_SIZE.x, TILE_WIDTH, "bg tile width");
+D.assert_eqeq(BG_NEAR_BG_SIZE.x, TILE_WIDTH, "bg tile height");
+D.assert_eqeq(GROUND_SIZE.x, TILE_WIDTH, "ground tile width");
 
 export const BASE_SIZE = vd2si(G.v2d_mk(128, 32)); // L // ugh position is elsewhere.
 // the base shield alpha has to be
@@ -265,6 +265,7 @@ export const BG_LAYER_SCALE = 2;
 // they have to actually try to dodge enemy bullets.
 // note/todo: odd that i set this to MAX but the player can still die when crashing into other shields?!
 export const PLAYER_HP = 40;
+export const PLAYER_LIVES = 3;
 
 // attempting to be somewhat color-deficiency accessible.
 export const BAD_COLOR = RGBA.new0255(202, 0, 32);
@@ -360,19 +361,19 @@ export const WARPIN_TOTAL_MSEC = 500; // K
 // they also should not drop any gems, that's why they are basic.
 // they should also not show their hp meter to reduce chartjunk.
 export const ENEMY_BASIC_HP = PLAYER_SHOT_DAMAGE; // L
-export const ENEMY_BASIC_DAMAGE = Math.floor(PLAYER_HP/5); // L
+export const ENEMY_BASIC_DAMAGE = Math.ceil(PLAYER_HP/5); // L
 export const ENEMY_BASIC_GEM_COUNT = 0; // L
-D.assert(ENEMY_BASIC_DAMAGE >= 1);
+D.assert(ENEMY_BASIC_DAMAGE >= 1, "enemy basic damage");
 
 export const ENEMY_SMALL_HP = PLAYER_SHOT_DAMAGE * 4; // L
-export const ENEMY_SMALL_DAMAGE = Math.floor(PLAYER_HP/4); // L
+export const ENEMY_SMALL_DAMAGE = Math.ceil(PLAYER_HP/4); // L
 export const ENEMY_SMALL_GEM_COUNT = 1;
-D.assert(ENEMY_SMALL_DAMAGE >= 1);
+D.assert(ENEMY_SMALL_DAMAGE >= 1, "enemy small damage");
 
 export const ENEMY_MEGA_HP = PLAYER_SHOT_DAMAGE * 12; // L
-export const ENEMY_MEGA_DAMAGE = Math.floor(PLAYER_HP/2); // L
+export const ENEMY_MEGA_DAMAGE = Math.ceil(PLAYER_HP/2); // L
 export const ENEMY_MEGA_GEM_COUNT = 2;
-D.assert(ENEMY_MEGA_DAMAGE >= 1);
+D.assert(ENEMY_MEGA_DAMAGE >= 1, "enemy mega damage");
 
 export const ENEMY_HYPERMEGA_HP = PLAYER_SHOT_DAMAGE * 30; // L
 export const ENEMY_HYPERMEGA_DAMAGE = PLAYER_HP; // L
@@ -380,19 +381,19 @@ export const ENEMY_HYPERMEGA_DAMAGE = PLAYER_HP; // L
 // be an annoying race condition ux problem of ending the
 // level until/before they can be picked up by the player.
 export const ENEMY_HYPERMEGA_GEM_COUNT = 0;
-D.assert(ENEMY_HYPERMEGA_DAMAGE >= 1);
+D.assert(ENEMY_HYPERMEGA_DAMAGE >= 1, "enemy hypermega damage");
 
 export const ENEMY_POD_HP = PLAYER_SHOT_DAMAGE; // L
-export const ENEMY_POD_DAMAGE = Math.floor(PLAYER_HP/4); // L
+export const ENEMY_POD_DAMAGE = Math.ceil(PLAYER_HP/4); // L
 export const ENEMY_POD_SWARMER_COUNT = 3; // L // just a 'seed' value.
 
 export const ENEMY_SWARMER_HP = PLAYER_SHOT_DAMAGE; // L
-export const ENEMY_SWARMER_DAMAGE = Math.floor(PLAYER_HP/6); // L
+export const ENEMY_SWARMER_DAMAGE = Math.ceil(PLAYER_HP/6); // L
 
 // harass the player when all enemies are gone but there are still people to rescue.
 export const MUNCHIES_MAX = 2; // L, is adjusted per level.
 export const ENEMY_MUNCHIE_HP = PLAYER_SHOT_DAMAGE; // L
-export const ENEMY_MUNCHIE_DAMAGE = Math.floor(PLAYER_HP/4); // L
+export const ENEMY_MUNCHIE_DAMAGE = Math.ceil(PLAYER_HP/4); // L
 export const ENEMY_MUNCHIE_GEM_COUNT = 0; // L
 
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L

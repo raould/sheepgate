@@ -7,7 +7,8 @@ export enum StepperState {
     running,
     completed,
     lost,
-    // todo: paused, ...?
+    // paused is kinda done by the state machine
+    // that is around all the states.
 }
 
 export interface Stepper {

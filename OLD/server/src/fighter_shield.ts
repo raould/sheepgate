@@ -209,9 +209,11 @@ function on_death_fx(db: GDB.GameDB, shield: ShieldPrivate, fighter: S.Fighter) 
     const exids: GDB.DBID[] = [];
     const xs = fighter.rank == S.Rank.hypermega ? 1.2 : 0.5;
     const r = G.rect_circle_outside(G.rect_scale_mid_v2d(shield as G.Rect, G.v2d_mk_nn(xs)));
-    const type_flags = Tf.firstMatch(fighter.type_flags, [Tf.TF.player, Tf.TF.enemy]) | Tf.TF.explosion;
+    const fighter_type_flag = Tf.firstMatch(fighter.type_flags, [Tf.TF.player, Tf.TF.enemy]);
+    const type_flags = fighter_type_flag | Tf.TF.explosion;
+    const explosions = U.has_bits(fighter_type_flag, Tf.TF.player) ? db.shared.items.player_explosions : db.shared.items.explosions;
     GDB.add_sprite_dict_id_mut(
-        db.shared.items.explosions,
+	explosions,
         (dbid: GDB.DBID): S.Explosion => {
             exids.push(dbid);
             return Exi.explosionImg_mk(db, {
@@ -227,19 +229,9 @@ function on_death_fx(db: GDB.GameDB, shield: ShieldPrivate, fighter: S.Fighter) 
             })
         }
     );
-    GDB.add_dict_id_mut(
-        db.shared.items.particles,
-        (dbid: GDB.DBID) => new Pr.ParticleEightGenerator(
-            dbid,
-            K.EXPLOSION_PARTICLE_DURATION_MSEC,
-	    G.rect_scale_mid(r, 0.5),
-            K.EXPLOSION_PARTICLE_COUNT,
-            K.EXPLOSION_PARTICLE_SPEED,
-        )
-    );
     if (fighter.rank >= S.Rank.hypermega || fighter.rank == S.Rank.player) {
         GDB.add_sprite_dict_id_mut(
-            db.shared.items.explosions,
+            explosions,
             (dbid: GDB.DBID): S.Explosion => {
                 exids.push(dbid);
                 return Exx.explosionX_mk(db, {
@@ -255,6 +247,16 @@ function on_death_fx(db: GDB.GameDB, shield: ShieldPrivate, fighter: S.Fighter) 
             }
         );
     }
+    GDB.add_dict_id_mut(
+        db.shared.items.particles,
+        (dbid: GDB.DBID) => new Pr.ParticleEightGenerator(
+            dbid,
+            K.EXPLOSION_PARTICLE_DURATION_MSEC,
+	    G.rect_scale_mid(r, 0.5),
+            K.EXPLOSION_PARTICLE_COUNT,
+            K.EXPLOSION_PARTICLE_SPEED,
+        )
+    );
 }
 
 export class ShieldHitAnimation {

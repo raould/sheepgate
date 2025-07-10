@@ -12,7 +12,7 @@ import * as U from '../util/util';
 import * as Rnd from "../random";
 
 interface SubState extends Gs.Stepper {
-    get_next_state(): U.O<SubState>;
+    get_next_substate(): SubState;
 }
 
 const LOST_COLOR = RGBA.lerpRGBA(RGBA.RED, RGBA.BLACK, 0.25);
@@ -35,9 +35,7 @@ export class LevelInScreens implements Gs.Stepper {
 
     step(): void {
         this.stepper.step();
-        if (this.stepper.get_state() != Gs.StepperState.running) {
-            this.stepper = this.stepper.get_next_state() || this.stepper;
-        }
+        this.stepper = this.stepper.get_next_substate();
     }
 
     get_db(): Db.DB<Db.World> {
@@ -50,8 +48,6 @@ export class LevelInScreens implements Gs.Stepper {
 }
 
 class LevelWithScreen_StartScreen extends Lss.LevelStartScreen implements SubState {
-    next_state: SubState;
-
     constructor(private readonly index1: number, private readonly level: Lv.Level) {
         super(
             `LEVEL ${index1} START!`,
@@ -63,11 +59,15 @@ class LevelWithScreen_StartScreen extends Lss.LevelStartScreen implements SubSta
             RGBA.BLACK,
 	    level.get_starting_fx(),
         );
-        this.next_state = new LevelWithScreen_Level(index1, level);
     }
 
-    get_next_state(): U.O<SubState> {
-        return this.next_state;
+    get_next_substate(): SubState {
+	if (this.get_state() == Gs.StepperState.running) {
+	    return this;
+	}
+	else {
+            return new LevelWithScreen_Level(this.index1, this.level);
+	}
     }
 }
 
@@ -121,7 +121,7 @@ class LevelWithScreen_EndScreen implements SubState {
 	      "YOU ROCK!" :
 	      Rnd.singleton.array_item(LevelWithScreen_EndScreen.WON_PHRASES) ?? "NICE!"
 	const lostPhrase = index1 == 1 ?
-	      "TRY AGAIN!" :
+	      "GAME OVER!" :
 	      Rnd.singleton.array_item(LevelWithScreen_EndScreen.LOST_PHRASES) ?? "DAGNABBIT!"
         this.end_screen = new Les.LevelEndScreen({
             title: `LEVEL ${index1} ${won ? "WON!" : "LOST!"}`,
@@ -142,8 +142,8 @@ class LevelWithScreen_EndScreen implements SubState {
         }
     }
 
-    get_next_state(): U.O<SubState> {
-        return undefined;
+    get_next_substate(): SubState {
+	return this;
     }
 
     merge_client_db(cnew: Cdb.ClientDB): void {
@@ -164,23 +164,37 @@ class LevelWithScreen_EndScreen implements SubState {
 }
 
 class LevelWithScreen_Level implements SubState {
-    next_state: U.O<SubState>;
-
     constructor(private readonly index1: number, private readonly level: Lv.Level) {
+	level.db.shared.sfx.push({ sfx_id: K.BEGIN_SFX });
     }
 
     get_state(): Gs.StepperState {
         return this.level.get_state();
     }
 
-    get_next_state(): U.O<SubState> {
-        if (this.next_state == null) {
-            this.next_state = new LevelWithScreen_EndScreen(
-                this.index1,
-                this.level.get_state()
-            );
-        }
-        return this.next_state;
+    get_next_substate(): SubState {
+	switch (this.get_state()) {
+	case Gs.StepperState.running:
+	    return this;
+	case Gs.StepperState.completed:
+	    return new LevelWithScreen_EndScreen(
+		this.index1,
+		this.level.get_state()
+	    );
+	case Gs.StepperState.lost:
+	    if (this.level.db.shared.player_lives > 0) {
+		this.level.reset_player();
+		return new LevelWithScreen_StartScreen(
+		    this.index1,
+		    this.level
+		);
+	    } else {
+		return new LevelWithScreen_EndScreen(
+		    this.index1,
+		    this.level.get_state()
+		);
+	    }
+	}
     }
 
     merge_client_db(cnew: Cdb.ClientDB): void {

@@ -12,7 +12,8 @@ export type ExplosionImgSpec = Omit<U.FieldsOnly<S.Explosion>, "resource_id"|"dr
 type FramesMk = (images: GDB.ImageResources) => string[];
 
 // keep animations outside of explosion instance so we don't json the animation instances.
-// allows for only one explosion A animation per dbid.
+// (uh todo: doesn't that mean we have to not do that for other sprites too, then?)
+// only allows for one explosion A animation per dbid.
 const animations: {[k:string]: ExplosionAnimation} = {};
 
 interface ExplosionImgPrivate extends S.Explosion {
@@ -141,9 +142,6 @@ class ExplosionAnimation {
     }
 
     is_alive(db: GDB.GameDB): boolean {
-        const now = db.shared.sim_now;
-        const is = now < this.start_msec + this.duration_msec;
-        D.assert((is && !!this.frame) || (!is && !this.frame), "is-frame mismatch")
-        return is;
+	return U.exists(this.frame);
     }
 }
