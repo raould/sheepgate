@@ -470,12 +470,12 @@ export abstract class AbstractLevel implements Level {
     }    
 
     private update_hud_right(next: GDB.GameDB) {
-	this.add_hud_right_text(next, `LIVES: ${next.shared.player_lives}`, 15);
+	this.add_hud_right_text(next, `LIVES: ${next.shared.player_lives}`, 20);
         next.local.scoring.step(next);
-	this.add_hud_right_text(next, `SCORE: ${next.local.scoring.score}`, 35);
+	this.add_hud_right_text(next, `SCORE: ${next.local.scoring.score}`, 40);
         const hi_text = Math.floor(next.shared.sim_now / 3000) % 2 == 0 ?
               String(this.high_score.score) : this.high_score.callsign;
-	this.add_hud_right_text(next, `HI: ${hi_text}`, 55);
+	this.add_hud_right_text(next, `HI: ${hi_text}`, 60);
     }
 
     private update_hud_left(next: GDB.GameDB) {
@@ -486,13 +486,13 @@ export abstract class AbstractLevel implements Level {
         const more_people = U.count_dict(next.shared.items.people) > 0;
 
         if (more_enemies) {
-            this.add_hud_left_text(next, "DEFEAT ALL ENEMIES", 15);
+            this.add_hud_left_text(next, "DEFEAT ALL ENEMIES", 20);
         }
         if (carrying) {
-            this.add_hud_left_text(next, "DROP PERSON AT BASE", 35);
+            this.add_hud_left_text(next, "DROP PERSON AT BASE", 60);
         }
         else if (more_people) {
-            this.add_hud_left_text(next, "PICK UP A PERSON", 35);
+            this.add_hud_left_text(next, "PICK UP A PERSON", 60);
         }
     }
 

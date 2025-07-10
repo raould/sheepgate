@@ -111,7 +111,7 @@ export const SCREEN_RECT = G.rect_inset(SCREEN_RECT0, OVERSCAN_INSET);
 export const GAME_FONT = 'gamefont'; // K
 export const MENU_FONT = 'menufont'; // K
 export const SCORE_FONT = `${d2si(20)}px ${GAME_FONT}`;
-export const HUD_MESSAGE_FONT = `${d2si(12)}px ${GAME_FONT}`;
+export const HUD_MESSAGE_FONT = `${d2si(14)}px ${GAME_FONT}`;
 
 // todo: all the screen -> hud/gameport would be better done with 2d 3x3 matricies.
 
