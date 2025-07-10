@@ -77,6 +77,9 @@ function msgs2strs(...msgs: any): string {
 }
 
 export function assert_fail(...msgs: any) {
+    if (process.env.GAME_DEBUG !== "1") {
+	return;
+    }
     const strs = msgs2strs(msgs);
     log_stamp(
         "ASSERTION FAILED:",
@@ -87,12 +90,18 @@ export function assert_fail(...msgs: any) {
 }
 
 export function assert(test: boolean, ...msgs: any) {
+    if (process.env.GAME_DEBUG !== "1") {
+	return;
+    }
     if (!test) {
         assert_fail(...msgs);
     }
 }
 
 export function assert_fn(a: any, b: any, compare: (a:any, b:any)=>boolean, ...msgs: any) {
+    if (process.env.GAME_DEBUG !== "1") {
+	return;
+    }
     const eq = compare(a, b);
     if (!eq) {
         assert_fail(...msgs, a, b);
@@ -100,6 +109,9 @@ export function assert_fn(a: any, b: any, compare: (a:any, b:any)=>boolean, ...m
 }
 
 export function assert_eqeq(a: any, b: any, ...msgs: any) {
+    if (process.env.GAME_DEBUG !== "1") {
+	return;
+    }
     if (a !== b) {
         assert_fail(...msgs, a, b);
     }

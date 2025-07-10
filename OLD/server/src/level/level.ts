@@ -39,7 +39,7 @@ export interface Level extends Gs.Stepper {
     // todo: these are clearly indicments.
     get_scoring(): Sc.Scoring;
     get_lives(): number;
-    reset_player(): void;
+    lose_life(): void;
 }
 
 export abstract class AbstractLevel implements Level {
@@ -174,8 +174,6 @@ export abstract class AbstractLevel implements Level {
         this.update_fx(next);
 
         this.reap(next);
-	const is_alive = this.is_player_alive(next);
-	this.update_player_lives(next, was_alive, is_alive);
 
         // in case things went really wrong, which they have in the past.
         GDB.assert_dbitems(next);
@@ -190,12 +188,6 @@ export abstract class AbstractLevel implements Level {
         this.update_screen_shake(next);
         next.shared.debug_graphics = DebugGraphics.get_graphics();
         this.clear_single_shot_commands(next);
-    }
-
-    private update_player_lives(next: GDB.GameDB, was_alive: boolean, is_alive: boolean) {
-	if (was_alive && !is_alive) {
-	    next.shared.player_lives--;
-	}
     }
 
     private move_shots(next: GDB.GameDB) {
@@ -470,12 +462,13 @@ export abstract class AbstractLevel implements Level {
     }    
 
     private update_hud_right(next: GDB.GameDB) {
-	this.add_hud_right_text(next, `LIVES: ${next.shared.player_lives}`, 20);
+	const lives = " *".repeat(next.shared.player_lives-1);
+	this.add_hud_right_text(next, `LIVES: ${lives}`, 20);
         next.local.scoring.step(next);
 	this.add_hud_right_text(next, `SCORE: ${next.local.scoring.score}`, 40);
         const hi_text = Math.floor(next.shared.sim_now / 3000) % 2 == 0 ?
               String(this.high_score.score) : this.high_score.callsign;
-	this.add_hud_right_text(next, `HI: ${hi_text}`, 60);
+	this.add_hud_right_text(next, `HIGH: ${hi_text}`, 60);
     }
 
     private update_hud_left(next: GDB.GameDB) {

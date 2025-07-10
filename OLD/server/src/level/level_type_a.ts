@@ -100,10 +100,12 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
     }
 
     // todo: this is horrible mutable badness.
-    reset_player(): void {
-	this.state = Gs.StepperState.running;
-        this.reminder_cycle = HCycle.newFromRed(90 / K.FRAME_MSEC_DT);
-	this.db = this.db_mk(this.get_scoring().score, this.get_lives());
+    lose_life(): void {
+	if (this.get_lives() > 0) {
+	    this.state = Gs.StepperState.running;
+            this.reminder_cycle = HCycle.newFromRed(90 / K.FRAME_MSEC_DT);
+	    this.db = this.db_mk(this.get_scoring().score, this.get_lives()-1);
+	}
     }
 
     private db_mk(score: number, lives: number): GDB.GameDB {

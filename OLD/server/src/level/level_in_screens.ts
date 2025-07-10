@@ -183,7 +183,7 @@ class LevelWithScreen_Level implements SubState {
 	    );
 	case Gs.StepperState.lost:
 	    if (this.level.db.shared.player_lives > 0) {
-		this.level.reset_player();
+		this.level.lose_life();
 		return new LevelWithScreen_StartScreen(
 		    this.index1,
 		    this.level
