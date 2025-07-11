@@ -173,6 +173,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 
     private init_bg(db: GDB.GameDB, far_spec0: FarSpec0[], ground_kind: Gr.GroundKind) {
 	Sk.sky_mk(db);
+	// the ordering of everything else below here has to be thus due to dependencies.
 	const far_spec_images: Gr.FarSpec[] = far_spec0.map((e: FarSpec0): Gr.FarSpec => ({
 	    ...e,
 	    images_spec: { resource_id: db.uncloned.images.lookup(e.resource_name) }

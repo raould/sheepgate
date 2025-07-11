@@ -21,7 +21,7 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     return {
 	player_kind: S.PlayerKind.zx,
 	ground_kind: Gr.GroundKind.zx,
-	Ebs1: { mk: Ezx1.warpin_mk, count: 10 + buf, limit: 5 + buf, delay_msec: 1000, tick_msec: 3*1000 },
+	Ebs1: { mk: Ezx1.warpin_mk, count: 20 + buf, limit: 5 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Es: { mk: Es.warpin_mk, count: 4 + buf, limit: 2 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Em: { mk: Em.warpin_mk, count: 4 + buf, limit: 2 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Ehm: { mk: Ehm.warpin_mk, count: 2 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 5*1000 },

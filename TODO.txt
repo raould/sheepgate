@@ -123,6 +123,7 @@ DO THESE NOW/NEXT: (maybe?)
 -999) the inter-level data is not designed well.
 -998) should clip sprites that are off-screen ya know?
 -997) very bad the way player_lives is handled because it isn't explicitly in any of the state machines.
+-10) fix up all the switch() statements.
 -9) info in the level either needs to go in the db (ie scoring) or the level needs to be passed into step()s.
 -7) a better way to do the bloody screen state machine.
 -6) ugh isn't "!!" technically dangerous?

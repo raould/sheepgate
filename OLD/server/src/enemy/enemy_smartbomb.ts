@@ -13,7 +13,7 @@ import * as K from '../konfig';
 
 const FLYING_SFX = { sfx_id: K.SMARTBOMB_SFX, gain: 0.1, playback_rate: 1.5, singleton: true };
 // match: sprite animation.
-export const SIZE = K.vd2s(G.v2d_mk(20, 20));
+export const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(20, 20), 1.5));
 
 export function smartbomb_mk(db: GDB.GameDB, lt: G.V2D): U.O<S.Enemy> {
     const anim = new A.AnimatorDimensions(anims_spec_mk(db));
