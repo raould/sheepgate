@@ -206,7 +206,7 @@ export const DANGER_COLOR = RGBA.MAGENTA.setAlpha01(0.5); // K
 export const DANGER_RECT_WIDTH = d2si(10); // K
 export const DANGER_LEFT_RECT = G.rect_mk_lt(G.rect_lt(SCREEN_RECT0), G.v2d_set_x(SCREEN_RECT0.size, DANGER_RECT_WIDTH)); // K
 export const DANGER_RIGHT_RECT = G.rect_mk_rt(G.rect_rt(SCREEN_RECT0), G.v2d_set_x(SCREEN_RECT0.size, DANGER_RECT_WIDTH)); // K
-export const DANGER_IMAGE_SIZE = vd2si(G.v2d_scale_i(G.v2d_mk(140, 26), 1.5)); // K
+export const DANGER_IMAGE_SIZE = vd2si(G.v2d_scale_i(G.v2d_mk(140, 26), 0.8)); // K
 export const DANGER_IMAGE_LOCATED = { // K
     wrap: false,
     comment: "danger",
