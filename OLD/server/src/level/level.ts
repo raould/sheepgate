@@ -63,7 +63,7 @@ export abstract class AbstractLevel implements Level {
         return GDB.stringify(this.db);
     }
 
-    abstract reset_player(): void;
+    abstract lose_life(): void;
 
     private is_player_alive(next: GDB.GameDB): boolean {
 	const p = GDB.get_player(next);

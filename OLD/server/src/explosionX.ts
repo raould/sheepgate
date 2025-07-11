@@ -22,7 +22,15 @@ interface ExplosionBPrivate extends S.Explosion {
 }
 
 export function explosionX_mk(db: GDB.GameDB, spec: ExplosionBSpec): S.Explosion {
-    animations[spec.dbid] = new ExplosionAnimation(db, spec, K.EXPLOSION_MSEC * 3); // dramatic!
+    const scale = spec.rank === S.Rank.player ? 3 : 1;
+    animations[spec.dbid] = new ExplosionAnimation(
+	db,
+	{
+	    ...spec,
+	    ...G.rect_scale_mid(spec, scale),
+	},
+	K.EXPLOSION_MSEC * 3 // dramatic!
+    );
     const e: ExplosionBPrivate = {
         ...spec,
         get anim(): U.O<ExplosionAnimation> {
@@ -97,6 +105,16 @@ class ExplosionAnimation {
                 ),
                 line_width: w * 2,
                 color: RGBA.new01(1, 0.4, 0.4, a),
+                is_filled: true,
+                wrap: true,
+            });
+            this.drawing.ellipses.push({
+                bounds: G.rect_scale_mid_v2d(
+                    this.rect,
+                    G.v2d_mk_nn(0.05 + t/2)
+                ),
+                line_width: w * 2,
+                color: RGBA.new01(1, 1, 1, a),
                 is_filled: true,
                 wrap: true,
             });
