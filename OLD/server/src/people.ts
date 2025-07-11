@@ -28,72 +28,46 @@ import * as T from './toast';
 export function person_size(ground_kind: Gr.GroundKind): G.V2D {
     switch (ground_kind) {
     case Gr.GroundKind.regular:
-    case Gr.GroundKind.cbm: {
+    case Gr.GroundKind.cbm:
 	return K.vd2si(G.v2d_mk_nn(32));
-    }
-    case Gr.GroundKind.zx: {
+    case Gr.GroundKind.zx:
 	return K.vd2si(G.v2d_scale_i(G.v2d_mk(14, 20), 2));
-    }
+    default:
+	U.unreachable(ground_kind)
     }
 }
 
 export function populate(db: GDB.GameDB, ground_kind: Gr.GroundKind, cluster_count: number) {
     // some per-level determinism.
     const rnd = new Rnd.RandomImpl(db.shared.level_index1);
-    if (db.shared.level_index1 == 1) {
-        populate_near_base(db, ground_kind, cluster_count, rnd);
-    }
-    else {
-        populate_random(db, ground_kind, cluster_count, rnd);
-    }
-}
-
-function populate_near_base(db: GDB.GameDB, ground_kind: Gr.GroundKind, cluster_count: number, rnd: Rnd.Random) {
-    const gs = db.shared.items.ground;
-    const base = db.shared.items.base;
-    D.assert(!!base);
-    D.assert(cluster_count <= db.shared.items.ground.length);
-    // match: base must only be on land tiles.
-    // put them close but not too close to the base.
-    const index = gs.findIndex(g => G.rects_are_overlapping(base, g)) + 2;
-    D.assert(index >= 0);
-    let population_count = 0;
-    let remaining = cluster_count;
-    while (remaining > 0) {
-        const g = U.element_looped(gs, index);
-        if (g?.ground_type == Gr.GroundType.land) {
-            population_count += add_people_cluster(db, ground_kind, g, rnd);
-            remaining--;
-        }
-    }   
-}
-
-function populate_random(db: GDB.GameDB, ground_kind: Gr.GroundKind, cluster_count: number, rnd: Rnd.Random) {
-    // note: because wrapping, the biggest distance is like the smallest.
 
     const gs = db.shared.items.ground;
     const base = db.shared.items.base;
     D.assert(!!base);
     D.assert(cluster_count <= gs.length);
 
-    // put people near-to-far from the base, interleaving right & left sides.
+    // put people near-to-far from the base.
+    const dmax = db.shared.world.bounds0.x;
     const grounds = gs
           .filter(g => g.ground_type == Gr.GroundType.land)
           .filter(g => !G.rects_are_overlapping(base, g))
+	  .sort(
+	      (a, b) => Math.abs(a.lt.x - base.lt.x) - Math.abs(b.lt.x - base.lt.x)
+	  );
 
-    // don't populate right next to base, people look too lazy then.
-    // because wrapping.
-    grounds.pop(); 
-    grounds.shift();
+    // try to avoid populating right next to base, lest people look too lazy.
+    const overflow = [...grounds.splice(grounds.length - 4), ...grounds.splice(0, 4)];
+    grounds.push.apply(overflow);
 
-    let population_count = 0;
-    while (cluster_count > 0) {
-	const g = grounds.pop();
-	grounds.reverse(); // because wrapping.
+    while (cluster_count > 0 && grounds.length > 0) {
+	const g = grounds.shift();
 	if (g != null && g.ground_type == Gr.GroundType.land) {
-	    population_count += add_people_cluster(db, ground_kind, g, rnd);
+	    add_people_cluster(db, ground_kind, g, rnd);
 	    cluster_count--;
 	}
+    }
+    if (cluster_count > 0) {
+	D.error(`failed to place all people, ${cluster_count} cluster(s) remain`);
     }
 }
 
@@ -106,12 +80,8 @@ function add_people_cluster(db: GDB.GameDB, ground_kind: Gr.GroundKind, g: Gr.Gr
     // also this is hacky crap to allow room for (max 3) people in a row.
     const gmt = G.rect_mt(g);
     add_person(db, ground_kind, gmt);
-    const ox = person_size(ground_kind).x * 2;
-    if (rnd.boolean()) {
-	add_sheep(db, ground_kind, G.v2d_add_x(gmt, ox));
-    } else {
-	add_sheep(db, ground_kind, G.v2d_add_x(gmt, -ox));
-    }
+    const ox = person_size(ground_kind).x * 2 * rnd.sign();
+    add_sheep(db, ground_kind, G.v2d_add_x(gmt, ox));
     return 2;
 }
 
