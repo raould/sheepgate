@@ -321,7 +321,7 @@ export function debug_dump_items(db: GameDB, msg?: string) {
 // todo: most of this is really a per-level assert,
 // because e.g. enemies don't have to exist on menus etc.
 export function assert_dbitems(db: GameDB) {
-    if (process.env.GAME_DEBUG !== "1") {
+    if (!D.assertionsEnabled) {
 	return;
     }
     const items = db.shared.items;
