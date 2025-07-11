@@ -31,8 +31,7 @@ const Pod: Lemk.EnemyMk = {
             flight_pattern: flight_pattern,
             gem_count: 0,
 	    on_death: (db: GDB.GameDB, self: S.Enemy) => {
-		const spawn_count = K.ENEMY_POD_SWARMER_COUNT +
-		      Rnd.singleton.int_range(0, K.ENEMY_POD_SWARMER_COUNT);
+		const spawn_count = K.ENEMY_POD_SWARMER_COUNT;
 		const ox = Es.SIZE.x;
 		const oy = SIZE.y;
 		for (let i = 0; i < spawn_count; ++i) {

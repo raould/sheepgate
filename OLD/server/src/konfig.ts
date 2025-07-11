@@ -385,7 +385,7 @@ D.assert(ENEMY_HYPERMEGA_DAMAGE >= 1, "enemy hypermega damage");
 
 export const ENEMY_POD_HP = PLAYER_SHOT_DAMAGE; // L
 export const ENEMY_POD_DAMAGE = Math.ceil(PLAYER_HP/4); // L
-export const ENEMY_POD_SWARMER_COUNT = 3; // L // just a 'seed' value.
+export const ENEMY_POD_SWARMER_COUNT = 3; // L
 
 export const ENEMY_SWARMER_HP = PLAYER_SHOT_DAMAGE; // L
 export const ENEMY_SWARMER_DAMAGE = Math.ceil(PLAYER_HP/6); // L
