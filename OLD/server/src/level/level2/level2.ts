@@ -18,9 +18,9 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     return {
 	player_kind: S.PlayerKind.cow,
 	ground_kind: Gr.GroundKind.regular,
-	Eb2: { mk: Eb2.warpin_mk, count: 5 + buf, limit: 3 + buf, delay_msec: 1000, tick_msec: 5*1000 },
+	Eb2: { mk: Eb2.warpin_mk, count: 8 + buf, limit: 6 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Es: { mk: Es.warpin_mk, count: 4 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 3*1000 },
-	Em: { mk: Em.warpin_mk, count: 2 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 3*1000 },
+	Em: { mk: Em.warpin_mk, count: 3 + buf, limit: 2 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Ehm: { mk: Ehm.warpin_mk, count: 1 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 5*1000 },
 	BG_COLOR: RGBA.new01(0, 0.1, 0.05),
 	people_cluster_count: 2 + buf,

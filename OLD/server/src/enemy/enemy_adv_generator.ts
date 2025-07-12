@@ -27,6 +27,8 @@ interface EnemyGenerationState {
     small: EnemyGenerationCounts;
     mega: EnemyGenerationCounts;
     hypermega: EnemyGenerationCounts;
+    // these 2 basics are always generated with the hypermega.
+    // todo: make two basic enemies uniquely for this.
     hm_basic1: EnemyGenerationCounts;
     hm_basic2: EnemyGenerationCounts;
 }

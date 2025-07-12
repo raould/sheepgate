@@ -21,6 +21,9 @@ export interface TickingGeneratorSpec<T> {
     // @param generation is a 0-based count.
     // @param generations is a 0-based count, if not specified means 'never ending'.
     generate: (db: GDB.GameDB, generation: number, generations: U.O<number>) => U.O<T>;
+
+    // called once the generator has run its full course of generations.
+    on_expiry?: (db: GDB.GameDB) => void;
 }
 
 export interface TickingGenerator<T> extends GDB.Item, GDB.Aliveness {
@@ -67,7 +70,9 @@ export function ticking_generator_mk<T>(db: GDB.GameDB, dbid: GDB.DBID, spec: Ti
         get_lifecycle(db: GDB.GameDB) {
             return this.is_alive() ? GDB.Lifecycle.alive : GDB.Lifecycle.dead;
         },
-        on_death(_: GDB.GameDB) {}
+        on_death(db: GDB.GameDB) {
+	    spec.on_expiry?.(db);
+	}
     };
     return g;
 }
