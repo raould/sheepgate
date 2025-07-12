@@ -1355,34 +1355,36 @@ function loadImages() {
     });
 
     [1,2,3,4].forEach(anim => {
-        loadImage(`enemies/e12/e12l_${anim}.png`)
-        loadImage(`enemies/e12/e12r_${anim}.png`)
+        loadImage(`enemies/e12/e12l_${anim}.png`);
+        loadImage(`enemies/e12/e12r_${anim}.png`);
     });
 
     [0,1,2].forEach(anim => {
-        loadImage(`enemies/e13/e13l_${anim}.png`)
-        loadImage(`enemies/e13/e13r_${anim}.png`)
+        loadImage(`enemies/e13/e13l_${anim}.png`);
+        loadImage(`enemies/e13/e13r_${anim}.png`);
     });
 
     [1,2,3].forEach(anim => {
-        loadImage(`enemies/e20/g${anim}.png`)
+        loadImage(`enemies/e20/g${anim}.png`);
     });
 
-    loadImage(`enemies/e21/gg1l.png`)
-    loadImage(`enemies/e21/gg1lt.png`)
-    loadImage(`enemies/e21/gg1r.png`)
-    loadImage(`enemies/e21/gg1rt.png`)
+    loadImage(`enemies/e21/gg1l.png`);
+    loadImage(`enemies/e21/gg1lt.png`);
+    loadImage(`enemies/e21/gg1r.png`);
+    loadImage(`enemies/e21/gg1rt.png`);
 
-    loadImage(`enemies/e22/hh1.png`)
-    loadImage(`enemies/e22/hh2.png`)
+    loadImage(`enemies/e22/hh1.png`);
+    loadImage(`enemies/e22/hh2.png`);
 
-    loadImage(`enemies/e23/g387l.png`)
-    loadImage(`enemies/e23/g387r.png`)
+    loadImage(`enemies/e23/g387l.png`);
+    loadImage(`enemies/e23/g387r.png`);
 
-    loadImage(`enemies/e24/e24l.png`)
-    loadImage(`enemies/e24/e24r.png`)
+    loadImage(`enemies/e24/e24l.png`);
+    loadImage(`enemies/e24/e24r.png`);
 
-    loadImage(`enemies/e25/e25.png`)
+    [1,2,3].forEach(anim => {
+	loadImage(`enemies/e25/e25${anim}.png`);
+    });
 
     loadImage(`enemies/e26/e26l.png`);
     loadImage(`enemies/e26/e26r.png`);

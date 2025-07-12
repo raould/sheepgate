@@ -28,7 +28,7 @@ export function can_shoot_in_bounds(db: GDB.GameDB, enemy: S.Enemy): boolean {
 }
 
 export function safe_lt(db: GDB.GameDB, rank: S.Rank, size: G.V2D, rnd: Rnd.Random, lt: G.V2D | undefined): G.V2D {
-    const sltve = safe_lt_vs_enemy(db, size, rnd, lt);
+    const sltve = safe_lt_vs_enemy(db, rank, size, rnd, lt);
     const sltvp = safe_lt_vs_player(db, rank, size, rnd, sltve);
     const sltw = G.v2d_wrapH(sltvp, db.shared.world.bounds0); // todo: no idea any more where/when i do/not have to wrap.
     return sltw;
@@ -66,33 +66,25 @@ export function safe_lt_vs_player(db: GDB.GameDB, rank: S.Rank, size: G.V2D, rnd
 }
 
 // avoid overlapping with existing enemies.
-export function safe_lt_vs_enemy(db: GDB.GameDB, size: G.V2D, rnd: Rnd.Random, lt: G.V2D | undefined): G.V2D {
+export function safe_lt_vs_enemy(db: GDB.GameDB, rank: S.Rank, size: G.V2D, rnd: Rnd.Random, lt: G.V2D | undefined): G.V2D {
     let slt = lt ?? Gr.v2d_random_inxy(rnd, db.shared.world.bounds0.x, size.y);
-    let padded_scale = G.v2d_scale(K.SHIELD_SCALE, 1.2);
-    let hit_e: U.O<G.Rect>;
-    let hit_m: U.O<G.Rect>;
-    let loop_max = 10;
-
-    do {
-        let r = G.rect_mk(slt, size);
-        hit_e = Object.values(db.shared.items.enemies).find(e => {
-            let padded = G.rect_scale_mid_v2d(e, padded_scale);
-            let are = G.rects_are_overlapping_wrapH(r, padded, db.shared.world.bounds0);
-            return are ? padded : undefined;
-        });
-        if (hit_e != undefined) {
-            slt = G.v2d_add(slt, G.v2d_x0(hit_e.size));
-        }
-
-        hit_m = Object.values(db.shared.items.munchies).find(e => {
-            let padded = G.rect_scale_mid_v2d(e, padded_scale);
-            let are = G.rects_are_overlapping_wrapH(r, padded, db.shared.world.bounds0);
-            return are ? padded : undefined;
-        });
-        if (hit_m != undefined) {
-            slt = G.v2d_add(slt, G.v2d_x0(hit_m.size));
-        }
-        --loop_max;
-    } while ((hit_e != undefined || hit_m != undefined) && loop_max > 0);
+    if (rank != S.Rank.basic) {
+	const rw = size.x * 2;
+	const rs = [...Array(Math.ceil(db.shared.world.bounds0.x / rw)).keys()].map((e) => 0);
+	const rsl = rs.length;
+	for (const e of Object.values(db.shared.items.enemies)) {
+	    if ((e as S.Enemy).rank === rank) {
+		const mx = e.lt.x + size.x/2;
+		const i = Math.ceil(mx / rw);
+		const l = (i + Math.ceil(rsl / 2)) % rsl; // opposite side of the world.
+		rs[l]++;
+	    }
+	}
+	let besti = rs.reduce((bi,_,i) => rs[i] > rs[bi] ? i : bi);
+	if (besti === 0 && rs[besti] === 0) {
+	    besti = rnd.int_range(0, rsl);
+	}
+	slt = G.v2d_mk(besti*rw, slt.y);
+    }
     return slt;
 }
