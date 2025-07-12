@@ -1,4 +1,5 @@
 {
+    "name": "sheepgate",
     "scripts": {
         "build": "webpack",
         "build-watch": "webpack -w"
