@@ -24,7 +24,7 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
 	Eb6: { mk: Eb6.warpin_mk, count: 4 + buf, limit: 3 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Eb8: { mk: Eb8.warpin_mk, count: 4 + buf, limit: 3 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Ep: { mk: Ep.warpin_mk, count: 2 + buf, limit: 4 + buf, delay_msec: 1000, tick_msec: 3*1000 },
-	Es: { mk: Es.warpin_mk, count: 4 + buf, limit: 2 + buf, delay_msec: 1000, tick_msec: 3*1000 },
+	Es: { mk: Es.warpin_mk, count: 4 + buf, limit: 2 + buf, delay_msec: 5*1000, tick_msec: 3*1000 },
 	Em: { mk: Em.warpin_mk, count: 2 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Ehm: { mk: Ehm.warpin_mk, count: 1 + buf, limit: 2 + buf, delay_msec: 1000, tick_msec: 5*1000 },
 	BG_COLOR: RGBA.new01(0, 0.01, 0.01),
