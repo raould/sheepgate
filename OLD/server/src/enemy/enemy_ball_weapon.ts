@@ -166,17 +166,17 @@ export function scale_spec(level: number, rank: S.Rank, directions: F.Facing, sw
     }
 }
 
-// fyi: 'basic', 'small', here are enemy Rank, not the size of the bullet.
-// note: these are max values, see Eu.level_scale_{up,down}().
+// fyi: 'basic', 'small', etc., here are enemy Rank, not the size of the bullet.
+// note: these are 'max' values, see Eu.level_scale_{up,down}().
 
 const BASIC_SPEC = {
     ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 10, // L, W
     ENEMY_SHOT_SPEED: K.d2s(0.08), // L, W
     ENEMY_SHOT_SIZE: K.BALL_SHOT_SIZE,
     ENEMY_SHOT_LIFE_MSEC: 2*1000, // L, W
-    ENEMY_WEAPON_CLIP_COOLDOWN_MSEC: 20*1000, // L, W
-    ENEMY_WEAPON_SHOT_COOLDOWN_MSEC: 10*1000, // L, W
-    ENEMY_WEAPON_SHOT_COUNT: 1, // L, W
+    ENEMY_WEAPON_CLIP_COOLDOWN_MSEC: 13*1000, // L, W
+    ENEMY_WEAPON_SHOT_COOLDOWN_MSEC: 5*1000, // L, W
+    ENEMY_WEAPON_SHOT_COUNT: 2, // L, W
 };
 D.assert(BASIC_SPEC.ENEMY_SHOT_DAMAGE >= 0.1);
 

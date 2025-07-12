@@ -148,11 +148,8 @@ export function scale_spec(level: number, rank: S.Rank, direction: F.Facing): En
     }
 }
 
-// fyi: 'basic', 'small', here are enemy Rank, not the size of the bullet.
-// note: these are max values, see Eu.level_scale_{up,down}().
-
-// fyi: 'basic', 'small', here are enemy Rank, not the size of the bullet.
-// note: these are max values, see Eu.level_scale_{up,down}().
+// fyi: 'basic', 'small', etc., here are enemy Rank, not the size of the bullet.
+// note: these are 'max' values, see Eu.level_scale_{up,down}().
 
 const BASIC_SPEC = {
     ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 10, // L, W

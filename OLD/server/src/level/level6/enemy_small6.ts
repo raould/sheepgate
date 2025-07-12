@@ -13,8 +13,8 @@ import * as Lemk from '../enemy_mk';
 import * as K from '../../konfig';
 
 // match: sprite animation.
-export const SIZE = K.vd2si(G.v2d_scale_i(G.v2d_mk(92, 128), 0.5));
-export const WARPIN_RESOURCE_ID = "enemies/e25/e25.png";
+export const SIZE = K.vd2si(G.v2d_scale_i(G.v2d_mk(92, 128), 0.7));
+export const WARPIN_RESOURCE_ID = "enemies/e25/e251.png";
 const Small: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
@@ -52,6 +52,7 @@ export default Small;
 
 function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     const frames: A.DimensionsFrame[] = [
+        // enemy doesn't show any thrusters.
         ...t2a_facing_mk(db, true, F.Facing.left),
         ...t2a_facing_mk(db, true, F.Facing.right),
         ...t2a_facing_mk(db, false, F.Facing.left),
@@ -73,7 +74,10 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
             animator: A.animator_mk(
                 db.shared.sim_now,
                 {
-                    resource_id: images.lookup(`enemies/e25/e25.png`),
+                    frame_msec: 80,
+                    resource_ids: images.lookup_range_n(n => `enemies/e25/e25${n}.png`, 1, 3),
+                    starting_mode: A.MultiImageStartingMode.hold,
+                    ending_mode: A.MultiImageEndingMode.bounce
                 }
             )
         });

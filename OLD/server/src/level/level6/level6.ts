@@ -21,14 +21,13 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     return {
 	player_kind: S.PlayerKind.cow,
 	ground_kind: Gr.GroundKind.regular,
-	Eb3: { mk: Eb3.warpin_mk, count: 4 + buf, limit: 2 + buf, delay_msec: 1000, tick_msec: 10*1000 },
 	Eb6: { mk: Eb6.warpin_mk, count: 4 + buf, limit: 2 + buf, delay_msec: 1000, tick_msec: 7*1000 },
 	Eb8: { mk: Eb8.warpin_mk, count: 4 + buf, limit: 4 + buf, delay_msec: 1000, tick_msec: 5*1000 },
-	Ep: { mk: Ep.warpin_mk, count: 4 + buf, limit: 4 + buf, delay_msec: 1000, tick_msec: 3*1000 },
+	Ep: { mk: Ep.warpin_mk, count: 2 + buf, limit: 4 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Es: { mk: Es.warpin_mk, count: 4 + buf, limit: 2 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Em: { mk: Em.warpin_mk, count: 2 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Ehm: { mk: Ehm.warpin_mk, count: 1 + buf, limit: 2 + buf, delay_msec: 1000, tick_msec: 5*1000 },
-	BG_COLOR: RGBA.new01(0, 0.15, 0.1),
+	BG_COLOR: RGBA.new01(0, 0.01, 0.01),
 	people_cluster_count: 4 + buf,
     };
 };
