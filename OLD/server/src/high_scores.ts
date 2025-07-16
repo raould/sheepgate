@@ -10,14 +10,15 @@ export class HighScore {
 }
 
 let DEFAULT_HIGH_SCORES = [
-    new HighScore("JARVIS", 2084),
-    new HighScore("YAK", 2020),
-    new HighScore("MACLEAN", 2000),
-    new HighScore("ERQ ESQ", 1992),
-    new HighScore("QYPDQ", 100),
-    new HighScore("D N A", 42),
-    new HighScore("SPAM", 3),
-    new HighScore("JN0T", 1)
+    new HighScore("JARVIS", 20840),
+    new HighScore("YAK", 20200),
+    new HighScore("MACLEAN", 20000),
+    new HighScore("ERQ ESQ", 19920),
+    new HighScore("QYPDQ", 1000),
+    new HighScore("D N A", 420),
+    new HighScore("SPAM", 300),
+    new HighScore("JN0T", 100
+)
 ];
 
 // todo: persistence!

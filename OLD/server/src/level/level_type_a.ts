@@ -517,11 +517,11 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 
     private local_mk(dbc: GDB.DBSharedCore, index1: number, score: number, world_size: G.V2D): any {
 	const e2s = new Map<Sc.Event, number>([
-	    [Sc.Event.rescue, 10],
-	    [Sc.Event.easy_defeat, 10],
-	    [Sc.Event.medium_defeat, 15],
-	    [Sc.Event.hard_defeat, 20],
-	    [Sc.Event.boss_defeat, 50],
+	    [Sc.Event.rescue, 100],
+	    [Sc.Event.basic_defeat, 100],
+	    [Sc.Event.small_defeat, 150],
+	    [Sc.Event.mega_defeat, 250],
+	    [Sc.Event.hypermega_defeat, 400],
 	]);
 	const local: GDB.DBLocal = {
 	    // client_db is temporary until the client sends us a real db, duh.

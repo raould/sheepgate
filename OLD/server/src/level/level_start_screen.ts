@@ -7,10 +7,14 @@ import * as K from '../konfig';
 import * as Dr from '../drawing';
 import { RGBA } from '../color';
 
-const FONT_SIZE = K.d2si(40);
+const FONT_SIZE = K.d2si(35);
 
-interface Spec {
+export interface Spec {
     image_sized: S.ImageSized;
+    score: number;
+}
+
+interface SpecPrivate extends Spec {
     name: string;
     txy: G.V2D;
     rect: G.Rect;
@@ -18,14 +22,14 @@ interface Spec {
 
 export class LevelStartScreen extends Sz.SizzlerScreen {
     attract: any;
-    specs: Spec[];
+    specs: SpecPrivate[];
 
     constructor(
 	title: string,
 	skip_text: string,
-	private readonly es: S.ImageSized,
-	private readonly em: S.ImageSized,
-	private readonly ehm: S.ImageSized,
+	private readonly es: Spec,
+	private readonly em: Spec,
+	private readonly ehm: Spec,
 	bg_color: RGBA,
 	private starting_fx: (menu: MDB.MenuDB) => void,
     ) {
@@ -34,7 +38,7 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
 	    title,
 	    skip_text,
 	    bg_color,
-	    timeout: 10*1000,
+	    timeout: 20*1000,
 	    user_skip_after_msec: K.user_wait_msec(1000),
 	});
 	this.mdb.shared.sfx.push({ sfx_id: K.SYNTH_D_SFX });
@@ -50,16 +54,17 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
 	    comment: "attract",
 	};
 	// surprise! this is a horrible hard-coded mess.
-        const x_spacing = K.d2si(150);
+        const x_spacing = K.d2si(250);
         const x_start = G.rect_w(this.mdb.shared.world.screen) / 2 - x_spacing;
         const y = G.rect_h(this.mdb.shared.world.screen) * 0.6;
 	// left to right on the screen.
 	const image_specs = [
-	    {name: "LIGHT", image_sized: this.es},
-	    {name: "MEGA", image_sized: this.em},
-	    {name: "HYPERMEGA", image_sized: this.ehm},
+	    {...this.es, name: "LIGHT"},
+	    {...this.em, name: "MEGA"},
+	    {...this.ehm, name: "HYPERMEGA"},
 	];
-	this.specs = image_specs.map(({name, image_sized}, i) => {
+	this.specs = image_specs.map((named, i) => {
+	    const name = `${named.name}/${named.score}`;
             const offset_x = name.length / 2 * (FONT_SIZE/3);
             const txy = G.v2d_mk(x_start + x_spacing*i - offset_x, y);
 	    
@@ -71,11 +76,11 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
 		offset,
 	    );
             const rect = G.rect_fit_in(
-                G.v2d_2_rect(image_sized.size),
-                G.rect_mk_centered(ixy, image_sized.size)
+                G.v2d_2_rect(named.image_sized.size),
+                G.rect_mk_centered(ixy, named.image_sized.size)
             );
 
-	    return { image_sized, name, txy, rect };
+	    return { ...named, name, txy, rect };
 	}).reverse(); // right to left for z-ordering.
     }
 

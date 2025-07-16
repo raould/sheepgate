@@ -179,9 +179,9 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
                 },
                 on_death(db: GDB.GameDB) {
                     D.log(`on_death(): ${this.comment}`);
-                    // this assumes that they can only be destroyed by the player.
-                    db.local.scoring.on_event(Sc.Event.easy_defeat);
-                    // the gem should be delayed enough that the player
+                    // scoring: assumes that they can only be destroyed by the player.
+                    db.local.scoring.on_event(Sc.rank2event(this.rank));
+                    // gems: should be delayed enough that the player
                     // cannot just keep smashing through enemies and
                     // restoring health from the subsequent gem.
                     GDB.add_dict_id_mut(

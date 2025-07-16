@@ -9,7 +9,8 @@ import * as Les from './level_end_screen';
 import * as Lv from './level';
 import { RGBA } from '../color';
 import * as U from '../util/util';
-import * as Rnd from "../random";
+import * as Rnd from '../random';
+import * as Sc from '../scoring';
 
 interface SubState extends Gs.Stepper {
     get_next_substate(): SubState;
@@ -52,9 +53,12 @@ class LevelWithScreen_StartScreen extends Lss.LevelStartScreen implements SubSta
         super(
             `LEVEL ${index1} START!`,
 	    K.USER_SKIP_TEXT,
-            level.small_snapshot,
-            level.mega_snapshot,
-            level.hypermega_snapshot,
+            { image_sized: level.small_snapshot,
+	      score: level.get_scoring().event2score(Sc.Event.small_defeat) },
+            { image_sized: level.mega_snapshot,
+	      score: level.get_scoring().event2score(Sc.Event.mega_defeat) },
+            { image_sized: level.hypermega_snapshot,
+	      score: level.get_scoring().event2score(Sc.Event.hypermega_defeat) },
 	    // todo: wish i could use the level's bg_color.
             RGBA.BLACK,
 	    level.get_starting_fx(),

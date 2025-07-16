@@ -2,6 +2,7 @@
 import * as GDB from './game_db';
 import * as U from './util/util';
 import * as D from './debug';
+import * as S from './sprite';
 
 // i guess there will be
 // one Scoring instance
@@ -11,22 +12,34 @@ import * as D from './debug';
 // e.g. scaling the score up
 // as levels go up.
 
+export function rank2event(rank: S.Rank): Event {
+    switch (rank) {
+    case S.Rank.basic: return Event.basic_defeat;
+    case S.Rank.small: return Event.small_defeat;
+    case S.Rank.player: return 0;
+    case S.Rank.mega: return Event.mega_defeat;
+    case S.Rank.hypermega: return Event.hypermega_defeat;
+    default: U.unreachable(rank);
+    }
+}
+
 export enum Event {
     FIRST,
     rescue = FIRST,
-    easy_defeat,
-    medium_defeat,
-    hard_defeat,
-    boss_defeat,
+    basic_defeat,
+    small_defeat,
+    mega_defeat,
+    hypermega_defeat,
     // remember to update this, duh.
     // (enums are an unsolved problem.)
-    LAST = boss_defeat,
+    LAST = hypermega_defeat,
 }
 
 export interface Scoring {
     score: number;
     on_event(event: Event): void;
     step(db: GDB.GameDB): void; // mainly for drawing.
+    event2score(event: Event): number; // for level start screen.
 }
 
 interface ScoringPrivate extends Scoring {

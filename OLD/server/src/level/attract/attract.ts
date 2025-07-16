@@ -110,7 +110,7 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 	this.db.shared.hud_drawing.texts.push({
 	    wrap: true,
 	    fillStyle: color,
-	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.34, K.GAMEPORT_RECT.size.y * 0.6),
+	    lb: G.v2d_mk(K.GAMEPORT_RECT.size.x * 0.34, K.GAMEPORT_RECT.size.y * 0.63),
 	    font: `${K.d2si(40)}px ${K.MENU_FONT}`,
 	    text,
 	    comment: "demo-instructions",
