@@ -11,18 +11,22 @@ import * as _ from 'lodash';
 // easily define a library that does everything as im/mutable, and
 // then automagically derives the opposite im/mutable implementation!!!
 
+// note: a lot of these are trying to enforce, or assume,
+// that x values are non-negative.
+
+export function wrap(n: number, range: number): number {
+    return ((n % range) + range) % range; // via S.O.
+}
+
 export function wrap_x(x: number, bounds0: V2D): number {
-    let x2 = x % bounds0.x;
-    if (x2 < 0 || x2 < -0) { x2 = Math.abs(x2 + bounds0.x); }
-    return x2;
+    return wrap(x, bounds0.x);
 }
 
 export function smallest_diff_wrapped(a: number, b: number, range: number): number {
-    // todo: something more compact via modular arithmetic?
-    const d1 = Math.abs(a - b);
-    const d2 = Math.abs((a + range) - b);
-    const d3 = Math.abs(a - (b + range));
-    return Math.min(d1, d2, d3);
+    return Math.min(
+	wrap(a-b, range),
+	wrap(b-a, range)
+    );
 }
 
 // ---------- V2D: vector 2d.
@@ -370,6 +374,8 @@ export function rect_mt(r: Rect): V2D { return v2d_set_y(rect_mid(r), rect_t(r))
 export function rect_mb(r: Rect): V2D { return v2d_set_y(rect_mid(r), rect_b(r)); }
 export function rect_lm(r: Rect): V2D { return v2d_set_x(rect_mid(r), rect_l(r)); }
 export function rect_rm(r: Rect): V2D { return v2d_set_x(rect_mid(r), rect_r(r)); }
+export function rect_mx(r: Rect): number { return r.lt.x + r.size.x/2; }
+export function rect_my(r: Rect): number { return r.lt.y + r.size.y/2; }
 export function rect_mid(r: Rect): V2D {
     return v2d_add(r.lt, v2d_scale(r.size, 0.5));
 }    

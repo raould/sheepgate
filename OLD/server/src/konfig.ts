@@ -189,7 +189,7 @@ export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(d2si(80) * 3); // match: a
 // so the value used to reduce the size of the zone after reversing is used for stepping inside
 // the zone, too. got that? :-\
 // note: the dynamics here aren't as good as real stargate, either :-(
-export const GAMEPORT_PLAYER_ZONE_STEP_X = d2s(0.6); // K but must be per-dt, not per-frame.
+export const GAMEPORT_PLAYER_ZONE_STEP_X = d2s(0.4); // K but must be per-dt, not per-frame.
 export const GAMEPORT_SHAKE = d2si(4); // K
 
 export const OFF_SCREEN = G.v2d_mk_nn(-Number.MAX_SAFE_INTEGER);
