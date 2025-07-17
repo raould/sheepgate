@@ -199,27 +199,22 @@ DO THESE NOW/NEXT: (maybe?)
 25) player shots should have a visual rect vs. a collision rect.
 26) the implementation of the world wrapping is buggy and should be something more
     fundamentally built into some kind of vector & rect types, cf. player zone calculation.
-27) the code is a rats' nest of relations and calls and twistly little passages, all different :-(
+27) give the sky parallax like the ground.
+28) the code is a rats' nest of relations and calls and twistly little passages, all different :-(
 
 999) everything else..., especially code...
 * high score entry screen cursor should start on 'del'.
-* smartbomb flying sound.
-* enemy basic1 shots too slow sometimes.
 * weapon and clip cooldown are confusing especially if there's a max 1 shot at a time, no?
 * be able to set clip to expired on enemies so they don't shoot as soon as they appear.
 * weapon facing & swivel are a broken abstraction, and have led to too many enemy shots.
-* another explosion.
 * the enemy animation code is very underdocumented too much hidden magic?!
   * the no-thrusting animation handling in t2a_facing_mk is confusing.
-* also scale the weapons along level progression.
 * the DB breakdown and all the files involved is confusing.
 * the menu / level / instructions / sizzler code is badly factored, confusing.
   * like i'd like the level won text to rez in slower.
 * funny how 'scale's are sometimes scalars, sometimes vectors.
-* glitch weapons. (?)
 * wish it were easier to e.g. debug draw all acc, vel vectors.
-* it is bad weird gameplay that the enemies can pass through each other unharmed.
-* player should have to be going slow to pick up people.
+* is it bad weird gameplay that the enemies can pass through each other unharmed.
 * really annoying to be editing raw code, want a more integrated with spreadsheet realtime ux.
   !!! IT IS ALL ABOUT 'COMPARED TO WHAT' and things change when e.g. world size changes !!!
 * scaling images through code/html5-canvas is not pretty, try to keep things 1:1 and resize elsehow.
@@ -233,39 +228,25 @@ DO THESE NOW/NEXT: (maybe?)
 * similarly, "facing" is sometimes 1 bit, sometimes several bits together.
 * player shots should use rectangle bounding boxes instead of ellipses?
 * maybe ellipse-ellipse test should always scale up, not down? (which would have less fp error?)
-* enemy generator still overlaps them stupidly. :-(
 * collision detection code is sorta all over the place too spread out & hard coded? cf. knowing about world wrapping.
 * please, convert to using ES Map<K,V> with JSON.stringify() or .toJSON() hopefully.
 * enemies have to know to not be running into each other! (and not spawn on top of each other.)
-* actual waves of enemies.
-* scoring/hud. radar. shield status. visual and audio low shield warnings.
-* i feel like you should get one free shield bounce off an enemy because it helps the player
-  understand that shields are there. it is annoying when you are trying to get position around
-  a bigger enemy and you end up dying by crashing shields into each other.
-  on the other hand it gets recursivley confusing if then you die the 2nd time you run into them.
-  maybe overall crashing shields together shouldn't have any damage result, it should just bounce.
 * remove the use of bitmasks and just have arrays of values to test because it is way easier to grok in the debugger.
-* beaming up/down need better fx ux.
-* (also because hud?) make the player's position @ 10K be like the middle of the screen, not the top.
-* 10k should not be brick wall altitude, but should exponentially dampen/spring rise.
 * probably using way too many calls to _.cloneDeep().
 * need to have a gamma adjustment option.
 * the font sizing is inconsistent code.
 * mutant-izing support.
-* i wish the shots were more like defender/stargate laser/plasma, than like bullets.
 * change all "!!" to a safer test. (i wish typescript had a way to restrict
   all use of "!!" to only really boolean variables, then it would be safe.)
 * fat arrows are not the same as member functions, so decide if things like *Spec{}'s should not use =>.
 * probably the better design fix is to not update any values on the fly
   but instead generate modification events which go into a collection which
   is only all applied at the very end of the simulation step.
-* didn't have z-ordering because the items are in hashmaps. :-( vs. those in arrays, like drawing.
 * rect's often (at least in window.ts) need their midpoint, maybe just keep them in the rect all the time?
 * i want read-only db type wrappers because we don't want hidden lingering pointers to db's.
 * i want to rewrite stuff so that the db.shared.items can step themselves.
 * the marhsalling to json is a bit of an untyped hack. ideally maybe everything would override toJSON().
 * DebugGraphics can't easily draw screen-space rects, only game-world-space rects.
-* there's still a lot of arbitrary konstants to clean up, eg in enemy_mediumB.
 * decide how rectangle edges really work, closed or open?
 * i'd like to remove all coordinate code from the client so that
   it really just draws in screen space - as dumb as possible. on

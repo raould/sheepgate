@@ -29,6 +29,7 @@ export function menudb_mk(bg_color: RGBA): MenuDB {
             frame_drawing: Dr.drawing_mk(),
             debug_graphics: [],
 	    sfx: [],
+	    arcade_mode: K.ARCADE_MODE,
 	}
     };
 }

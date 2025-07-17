@@ -502,6 +502,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    frame_drawing: Dr.drawing_mk(),
 	    permanent_bg_drawing: Dr.drawing_mk(),
 	    permanent_fg_drawing: Dr.drawing_mk(),
+	    arcade_mode: K.ARCADE_MODE,
 	};
 	return shared;
     }

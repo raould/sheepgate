@@ -224,6 +224,8 @@ export interface ImageResources {
 }
 
 // *** warning: note that all of 'shared' round-trips with the client! ***
+// this is separate from DBShared because of the temporal
+// order of trying to set things up in the level.
 export interface DBSharedCore extends Db.DB<GameWorld> { // todo: better name.
     // note: inherited stuff like frame_drawing.
 

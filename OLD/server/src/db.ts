@@ -46,4 +46,5 @@ export interface DB<W extends World> {
     sfx: So.Sfx[];
     local_storage_json?: string;
     xyround?: number;
+    arcade_mode: boolean;
 }

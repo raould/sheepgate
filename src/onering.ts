@@ -155,6 +155,7 @@ const key2cmd_default: { [k: string]: CommandSpec } = {
     "&":        { command: CommandType.debug_lose_level, is_singular: true },
     "*":        { command: CommandType.debug_smite, is_singular: true },
 };
+
 const key2cmd_hotrod: { [k: string]: CommandSpec } = {
     Escape:     PauseSpec,
     p:          PauseSpec,
@@ -214,7 +215,7 @@ const key2cmd_hotrod: { [k: string]: CommandSpec } = {
     "&":        { command: CommandType.debug_lose_level, is_singular: true },
     "*":        { command: CommandType.debug_smite, is_singular: true },
 }
-const key2cmd = key2cmd_default;
+let key2cmd = key2cmd_default;
 
 abstract class AbstractParticleGenerator {
     // "o" means "offset" because we're keeping the particles
@@ -1069,6 +1070,12 @@ function applyDB(next_server_db: any) {
     // i'm pretty sure a null would really be an error end to end.
     assert(next_server_db != null, "next_server_db");
     if (next_server_db != null) {
+
+	// the server decides the overall presentation mode.
+	if (next_server_db.arcade_mode === true)  {
+	    key2cmd = key2cmd_hotrod;
+	}
+
 	let server_db = server_db_generation.db;
 	const prevSfx = server_db && server_db.sfx;
 
@@ -1510,6 +1517,7 @@ function loadImages() {
 	loadImage(`people/mwt${n+1}.png`);
     });
     loadImage("people/skull.png");
+
     [...Array(4).keys()].forEach(i => {
 	loadImage(`people/sheep${i+1}.png`);
     });
@@ -1522,6 +1530,7 @@ function loadImages() {
     });
 
     loadImage("empty1.png");
+
     loadImage("bg/ma_far.png");
     loadImage("bg/mal_far.png");
     loadImage("bg/mar_far.png");

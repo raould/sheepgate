@@ -132,6 +132,7 @@ export function game_mk(high_scores: Hs.HighScores): Game {
 	}
 
         stringify(): string {
+	    this.stepper.get_db().arcade_mode = K.ARCADE_MODE;
             return this.stepper.stringify();
         }
     }
