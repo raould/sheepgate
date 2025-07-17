@@ -60,7 +60,7 @@ export function anim2sprite(dbid: GDB.DBID, anim: ResourceAnimator, rect: G.Rect
         vel: G.v2d_mk_0(),
         alpha: 1,
         step(db: GDB.GameDB) {
-            this.z_back_to_front_ids = anim.z_back_to_front_ids(db);
+            this.z_ids = anim.z_ids(db);
         },
         get_lifecycle(db: GDB.GameDB) {
             return anim.is_alive(db) ? GDB.Lifecycle.alive : GDB.Lifecycle.dead
@@ -112,9 +112,9 @@ export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
         vel: G.v2d_mk_0(),
         alpha: 1,
         step(db: GDB.GameDB) {
-            const top = animE.z_back_to_front_ids(db) || K.MISSING_IMAGE_RESOURCE_ID;
+            const top = animE.z_ids(db) || K.MISSING_IMAGE_RESOURCE_ID;
 	    // note: removing the underlying enemy sprite for now to see how that looks.
-            this.z_back_to_front_ids = [...top];
+            this.z_ids = [...top];
         },
         get_lifecycle(db: GDB.GameDB) {
             return animE.is_alive(db) ? GDB.Lifecycle.alive : GDB.Lifecycle.dead
@@ -185,7 +185,7 @@ export class AnimatorDimensions {
             )
     }
 
-    z_back_to_front_ids(db: GDB.GameDB, facing: F.Facing, thrusting: boolean, t01: number): U.O<string[]> {
+    z_ids(db: GDB.GameDB, facing: F.Facing, thrusting: boolean, t01: number): U.O<string[]> {
         return U.if_let(
             this.spec.get(facing)?.get(thrusting),
             table => {
@@ -195,7 +195,7 @@ export class AnimatorDimensions {
                         anim = e[1];
                     }
                 });
-                return anim.z_back_to_front_ids(db);
+                return anim.z_ids(db);
             }
         );
     }
@@ -203,13 +203,13 @@ export class AnimatorDimensions {
 
 export interface ResourceAnimator {
     is_alive(db: GDB.GameDB): boolean;
-    z_back_to_front_ids(db: GDB.GameDB): U.O<string[]>;
+    z_ids(db: GDB.GameDB): U.O<string[]>;
     // todo: alpha?
 }
 
 export interface FacingResourceAnimator {
     is_alive(db: GDB.GameDB): boolean;
-    z_back_to_front_ids(db: GDB.GameDB, facing: F.Facing): U.O<string[]>;
+    z_ids(db: GDB.GameDB, facing: F.Facing): U.O<string[]>;
     // todo: alpha?
 }
 
@@ -291,7 +291,7 @@ export class ResourceAnimatorEvents implements ResourceAnimator {
         // monotonically increasing, which sorta means we should
         // maybe move back toward having an explicit step() function
         // in these interfaces instead, to make it a little more concrete.
-        if (is_alive && !this.started && this.z_back_to_front_ids(db) != undefined) {
+        if (is_alive && !this.started && this.z_ids(db) != undefined) {
             this.started = true;
             this.on_start && this.on_start(db);
         }
@@ -302,8 +302,8 @@ export class ResourceAnimatorEvents implements ResourceAnimator {
         return is_alive;
     }
 
-    z_back_to_front_ids(db: GDB.GameDB): U.O<string[]> {
-        return this.animator.z_back_to_front_ids(db);
+    z_ids(db: GDB.GameDB): U.O<string[]> {
+        return this.animator.z_ids(db);
     }
 }
 
@@ -313,13 +313,13 @@ export const TheMissingAnimator = new class implements ResourceAnimator {
     // the missing.png is a bight rectangle to try to make it obvious during testing.
     // todo: figure out how to have a debug vs. release build so that
     // missing vs. void animators are used, respectively.
-    z_back_to_front_ids(db: GDB.GameDB) { return [K.MISSING_IMAGE_RESOURCE_ID]; }
+    z_ids(db: GDB.GameDB) { return [K.MISSING_IMAGE_RESOURCE_ID]; }
 }();
 
 // this is meant to be used in we-know-it-could-be-blank parts of the code vs. TheMissingImageAnimator.
 export const TheVoidImageAnimator = new class implements ResourceAnimator {
     is_alive(db: GDB.GameDB) { return true; }
-    z_back_to_front_ids(db: GDB.GameDB) { return undefined; }
+    z_ids(db: GDB.GameDB) { return undefined; }
 }();
 
 export class SingleImageAnimator implements ResourceAnimator {
@@ -335,7 +335,7 @@ export class SingleImageAnimator implements ResourceAnimator {
         return true;
     }
 
-    z_back_to_front_ids(db: GDB.GameDB): U.O<string[]> {
+    z_ids(db: GDB.GameDB): U.O<string[]> {
         const now = db.shared.sim_now;
         if (this.start_msec > now) {
             return undefined;
@@ -367,7 +367,7 @@ export class MultiImageAnimator implements ResourceAnimator {
         return is;
     }
 
-    z_back_to_front_ids(db: GDB.GameDB): U.O<string[]> {
+    z_ids(db: GDB.GameDB): U.O<string[]> {
         const now = db.shared.sim_now;
         let id;
         if (now < this.start_msec) {
@@ -439,8 +439,8 @@ class FacingResourceAnimatorPrivate implements FacingResourceAnimator {
         return this.left.is_alive(db) && this.right.is_alive(db);
     }
 
-    z_back_to_front_ids(db: GDB.GameDB, facing: F.Facing): U.O<string[]> {
-        return this.get_animator(facing).z_back_to_front_ids(db);
+    z_ids(db: GDB.GameDB, facing: F.Facing): U.O<string[]> {
+        return this.get_animator(facing).z_ids(db);
     }
 }
 
@@ -451,9 +451,9 @@ export function anim_sprite_mk(db: GDB.GameDB, anim: ResourceAnimator, rect: G.R
         vel: G.v2d_mk_0(),
         acc: G.v2d_mk_0(),
         alpha: 1,
-        z_back_to_front_ids: anim.z_back_to_front_ids(db),
+        z_ids: anim.z_ids(db),
         step(db: GDB.GameDB) {
-            this.z_back_to_front_ids = anim.z_back_to_front_ids(db);
+            this.z_ids = anim.z_ids(db);
         },
         get_lifecycle(db: GDB.GameDB) {
             return anim.is_alive(db) ? GDB.Lifecycle.alive : GDB.Lifecycle.dead;

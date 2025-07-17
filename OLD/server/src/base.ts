@@ -32,8 +32,9 @@ function base_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): U.O<S.Base> {
     let person_size = Po.person_size(ground_kind);
     const ground_tile = pick_base_tile(db);
     if (ground_tile != null) {
+	ground_tile.populated = true;
         const animator = animator_mk(db, ground_kind);
-        const z_back_to_front_ids = animator.z_back_to_front_ids(db);
+        const z_ids = animator.z_ids(db);
         // hacky hard coded centeringish of the base in the ground tile, moved up a bit.
         const base_lt = G.v2d_sub(
             G.rect_mt(ground_tile),
@@ -59,11 +60,11 @@ function base_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): U.O<S.Base> {
                     lt: rect.lt,
                     size: rect.size,
                     alpha: 1,
-                    z_back_to_front_ids: z_back_to_front_ids,
+                    z_ids: z_ids,
                     animator: animator,
                     beam_down_rect,
                     step(db: GDB.GameDB) {
-                        this.z_back_to_front_ids = this.animator.z_back_to_front_ids(db);
+                        this.z_ids = this.animator.z_ids(db);
                     },
                     get_lifecycle(_:GDB.GameDB) { return GDB.Lifecycle.alive },
                     set_lifecycle(lifecycle: GDB.Lifecycle) {
@@ -110,17 +111,17 @@ function animator_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): A.ResourceAnim
     );
 }
 
-function pick_base_tile(db: GDB.GameDB): U.O<G.Rect> {
+function pick_base_tile(db: GDB.GameDB): U.O<Gr.Ground> {
     let ground = db.shared.items.ground;
-    let r: U.O<G.Rect> = undefined;
-    for (let i = 0; i < ground.length && r == null; ++i) {
+    let t: U.O<Gr.Ground> = undefined;
+    for (let i = 0; i < ground.length && t == null; ++i) {
 	const g = ground[(i + Math.floor(ground.length/2)) % ground.length];
         // match: people assumes the base must be on a land tile.
         if (g != null && g.ground_type == Gr.GroundType.land) {
-            r = g;
+            t = g;
         }
     }
-    return r;
+    return t;
 }
 
 function add_shield(db: GDB.GameDB, base: S.Base) {

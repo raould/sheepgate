@@ -69,11 +69,11 @@ export function gem_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Gem {
         in_cmask: C.CMask.gem,
         from_cmask: C.CMask.player, // note: really for player shield. todo: ugh so confusing.
         anim: anim,
-        z_back_to_front_ids: anim.z_back_to_front_ids(db),
+        z_ids: anim.z_ids(db),
         alpha: 1,
         lifecycle_state: GDB.Lifecycle.alive,
         step(db: GDB.GameDB) {
-            this.z_back_to_front_ids = this.anim.z_back_to_front_ids(db);
+            this.z_ids = this.anim.z_ids(db);
         },
         get_lifecycle(_:GDB.GameDB) {
             return this.lifecycle_state;

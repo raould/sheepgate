@@ -31,7 +31,7 @@ export function shot_mk(db: GDB.GameDB, src: S.Fighter, spec: ShotSpec): U.O<S.S
         db.shared.items.shots,
         (dbid: GDB.DBID): U.O<ShotPrivate> => ({
             ...spec,
-            z_back_to_front_ids: spec.anim.z_back_to_front_ids(db, src.facing),
+            z_ids: spec.anim.z_ids(db, src.facing),
             dbid: dbid,
             facing: src.facing,
             lt: spec.lt,
@@ -58,7 +58,7 @@ export function shot_mk(db: GDB.GameDB, src: S.Fighter, spec: ShotSpec): U.O<S.S
                 }
             },
             step_anim(db: GDB.GameDB) {
-                this.z_back_to_front_ids = spec.anim.z_back_to_front_ids(db, this.facing);
+                this.z_ids = spec.anim.z_ids(db, this.facing);
             },
             collide(db: GDB.GameDB, dsts: Set<S.CollidableSprite>) {
 		console.log("shot.collide?");

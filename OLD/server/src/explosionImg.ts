@@ -80,6 +80,8 @@ export function explosionImg_mk(db: GDB.GameDB, spec: ExplosionImgSpec): S.Explo
                 this.get_anim(),
                 anim => {
                     anim.step(db);
+		    // todo: make the alpha fade part of the anim,
+		    // then all this is replaced with anim2sprite.
                     if (anim.is_alive(db)) {
                         this.resource_id = anim.get_resource();
                         this.alpha = anim.get_alpha();

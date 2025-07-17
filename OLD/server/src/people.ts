@@ -78,6 +78,7 @@ function add_people_cluster(db: GDB.GameDB, ground_kind: Gr.GroundKind, g: Gr.Gr
     // for more or less room, but ha ha, whatever! we don't have
     // lavs/sea enabled now anyway.)
     // also this is hacky crap to allow room for (max 3) people in a row.
+    g.populated = true;
     const gmt = G.rect_mt(g);
     add_person(db, ground_kind, gmt);
     const ox = person_size(ground_kind).x * 2 * rnd.sign();
@@ -178,7 +179,7 @@ function waiting_mk(
                     }
 		);
 	    }
-            this.z_back_to_front_ids = this.anim?.z_back_to_front_ids(db);
+            this.z_ids = this.anim?.z_ids(db);
         },
         collide(db: GDB.GameDB, dsts: Set<S.CollidableSprite>) {
             // todo: some day can people be shot?

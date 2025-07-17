@@ -49,9 +49,9 @@ export interface ImageResource {
     alpha: number;
     // you can use any or all of these simultaneously. most sprites just use
     // the resource_id. a few have more than one layer of raster
-    // images and use the z_back_to_front_ids instead. currently maybe
+    // images and use the z_ids instead. currently maybe
     // only explosionB uses the drawing.
-    z_back_to_front_ids?: Array<string>; // z[0] is most 'distant'.
+    z_ids?: Array<string>; // z[0] is most 'distant'.
     resource_id?: string; // on top of z_back_to_front.
     drawing?: Dr.Drawing; // on top of resource_id.
 }
@@ -80,9 +80,12 @@ export function spriteJSON(s: Sprite): object {
 	draw_lt: s.draw_lt,
         size: s.size,
         alpha: s.alpha,
-        z_back_to_front_ids: s.z_back_to_front_ids,
+        z_ids: s.z_ids,
         resource_id: s.resource_id,
         drawing: s.drawing,
+	// todo: if we had the db here we could conditionalize this
+	// to only be sent when debugging is enabled.
+	// comment: s.comment,
     };
 }
 

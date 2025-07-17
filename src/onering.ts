@@ -48,6 +48,8 @@ const INVERT_COLORS = false;
 
 const STORAGE_KEY = "_sheepgate";
 
+const DEBUG_FONT_REGULAR = "12pt monospace";
+const DEBUG_FONT_SMALL = "10pt monospace";
 let inputs: {commands: {[k:string]:boolean}, keys: {[k:string]:boolean}} = {
     commands: {}, keys: {}
 };
@@ -460,7 +462,7 @@ function renderSounds(db: any) {
 }
 
 function renderSpriteImage(gdb: any, s: any, xyround?: number) {
-    const zs: Array<string>|undefined = s.z_back_to_front_ids;
+    const zs: Array<string>|undefined = s.z_ids;
     if (zs != null) {
         zs.forEach(z => renderSpriteImageLayer(gdb, s, z, xyround))
     }
@@ -525,8 +527,8 @@ function renderSprite(gdb: any, s: any, xyround?: number) {
     }
     if (s != null && debugging_state.is_annotating) {
         const wr = v2sr_wrapped(s, gdb.world.gameport, gdb.world.bounds0, true);
-        const rid = (s.resource_id || "/nil").replace(/.*\//, "");
-        cx2d.font = "9px mono";
+        const rid = (s.resource_id || s.z_ids?.[0] || "/nil").replace(/.*\//, "");
+        cx2d.font = DEBUG_FONT_SMALL;
         cx2d.fillStyle = "white";
         cx2d.fillText(`${s.comment} ${rid}`, wr.lt.x, wr.lt.y+10);
     }
@@ -617,6 +619,13 @@ function renderBg(gdb: any) {
 function renderGround(gdb: any) {
     for (const g of Object.values(gdb.items.ground)) {
         renderSprite(gdb, g);
+	if (debugging_state.is_annotating) {
+            const wr = v2sr_wrapped(g, gdb.world.gameport, gdb.world.bounds0, true);
+            cx2d.font = DEBUG_FONT_SMALL;
+            cx2d.fillStyle = "orange";
+            cx2d.fillText(!!(g as any).populated, wr.lt.x, wr.lt.y+20);
+	    cx2d.fillText((g as any).comment, wr.lt.x, wr.lt.y+30);
+	}
     }
     renderSprite(gdb, gdb.items.base);
 }
@@ -643,7 +652,7 @@ function renderDebug(db: any) { // either menu or game db.
         }
 
         // these are hard-coded in screen coordinates.
-        cx2d.font = "12px mono";
+        cx2d.font = DEBUG_FONT_REGULAR;
         cx2d.fillStyle = "white";
         cx2d.fillText(`ticks ${db.tick}`, 300, 10);
         cx2d.fillText(`sim clock ${Math.floor(db.sim_now)}`, 300, 30);
@@ -1501,8 +1510,17 @@ function loadImages() {
 	loadImage(`people/mwt${n+1}.png`);
     });
     loadImage("people/skull.png");
-    Array.from({length: 4}, (_v, i) => i+1).forEach(i => loadImage(`people/sheep${i}.png`));
-    Array.from({length: 10}, (_v, i) => i+1).forEach(i => loadImage(`people/sheepT${i}.png`));
+    [...Array(4).keys()].forEach(i => {
+	loadImage(`people/sheep${i+1}.png`);
+    });
+    [...Array(10).keys()].forEach(i => {
+	loadImage(`people/sheepT${i+1}.png`);
+    });
+
+    [...Array(11).keys()].forEach(i => {
+	loadImage(`worm/worm_${i}.png`);
+    });
+
     loadImage("empty1.png");
     loadImage("bg/ma_far.png");
     loadImage("bg/mal_far.png");

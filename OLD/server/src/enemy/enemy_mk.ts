@@ -104,7 +104,7 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
         (dbid: GDB.DBID) => {
             // todo: hard-coded #s here maybe should be world height %ages instead.
             const e: EnemyPrivate = {
-                dbid: dbid,
+                dbid,
 		fighter_kind: spec.fighter_kind,
                 comment: `enemy-${dbid}-${spec.rank}`,
                 ...rect,
@@ -118,7 +118,7 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
                 type_flags: Tf.TF.enemyShip,
                 weapons: spec.weapons,
 		explosion_kind: spec.explosion_kind ?? S.ExplosionKind.regular,
-                z_back_to_front_ids: spec.anim.z_back_to_front_ids(db, F.DefaultFacing, false, 1),
+                z_ids: spec.anim.z_ids(db, F.DefaultFacing, false, 1),
                 alpha: 1,
                 lifecycle: GDB.Lifecycle.alive,
                 last_hit_msec: 0,
@@ -127,7 +127,7 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
                     const delta_acc = this.step_delta_acc(db);
                     const t = 1; // todo: i need to know what my shield is so i can get the hp-t.
                     const thrusting = G.v2d_len2(delta_acc) > Number.EPSILON;
-                    this.z_back_to_front_ids = spec.anim.z_back_to_front_ids(db, this.facing, thrusting, t);
+                    this.z_ids = spec.anim.z_ids(db, this.facing, thrusting, t);
                     Ph.p2d_force_drag_step_mut(this, delta_acc, db.local.frame_dt);
                     this.lt = G.v2d_wrapH(this.lt, db.shared.world.bounds0);
 		    if (U.exists(spec.flying_sfx)) {

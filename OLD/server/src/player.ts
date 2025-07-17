@@ -163,11 +163,11 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
         step_resource_id(db: GDB.GameDB, delta_acc_x: number) {
             const facing = F.facing_for_inputs(db.local.client_db.inputs);
             if (facing != null) { this.facing = facing; }
-            this.z_back_to_front_ids = [];
+            this.z_ids = [];
             const is_thrusting = Math.abs(delta_acc_x) > Number.EPSILON;
 	    const anim = is_thrusting ? this.thrusting_anim : this.still_anim;
-            this.z_back_to_front_ids.push(
-                ...anim.z_back_to_front_ids(db, this.facing) || K.EMPTY_IMAGE_RESOURCE_ID
+            this.z_ids.push(
+                ...anim.z_ids(db, this.facing) || K.EMPTY_IMAGE_RESOURCE_ID
             );
         },
         set_lifecycle(lifecycle: GDB.Lifecycle) {

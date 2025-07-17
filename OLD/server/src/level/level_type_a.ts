@@ -26,6 +26,7 @@ import * as Hs from '../high_scores';
 import * as U from '../util/util';
 import * as D from '../debug';
 import * as Rnd from '../random';
+import * as W from '../worm';
 import { RGBA, HCycle } from '../color';
 import { DebugGraphics } from '../debug_graphics';
 import * as _ from 'lodash';
@@ -402,6 +403,10 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	}
 	// ...debugging
 	
+	// action.
+	W.worm_mk(next);
+
+	// end/ing?
 	if (this.state == Gs.StepperState.running) {
 	    // the player bought the farm?
 	    if (GDB.get_player(next) == null) {

@@ -45,6 +45,7 @@ export interface Ground extends S.Sprite {
     ground_type: GroundType;
     animator: A.ResourceAnimator;
     max_y: number;
+    populated: boolean; // in effect, latches when true.
 }
 
 interface UnlocatedSpec<T> {
@@ -110,10 +111,9 @@ function project_far_specs<E>(db: GDB.GameDB, far_specs: FarSpec[], scale: numbe
     }
 
     // 3) set the fully repeated array tiles to be centered around the origin.
-    const anchor_x: number = 0;//-(specs_repeated.length / 2 * K.TILE_WIDTH);
     const specs: Spec<E>[] = specs_repeated.map((s, i) => ({
         ...s,
-        x: anchor_x + i * K.TILE_WIDTH
+        x: i * K.TILE_WIDTH
     }));
 
     // D.log("specs", specs.map((s, i) => `(${i},${s.x},${s.type})`));
@@ -324,7 +324,7 @@ function add_ground_tiles(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Gro
     ground_specs.forEach((spec: GroundSpec, i: number) => {    
         // note/todo: these are not Collidables because we'll do that another way.
         const animator = A.animator_mk(db.shared.sim_now, spec.images_spec);
-        const z_back_to_front_ids = animator.z_back_to_front_ids(db);
+        const z_ids = animator.z_ids(db);
         const lt = G.v2d_mk(spec.x, db.shared.world.ground_y);
         const max_y = lt.y;
         GDB.add_sprite_array_id_mut(
@@ -338,17 +338,21 @@ function add_ground_tiles(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Gro
                     lt: lt,
                     size: size,
                     alpha: 1,
-                    z_back_to_front_ids: z_back_to_front_ids,
+                    z_ids: z_ids,
                     animator: animator,
                     ground_type: spec.type,
+		    populated: false,
                     max_y: max_y,
                     step(db: GDB.GameDB) {
-                        this.z_back_to_front_ids = this.animator.z_back_to_front_ids(db);
+                        this.z_ids = this.animator.z_ids(db);
                     },
                     get_lifecycle(_:GDB.GameDB) { return GDB.Lifecycle.alive },
                     on_death(_:GDB.GameDB) {},
                     toJSON() {
-                        return S.spriteJSON(this);
+                        return {
+			    ...S.spriteJSON(this),
+			    populated: this.populated,
+			};
                     }    
                 };
                 return g as S.Sprite;
@@ -396,13 +400,15 @@ function bg_make_layer<T, S extends Spec<T>>(
     parallax_factor: number,
     comment_prefix: string,
     specs: S[]) {
+    // ideally this should always progress left-to-right
+    // so that i can see debug info in the client.
     specs.forEach((spec: S, i: number) => {
         GDB.add_sprite_dict_id_mut(
             get_dict(db),
             (dbid: GDB.DBID): S.Sprite => {
                 const x = spec.x;
                 const anim = A.animator_mk(db.shared.sim_now, spec.images_spec);
-                const z_back_to_front_ids = anim.z_back_to_front_ids(db);
+                const z_ids = anim.z_ids(db);
                 const original_pos = G.v2d_mk(x, ground_y - size.y);
                 const lt = G.v2d_clone(original_pos);
                 const bg: MountainPrivate = {
@@ -414,10 +420,10 @@ function bg_make_layer<T, S extends Spec<T>>(
                     original_pos: original_pos,
                     size: size,
                     alpha: spec.alpha,
-                    z_back_to_front_ids: z_back_to_front_ids,
+                    z_ids: z_ids,
                     anim: anim,
                     step(db: GDB.GameDB) {
-                        this.z_back_to_front_ids = this.anim.z_back_to_front_ids(db);
+                        this.z_ids = this.anim.z_ids(db);
                         U.if_let(
                             db.shared.world.gameport.world_bounds,
                             (p: G.Rect) => {
@@ -438,9 +444,7 @@ function bg_make_layer<T, S extends Spec<T>>(
                     },
                     get_lifecycle(_:GDB.GameDB) { return GDB.Lifecycle.alive },
                     on_death(_:GDB.GameDB) {},
-                    toJSON() {
-                        return S.spriteJSON(this);
-                    }
+                    toJSON() { return S.spriteJSON(this) },
                 };
                 return bg;
             }
