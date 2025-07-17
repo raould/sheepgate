@@ -399,7 +399,7 @@ export const ENEMY_MUNCHIE_GEM_COUNT = 0; // L
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L
 export const ENEMY_RETURN_FIRE_MIN_MSEC = 100; // L
 
-export const WORM_CHANCE = 0.001; // L
+export const WORM_CHANCE = 0.0005; // L
 
 // note: these are not actual paths to anything used
 // on disk by the client at runtime, they are just names,
