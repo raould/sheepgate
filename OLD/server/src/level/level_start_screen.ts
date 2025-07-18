@@ -36,7 +36,7 @@ export class LevelStartScreen extends Sz.SizzlerScreen {
 	private readonly ehm: Spec,
 	bg_color: RGBA,
 	private starting_fx: (menu: MDB.MenuDB) => void,
-	private readonly alert: string,
+	private readonly alert?: string | undefined,
     ) {
         super({
 	    sizzle: false,

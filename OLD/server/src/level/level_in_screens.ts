@@ -64,12 +64,7 @@ class LevelWithScreen_StartScreen extends Lss.LevelStartScreen implements SubSta
 	      score: level.get_scoring().event2score(Sc.Event.hypermega_defeat) },
 	    // todo: wish i could use the level's bg_color.
             RGBA.BLACK,
-	    level.get_starting_fx(),
-	    (() => {
-		const L = Math.max(0, level.db.shared.player_lives-1);
-		const LCSTR = L === 1 ? "LIFE REMAINS" : "LIVES REMAIN"; // english sucks.
-		return L === 0 ? "LAST LIFE!" : `${L} ${LCSTR}`;
-	    })()
+	    level.get_starting_fx()
 	);
     }
 
