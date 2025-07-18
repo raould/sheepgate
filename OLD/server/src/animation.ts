@@ -4,6 +4,7 @@ import * as S from './sprite';
 import * as G from './geom';
 import * as F from './facing';
 import * as U from './util/util';
+import * as Dr from './drawing';
 import * as K from './konfig';
 import * as D from './debug';
 
@@ -133,8 +134,6 @@ export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
 // note: the following don't use 'step()' whereas
 // sprites do, so watch out for that impedance mis/match.
 
-// todo: maybe pull out code for A.DrawingAnimator from the explosion code.
-
 // todo: dead code alert. 't' below was originally to allow for different
 // sprites depending on the level of damage 0...1, so sprites could
 // degreade as they are hit.
@@ -225,6 +224,7 @@ export interface FacingRange01Anim {
     get_anim_t(db: GDB.GameDB, t: number): FacingResourceAnimator;
 }
 
+// as if i even know what these really mean any more.
 export enum MultiImageStartingMode {
     hide,
     hold,
@@ -444,10 +444,10 @@ class FacingResourceAnimatorPrivate implements FacingResourceAnimator {
     }
 }
 
-export function anim_sprite_mk(db: GDB.GameDB, anim: ResourceAnimator, rect: G.Rect): GDB.PreDbId<S.Sprite> {
+export function anim_sprite_mk(db: GDB.GameDB, rect: G.Rect, anim: ResourceAnimator): GDB.PreDbId<S.Sprite> {
     return {
         ...rect,
-        comment: 'anim',
+        comment: 'anim-sprite',
         vel: G.v2d_mk_0(),
         acc: G.v2d_mk_0(),
         alpha: 1,
@@ -463,4 +463,32 @@ export function anim_sprite_mk(db: GDB.GameDB, anim: ResourceAnimator, rect: G.R
             return S.spriteJSON(this as unknown as S.Sprite);
         }
     };
+}
+
+export class DrawingAnimation {
+    private start_msec: number;
+    drawing: Dr.Drawing;
+
+    constructor(
+	db: GDB.GameDB,
+	private rect: G.Rect,
+	private duration_msec: number,
+	private draw: (db: GDB.GameDB, rect: G.Rect, drawing: Dr.Drawing, t: number) => void
+    ) {
+        this.start_msec = db.shared.sim_now;
+        this.drawing = Dr.drawing_mk();
+    }
+
+    step(db: GDB.GameDB) {
+        this.drawing = Dr.drawing_mk();
+        const now = db.shared.sim_now;
+        const t = (now - this.start_msec) / this.duration_msec;
+	this.draw(db, this.rect, this.drawing, t);
+    }
+
+    is_alive(db: GDB.GameDB): boolean {
+        const now = db.shared.sim_now;
+        const is = now < this.start_msec + this.duration_msec;
+        return is;
+    }
 }

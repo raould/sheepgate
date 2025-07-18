@@ -161,6 +161,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    }
 	);
 	Pl.add_shield(db, db.shared.items.player);
+	Pl.add_twinkle(db, db.shared.items.player);
 	db.shared.items.player_shadow = Pl.player_shadow_mk(
 	    db,
 	    GDB.id_mk(),
@@ -389,7 +390,17 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    return;
 	}
 	if (is_debugging && next.local.client_db.inputs.commands[Cmd.CommandType.debug_lose_level]) {
-	    this.state = Gs.StepperState.lost;
+	    U.if_let(
+		GDB.get_player(next),
+		(player: S.Player) => {
+		    U.if_let(
+			GDB.get_shield(next, player.shield_id),
+			player_shield => {
+			    player_shield.hp = 0;
+			}
+		    );
+		}
+	    );
 	    return;
 	}
 	if (is_debugging && next.local.client_db.inputs.commands[Cmd.CommandType.debug_smite]) {

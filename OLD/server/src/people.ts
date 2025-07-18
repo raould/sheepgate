@@ -335,7 +335,7 @@ function person_beam_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_kind: Gr.
 	}
     })();
     const anim = new A.MultiImageAnimator(db.shared.sim_now, spec);
-    const sprite = A.anim_sprite_mk(db, anim, src);
+    const sprite = A.anim_sprite_mk(db, src, anim);
     return {
         ...sprite,
         comment: `person-up-${dbid}`,
@@ -373,7 +373,7 @@ export function person_beam_down_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_
     })();
     const anim = new A.MultiImageAnimator(db.shared.sim_now, spec);
     const events = new A.ResourceAnimatorEvents(anim, {on_end: on_end});
-    const sprite = A.anim_sprite_mk(db, events, rect);
+    const sprite = A.anim_sprite_mk(db, rect, events);
     return {
         ...sprite,
         comment: `person-down-${dbid}`,
@@ -393,7 +393,7 @@ function sheep_beam_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_kind: Gr.G
         resource_ids: resources
     };
     const anim = new A.MultiImageAnimator(db.shared.sim_now, spec);
-    const sprite = A.anim_sprite_mk(db, anim, src);
+    const sprite = A.anim_sprite_mk(db, src, anim);
     return {
         ...sprite,
         comment: `sheep-up-${dbid}`,
@@ -412,7 +412,7 @@ export function sheep_beam_down_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_k
     };
     const anim = new A.MultiImageAnimator(db.shared.sim_now, spec);
     const events = new A.ResourceAnimatorEvents(anim, {on_end: on_end});
-    const sprite = A.anim_sprite_mk(db, events, rect);
+    const sprite = A.anim_sprite_mk(db, rect, events);
     return {
         ...sprite,
         comment: `sheep-down-${dbid}`,

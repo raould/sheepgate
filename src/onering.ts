@@ -1271,6 +1271,9 @@ function loadImages() {
     loadImage("player/zxR1.png");
     loadImage("player/zxL1T.png");
     loadImage("player/zxR1T.png");
+    [...Array(6).keys()].forEach(i => {
+	loadImage(`player/twinkle${i+1}.png`);
+    });
 
     [1,2,3,4].forEach(anim => {
         loadImage(`ground/base${anim}.png`);

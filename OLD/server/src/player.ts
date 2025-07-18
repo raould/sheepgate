@@ -270,10 +270,10 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
 				    db, base.beam_down_rect,
 				    /*on_end*/(db: GDB.GameDB) => {
 					U.if_let(
-					    GDB.get_player(db), (thiz: S.Player) => {
+					    GDB.get_player(db), (player: S.Player) => {
 						db.local.scoring.on_event(Sc.Event.rescue);
 						U.if_let(
-						    GDB.get_shield(db, this.shield_id), player_shield => {
+						    GDB.get_shield(db, player.shield_id), player_shield => {
 							player_shield.hp = K.PLAYER_HP;
 						    }
 						);
@@ -551,4 +551,37 @@ export function add_shield(db: GDB.GameDB, player: S.Player) {
             }
         }            
     });
+}
+
+export function add_twinkle(db: GDB.GameDB, rect: G.Rect) {
+    add_twinkle_sprite(db, G.rect_outer_square(G.rect_scale_mid(rect, 1.5)));
+}
+
+function add_twinkle_sprite(db: GDB.GameDB, rect: G.Rect) {
+    const anim = A.animator_mk(
+	db.shared.sim_now,
+	{
+	    frame_msec: 30,
+	    resource_ids: [
+		...db.uncloned.images.lookup_range_n(n => `player/twinkle${n}.png`, 5, 1),
+		...db.uncloned.images.lookup_range_n(n => `player/twinkle${n}.png`, 2, 6),
+	    ],
+	    starting_mode: A.MultiImageStartingMode.hold,
+	    ending_mode: A.MultiImageEndingMode.hide,
+	}
+    );
+    GDB.add_sprite_dict_id_mut(
+	db.shared.items.fx,
+	(dbid: GDB.DBID): U.O<S.Sprite> => {
+	    return {
+		dbid,
+		...A.anim_sprite_mk(
+		    db,
+		    rect,
+		    anim
+		),
+		comment: `player-twinkle-${dbid}`,
+	    }
+	}
+    );
 }

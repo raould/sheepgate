@@ -38,8 +38,8 @@ export function worm_mk(db: GDB.GameDB) {
 				dbid,
 				...A.anim_sprite_mk(
 				    db,
-				    anim,
-				    rect
+				    rect,
+				    anim
 				),
 				comment: `worm-${dbid}`,
 			    }

@@ -6,6 +6,7 @@ import * as Dr from './drawing';
 import { RGBA } from './color';
 import * as K from './konfig';
 import * as U from './util/util';
+import * as A from './animation';
 
 // this one is done w/out sprites; all drawing for a big boom effect.
 
@@ -67,64 +68,46 @@ export function explosionX_mk(db: GDB.GameDB, spec: ExplosionBSpec): S.Explosion
     return e as S.Explosion;
 }
 
-// todo: maybe pull out code for A.DrawingAnimator.
-// does not have a location, only the drawings.
-class ExplosionAnimation {
-    private rect: G.Rect;
-    private duration_msec: number;
-    private start_msec: number;
-    drawing: Dr.Drawing;
+class ExplosionAnimation extends A.DrawingAnimation {
+    private static draw(db: GDB.GameDB, rect: G.Rect, drawing: Dr.Drawing, t: number): void {
+	if (t >= 0 && t <= 1) {
+	    const a = 1 - t;
+	    const w = 5 - t * 5;
+	    drawing.ellipses.push({
+		bounds: G.rect_scale_mid_v2d(
+		    rect,
+		    G.v2d_mk_nn(3 * t)
+		),
+		line_width: w,
+		color: RGBA.new01(1, 0.4, 0, a),
+		is_filled: false,
+		wrap: true,
+	    });
+	    drawing.ellipses.push({
+		bounds: G.rect_scale_mid_v2d(
+		    rect,
+		    G.v2d_mk_nn(0.5 + t)
+		),
+		line_width: w * 2,
+		color: RGBA.new01(1, 0.4, 0.4, a),
+		is_filled: true,
+		wrap: true,
+	    });
+	    drawing.ellipses.push({
+		bounds: G.rect_scale_mid_v2d(
+		    rect,
+		    G.v2d_mk_nn(0.05 + t/2)
+		),
+		line_width: w * 2,
+		color: RGBA.new01(1, 1, 1, a),
+		is_filled: true,
+		wrap: true,
+	    });
+	}
+    }
 
     constructor(db: GDB.GameDB, rect: G.Rect, duration_msec: number) {
-        this.rect = rect;
-        this.duration_msec = duration_msec;
-        this.start_msec = db.shared.sim_now;
-        this.drawing = Dr.drawing_mk();
-    }
-
-    step(db: GDB.GameDB) {
-        this.drawing = Dr.drawing_mk();
-        const now = db.shared.sim_now;
-        const t = (now - this.start_msec) / this.duration_msec;
-        if (t >= 0 && t <= 1) {
-            const a = 1 - t;
-            const w = 5 - t * 5;
-            this.drawing.ellipses.push({
-                bounds: G.rect_scale_mid_v2d(
-                    this.rect,
-                    G.v2d_mk_nn(3 * t)
-                ),
-                line_width: w,
-                color: RGBA.new01(1, 0.4, 0, a),
-                is_filled: false,
-                wrap: true,
-            });
-            this.drawing.ellipses.push({
-                bounds: G.rect_scale_mid_v2d(
-                    this.rect,
-                    G.v2d_mk_nn(0.5 + t)
-                ),
-                line_width: w * 2,
-                color: RGBA.new01(1, 0.4, 0.4, a),
-                is_filled: true,
-                wrap: true,
-            });
-            this.drawing.ellipses.push({
-                bounds: G.rect_scale_mid_v2d(
-                    this.rect,
-                    G.v2d_mk_nn(0.05 + t/2)
-                ),
-                line_width: w * 2,
-                color: RGBA.new01(1, 1, 1, a),
-                is_filled: true,
-                wrap: true,
-            });
-        }
-    }
-
-    is_alive(db: GDB.GameDB): boolean {
-        const now = db.shared.sim_now;
-        const is = now < this.start_msec + this.duration_msec;
-        return is;
+	super(db, rect, duration_msec, ExplosionAnimation.draw);
     }
 }
+
