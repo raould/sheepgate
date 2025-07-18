@@ -49,7 +49,10 @@ export class LevelInScreens implements Gs.Stepper {
 }
 
 class LevelWithScreen_StartScreen extends Lss.LevelStartScreen implements SubState {
-    constructor(private readonly index1: number, private readonly level: Lv.Level) {
+    constructor(
+	private readonly index1: number,
+	private readonly level: Lv.Level
+    ) {
         super(
             `LEVEL ${index1} START!`,
 	    K.USER_SKIP_TEXT,
@@ -62,7 +65,12 @@ class LevelWithScreen_StartScreen extends Lss.LevelStartScreen implements SubSta
 	    // todo: wish i could use the level's bg_color.
             RGBA.BLACK,
 	    level.get_starting_fx(),
-        );
+	    (() => {
+		const L = Math.max(0, level.db.shared.player_lives-1);
+		const LCSTR = L === 1 ? "LIFE REMAINS" : "LIVES REMAIN"; // english sucks.
+		return L === 0 ? "LAST LIFE!" : `${L} ${LCSTR}`;
+	    })()
+	);
     }
 
     get_next_substate(): SubState {
@@ -192,7 +200,7 @@ class LevelWithScreen_Level implements SubState {
 		this.level.lose_life();
 		return new LevelWithScreen_StartScreen(
 		    this.index1,
-		    this.level
+		    this.level,
 		);
 	    } else {
 		return new LevelWithScreen_EndScreen(
