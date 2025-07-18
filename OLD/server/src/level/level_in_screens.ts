@@ -186,7 +186,9 @@ class LevelWithScreen_Level implements SubState {
 		this.level.get_state()
 	    );
 	case Gs.StepperState.lost:
-	    if (this.level.db.shared.player_lives > 0) {
+	    // > 1 instead of > 0 because they really already lost the life,
+	    // we just haven't accounted for it here yet. er, yeah.
+	    if (this.level.db.shared.player_lives > 1) {
 		this.level.lose_life();
 		return new LevelWithScreen_StartScreen(
 		    this.index1,

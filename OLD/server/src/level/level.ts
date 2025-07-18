@@ -462,7 +462,8 @@ export abstract class AbstractLevel implements Level {
     }    
 
     private update_hud_right(next: GDB.GameDB) {
-	const lives = "   X".repeat(next.shared.player_lives-1);
+	const reserve = Math.max(0, next.shared.player_lives - 1);
+	const lives = "   X".repeat(reserve);
 	this.add_hud_right_text(next, `LIVES: ${lives}`, 20);
         next.local.scoring.step(next);
 	this.add_hud_right_text(next, `SCORE: ${next.local.scoring.score}`, 40);
