@@ -31,6 +31,7 @@ export function shot_mk(db: GDB.GameDB, src: S.Fighter, spec: ShotSpec): U.O<S.S
         db.shared.items.shots,
         (dbid: GDB.DBID): U.O<ShotPrivate> => ({
             ...spec,
+	    comment: `shot-${dbid}`,
             z_ids: spec.anim.z_ids(db, src.facing),
             dbid: dbid,
             facing: src.facing,

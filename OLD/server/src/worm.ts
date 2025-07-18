@@ -40,7 +40,8 @@ export function worm_mk(db: GDB.GameDB) {
 				    db,
 				    anim,
 				    rect
-				)
+				),
+				comment: `worm-${dbid}`,
 			    }
 			}
 		    );

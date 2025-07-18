@@ -71,6 +71,7 @@ export function explosionImg_mk(db: GDB.GameDB, spec: ExplosionImgSpec): S.Explo
     );
     const e: ExplosionImgPrivate = {
         ...spec,
+	comment: `explosion-${spec.dbid}`,
         get_anim(): U.O<ExplosionAnimation> {
             return animations[this.dbid];
         },

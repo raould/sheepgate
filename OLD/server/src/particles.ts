@@ -21,7 +21,7 @@ export class ParticleGenerator implements IParticleGenerator {
 	public bounds: G.Rect,
 	public count: number,
 	public speed: number) {
-	this.comment = "particle-generator";
+	this.comment = `particle-generator-${dbid}`;
 	this.lifecycle = GDB.Lifecycle.alive;
     }
     get_lifecycle(db: GDB.GameDB): GDB.Lifecycle {

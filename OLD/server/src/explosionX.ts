@@ -33,6 +33,7 @@ export function explosionX_mk(db: GDB.GameDB, spec: ExplosionBSpec): S.Explosion
     );
     const e: ExplosionBPrivate = {
         ...spec,
+	comment: `explosion-${spec.dbid}`,
         get anim(): U.O<ExplosionAnimation> {
             return animations[this.dbid];
         },

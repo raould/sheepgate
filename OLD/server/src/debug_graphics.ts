@@ -7,6 +7,9 @@ import * as GDB from './game_db';
 import * as Rnd from './random';
 import * as _ from 'lodash';
 
+let DEBUG_GRAPHICS_ENABLED = true; // see: game.ts
+export function set_enabled(enabled: boolean) { DEBUG_GRAPHICS_ENABLED = enabled; }
+
 // arbitrary colors to use, already alpha'd fwiw.
 export const DEBUG_COLOR_RED = RGBA.RED.setAlpha01(0.4);
 export const DEBUG_COLOR_GREEN = RGBA.GREEN.setAlpha01(0.4);
@@ -42,6 +45,7 @@ export namespace DebugGraphics {
     }
 
     export function add_bounds(dst: Dr.Drawing, db: GDB.GameDB) {
+	if (!DEBUG_GRAPHICS_ENABLED) { return; }
         add_DrawLine(dst, {
             wrap: false,
             color: RGBA.YELLOW,
@@ -55,10 +59,12 @@ export namespace DebugGraphics {
     }
 
     export function add_DrawLine(dst: Dr.Drawing, dl: Dr.DrawLine)  {
+	if (!DEBUG_GRAPHICS_ENABLED) { return; }
         dst.lines.push(dl);
     }
 
     export function add_point(dst: Dr.Drawing, pt: G.V2D) {
+	if (!DEBUG_GRAPHICS_ENABLED) { return; }
         const o = G.v2d_mk_nn(5);
         add_rect(
             dst,
@@ -70,6 +76,7 @@ export namespace DebugGraphics {
     }
 
     export function add_rect(dst: Dr.Drawing, r: G.Rect) {
+	if (!DEBUG_GRAPHICS_ENABLED) { return; }
         add_DrawRect(
             dst,
             {
@@ -86,6 +93,7 @@ export namespace DebugGraphics {
     const MID_RECT_RADIUS = G.v2d_scale(MID_RECT_SIZE, 0.5);
     // like, maybe since this is named "_DrawRect" is shouldn't ameliorate with the cross?
     export function add_DrawRect(dst: Dr.Drawing, dr: Dr.DrawRect) {
+	if (!DEBUG_GRAPHICS_ENABLED) { return; }
         dst.rects.push(dr);
         const mid = G.rect_mid(dr.rect);
         const mid_rect = G.rect_mk(
@@ -100,14 +108,17 @@ export namespace DebugGraphics {
     }
 
     export function add_DrawEllipse(dst: Dr.Drawing, de: Dr.DrawEllipse) {
+	if (!DEBUG_GRAPHICS_ENABLED) { return; }
         dst.ellipses.push(de);
     }
 
     export function add_DrawText(dst: Dr.Drawing, dt: Dr.DrawText) {
+	if (!DEBUG_GRAPHICS_ENABLED) { return; }
         dst.texts.push(dt);
     }
 
     function add_rect_cross(dst: Dr.Drawing, r: G.Rect, name?:string) {
+	if (!DEBUG_GRAPHICS_ENABLED) { return; }
 	const line_width = !!name ?
 	      Rnd.singleton.int_range(2,5) :
 	      1;

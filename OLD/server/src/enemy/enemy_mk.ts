@@ -54,19 +54,9 @@ export function add_enemy(db: GDB.GameDB, spec: EnemySpec, rect: G.Rect, get_con
 }
 
 function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec, get_container: (db: GDB.GameDB) => U.Dict<S.Enemy>): U.O<S.Warpin> {
-    if (U.exists(spec.lt)) {
-	DebugGraphics.add_DrawEllipse(
-	    DebugGraphics.get_permanent(),
-	    { wrap: true,
-	      color: RGBA.YELLOW,
-	      bounds: G.rect_mk(spec.lt, size)
-	    }
-	);
-    }
     const lt = Eu.safe_lt(db, spec.rank, size, Rnd.singleton, spec.lt);
     const rect = G.rect_mk(lt, size);
     spec.lt = lt;
-    DebugGraphics.add_rect(DebugGraphics.get_permanent(), rect);
     db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
     return A.warpin_mk(
         db,

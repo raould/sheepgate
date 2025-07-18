@@ -531,9 +531,10 @@ function renderSprite(gdb: any, s: any, xyround?: number) {
     if (s != null && debugging_state.is_annotating) {
         const wr = v2sr_wrapped(s, gdb.world.gameport, gdb.world.bounds0, true);
         const rid = (s.resource_id || s.z_ids?.[0] || "/nil").replace(/.*\//, "");
+	const comment = s.comment == null ? '' : `(${s.comment})`;
         cx2d.font = DEBUG_FONT_SMALL;
         cx2d.fillStyle = "white";
-        cx2d.fillText(`${s.comment} ${rid}`, wr.lt.x, wr.lt.y+10);
+        cx2d.fillText(`${comment} ${rid}`, wr.lt.x, wr.lt.y+10);
     }
 }
 

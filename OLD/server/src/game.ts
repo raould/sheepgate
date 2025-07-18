@@ -13,6 +13,7 @@ import * as Hs from './high_scores';
 import * as U from './util/util';
 import * as G from './geom';
 import * as D from './debug';
+import { set_enabled, DebugGraphics } from './debug_graphics';
 import * as K from './konfig';
 import * as Lis from './level/level_in_screens';
 import { RGBA } from './color';
@@ -149,6 +150,7 @@ class GameAttract implements Gs.Stepper {
 
     merge_client_db(cnew: Cdb.ClientDB) {
         this.stepper.merge_client_db(cnew);
+	set_enabled(cnew.debugging_state.is_drawing);
     }
 
     get_state(): Gs.StepperState {
