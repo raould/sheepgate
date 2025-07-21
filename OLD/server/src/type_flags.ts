@@ -20,6 +20,7 @@ export enum TF {
     explosion = 1 << 6,
     person = 1 << 7,
     gem = 1 << 8,
+    arrow = 1 << 9,
     LAST = gem,
     // some common composite flags.
     playerShip = TF.player | TF.ship,
@@ -32,11 +33,11 @@ export enum TF {
     enemyExplosion = TF.enemy | TF.explosion,
     baseShield = TF.base | TF.shield,
     // boilerplate from hell fun not.
-    all = TF.player | TF.base | TF.enemy | TF.ship | TF.shield | TF.shot | TF.person | TF.gem,
+    all = TF.player | TF.base | TF.enemy | TF.ship | TF.shield | TF.shot | TF.person | TF.gem | TF.arrow,
 }
 
 export const tf_everything = [
-    TF.player, TF.base, TF.enemy, TF.ship, TF.shield, TF.shot, TF.person, TF.gem,
+    TF.player, TF.base, TF.enemy, TF.ship, TF.shield, TF.shot, TF.person, TF.gem, TF.arrow,
 ];
 
 export function firstMatch(src: U.O<TF>, query: TF[]): TF {

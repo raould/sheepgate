@@ -18,11 +18,13 @@ export interface ToastSpec {
     lifetime: number;
 }
 
+const FONT = `${K.d2si(40)}px ${K.MENU_FONT}`;
+
 export function add_toast(db: GDB.GameDB, spec: ToastSpec) {
     GDB.add_dict_id_mut(
 	db.local.toasts,
 	(dbid: GDB.DBID) => {
-	    const font = `${K.d2si(40)}px ${K.MENU_FONT}`;
+	    const font = FONT;
 	    const t: Toast = {
 		dbid,
 		comment: `toast-${dbid}`,

@@ -1280,6 +1280,9 @@ function loadImages() {
         loadImage(`ground/base_cbm_${anim}.png`);
         loadImage(`ground/base_zx_${anim}.png`);
     });
+    [...Array(4).keys()].forEach(n => {
+	loadImage(`ground/arrow${n}.png`);
+    });
 
     loadImage("enemies/munchies/mr1.png");
     loadImage("enemies/munchies/mr2.png");
@@ -1531,6 +1534,9 @@ function loadImages() {
 
     [...Array(11).keys()].forEach(i => {
 	loadImage(`worm/worm_${i}.png`);
+    });
+    [...Array(8).keys()].forEach(i => {
+	loadImage(`worm/${i}.png`);
     });
 
     loadImage("empty1.png");
