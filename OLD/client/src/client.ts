@@ -841,6 +841,8 @@ function renderTexts(xdb: any, draw_texts: Array<any/*Dr.DrawText*/>) {
         const ss = xdb.screen_shake ?? {x:0, y:0};
         for (const dt of draw_texts) {
             const wrap = dt.wrap == null ? true : !!dt.wrap;
+	    // todo: bug: this cannot work right w/out knowing the actual text rect;
+	    // wrapping is wrong when lb is off the lhs of the gameport.
             const slb = v2sv_wrapped(dt.lb, xdb.world.gameport, xdb.world.bounds0, wrap);
             renderText(dt.text, dt.font, dt.fillStyle,
                        slb.x + ss.x, slb.y + ss.y);
@@ -1323,6 +1325,9 @@ function loadImages() {
         loadImage(`ground/base_cbm_${anim}.png`);
         loadImage(`ground/base_zx_${anim}.png`);
     });
+    [...Array(4).keys()].forEach(n => {
+	loadImage(`ground/arrow${n}.png`);
+    });
 
     loadImage("enemies/munchies/mr1.png");
     loadImage("enemies/munchies/mr2.png");
@@ -1574,6 +1579,9 @@ function loadImages() {
 
     [...Array(11).keys()].forEach(i => {
 	loadImage(`worm/worm_${i}.png`);
+    });
+    [...Array(8).keys()].forEach(i => {
+	loadImage(`worm/${i}.png`);
     });
 
     loadImage("empty1.png");

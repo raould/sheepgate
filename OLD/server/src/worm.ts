@@ -52,13 +52,14 @@ export function worm_mk(db: GDB.GameDB) {
 }
 
 function anim_mk(db: GDB.GameDB): A.ResourceAnimator {
+    const resource_ids = Rnd.singleton.boolean() ?
+	  db.uncloned.images.lookup_range_n(n => `worm/worm_${n}.png`, 0, 10) :
+	  db.uncloned.images.lookup_range_n(n => `worm/${n}.png`, 0, 7);
     return A.animator_mk(
 	db.shared.sim_now,
 	{
 	    frame_msec: 100,
-	    resource_ids: [
-		...db.uncloned.images.lookup_range_n(n => `worm/worm_${n}.png`, 0, 10)
-	    ],
+	    resource_ids,
 	    starting_mode: A.MultiImageStartingMode.hold,
 	    ending_mode: A.MultiImageEndingMode.hide,
 	}

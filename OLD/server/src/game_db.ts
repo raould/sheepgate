@@ -12,6 +12,7 @@ import * as Dr from './drawing';
 import * as Gr from './ground';
 import * as Sc from './scoring';
 import * as Gs from './game_stepper';
+import * as Tf from './type_flags';
 import { Toast } from './toast';
 import * as Tkg from './ticking_generator';
 
@@ -442,10 +443,23 @@ export function get_beamers(db: GameDB): Array<S.Person> {
     return Object.values(db.shared.items.people).filter(p => p.beaming_state != S.BeamingState.not_beaming);
 }
 
-export function get_beaming_count(db: GameDB): number {
+export function get_beaming_count(db: GameDB, state?: S.BeamingState): number {
     let count = 0;
     Object.values(db.shared.items.people).forEach((p) => {
-	if (p.beaming_state != S.BeamingState.not_beaming) { ++count; }
+	if (U.isU(state)) {
+	    if (p.beaming_state !== S.BeamingState.not_beaming) { ++count; }
+	}
+	else {
+	    if (p.beaming_state === state) { ++count; }
+	}
+    });
+    return count;
+}
+
+export function get_arrow_count(db: GameDB): number {
+    let count = 0;
+    Object.values(db.shared.items.fx).forEach((s) => {
+	if (U.exists(s.type_flags) && Tf.overlaps(s.type_flags, [Tf.TF.arrow])) { ++count; }
     });
     return count;
 }
@@ -526,9 +540,4 @@ function reap_named<T extends S.Sprite>(db: GameDB, parent: object, name: string
 
 function reap_sprites<T extends S.Sprite>(db: GameDB, collection: U.Dict<T>): U.FilteredDict<T> {
     return U.filter_dict<T>(collection, (dbid, e) => keep_fn(db, dbid, e));
-}
-
-export function reap_item<T extends Identity>(collection: U.Dict<T>, item: T) {
-    D.assert(U.exists(item.dbid));
-    delete collection[item.dbid];
 }

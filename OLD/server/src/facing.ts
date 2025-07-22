@@ -10,6 +10,7 @@ import * as U from './util/util';
 export const DefaultFacing = Facing.left;
 
 // todo: see comment about facing in enemy_ball_weapon.
+// todo: and what about things with no facing, but do want animation?
 export const enum Facing {
     left,
     right

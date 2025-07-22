@@ -12,6 +12,8 @@ import * as Sh from './fighter_shield';
 import * as Rnd from './random';
 import * as U from './util/util';
 import * as D from './debug';
+import * as F from './facing';
+import { RGBA } from './color';
 
 interface BasePrivate extends S.Base {
     animator: A.ResourceAnimator;
@@ -65,7 +67,14 @@ function base_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): U.O<S.Base> {
                     beam_down_rect,
                     step(db: GDB.GameDB) {
                         this.z_ids = this.animator.z_ids(db);
-                    },
+			const buffer_count = GDB.get_beaming_count(db);
+			if (db.shared.level_index1 === 1 && buffer_count > 0) {
+			    const arrow_count = GDB.get_arrow_count(db);
+			    if (arrow_count === 0) {
+				arrow_mk(db, this);
+			    }
+			}
+		    },
                     get_lifecycle(_:GDB.GameDB) { return GDB.Lifecycle.alive },
                     set_lifecycle(lifecycle: GDB.Lifecycle) {
                         // the base shield is (nigh) invulernable so nothing to do
@@ -81,6 +90,51 @@ function base_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): U.O<S.Base> {
         );
     }
     return base;
+}
+
+function arrow_mk(db: GDB.GameDB, base: S.Base) {
+    const images = db.uncloned.images;
+    const anim = new A.MultiImageAnimator(
+        db.shared.sim_now,
+        {
+            frame_msec: 120,
+            resource_ids: [
+                ...images.lookup_range_n((n) => `ground/arrow${n}.png`, 0, 3)
+            ],
+            starting_mode: A.MultiImageStartingMode.hold,
+            ending_mode: A.MultiImageEndingMode.loop,
+        }
+    );
+    const size = K.vd2si(G.v2d_scale_i(G.v2d_mk(8, 8), 3));
+    GDB.add_sprite_dict_id_mut(
+        db.shared.items.fx,
+        (dbid: GDB.DBID): U.O<S.Sprite> => ({
+	    dbid,
+	    lt: G.v2d_mk(
+		G.rect_mt(base).x - size.x/2,
+		G.rect_mt(base).y - size.y * 2
+	    ),
+	    size,
+	    comment: `arrow-${dbid}`,
+	    type_flags: Tf.TF.arrow,
+	    vel: G.v2d_mk_0(),
+            acc: G.v2d_mk_0(),
+	    alpha: 0.6,
+	    step(db: GDB.GameDB) {
+                this.z_ids = anim.z_ids(db);
+	    },
+            get_lifecycle(db: GDB.GameDB): GDB.Lifecycle {
+		if (GDB.get_beaming_count(db, S.BeamingState.beaming_up) === 0) {
+		    return GDB.Lifecycle.dead;
+		}
+		return GDB.Lifecycle.alive;
+	    },
+            on_death(_: GDB.GameDB) {},
+            toJSON() {
+                return S.spriteJSON(this);
+            }
+	})
+    );
 }
 
 function animator_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): A.ResourceAnimator {
