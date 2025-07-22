@@ -67,17 +67,22 @@ function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: Enemy
             resource_id: db.uncloned.images.lookup(resource_id),
             rank: spec.rank,
             on_end: (db: GDB.GameDB) => {
-		add_enemy(db, spec, rect, get_container); }
+		add_enemy(db, spec, rect, get_container);
+	    }
         }
     );
 }
 
 export function warpin_mk_enemy(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec): U.O<S.Warpin> {
-    return warpin_mk(db, size, resource_id, spec, (db: GDB.GameDB) => { return db.shared.items.enemies; });
+    return warpin_mk(db, size, resource_id, spec, (db: GDB.GameDB) => db.shared.items.enemies);
 }
 
 export function warpin_mk_munchie(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec): U.O<S.Warpin> {
-    return warpin_mk(db, size, resource_id, spec, (db: GDB.GameDB) => { return db.shared.items.munchies; });
+    return warpin_mk(db, size, resource_id, spec, (db: GDB.GameDB) => db.shared.items.munchies);
+}
+
+export function warpin_mk_indestructible(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec): U.O<S.Warpin> {
+    return warpin_mk(db, size, resource_id, spec, (db: GDB.GameDB) => db.shared.items.indestructibles);
 }
 
 interface EnemyPrivate extends S.Enemy {
@@ -96,7 +101,7 @@ export function sprite_mk(db: GDB.GameDB, rect: G.Rect, spec: EnemySpec): U.O<En
             const e: EnemyPrivate = {
                 dbid,
 		fighter_kind: spec.fighter_kind,
-                comment: `enemy-${dbid}-${spec.rank}`,
+                comment: `enemy-${dbid}-${spec.rank}-${spec.fighter_kind}`,
                 ...rect,
                 facing: F.DefaultFacing,
                 // todo: extract this.

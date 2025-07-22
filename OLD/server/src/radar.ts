@@ -16,6 +16,7 @@ export function step(db: GDB.GameDB) {
             // but the way this works is simplistic (!) so they can visually overlap the top bounds.
             render_ground(db);
             render_enemies(db, center);
+            render_indestructibles(db, center);
             render_munchies(db, center);
             render_gems(db, center);
             render_base(db, db.shared.items.base, center);
@@ -212,6 +213,22 @@ function render_enemies(db: GDB.GameDB, center: G.V2D) {
                 is_filled: true,
                 rect: r,
                 comment: `r-enemy-${sprite.dbid}`
+            })
+        );
+    });
+}
+
+function render_indestructibles(db: GDB.GameDB, center: G.V2D) {
+    Object.values(db.shared.items.indestructibles).forEach(sprite => {
+        const rs = world2radars(db, sprite, center);
+        rs.forEach(r =>
+            db.shared.hud_drawing.rects.push({
+                wrap: false,
+                line_width: 0,
+                color: K.BAD_COLOR,
+                is_filled: true,
+                rect: r,
+                comment: `r-indestructible-${sprite.dbid}`
             })
         );
     });

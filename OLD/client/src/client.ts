@@ -577,6 +577,12 @@ function renderEnemies(gdb: any) {
     }
 }
 
+function renderIndestructibles(gdb: any) {
+    for (const e of Object.values(gdb.items.indestructibles)) {
+        renderSprite(gdb, e, gdb.xyround);
+    }
+}
+
 function renderMunchies(gdb: any) {
     for (const m of Object.values(gdb.items.munchies)) {
         renderSprite(gdb, m, gdb.xyround);
@@ -953,6 +959,7 @@ function renderPlaying(gdb: any) {
     renderGems(gdb);
     renderWarpin(gdb);
     renderEnemies(gdb);
+    renderIndestructibles(gdb);
     renderMunchies(gdb);
     renderExplosions(gdb);
     renderShots(gdb);
@@ -1327,6 +1334,10 @@ function loadImages() {
     });
     [...Array(4).keys()].forEach(n => {
 	loadImage(`ground/arrow${n}.png`);
+    });
+
+    [...Array(4).keys()].forEach(n => {
+	loadImage(`roids/roidA${n}.png`);
     });
 
     loadImage("enemies/munchies/mr1.png");

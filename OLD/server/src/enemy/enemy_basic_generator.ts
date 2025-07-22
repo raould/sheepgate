@@ -6,6 +6,8 @@ import * as U from '../util/util';
 import * as D from '../debug';
 
 // doesn't care how many other enemies of types exist.
+// if there are several specs, it tries to not have them being
+// generated at the same time, in order to avoid things looking too cluttered.
 
 export interface EnemyGeneratorSpec {
     fighter_kind: string,

@@ -25,7 +25,7 @@ import * as L3 from './level/level3/level3';
 import * as L4 from './level/level4/level4';
 import * as L5 from './level/level5/level5';
 import * as L6 from './level/level6/level6';
-import * as L7 from './level/level7/level7';
+import * as LH from './level/levelH/levelH';
 import * as LCBM from './level/cbm/cbm';
 import * as LZX from './level/zx/zx';
 
@@ -76,7 +76,7 @@ const level_mks: LevelMk[] = [
     (i: number, score: number, lives: number, hi: Hs.HighScore) => L5.level_mk(i, score, lives, hi),
     (i: number, score: number, lives: number, hi: Hs.HighScore) => L6.level_mk(i, score, lives, hi),
     (i: number, score: number, lives: number, hi: Hs.HighScore) => LZX.level_mk(i, score, lives, hi),
-    (i: number, score: number, lives: number, hi: Hs.HighScore) => L7.level_mk(i, score, lives, hi),
+    (i: number, score: number, lives: number, hi: Hs.HighScore) => LH.level_mk(i, score, lives, hi),
     // todo: extra hard level with indestructibles.
 ];
 D.assert(level_mks.length === K.LEVEL_TEMPLATE_COUNT, "level template count");
@@ -366,7 +366,7 @@ class GameLevels implements Gs.Stepper {
     paused: U.O<Gs.Stepper>;
     
     constructor(private readonly high_score: Hs.HighScore) {
-        this.index = 0; // hard to grep find this when you don't know.
+        this.index = 8; // hard to grep find this when you don't know.
         this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, 0, K.PLAYER_LIVES, this.high_score);
     }
 
