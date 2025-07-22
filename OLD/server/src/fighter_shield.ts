@@ -45,7 +45,8 @@ interface ShieldPrivate extends S.Shield<S.Fighter> {
 
 export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
     const shields = db.shared.items.shields;
-    const visible = spec.hp_init > K.PLAYER_SHOT_DAMAGE; // e.g. 'basic' enemies.
+    // e.g. 'basic' enemies, 'roids'.
+    const visible = (spec.hp_init > K.PLAYER_SHOT_DAMAGE) && (spec.hp_init < Number.MAX_VALUE);
     GDB.add_sprite_dict_id_mut(
         shields,
         (dbid): S.Shield<S.Fighter> => {
@@ -188,6 +189,7 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
                     return this.hp > 0 ? GDB.Lifecycle.alive : GDB.Lifecycle.dead;
                 },
                 on_death(db: GDB.GameDB) {
+		    console.log("on_death", this.comment);
                     U.if_let(
                         this.get_wrapped(db),
                         fighter => {

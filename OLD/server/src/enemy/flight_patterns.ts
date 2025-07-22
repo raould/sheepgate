@@ -56,6 +56,12 @@ function calculate_acc(src: G.V2D, dst: G.V2D, acc_mag: G.V2D, dt: number): G.V2
     return delta_acc;
 }
 
+export class Nothing implements FlightPattern {
+    step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
+	return src.lt;
+    }
+}    
+
 // sorta like: fly at the player, then turn around and repeat.
 // todo: would be nice if the patterns could react to e.g. being shot.
 export class BuzzPlayer implements FlightPattern {

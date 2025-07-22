@@ -55,6 +55,7 @@ export interface LevelKonfig {
     Eb6?: LevelEnemyKonfig,
     Eb7?: LevelEnemyKonfig,
     Eb8?: LevelEnemyKonfig,
+    Era?: LevelEnemyKonfig,
     Ebs1?: LevelEnemyKonfig, // 's'pecial e.g. cbm.
     Ebs2?: LevelEnemyKonfig, // 's'pecial e.g. cbm.
     Ep?: LevelEnemyKonfig,
@@ -353,6 +354,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    basics.push(this.init_basic_from_konfig(this.konfig.Eb6, "basic6"));
 	    basics.push(this.init_basic_from_konfig(this.konfig.Eb7, "basic7"));
 	    basics.push(this.init_basic_from_konfig(this.konfig.Eb8, "basic8"));
+	    basics.push(this.init_basic_from_konfig(this.konfig.Era, "roidA"));
 	    basics.push(this.init_basic_from_konfig(this.konfig.Ebs1, "basic-special-1"));
 	    basics.push(this.init_basic_from_konfig(this.konfig.Ebs2, "basic-special-2"));
 	    D.assert(basics.length > 0, "no basic enemies found?!");
@@ -366,7 +368,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
     private are_all_enemies_done(next: GDB.GameDB): boolean {
 	// note: this isn't totally correct e.g. if you hack a level
 	// to only have 1 Rank.small and you shoot it, this still doesn't trigger?!
-	// note: do not include munchies.
+	// note: purposefully does not include munchies & indestructibles.
 	return U.count_dict(next.local.enemy_generators) == 0 &&
 	    U.count_dict(next.shared.items.warpin) == 0 &&
 	    U.count_dict(next.shared.items.enemies) == 0 &&
@@ -433,7 +435,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		// harass the player while they try to finish picking up people.
 		else if (this.index1 > 1) {
 		    const count = U.count_dict(next.shared.items.munchies);
-		    if (count < K.MUNCHIES_MAX + Math.floor(this.index1 / 5)) {
+		    if (count < K.MUNCHIES_MAX + Math.floor(this.index1 / 3)) {
 			const chance = 0.002 + (this.index1 * 0.0005);
 			if (Rnd.singleton.boolean(chance)) {
 			    const m = Em.warpin_mk(next);
@@ -578,6 +580,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		player_explosions: {},
 		warpin: {},
 		enemies: {},
+		indestructibles: {},
 		munchies: {},
 		shields: {},
 		shots: {},

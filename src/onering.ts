@@ -1284,6 +1284,10 @@ function loadImages() {
 	loadImage(`ground/arrow${n}.png`);
     });
 
+    [...Array(4).keys()].forEach(n => {
+	loadImage(`roids/roidA${n}.png`);
+    });
+
     loadImage("enemies/munchies/mr1.png");
     loadImage("enemies/munchies/mr2.png");
     loadImage("enemies/munchies/ml1.png");

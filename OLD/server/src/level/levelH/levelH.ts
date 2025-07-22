@@ -5,11 +5,10 @@ import * as S from '../../sprite';
 import * as Lta from '../level_type_a';
 import * as Lis from '../level_in_screens';
 import * as Gr from '../../ground';
-import Eb6 from '../../enemy/enemy_basic6';
-import Ep from '../../enemy/enemy_pod';
-import Es from './enemy_small7';
-import Em from './enemy_mega7';
-import Ehm from './enemy_hypermega7';
+import Era from '../../enemy/roidA';
+import Es from './enemy_smallH';
+import Em from './enemy_megaH';
+import Ehm from './enemy_hypermegaH';
 import * as Hs from '../../high_scores';
 
 // todo: move 'L' things from konfig to here.
@@ -19,9 +18,7 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     return {
 	player_kind: S.PlayerKind.ship,
 	ground_kind: Gr.GroundKind.regular,
-	Eb5: { mk: Eb6.warpin_mk, count: 8 + buf, limit: 6 + buf, delay_msec: 1000, tick_msec: 3*1000 },
-	Eb6: { mk: Eb6.warpin_mk, count: 8 + buf, limit: 6 + buf, delay_msec: 1000, tick_msec: 3*1000 },
-	Ep: { mk: Ep.warpin_mk, count: 4 + buf, limit: 4 + buf, delay_msec: 1000, tick_msec: 3*1000 },
+	Era: { mk: Era.warpin_mk, count: 12, limit: 12, delay_msec: 1000, tick_msec: 10 },
 	Es: { mk: Es.warpin_mk, count: 4 + buf, limit: 2 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Em: { mk: Em.warpin_mk, count: 2 + buf, limit: 1 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Ehm: { mk: Ehm.warpin_mk, count: 1 + buf, limit: 2 + buf, delay_msec: 1000, tick_msec: 5*1000 },

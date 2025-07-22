@@ -357,6 +357,8 @@ export const WARPIN_TOTAL_MSEC = 500; // K
 
 // note/todo: not much time yet spent on real game balance for these (or any) values.
 
+export const HP_INDESTRUCTIBLE = Number.MAX_VALUE;
+
 // basic enemies should be one-shots, that's why they are basic.
 // they also should not drop any gems, that's why they are basic.
 // they should also not show their hp meter to reduce chartjunk.

@@ -277,6 +277,7 @@ export interface DBSharedItems {
     // todo: deconflate the fact that in several ways
     // this is an unholy conflation of model & view.
     enemies: U.Dict<S.Enemy>;
+    indestructibles: U.Dict<S.Enemy>;
     munchies: U.Dict<S.Enemy>;
     warpin: U.Dict<S.Warpin>;
     shields: U.Dict<S.Shield<S.Shielded>>;
@@ -304,6 +305,7 @@ export function debug_dump_items(db: GameDB, msg?: string) {
         `#player_explosions=${U.count_dict(db.shared.items.player_explosions)}`,
         `#warpin=${U.count_dict(db.shared.items.warpin)}`,
         `#enemies=${U.count_dict(db.shared.items.enemies)}`,
+        `#indestructibles=${U.count_dict(db.shared.items.indestructibles)}`,
         `#munchies=${U.count_dict(db.shared.items.munchies)}`,
         `#shields=${U.count_dict(db.shared.items.shields)}`,
         `#shots=${U.count_dict(db.shared.items.shots)}`,
@@ -333,6 +335,7 @@ export function assert_dbitems(db: GameDB) {
     D.assert(items.player_explosions != null, () => "missing player_explosions");
     D.assert(items.warpin != null, () => "missing warpin");
     D.assert(items.enemies != null, () => "missing enemies");
+    D.assert(items.indestructibles != null, () => "missing indestructibles");
     D.assert(items.munchies != null, () => "missing munchies");
     D.assert(items.shields != null, () => "missing shields");
     D.assert(items.shots != null, () => "missing shots");
@@ -356,6 +359,7 @@ export function get_sprite(db: GameDB, sid: U.O<DBID>): U.O<S.Sprite> {
 	const px = db.shared.items.player_explosions[sid];
 	const w = db.shared.items.warpin[sid];
 	const e = db.shared.items.enemies[sid];
+	const i = db.shared.items.indestructibles[sid];
 	const m = db.shared.items.munchies[sid];
 	const h = db.shared.items.shields[sid];
 	const s = db.shared.items.shots[sid];
@@ -364,7 +368,7 @@ export function get_sprite(db: GameDB, sid: U.O<DBID>): U.O<S.Sprite> {
 	const pp = db.shared.items.people[sid];
 	const gg = db.shared.items.gems[sid];
 	const fx = db.shared.items.fx[sid];
-	const most = (p?.dbid == sid ? p : undefined) || px || w || e || m || h || s || x || b || pp || gg || fx;
+	const most = (p?.dbid == sid ? p : undefined) || px || w || e || i || m || h || s || x || b || pp || gg || fx;
 	return most;
     }
     return undefined;
@@ -413,7 +417,10 @@ export function get_base(db: GameDB, sid: U.O<DBID>): U.O<S.Base> {
 export function get_fighter(db: GameDB, sid: U.O<DBID>): U.O<S.Fighter> {
     let e: U.O<S.Fighter>;
     if (U.exists(sid)) {
-	e = db.shared.items.enemies[sid] ?? db.shared.items.munchies[sid];
+	e = db.shared.items.enemies[sid] ??
+	    db.shared.items.indestructibles[sid] ??
+	    db.shared.items.munchies[sid];
+
     }
     // this looks bad but the real problem is that the player is a
     // special case of fighter in the db. :-( i confuse myself.
@@ -510,7 +517,7 @@ export function reap_items(db: GameDB) {
     // match: !!! DBSharedItems !!!
     // note that some things are either never reap'd or reap'd differently:
     // player, sky, bgFar, bgNear, ground, base, particles, drawing. 
-    for (const t of ['player_explosions', 'warpin', 'enemies', 'munchies', 'shields', 'shots', 'explosions', 'fx', 'people', 'gems']) {
+    for (const t of ['player_explosions', 'warpin', 'enemies', 'indestructibles', 'munchies', 'shields', 'shots', 'explosions', 'fx', 'people', 'gems']) {
         reap_named(db, db.shared.items, t);
     }
 }

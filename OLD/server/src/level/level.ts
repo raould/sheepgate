@@ -159,6 +159,7 @@ export abstract class AbstractLevel implements Level {
         was_alive && this.update_gems(next);
         was_alive && this.update_warpins(next);
         was_alive && this.update_enemies(next);
+        was_alive && this.update_indestructibles(next);
 	was_alive && this.update_munchies(next)
         was_alive && this.update_sky(next);
         was_alive && this.update_ground(next);
@@ -263,6 +264,13 @@ export abstract class AbstractLevel implements Level {
 
     private update_enemies(next: GDB.GameDB) {
         Object.values(next.shared.items.enemies).forEach(e => {
+            e.step(next);
+            D.assert(GDB.is_in_bounds(next, e), e.comment);
+        });
+    }
+
+    private update_indestructibles(next: GDB.GameDB) {
+        Object.values(next.shared.items.indestructibles).forEach(e => {
             e.step(next);
             D.assert(GDB.is_in_bounds(next, e), e.comment);
         });

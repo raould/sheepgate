@@ -178,7 +178,8 @@ export interface FighterKind {
 	"pod" |
 	"small" |
 	"smartbomb" |
-	"swarmer";
+	"swarmer" |
+	"roidA";
     */
 }
 
