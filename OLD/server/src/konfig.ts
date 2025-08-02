@@ -4,11 +4,12 @@ import * as Uf from './util/util_feq';
 import * as G from './geom';
 import { RGBA } from './color';
 
+// true: show the attract mode.
 export const ARCADE_MODE = false;
 
 // !!!!!!!!!! be careful with these
 // super local testing hacks! beware!
-// they should be git-committed only as false!
+// they should be git-committed only as false!e
 export const DEBUG_NO_USER_WAIT = true; // revert
 export function user_wait_msec(msec: number): number {
     return DEBUG_NO_USER_WAIT ? 0 : msec;
@@ -271,6 +272,7 @@ export const PLAYER_LIVES = 3;
 export const BAD_COLOR = RGBA.new0255(202, 0, 32);
 export const GOOD_COLOR = RGBA.new0255(5, 133, 176);
 export const PLAYER_COLOR = RGBA.new0255(255, 255, 128);
+export const INDESTRUCTIBLE_COLOR = RGBA.GRAY;
 
 // shields are faded but will flare up when hit.
 export const SHIELD_ALPHA = 0.2; // K? // L?
@@ -415,6 +417,7 @@ export const THRUST_SFX = "sounds/thrust.ogg";
 export const BEAMDOWN_SFX = "sounds/beamdown.ogg";
 export const BEAMUP_SFX = "sounds/beamup.ogg";
 export const EXPLOSION_SFX = "sounds/explosion.ogg";
+export const EXPLOSION2_SFX = "sounds/explosion2.ogg";
 export const EXPBOOM_SFX = "sounds/expboom.ogg";
 export const GEM_COLLECT_SFX = "sounds/gem_collect.ogg";
 export const PLAYER_SHOOT0_SFX = "sounds/player_shoot0.ogg";
