@@ -210,7 +210,7 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
 	    );
 	    this.lt = blt;
 	},
-        on_death(db: nGDB.GameDB) {
+        on_death(db: GDB.GameDB) {
 	    db.shared.sfx.push({ sfx_id: K.EXPLOSION2_SFX, gain: 0.8 });
 	},
         toJSON() {
