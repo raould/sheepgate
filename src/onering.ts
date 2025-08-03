@@ -11,6 +11,7 @@ import { begin_sfx_b64 } from '@client/begin.ogg.b64';
 import { beamdown_sfx_b64 } from '@client/beamdown.ogg.b64';
 import { beamup_sfx_b64 } from '@client/beamup.ogg.b64';
 import { explosion_sfx_b64 } from '@client/explosion.ogg.b64';
+import { explosion2_sfx_b64 } from '@client/explosion2.ogg.b64';
 import { expboom_sfx_b64 } from '@client/expboom.ogg.b64';
 import { gem_collect_sfx_b64 } from '@client/gem_collect.ogg.b64';
 import { player_shoot0_sfx_b64 } from '@client/player_shoot0.ogg.b64';
@@ -1217,6 +1218,7 @@ function loadSounds() {
     loadSound("beamdown.ogg", beamdown_sfx_b64);
     loadSound("beamup.ogg", beamup_sfx_b64);
     loadSound("explosion.ogg", explosion_sfx_b64);
+    loadSound("explosion2.ogg", explosion2_sfx_b64);
     loadSound("expboom.ogg", expboom_sfx_b64);
     loadSound("gem_collect.ogg", gem_collect_sfx_b64);
     loadSound("player_shoot0.ogg", player_shoot0_sfx_b64);

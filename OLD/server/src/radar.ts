@@ -225,7 +225,7 @@ function render_indestructibles(db: GDB.GameDB, center: G.V2D) {
             db.shared.hud_drawing.rects.push({
                 wrap: false,
                 line_width: 0,
-                color: K.BAD_COLOR,
+                color: K.INDESTRUCTIBLE_COLOR,
                 is_filled: true,
                 rect: r,
                 comment: `r-indestructible-${sprite.dbid}`

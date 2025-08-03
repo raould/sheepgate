@@ -77,7 +77,6 @@ const level_mks: LevelMk[] = [
     (i: number, score: number, lives: number, hi: Hs.HighScore) => L6.level_mk(i, score, lives, hi),
     (i: number, score: number, lives: number, hi: Hs.HighScore) => LZX.level_mk(i, score, lives, hi),
     (i: number, score: number, lives: number, hi: Hs.HighScore) => LH.level_mk(i, score, lives, hi),
-    // todo: extra hard level with indestructibles.
 ];
 D.assert(level_mks.length === K.LEVEL_TEMPLATE_COUNT, "level template count");
 
