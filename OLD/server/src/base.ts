@@ -140,7 +140,8 @@ function arrow_mk(db: GDB.GameDB, base: S.Base) {
 function animator_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): A.ResourceAnimator {
     const templater = (() => {
 	switch (ground_kind) {
-	case Gr.GroundKind.regular: {
+	case Gr.GroundKind.regular:
+	case Gr.GroundKind.pyramid: {
 	    return (n: number) => `ground/base${n}.png`;
 	}
 	case Gr.GroundKind.cbm: {

@@ -208,6 +208,13 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		alpha: alpha
 	    };
 	}
+	case Gr.GroundKind.pyramid: {
+	    return {
+		resource_name: "bg/mal_farP.png",
+		type: Gr.BgFarType.mountain,
+		alpha: alpha
+	    };
+	}
 	case Gr.GroundKind.cbm: {
 	    return {
 		resource_name: "bg/mal_cbm3.png",
@@ -230,6 +237,13 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	case Gr.GroundKind.regular: {
 	    return {
 		resource_name: "bg/mar_far.png",
+		type: Gr.BgFarType.mountain,
+		alpha: alpha
+	    };
+	}
+	case Gr.GroundKind.pyramid: {
+	    return {
+		resource_name: "bg/mar_farP.png",
 		type: Gr.BgFarType.mountain,
 		alpha: alpha
 	    };
@@ -260,12 +274,26 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		alpha: alpha
 	    };
 	}
+	case Gr.GroundKind.pyramid: {
+	    return {
+		resource_name: "bg/ma_farP.png",
+		type: Gr.BgFarType.mountain,
+		alpha: alpha
+	    };
+	}
 	case Gr.GroundKind.cbm: {
 	    return {
 		resource_name: "bg/ma_cbm3.png",
 		type: Gr.BgFarType.mountain,
 		alpha: alpha
 	    };
+	}
+	case Gr.GroundKind.zx: {
+	    return {
+		resource_name: "bg/ma_zx.png",
+		type: Gr.BgFarType.mountain,
+		alpha: alpha
+	    }
 	}
 	case Gr.GroundKind.zx: {
 	    return {
