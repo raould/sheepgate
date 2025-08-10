@@ -10,6 +10,7 @@ import * as _ from 'lodash';
 
 export enum GroundKind {
     regular,
+    pyramid,
     cbm,
     zx,
 }
@@ -139,7 +140,8 @@ function far2near_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Groun
     };
     const city_image = (() => {
 	switch (ground_kind) {
-	case GroundKind.regular: {
+	case GroundKind.regular:
+	case GroundKind.pyramid: {
 	    const city_images = [images.lookup("bg/ma_near.png"), images.lookup("bg/ma_near2.png"), images.lookup("bg/ma_near3.png")];
 	    return city_images[(db.shared.level_index1-1) % 3];
 	}
@@ -183,7 +185,8 @@ function far2ground_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Gro
     const images = db.uncloned.images;
     const sea: UnlocatedSpec<GroundType> = (() => {
 	switch (ground_kind) {
-	case GroundKind.regular: {
+	case GroundKind.regular:
+	case GroundKind.pyramid: {
 	    return {
 		images_spec: { resource_id: images.lookup("ground/sa.png") },
 		type: GroundType.land,
@@ -208,7 +211,8 @@ function far2ground_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Gro
     })();
     const land: UnlocatedSpec<GroundType> = (() => {
 	switch (ground_kind) {
-	case GroundKind.regular: {
+	case GroundKind.regular:
+	case GroundKind.pyramid: {
 	    return {
 		images_spec: { resource_id: images.lookup("ground/ga.png") },
 		type: GroundType.land,
@@ -265,7 +269,8 @@ function far2ground_specs(db: GDB.GameDB, far_specs: FarSpec[], ground_kind: Gro
 function refine_ground(images: GDB.ImageResources, left: U.O<GroundSpec>, mid: U.O<GroundSpec>, right: U.O<GroundSpec>, ground_kind: GroundKind): U.O<GroundSpec> {
     const templater = (side: string) => {
 	switch (ground_kind) {
-	case GroundKind.regular: {
+	case GroundKind.regular:
+	case GroundKind.pyramid: {
 	    return `ground/ga_${side}.png`;
 	}
 	case GroundKind.cbm: {

@@ -1557,6 +1557,9 @@ function loadImages() {
     loadImage("bg/ma_far.png");
     loadImage("bg/mal_far.png");
     loadImage("bg/mar_far.png");
+    loadImage("bg/ma_farP.png");
+    loadImage("bg/mal_farP.png");
+    loadImage("bg/mar_farP.png");
     loadImage("bg/ma_cbm3.png");
     loadImage("bg/mal_cbm3.png");
     loadImage("bg/mar_cbm3.png");

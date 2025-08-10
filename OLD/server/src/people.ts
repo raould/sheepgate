@@ -28,6 +28,7 @@ import * as T from './toast';
 export function person_size(ground_kind: Gr.GroundKind): G.V2D {
     switch (ground_kind) {
     case Gr.GroundKind.regular:
+    case Gr.GroundKind.pyramid:
     case Gr.GroundKind.cbm:
 	return K.vd2si(G.v2d_mk_nn(32));
     case Gr.GroundKind.zx:
@@ -239,6 +240,7 @@ function person_standing_anim_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): A.
     const id = (() => {
 	switch (ground_kind) {
 	case Gr.GroundKind.regular:
+	case Gr.GroundKind.pyramid:
 	case Gr.GroundKind.cbm: {
 	    return "people/standing.png";
 	}
@@ -258,6 +260,7 @@ function person_waving_anim_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): A.Re
     const spec: A.MultiImageSpec = (() => {
 	switch (ground_kind) {
 	case Gr.GroundKind.regular:
+	case Gr.GroundKind.pyramid:
 	case Gr.GroundKind.cbm: {
 	    return {
 		starting_mode: A.MultiImageStartingMode.hold,
@@ -312,6 +315,7 @@ function person_beam_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_kind: Gr.
     const spec = (() => {
 	switch (ground_kind) {
 	case Gr.GroundKind.regular:
+	case Gr.GroundKind.pyramid:
 	case Gr.GroundKind.cbm: {
 	    const resources = images.lookup_range_n((n) => `people/tp${n}.png`, 0, 5);
 	    return {
@@ -348,6 +352,7 @@ export function person_beam_down_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_
     const spec = (() => {
 	switch (ground_kind) {
 	case Gr.GroundKind.regular:
+	case Gr.GroundKind.pyramid:
 	case Gr.GroundKind.cbm: {
 	    const resources = images.lookup_range_n((n) => `people/tp${n}.png`, 5, 0);
 	    return {

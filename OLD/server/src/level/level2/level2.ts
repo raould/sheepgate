@@ -17,7 +17,7 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     const buf = Math.floor(level_index / denom);
     return {
 	player_kind: S.PlayerKind.cow,
-	ground_kind: Gr.GroundKind.regular,
+	ground_kind: Gr.GroundKind.pyramid,
 	Eb2: { mk: Eb2.warpin_mk, count: 8 + buf, limit: 6 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Es: { mk: Es.warpin_mk, count: 4 + buf, limit: 1 + buf, delay_msec: 10*1000, tick_msec: 3*1000 },
 	Em: { mk: Em.warpin_mk, count: 3 + buf, limit: 2 + buf, delay_msec: 3*1000, tick_msec: 3*1000 },
