@@ -433,7 +433,9 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    );
 	    return;
 	}
-	if (is_debugging && next.local.client_db.inputs.commands[Cmd.CommandType.debug_smite]) {
+	if (is_debugging && 
+	    (next.local.client_db.inputs.commands[Cmd.CommandType.debug_smite] ||
+	     next.local.client_db.inputs.commands[Cmd.CommandType.debug_smite_level])) {
 	    Object.values(next.shared.items.enemies).forEach(e => {
 		const sid = e.shield_id;
 		if (U.exists(sid)) {
@@ -441,6 +443,9 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		    shield.hp = 0;
 		}
 	    });
+	}
+	if (is_debugging && next.local.client_db.inputs.commands[Cmd.CommandType.debug_smite_level]) {
+	    next.local.enemy_generators = {};
 	}
 	// ...debugging
 	
@@ -461,10 +466,11 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		    return;
 		}
 		// harass the player while they try to finish picking up people.
+		// todo: have to be even more evil over time so the player can't just "saucer hunt".
 		else if (this.index1 > 1) {
 		    const count = U.count_dict(next.shared.items.munchies);
 		    if (count < K.MUNCHIES_MAX + Math.floor(this.index1 / 3)) {
-			const chance = 0.002 + (this.index1 * 0.0005);
+			const chance = 0.002 + (this.index1 * 0.005);
 			if (Rnd.singleton.boolean(chance)) {
 			    const m = Em.warpin_mk(next);
 			    if (U.exists(m)) {

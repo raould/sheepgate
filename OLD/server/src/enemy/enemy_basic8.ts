@@ -8,6 +8,7 @@ import * as F from '../facing';
 import * as Ebw from './enemy_bullet_weapon';
 import * as Fp from './flight_patterns';
 import * as Emk from './enemy_mk';
+import * as Eu from './enemy_util';
 import * as Lemk from '../level/enemy_mk';
 import * as K from '../konfig';
 import * as Rnd from '../random';

@@ -112,9 +112,10 @@ class LevelWithScreen_EndScreen implements SubState {
 	"MOVE ALONG!",
 	"WEAK SAUCE!",
 	"LAME!",
+	"LUSER!",
+	"10053R!",
 	"EXCREMENT!",
 	"HA HA HUMANOID!",
-	"100053R!",
 	"YOU'RE DEAD, JIM!",
 	"WHIMPER!",
 	"LE GRAND MORT!",
@@ -129,7 +130,7 @@ class LevelWithScreen_EndScreen implements SubState {
 	      Rnd.singleton.array_item(LevelWithScreen_EndScreen.WON_PHRASES) ?? "NICE!"
 	const lostPhrase = index1 == 1 ?
 	      "GAME OVER!" :
-	      Rnd.singleton.array_item(LevelWithScreen_EndScreen.LOST_PHRASES) ?? "DAGNABBIT!"
+	      Rnd.singleton.array_item(LevelWithScreen_EndScreen.LOST_PHRASES) ?? "FAIL!"
         this.end_screen = new Les.LevelEndScreen({
             title: `LEVEL ${index1} ${won ? "WON!" : "LOST!"}`,
 	    instructions: won ? [wonPhrase] : [lostPhrase],

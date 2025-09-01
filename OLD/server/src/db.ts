@@ -40,7 +40,7 @@ export interface DB<W extends World> {
     world: W;
     bg_color: RGBA;
     tick: number; // increment on each server step, even if the dt was 0.
-    sim_now: number;
+    sim_now: number; // must start at 0 for each level.
     frame_drawing: Dr.Drawing; // todo: kind of a bad name, actually?
     debug_graphics?: Dr.Drawing[];
     sfx: So.Sfx[];

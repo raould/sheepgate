@@ -167,46 +167,49 @@ export function scale_spec(level: number, rank: S.Rank, directions: F.Facing, sw
 }
 
 // fyi: 'basic', 'small', etc., here are enemy Rank, not the size of the bullet.
-// note: these are 'max' values, see Eu.level_scale_{up,down}().
+// note: shot values are max over level scaling.
+// note: cooldowns are min over level scaling.
+// note: the values range until the first looped level, then stays at the extreme.
 
 const BASIC_SPEC = {
-    ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 10, // L, W
-    ENEMY_SHOT_SPEED: K.d2s(0.08), // L, W
+    ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 5, // L, W
+    ENEMY_SHOT_SPEED: K.d2s(0.1), // L, W
     ENEMY_SHOT_SIZE: K.BALL_SHOT_SIZE,
-    ENEMY_SHOT_LIFE_MSEC: 2*1000, // L, W
-    ENEMY_WEAPON_CLIP_COOLDOWN_MSEC: 13*1000, // L, W
-    ENEMY_WEAPON_SHOT_COOLDOWN_MSEC: 5*1000, // L, W
-    ENEMY_WEAPON_SHOT_COUNT: 2, // L, W
+    ENEMY_SHOT_LIFE_MSEC: 4*1000, // L, W
+    ENEMY_WEAPON_CLIP_COOLDOWN_MSEC: 5*1000, // L, W
+    ENEMY_WEAPON_SHOT_COOLDOWN_MSEC: 2*1000, // L, W
+    ENEMY_WEAPON_SHOT_COUNT: 3, // L, W
 };
 D.assert(BASIC_SPEC.ENEMY_SHOT_DAMAGE >= 0.1);
 
 const SMALL_SPEC = {
-    ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 5, // L, W
-    ENEMY_SHOT_SPEED: K.d2s(0.1), // L, W
+    ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 3, // L, W
+    ENEMY_SHOT_SPEED: K.d2s(0.125), // L, W
     ENEMY_SHOT_SIZE: K.BALL_SHOT_SIZE,
-    ENEMY_SHOT_LIFE_MSEC: 3*1000, // L, W
-    ENEMY_WEAPON_CLIP_COOLDOWN_MSEC: 9*1000, // L, W
+    ENEMY_SHOT_LIFE_MSEC: 4*1000, // L, W
+    ENEMY_WEAPON_CLIP_COOLDOWN_MSEC: 5*1000, // L, W
     ENEMY_WEAPON_SHOT_COOLDOWN_MSEC: 1*1000, // L, W
     ENEMY_WEAPON_SHOT_COUNT: 2, // L, W
 };
 D.assert(SMALL_SPEC.ENEMY_SHOT_DAMAGE >= 0.1);
 
 const MEGA_SPEC = {
-    ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 4, // L, W
-    ENEMY_SHOT_SPEED: K.d2s(0.1), // L, W
+    ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 3, // L, W
+    ENEMY_SHOT_SPEED: K.d2s(0.15), // L, W
+    // todo: ?! this is wrong, megas often shoot bullets, wtf.
     ENEMY_SHOT_SIZE: K.BALL_SHOT_SIZE,
-    ENEMY_SHOT_LIFE_MSEC: 3*1000, // L, W
-    ENEMY_WEAPON_CLIP_COOLDOWN_MSEC: 8*1000, // L, W
+    ENEMY_SHOT_LIFE_MSEC: 4*1000, // L, W
+    ENEMY_WEAPON_CLIP_COOLDOWN_MSEC: 3*1000, // L, W
     ENEMY_WEAPON_SHOT_COOLDOWN_MSEC: 250, // L, W
     ENEMY_WEAPON_SHOT_COUNT: 2, // L, W
 };
 D.assert(MEGA_SPEC.ENEMY_SHOT_DAMAGE >= 0.1);
 
 const HYPERMEGA_SPEC = {
-    ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 3, // L, W
-    ENEMY_SHOT_SPEED: K.d2s(0.15), // L, W
+    ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 2, // L, W
+    ENEMY_SHOT_SPEED: K.d2s(0.2), // L, W
     ENEMY_SHOT_SIZE: G.v2d_scale_i(K.BALL_SHOT_SIZE, 2), // bigger!
-    ENEMY_SHOT_LIFE_MSEC: 3*1000, // L, W
+    ENEMY_SHOT_LIFE_MSEC: 4*1000, // L, W
     ENEMY_WEAPON_CLIP_COOLDOWN_MSEC: 2*1000, // L, W
     ENEMY_WEAPON_SHOT_COOLDOWN_MSEC: 500, // L, W
     ENEMY_WEAPON_SHOT_COUNT: 3, // L, W
@@ -224,18 +227,20 @@ function enemy_from_spec(level: number, direction: F.Facing, swivel: boolean, sp
                 duration_msec: Eu.level_scale_down(
 		    level,
 		    spec.ENEMY_WEAPON_CLIP_COOLDOWN_MSEC * 2,
-		    spec.ENEMY_WEAPON_CLIP_COOLDOWN_MSEC
+		    spec.ENEMY_WEAPON_CLIP_COOLDOWN_MSEC,
+		    Math.round
 		),
                 on_reload: () => { },
             },
             shot_spec: {
 		duration_msec: spec.ENEMY_WEAPON_SHOT_COOLDOWN_MSEC,
 	    },
-            count: Math.ceil(Eu.level_scale_up(
+            count: Eu.level_scale_up(
 		level,
 		1,
 		spec.ENEMY_WEAPON_SHOT_COUNT,
-	    )),
+		Math.round
+	    ),
         },
         shot_damage: Eu.level_scale_up(
 	    level,

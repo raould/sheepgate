@@ -8,6 +8,7 @@ import * as F from '../facing';
 import * as Ebw from './enemy_ball_weapon';
 import * as Fp from './flight_patterns';
 import * as Emk from './enemy_mk';
+import * as Eu from './enemy_util';
 import * as Lemk from '../level/enemy_mk';
 import * as K from '../konfig';
 import * as Rnd from '../random';
@@ -29,7 +30,10 @@ const Basic7: Lemk.EnemyMk = {
 	const flight_pattern = new Fp.DecendAndGoSine(
 	    db,
 	    SIZE,
-	    Rnd.singleton.v2d_around(G.v2d_mk_nn(0.0003), G.v2d_mk_nn(0.0001)),
+	    Rnd.singleton.v2d_around(
+		G.v2d_mk_nn(Eu.level_scale_up(db.shared.level_index1, 0.0003, 0.0007)),
+		G.v2d_mk_nn(Eu.level_scale_up(db.shared.level_index1, 0.0001, 0.0005))
+	    ),
 	    db.shared.world.gameport.world_bounds.size.y * 0.3
 	);
 	const spec: Emk.EnemySpec = {
