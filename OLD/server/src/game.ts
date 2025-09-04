@@ -363,10 +363,12 @@ class GameLevels implements Gs.Stepper {
     index: number;
     stepper: Gs.Stepper;
     paused: U.O<Gs.Stepper>;
+    debug_completed: boolean;
     
     constructor(private readonly high_score: Hs.HighScore) {
         this.index = 0; // hard to grep find this when you don't know.
         this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, 0, K.PLAYER_LIVES, this.high_score);
+	this.debug_completed = false;
     }
 
     get_state(): Gs.StepperState {
@@ -390,11 +392,23 @@ class GameLevels implements Gs.Stepper {
                 this.stepper = new GameInstructions("PAUSED");
             }
         }
+	const cdbg = cnew.debugging_state;
+	const is_debugging = cdbg.is_drawing || cdbg.is_stepping || cdbg.is_annotating;
+	if (is_debugging && cnew.inputs.commands[Cmd.CommandType.debug_loop_levels]) {
+	    this.index = U.round(this.index + K.LEVEL_TEMPLATE_COUNT, K.LEVEL_TEMPLATE_COUNT);
+	    this.debug_completed = true;
+	    return;
+	}
     }
 
     // todo: this would all be better done as a visual graph / state machine.
     step() {
+	let advance = false;
         this.stepper.step();
+	if (this.debug_completed) {
+	    this.debug_completed = false;
+	    advance = true;
+	}
         if (this.stepper.get_state() == Gs.StepperState.completed) {
             if (U.exists(this.paused)) {
                 this.stepper = this.paused;
@@ -402,12 +416,15 @@ class GameLevels implements Gs.Stepper {
             }
             else {
                 this.index++;
-                // todo: maybe pull the score fully out so internally levels always start at score=0.
-                // it would mean the rendering for the score would have to also be changed.
-                const score = (this.stepper as Lis.LevelInScreens).level.get_scoring().score;
-		const lives = (this.stepper as Lis.LevelInScreens).level.get_lives();
-                this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, score, lives, this.high_score);
-            }
+		advance = true;
+	    }
+	}
+	if (advance) {
+            // todo: maybe pull the score fully out so internally levels always start at score=0.
+            // it would mean the rendering for the score would have to also be changed.
+            const score = (this.stepper as Lis.LevelInScreens).level.get_scoring().score;
+	    const lives = (this.stepper as Lis.LevelInScreens).level.get_lives();
+            this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, score, lives, this.high_score);
         }
     }
 

@@ -36,7 +36,9 @@ export enum CommandType {
     debug_dump_state = "debug_dump_state",
     debug_win_level = "debug_win_level",
     debug_lose_level = "debug_lose_level",
+    debug_loop_levels = "debug_loop_levels",
     debug_smite = "debug_smite",
+    debug_smite_level = "debug_smite_level",
 }
 export const AllCommands = new Set<string>(Object.keys(CommandType));
 function add_spec(assoc: { [k: string]: CommandSpec }, spec: CommandSpec ) {
@@ -60,4 +62,6 @@ add_spec(CommandSpecs, { command: CommandType.debug_toggle_annotations, is_singu
 add_spec(CommandSpecs, { command: CommandType.debug_toggle_stepping, is_singular: true });
 add_spec(CommandSpecs, { command: CommandType.debug_win_level, is_singular: true });
 add_spec(CommandSpecs, { command: CommandType.debug_lose_level, is_singular: true });
+add_spec(CommandSpecs, { command: CommandType.debug_loop_levels, is_singular: true });
 add_spec(CommandSpecs, { command: CommandType.debug_smite, is_singular: true });
+add_spec(CommandSpecs, { command: CommandType.debug_smite_level, is_singular: true });

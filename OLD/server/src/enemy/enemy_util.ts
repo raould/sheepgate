@@ -9,15 +9,24 @@ import * as K from '../konfig';
 import * as D from '../debug';
 import * as F from '../facing';
 
-export function level_scale_down(level: number, max: number, min: number): number {
+// the values range until the first looped level, then stays at the extreme.
+export function level_scale_down(level: number, max: number, min: number, round?: (v: number) => number): number {
     D.assert(min <= max);
-    const t = U.t10(1, 10, level);
-    return min + (max-min) * t;
+    const t = U.t10(1, K.LEVEL_TEMPLATE_COUNT+1, level);
+    const v = min + (max-min) * t;
+    const r = round ? round(v) : v;
+    D.log(level, max, min, t, v, r, round != undefined);
+    return r;
 }
-export function level_scale_up(level: number, min: number, max: number): number {
+
+// the values range until the first looped level, then stays at the extreme.
+export function level_scale_up(level: number, min: number, max: number, round?: (v: number) => number): number {
     D.assert(min <= max);
-    const t = U.t01(1, 10, level);
-    return min + (max-min) * t;
+    const t = U.t01(1, K.LEVEL_TEMPLATE_COUNT+1, level);
+    const v = min + (max-min) * t;
+    const r = round ? round(v) : v;
+    D.log(level, min, max, t, v, r, round != undefined);
+    return r;
 }
 
 export function can_shoot_in_bounds(db: GDB.GameDB, enemy: S.Enemy): boolean {

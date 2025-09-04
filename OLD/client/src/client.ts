@@ -111,7 +111,9 @@ enum CommandType {
     debug_dump_state = "debug_dump_state",
     debug_win_level = "debug_win_level",
     debug_lose_level = "debug_lose_level",
+    debug_loop_levels = "debug_loop_levels",
     debug_smite = "debug_smite",
+    debug_smite_level = "debug_smite_level",
 }
 // todo: share this (unfortunately) with the server, esp. the "is_singular" part.
 // is_singular true means there's no auto-repeat while the key is held down. (wtf?)
@@ -161,7 +163,9 @@ const key2cmd_default: { [k: string]: CommandSpec } = {
     "/":        { command: CommandType.debug_toggle_stepping, is_singular: true },
     "^":        { command: CommandType.debug_win_level, is_singular: true },
     "&":        { command: CommandType.debug_lose_level, is_singular: true },
+    "%":        { command: CommandType.debug_loop_levels, is_singular: true },
     "*":        { command: CommandType.debug_smite, is_singular: true },
+    "#":        { command: CommandType.debug_smite_level, is_singular: true },
 };
 
 const key2cmd_hotrod: { [k: string]: CommandSpec } = {
@@ -221,7 +225,9 @@ const key2cmd_hotrod: { [k: string]: CommandSpec } = {
     "/":        { command: CommandType.debug_toggle_stepping, is_singular: true },
     "^":        { command: CommandType.debug_win_level, is_singular: true },
     "&":        { command: CommandType.debug_lose_level, is_singular: true },
+    "%":        { command: CommandType.debug_loop_levels, is_singular: true },
     "*":        { command: CommandType.debug_smite, is_singular: true },
+    "#":        { command: CommandType.debug_smite_level, is_singular: true },
 }
 let key2cmd = key2cmd_default;
 

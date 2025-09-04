@@ -149,7 +149,9 @@ export function scale_spec(level: number, rank: S.Rank, direction: F.Facing): En
 }
 
 // fyi: 'basic', 'small', etc., here are enemy Rank, not the size of the bullet.
-// note: these are 'max' values, see Eu.level_scale_{up,down}().
+// note: shot values are max over level scaling.
+// note: cooldowns are min over level scaling.
+// note: the values range until the first looped level, then stays at the extreme.
 
 const BASIC_SPEC = {
     ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 10, // L, W
@@ -205,18 +207,20 @@ function enemy_from_spec(level: number, direction: F.Facing, spec: any): EnemyWe
                 duration_msec: Eu.level_scale_down(
 		    level,
 		    spec.ENEMY_WEAPON_CLIP_COOLDOWN_MSEC * 2,
-		    spec.ENEMY_WEAPON_CLIP_COOLDOWN_MSEC
+		    spec.ENEMY_WEAPON_CLIP_COOLDOWN_MSEC,
+		    Math.round
 		),
                 on_reload: () => { },
             },
             shot_spec: {
 		duration_msec: spec.ENEMY_WEAPON_SHOT_COOLDOWN_MSEC,
 	    },
-            count: Math.ceil(Eu.level_scale_up(
+            count: Eu.level_scale_up(
 		level,
 		1,
 		spec.ENEMY_WEAPON_SHOT_COUNT,
-	    )),
+		Math.round
+	    ),
         },
         shot_damage: Eu.level_scale_up(
 	    level,

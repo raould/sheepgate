@@ -6,13 +6,14 @@ import * as A from '../animation';
 import * as U from '../util/util';
 import * as F from '../facing';
 import * as Ebw from './enemy_ball_weapon';
+import * as Eu from './enemy_util';
 import * as Fp from './flight_patterns';
 import * as Emk from './enemy_mk';
 import * as Lemk from '../level/enemy_mk';
 import * as K from '../konfig';
 
 // match: sprite animation.
-const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(8, 8), 3));
+const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(8, 8), 2));
 const WARPIN_RESOURCE_ID = "enemies/munchies/mr.png";
 const Munchie: Lemk.EnemyMk = {
     SIZE,
@@ -21,11 +22,19 @@ const Munchie: Lemk.EnemyMk = {
 	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
 	// todo: fix up all this weapon stuff, everywhere, just shoot me.
 	// 1 weapon that swivels so there's only one clip to avoid too many shots. :-(
-	const [ews] = Ebw.scale_specs(db.shared.level_index1, S.Rank.small, true);
+	// note: S.Rank.mega weapon level.
+	const [ews] = Ebw.scale_specs(db.shared.level_index1, S.Rank.mega, true);
 	const weapons = {
             'w': Ebw.weapon_mk(ews),
 	};
-	const flight_pattern = new Fp.BuzzPlayer(db, G.v2d_mk(0.001, 0.0003), true);
+	const flight_pattern = new Fp.BuzzPlayer(
+	    db,
+	    G.v2d_mk(
+		Eu.level_scale_up(db.shared.level_index1, 0.001, 0.001),
+		Eu.level_scale_up(db.shared.level_index1, 0.0005, 0.001),
+	    ),
+	    true
+	);
 	const spec: Emk.EnemySpec = {
 	    fighter_kind: "munchie",
             anim: anim,

@@ -397,7 +397,7 @@ export const ENEMY_SWARMER_DAMAGE = Math.ceil(PLAYER_HP/6); // L
 // harass the player when all enemies are gone but there are still people to rescue.
 export const MUNCHIES_MAX = 2; // L, is adjusted per level.
 export const ENEMY_MUNCHIE_HP = PLAYER_SHOT_DAMAGE; // L
-export const ENEMY_MUNCHIE_DAMAGE = Math.ceil(PLAYER_HP/4); // L
+export const ENEMY_MUNCHIE_DAMAGE = PLAYER_HP; // L
 export const ENEMY_MUNCHIE_GEM_COUNT = 0; // L
 
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L
