@@ -71,9 +71,8 @@ export const FRAME_MSEC_DT = 1000 / FPS; // K
 // calculated, and i want it to be like stargate
 // where the whole vertical area is always visible, there's
 // no vertical scrolling since that was something i
-// never could get the hang of minter's jaguar defender.
-// (a nuance is if i want to do some aquatron levels, then
-// we'll probably-maybe need y scrolling.)
+// never could get the hang of in minter's jaguar defender.
+// (tho i wish i could do some aquatron levels,)
 
 // external code should ideally use SCREEN_RECT below
 export const DESIGN_SIZE = G.v2d_mk(1152, 540); // K
@@ -395,9 +394,10 @@ export const ENEMY_SWARMER_HP = PLAYER_SHOT_DAMAGE; // L
 export const ENEMY_SWARMER_DAMAGE = Math.ceil(PLAYER_HP/6); // L
 
 // harass the player when all enemies are gone but there are still people to rescue.
-export const MUNCHIES_MAX = 2; // L, is adjusted per level.
+export const MUNCHIES_MAX = 4; // L, is adjusted per level.
+export const MUNCHIE_MORE_MSEC = 1000 * 20; // L? msec.
 export const ENEMY_MUNCHIE_HP = PLAYER_SHOT_DAMAGE; // L
-export const ENEMY_MUNCHIE_DAMAGE = PLAYER_HP; // L
+export const ENEMY_MUNCHIE_DAMAGE = PLAYER_HP/2; // L
 export const ENEMY_MUNCHIE_GEM_COUNT = 0; // L
 
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L

@@ -27,7 +27,7 @@ const Basic1: Lemk.EnemyMk = {
 	const weapons = {
             'w': Ebw.weapon_mk(ews),
 	};
-	const flight_pattern = new Fp.DecendAndGoSine(
+	const flight_pattern = new Fp.DescendAndGoSine(
 	    db,
 	    SIZE,
 	    Rnd.singleton.v2d_around(

@@ -394,9 +394,9 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
     }
 
     private are_all_enemies_done(next: GDB.GameDB): boolean {
-	// note: this isn't totally correct e.g. if you hack a level
-	// to only have 1 Rank.small and you shoot it, this still doesn't trigger?!
-	// note: purposefully does not include munchies & indestructibles.
+	// note: this is buggy maybe e.g. i hacked a level to have
+	// only 1 Rank.small and shot it, but this didn't trigger?!
+	// note: purposefully does NOT include munchies & indestructibles.
 	return U.count_dict(next.local.enemy_generators) == 0 &&
 	    U.count_dict(next.shared.items.warpin) == 0 &&
 	    U.count_dict(next.shared.items.enemies) == 0 &&
@@ -461,22 +461,36 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    }
 	    // all tasks accomplished?
 	    if (this.are_all_enemies_done(next)) {
-		if (this.get_people_count(next) == 0) {
-		    this.state = Gs.StepperState.completed;
-		    return;
-		}
-		// harass the player while they try to finish picking up people.
-		// todo: have to be even more evil over time so the player can't just "saucer hunt".
-		else if (this.index1 > 1) {
-		    const count = U.count_dict(next.shared.items.munchies);
-		    if (count < K.MUNCHIES_MAX + Math.floor(this.index1 / 3)) {
-			const chance = 0.002 + (this.index1 * 0.005);
-			if (Rnd.singleton.boolean(chance)) {
-			    const m = Em.warpin_mk(next);
-			    if (U.exists(m)) {
-				GDB.add_item(next.shared.items.warpin, m);
-			    }
-			}
+		this.update_impl_all_enemies_done(next);
+	    }
+	}
+    }
+
+    private update_impl_all_enemies_done(next: GDB.GameDB) {
+	if (this.get_people_count(next) == 0) {
+	    this.state = Gs.StepperState.completed;
+	    return;
+	}
+
+	// harass the player while they try to finish picking up people.
+	// this does try to increase the # of munchies as levels increase
+	// and as the end-of-level time increases.
+	// but todo: make the individual munchies harder too?
+
+	if (next.local.munchie_start_time == undefined) {
+	    next.local.munchie_start_time = Date.now();
+	}
+
+	if (this.index1 > 1) { // no harassment on the first level.
+	    const count = U.count_dict(next.shared.items.munchies);
+	    const max = K.MUNCHIES_MAX + Math.floor(this.index1 / 3);
+	    const time_boost = Math.floor((Date.now() - next.local.munchie_start_time) / K.MUNCHIE_MORE_MSEC);
+	    if (count < max + time_boost) {
+		const chance = 0.002 + (this.index1 * 0.01);
+		if (Rnd.singleton.boolean(chance)) {
+		    const m = Em.warpin_mk(next);
+		    if (U.exists(m)) {
+			GDB.add_item(next.shared.items.warpin, m);
 		    }
 		}
 	    }
@@ -589,6 +603,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    fps_marker: { tick: 0, msec: 0 },
 	    ticking_generators: {},
 	    enemy_generators: {},
+	    munchie_start_time: undefined,
 	    player_zone_width: K.GAMEPORT_PLAYER_ZONE_MIN_WIDTH,
 	    scoring: Sc.scoring_mk(score, e2s),
 	    toasts: {},

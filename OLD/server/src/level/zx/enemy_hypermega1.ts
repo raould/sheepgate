@@ -28,7 +28,7 @@ const Hypermega: Lemk.EnemyMk = {
             'wr': Ebw.weapon_mk(ewsr),
             'wsb': Esbw.weapon_mk(ewsb),
 	};
-	const flight_pattern = new Fp.DecendAndGoSine(
+	const flight_pattern = new Fp.DescendAndGoSine(
 	    db,
 	    SIZE,
 	    G.v2d_mk_nn(0.00005)

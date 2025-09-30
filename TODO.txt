@@ -25,6 +25,8 @@ really really todo, maybe?
 +++ per-level high scores?
 +++ show level # in hud.
 
+* the expression problem really has come back to bite me for being a dummy.
+
 * the only consistent thing is that the code is inconsistent.
 
 * pause keys are broken in key2cmd_hotrod?!
@@ -510,6 +512,8 @@ DO THESE NOW/NEXT: (maybe?)
 
 * tf_ignores and hp_ignores seemed to be a good idea at the time,
   but uh i can't really get that feeling back too easily.
+
+* flight patterns, at least / especially DescendAndGoSine, are confusing and buggy.
 
 ???!!! which version of the db really is best to use in all cases?
   e.g. shot on shield collision, trying to avoid bug where the
