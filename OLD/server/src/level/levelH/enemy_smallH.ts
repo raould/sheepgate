@@ -30,7 +30,7 @@ const Small: Lemk.EnemyMk = {
             acc_base,
             G.v2d_scale(acc_base, 0.5)
 	);
-	const flight_pattern = new Fp.DecendAndGoSine(
+	const flight_pattern = new Fp.DescendAndGoSine(
 	    db,
 	    SIZE,
 	    G.v2d_mk_nn(0.0005)

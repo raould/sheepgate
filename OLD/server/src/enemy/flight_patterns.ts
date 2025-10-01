@@ -171,22 +171,29 @@ export class TargetPlayer implements FlightPattern {
 }
 
 // follow a sinusoidal-ish horizontal path.
-export class DecendAndGoSine implements FlightPattern {
+export type DescendAndGoSineCustomization = {
+    y?: number
+    period_factor?: { mid: number, range: number },
+};
+export class DescendAndGoSine implements FlightPattern {
     private target: G.V2D;
     private signX: number;
     private mid_y: number;
     private sinY: number;
     private period_factor: number;
 
-    // up to the caller to adjust y? by size.y.
-    constructor(db: GDB.GameDB, size: G.V2D, private acc_mag: G.V2D, y?: number) {
+    // up to the caller to adjust customization?.y by size.y. <- whatever that means.
+    constructor(db: GDB.GameDB, size: G.V2D, private acc_mag: G.V2D, customization?: DescendAndGoSineCustomization) {
         this.target = G.rect_mid(db.shared.world.gameport.world_bounds); // temporary non-null value until we step.
 	const rnd_y = Rnd.singleton.float_range(
 	    G.rect_t(K.GAMEPORT_RECT) + TOP_PAD + (size.y*2),
 	    G.rect_b(K.GAMEPORT_RECT) - BOTTOM_PAD - (size.y*2),
 	);
-	this.mid_y = y ?? rnd_y;
-	this.period_factor = Rnd.singleton.float_around(2000, 250);
+	this.mid_y = customization?.y ?? rnd_y;
+	this.period_factor = Rnd.singleton.float_around(
+	    customization?.period_factor?.mid ?? 2000,
+	    customization?.period_factor?.range ?? 250
+	);
 	this.sinY = size.y;
         this.signX = Rnd.singleton.boolean() ? -1 : 1;
     }

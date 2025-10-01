@@ -21,7 +21,7 @@ const RoidA: Lemk.EnemyMk = {
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
 	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
-	const flight_pattern = new Fp.DecendAndGoSine(
+	const flight_pattern = new Fp.DescendAndGoSine(
 	    db,
 	    SIZE,
 	    Rnd.singleton.v2d_around(G.v2d_mk_nn(0.0001), G.v2d_mk_nn(0.0001)),

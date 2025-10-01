@@ -27,14 +27,14 @@ const Basic5: Lemk.EnemyMk = {
 	const weapons = {
             'w': Ebw.weapon_mk(ews),
 	};
-	const flight_pattern = new Fp.DecendAndGoSine(
+	const flight_pattern = new Fp.DescendAndGoSine(
 	    db,
 	    SIZE,
 	    Rnd.singleton.v2d_around(
 		G.v2d_mk_nn(Eu.level_scale_up(db.shared.level_index1, 0.0008, 0.001)),
 		G.v2d_mk_nn(Eu.level_scale_up(db.shared.level_index1, 0.0001, 0.0005))
 	    ),
-	    db.shared.world.gameport.world_bounds.size.y * 0.3
+	    { y: db.shared.world.gameport.world_bounds.size.y * 0.3 }
 	);
 	const spec: Emk.EnemySpec = {
 	    fighter_kind: "basic5",

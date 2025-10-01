@@ -179,7 +179,6 @@ export interface DBUncloned {
     collision: C.Collision;
 }
 
-// todo: extract type so client can use it.
 // todo: make json-un/marshallers since we don't
 // need full objects sent to the client?! perf?
 export interface DBLocal {
@@ -197,6 +196,7 @@ export interface DBLocal {
     // off all of the generators required. the further nuance
     // is that you need to count this & enemies & warpins.
     enemy_generators: U.Dict<Tkg.TickingGenerator<unknown>>,
+    munchie_start_time?: number | undefined;
     player_zone_width: number;
     // todo: support multiple players, one Scoring per each.
     scoring: Sc.Scoring;

@@ -10,6 +10,7 @@ import * as Eu from './enemy_util';
 import * as Fp from './flight_patterns';
 import * as Emk from './enemy_mk';
 import * as Lemk from '../level/enemy_mk';
+import * as Rnd from '../random';
 import * as K from '../konfig';
 
 // match: sprite animation.
@@ -21,24 +22,33 @@ const Munchie: Lemk.EnemyMk = {
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
 	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
 	// todo: fix up all this weapon stuff, everywhere, just shoot me.
-	// 1 weapon that swivels so there's only one clip to avoid too many shots. :-(
-	// note: S.Rank.mega weapon level.
-	const [ews] = Ebw.scale_specs(db.shared.level_index1, S.Rank.mega, true);
+	// hack: trying to make the munchies more violent by having more weapons.
+	const [ews1] = Ebw.scale_specs(db.shared.level_index1, S.Rank.small, true);
+	const [ews2] = Ebw.scale_specs(db.shared.level_index1, S.Rank.mega, true);
 	const weapons = {
-            'w': Ebw.weapon_mk(ews),
+            'w1': Ebw.weapon_mk(ews1),
+            'w2': Ebw.weapon_mk(ews2),
 	};
-	const flight_pattern = new Fp.BuzzPlayer(
-	    db,
-	    G.v2d_mk(
-		Eu.level_scale_up(db.shared.level_index1, 0.001, 0.001),
-		Eu.level_scale_up(db.shared.level_index1, 0.0005, 0.001),
-	    ),
-	    true
+	const acc = G.v2d_mk(
+	    Eu.level_scale_up(db.shared.level_index1, 0.001, 0.001),
+	    Eu.level_scale_up(db.shared.level_index1, 0.0005, 0.001),
 	);
+	// mostly attack player, but that can make it too easy for the player
+	// to shoot the directly oncoming munchie, so also try to have some
+	// that are more flitty and harder to shoot. sure wish i had some
+	// modeling that would tell me what a good random factor might be.
+	const flight_pattern = Rnd.singleton.boolean(0.65) ?
+	      new Fp.BuzzPlayer(db, acc, true) :
+	      new Fp.DescendAndGoSine(
+		  db,
+		  G.v2d_scale_y(SIZE, 8),
+		  acc,
+		  { period_factor: { mid: K.d2s(250), range: K.d2s(125) } }
+	      );
 	const spec: Emk.EnemySpec = {
 	    fighter_kind: "munchie",
             anim: anim,
-            rank: S.Rank.basic,
+            rank: S.Rank.small,
             hp_init: K.ENEMY_MUNCHIE_HP,
             damage: K.ENEMY_MUNCHIE_DAMAGE,
             weapons: weapons,
