@@ -5,12 +5,12 @@ import * as G from './geom';
 import { RGBA } from './color';
 
 // true: show the attract mode.
-export const ARCADE_MODE = false;
+export const ARCADE_MODE = true;
 
 // !!!!!!!!!! be careful with these
 // super local testing hacks! beware!
-// they should be git-committed only as false!e
-export const DEBUG_NO_USER_WAIT = true; // revert
+// they should be git-committed only as false!
+export const DEBUG_NO_USER_WAIT = false;
 export function user_wait_msec(msec: number): number {
     return DEBUG_NO_USER_WAIT ? 0 : msec;
 }
