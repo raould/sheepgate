@@ -17,8 +17,7 @@ let DEFAULT_HIGH_SCORES = [
     new HighScore("QYPDQ", 1000),
     new HighScore("D N A", 420),
     new HighScore("SPAM", 300),
-    new HighScore("JN0T", 100
-)
+    new HighScore("JN0T", 100),
 ];
 
 // todo: persistence!
