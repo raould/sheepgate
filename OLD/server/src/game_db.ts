@@ -197,6 +197,7 @@ export interface DBLocal {
     // is that you need to count this & enemies & warpins.
     enemy_generators: U.Dict<Tkg.TickingGenerator<unknown>>,
     munchie_start_time?: number | undefined;
+    munchie_destroyed_count: number;
     player_zone_width: number;
     // todo: support multiple players, one Scoring per each.
     scoring: Sc.Scoring;
@@ -279,6 +280,7 @@ export interface DBSharedItems {
     enemies: U.Dict<S.Enemy>;
     indestructibles: U.Dict<S.Enemy>;
     munchies: U.Dict<S.Enemy>;
+    kamikaze: U.Dict<S.Enemy>;
     warpin: U.Dict<S.Warpin>;
     shields: U.Dict<S.Shield<S.Shielded>>;
     shots: U.Dict<S.Shot>;
@@ -307,6 +309,7 @@ export function debug_dump_items(db: GameDB, msg?: string) {
         `#enemies=${U.count_dict(db.shared.items.enemies)}`,
         `#indestructibles=${U.count_dict(db.shared.items.indestructibles)}`,
         `#munchies=${U.count_dict(db.shared.items.munchies)}`,
+        `#kamikaze=${U.count_dict(db.shared.items.kamikaze)}`,
         `#shields=${U.count_dict(db.shared.items.shields)}`,
         `#shots=${U.count_dict(db.shared.items.shots)}`,
         `#explosions=${U.count_dict(db.shared.items.explosions)}`,
@@ -337,6 +340,7 @@ export function assert_dbitems(db: GameDB) {
     D.assert(items.enemies != null, () => "missing enemies");
     D.assert(items.indestructibles != null, () => "missing indestructibles");
     D.assert(items.munchies != null, () => "missing munchies");
+    D.assert(items.kamikaze != null, () => "missing kamikaze");
     D.assert(items.shields != null, () => "missing shields");
     D.assert(items.shots != null, () => "missing shots");
     D.assert(items.explosions != null, () => "missing explosions");
@@ -361,6 +365,7 @@ export function get_sprite(db: GameDB, sid: U.O<DBID>): U.O<S.Sprite> {
 	const e = db.shared.items.enemies[sid];
 	const i = db.shared.items.indestructibles[sid];
 	const m = db.shared.items.munchies[sid];
+	const k = db.shared.items.kamikaze[sid];
 	const h = db.shared.items.shields[sid];
 	const s = db.shared.items.shots[sid];
 	const x = db.shared.items.explosions[sid];
@@ -368,7 +373,7 @@ export function get_sprite(db: GameDB, sid: U.O<DBID>): U.O<S.Sprite> {
 	const pp = db.shared.items.people[sid];
 	const gg = db.shared.items.gems[sid];
 	const fx = db.shared.items.fx[sid];
-	const most = (p?.dbid == sid ? p : undefined) || px || w || e || i || m || h || s || x || b || pp || gg || fx;
+	const most = (p?.dbid == sid ? p : undefined) || px || w || e || i || m || k || h || s || x || b || pp || gg || fx;
 	return most;
     }
     return undefined;
@@ -396,6 +401,10 @@ export function get_munchie(db: GameDB, eid: U.O<DBID>): U.O<S.Enemy> {
     return U.exists(eid) ? db.shared.items.munchies[eid] : undefined;
 }
 
+export function get_kamikaze(db: GameDB, eid: U.O<DBID>): U.O<S.Enemy> {
+    return U.exists(eid) ? db.shared.items.kamikaze[eid] : undefined;
+}
+
 export function get_shield(db: GameDB, sid: U.O<DBID>): U.O<S.Shield<S.Shielded>> {
     return U.exists(sid) ? db.shared.items.shields[sid] : undefined;
 }
@@ -419,8 +428,8 @@ export function get_fighter(db: GameDB, sid: U.O<DBID>): U.O<S.Fighter> {
     if (U.exists(sid)) {
 	e = db.shared.items.enemies[sid] ??
 	    db.shared.items.indestructibles[sid] ??
-	    db.shared.items.munchies[sid];
-
+	    db.shared.items.munchies[sid] ??
+	    db.shared.items.kamikaze[sid];
     }
     // this looks bad but the real problem is that the player is a
     // special case of fighter in the db. :-( i confuse myself.
@@ -517,7 +526,7 @@ export function reap_items(db: GameDB) {
     // match: !!! DBSharedItems !!!
     // note that some things are either never reap'd or reap'd differently:
     // player, sky, bgFar, bgNear, ground, base, particles, drawing. 
-    for (const t of ['player_explosions', 'warpin', 'enemies', 'indestructibles', 'munchies', 'shields', 'shots', 'explosions', 'fx', 'people', 'gems']) {
+    for (const t of ['player_explosions', 'warpin', 'enemies', 'indestructibles', 'munchies', 'kamikaze', 'shields', 'shots', 'explosions', 'fx', 'people', 'gems']) {
         reap_named(db, db.shared.items, t);
     }
 }

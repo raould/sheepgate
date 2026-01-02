@@ -14,15 +14,15 @@ import * as Rnd from '../random';
 import * as K from '../konfig';
 
 // match: sprite animation.
-const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(8, 8), 2));
-const WARPIN_RESOURCE_ID = "enemies/munchies/mr.png";
-const Munchie: Lemk.EnemyMk = {
+const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(16, 16), 2));
+const WARPIN_RESOURCE_ID = "enemies/kamikaze/kamikaze1.png";
+const Kamikaze: Lemk.EnemyMk = {
     SIZE,
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
 	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
 	// todo: fix up all this weapon stuff, everywhere, just shoot me.
-	// hack: trying to make the munchies more violent by having more weapons.
+	// hack: trying to make the kamikazes more violent by having more weapons.
 	const [ews1] = Ebw.scale_specs(db.shared.level_index1, S.Rank.small, true);
 	const [ews2] = Ebw.scale_specs(db.shared.level_index1, S.Rank.mega, true);
 	const weapons = {
@@ -33,33 +33,18 @@ const Munchie: Lemk.EnemyMk = {
 	    Eu.level_scale_up(db.shared.level_index1, 0.001, 0.001),
 	    Eu.level_scale_up(db.shared.level_index1, 0.0005, 0.001),
 	);
-	// mostly attack player, but that can make it too easy for the player
-	// to shoot the directly oncoming munchie, so also try to have some
-	// that are more flitty and harder to shoot. sure wish i had some
-	// modeling that would tell me what a good random factor might be.
-	const flight_pattern = Rnd.singleton.boolean(0.65) ?
-	      new Fp.BuzzPlayer(db, acc, true) :
-	      new Fp.DescendAndGoSine(
-		  db,
-		  G.v2d_scale_y(SIZE, 8),
-		  acc,
-		  { period_factor: { mid: K.d2s(250), range: K.d2s(125) } }
-	      );
+	const flight_pattern = new Fp.BuzzPlayer(db, acc, true);
 	const spec: Emk.EnemySpec = {
-	    fighter_kind: "munchie",
+	    fighter_kind: "kamikaze",
             anim: anim,
             rank: S.Rank.small,
-            hp_init: K.ENEMY_MUNCHIE_HP,
-            damage: K.ENEMY_MUNCHIE_DAMAGE,
+            hp_init: K.ENEMY_KAMIKAZE_HP,
+            damage: K.ENEMY_KAMIKAZE_DAMAGE,
             weapons: weapons,
             flight_pattern: flight_pattern,
-            gem_count: K.ENEMY_MUNCHIE_GEM_COUNT,
-	    on_death: (db: GDB.GameDB) => {
-		db.local.munchie_destroyed_count++;
-		console.log("munchie_destroyed_count", db.local.munchie_destroyed_count);
-	    },
+            gem_count: K.ENEMY_KAMIKAZE_GEM_COUNT,
 	};
-	return Emk.warpin_mk_munchie(
+	return Emk.warpin_mk_kamikaze(
             db,
             SIZE,
     	    WARPIN_RESOURCE_ID,
@@ -67,11 +52,7 @@ const Munchie: Lemk.EnemyMk = {
 	);
     }
 }
-export default Munchie;
-
-function f2s(f: F.Facing): string {
-    return F.on_facing(f, "l", "r");
-}
+export default Kamikaze;
 
 function anims_spec_mk(db: GDB.GameDB): A.AnimatorDimensionsSpec {
     const frames: A.DimensionsFrame[] = [
@@ -88,7 +69,6 @@ const tspecs: Array<[number, string]> = [[1,""]];
 function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.DimensionsFrame[] {
     const table: A.DimensionsFrame[] = [];
     const images = db.uncloned.images;
-    const fstr = f2s(facing);
     tspecs.forEach(spec => {
         const [t, _] = spec;
         table.push({
@@ -100,10 +80,10 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
                 {
 		    frame_msec: 80,
 		    resource_ids: [
-                        ...images.lookup_range_n(n => `enemies/munchies/m${fstr}${n}.png`, 1, 2)
+                        ...images.lookup_range_n(n => `enemies/kamikaze/kamikaze${n}.png`, 1, 7)
 		    ],
 		    starting_mode: A.MultiImageStartingMode.hold,
-		    ending_mode: A.MultiImageEndingMode.bounce
+		    ending_mode: A.MultiImageEndingMode.loop,
                 }
 	    )
         });

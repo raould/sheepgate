@@ -4,13 +4,13 @@ import * as Uf from './util/util_feq';
 import * as G from './geom';
 import { RGBA } from './color';
 
-// true: show the attract mode.
+// true: show the attract mode. keep this committed as false.
 export const ARCADE_MODE = false;
 
 // !!!!!!!!!! be careful with these
 // super local testing hacks! beware!
-// they should be git-committed only as false!e
-export const DEBUG_NO_USER_WAIT = true; // revert
+// they should be git-committed only as false!
+export const DEBUG_NO_USER_WAIT = false;
 export function user_wait_msec(msec: number): number {
     return DEBUG_NO_USER_WAIT ? 0 : msec;
 }
@@ -61,7 +61,7 @@ export const MAX_CONCURRENT_GAMES = -1; // < 0 is disabled.
 
 export const MAX_HIGH_SCORE_COUNT = 8;
 
-export const WS_PORT = 6969; // K
+export const WS_PORT = 6969; // K, and client has to match, natch.
 export const INVALID_CLIENT_ID = Number.NEGATIVE_INFINITY;  // K
 
 export const FPS = 60; // K
@@ -399,6 +399,12 @@ export const MUNCHIE_MORE_MSEC = 1000 * 20; // L? msec.
 export const ENEMY_MUNCHIE_HP = PLAYER_SHOT_DAMAGE; // L
 export const ENEMY_MUNCHIE_DAMAGE = PLAYER_HP/2; // L
 export const ENEMY_MUNCHIE_GEM_COUNT = 0; // L
+// really try to force the end of level if munchies aren't enough.
+export const MUNCHIE_DESTROYED_COUNT_TRIGGER = 10; // L.
+export const KAMIKAZES_MAX = 3; // L
+export const ENEMY_KAMIKAZE_HP = PLAYER_SHOT_DAMAGE * 6; // L
+export const ENEMY_KAMIKAZE_DAMAGE = PLAYER_HP; // L
+export const ENEMY_KAMIKAZE_GEM_COUNT = 0; // L
 
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L
 export const ENEMY_RETURN_FIRE_MIN_MSEC = 100; // L

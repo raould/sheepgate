@@ -12,7 +12,7 @@ import * as Full from './full_server_menu_db';
 import * as WS from 'ws';
 
 const ws2game: Map<any, U.O<Gm.Game>> = new Map();
-const wss = new WS.Server({ port: 6969 });
+const wss = new WS.Server({ port: K.WS_PORT });
 const high_scores = new Hs.HighScores();
 
 const PROFILE = false;

@@ -21,6 +21,7 @@ import * as Pl from '../player';
 import * as Eag from '../enemy/enemy_adv_generator';
 import * as Ebg from '../enemy/enemy_basic_generator';
 import Em from '../enemy/enemy_munchie';
+import Ek from '../enemy/enemy_kamikaze';
 import * as Sc from '../scoring';
 import * as Hs from '../high_scores';
 import * as U from '../util/util';
@@ -396,7 +397,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
     private are_all_enemies_done(next: GDB.GameDB): boolean {
 	// note: this is buggy maybe e.g. i hacked a level to have
 	// only 1 Rank.small and shot it, but this didn't trigger?!
-	// note: purposefully does NOT include munchies & indestructibles.
+	// note: purposefully does NOT include munchies, kamikaze, & indestructibles.
 	return U.count_dict(next.local.enemy_generators) == 0 &&
 	    U.count_dict(next.shared.items.warpin) == 0 &&
 	    U.count_dict(next.shared.items.enemies) == 0 &&
@@ -471,17 +472,16 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    this.state = Gs.StepperState.completed;
 	    return;
 	}
-
 	// harass the player while they try to finish picking up people.
 	// this does try to increase the # of munchies as levels increase
 	// and as the end-of-level time increases.
 	// but todo: make the individual munchies harder too?
-
 	if (next.local.munchie_start_time == undefined) {
 	    next.local.munchie_start_time = Date.now();
 	}
 
-	if (this.index1 > 1) { // no harassment on the first level.
+	// no harassment on the first level.
+	if (this.index1 > 1) {
 	    const count = U.count_dict(next.shared.items.munchies);
 	    const max = K.MUNCHIES_MAX + Math.floor(this.index1 / 3);
 	    const time_boost = Math.floor((Date.now() - next.local.munchie_start_time) / K.MUNCHIE_MORE_MSEC);
@@ -491,6 +491,17 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		    const m = Em.warpin_mk(next);
 		    if (U.exists(m)) {
 			GDB.add_item(next.shared.items.warpin, m);
+		    }
+		}
+	    }
+
+	    // extra harassment if the player fights the munchies.
+	    if (next.local.munchie_destroyed_count >= K.MUNCHIE_DESTROYED_COUNT_TRIGGER &&
+		U.count_dict(next.shared.items.kamikaze) < K.KAMIKAZES_MAX) {
+		if (Rnd.singleton.boolean(0.01)) {
+		    const k = Ek.warpin_mk(next);
+		    if (U.exists(k)) {
+			GDB.add_item(next.shared.items.warpin, k);
 		    }
 		}
 	    }
@@ -604,6 +615,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    ticking_generators: {},
 	    enemy_generators: {},
 	    munchie_start_time: undefined,
+	    munchie_destroyed_count: 0,
 	    player_zone_width: K.GAMEPORT_PLAYER_ZONE_MIN_WIDTH,
 	    scoring: Sc.scoring_mk(score, e2s),
 	    toasts: {},
@@ -631,6 +643,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		enemies: {},
 		indestructibles: {},
 		munchies: {},
+		kamikaze: {},
 		shields: {},
 		shots: {},
 		explosions: {},
