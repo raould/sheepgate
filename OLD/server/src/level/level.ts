@@ -161,6 +161,7 @@ export abstract class AbstractLevel implements Level {
         was_alive && this.update_enemies(next);
         was_alive && this.update_indestructibles(next);
 	was_alive && this.update_munchies(next)
+	was_alive && this.update_kamikaze(next)
         was_alive && this.update_sky(next);
         was_alive && this.update_ground(next);
         was_alive && this.update_bg(next);
@@ -280,6 +281,13 @@ export abstract class AbstractLevel implements Level {
         Object.values(next.shared.items.munchies).forEach(m => {
             m.step(next);
             D.assert(GDB.is_in_bounds(next, m), m.comment);
+        });
+    }
+
+    private update_kamikaze(next: GDB.GameDB) {
+        Object.values(next.shared.items.kamikaze).forEach(k => {
+            k.step(next);
+            D.assert(GDB.is_in_bounds(next, k), k.comment);
         });
     }
 

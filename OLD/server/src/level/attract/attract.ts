@@ -41,7 +41,7 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
     hypermega_snapshot: S.ImageSized;
     exit: boolean = false;
     moves: Cmd.CommandType[] = [];
-    timeout: number = K.user_wait_msec(3 * 1000);
+    timeout: number = K.user_wait_msec(2*1000);
 
     constructor(readonly index1: number, konfig: Lta.LevelKonfig, score: number, lives: number, high_score: Hs.HighScore) {
 	super(index1, konfig, score, lives, high_score);
@@ -75,9 +75,10 @@ class LevelImpl extends Lta.AbstractLevelTypeA {
 	if (Object.keys(cnew.inputs.keys).length > 0) {
 	    this.exit = this.timeout <= 0;
 	}
-	if (cnew.inputs.commands[Cmd.CommandType.click]) {
+	if (Object.keys(cnew.inputs.commands).length > 0) {
 	    this.exit = this.timeout <= 0;
 	}
+	console.log("??????", this.exit, JSON.stringify(cnew));
     }
 
     step() {

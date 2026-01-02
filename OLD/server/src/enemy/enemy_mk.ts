@@ -81,6 +81,10 @@ export function warpin_mk_munchie(db: GDB.GameDB, size: G.V2D, resource_id: stri
     return warpin_mk(db, size, resource_id, spec, (db: GDB.GameDB) => db.shared.items.munchies);
 }
 
+export function warpin_mk_kamikaze(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec): U.O<S.Warpin> {
+    return warpin_mk(db, size, resource_id, spec, (db: GDB.GameDB) => db.shared.items.kamikaze);
+}
+
 export function warpin_mk_indestructible(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec): U.O<S.Warpin> {
     return warpin_mk(db, size, resource_id, spec, (db: GDB.GameDB) => db.shared.items.indestructibles);
 }

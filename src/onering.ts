@@ -594,6 +594,12 @@ function renderMunchies(gdb: any) {
     }
 }
 
+function renderKamikaze(gdb: any) {
+    for (const k of Object.values(gdb.items.kamikaze)) {
+        renderSprite(gdb, k, gdb.xyround);
+    }
+}
+
 function renderShields(gdb: any) {
     for (const s of Object.values(gdb.items.shields)) {
         renderSprite(gdb, s, gdb.xyround);
@@ -963,6 +969,7 @@ function renderPlaying(gdb: any) {
     renderEnemies(gdb);
     renderIndestructibles(gdb);
     renderMunchies(gdb);
+    renderKamikaze(gdb);
     renderExplosions(gdb);
     renderShots(gdb);
     renderFx(gdb);
@@ -1089,7 +1096,7 @@ function applyDB(next_server_db: any) {
 
 	// the server decides the overall presentation mode.
 	if (next_server_db.arcade_mode === true)  {
-	    key2cmd = key2cmd_hotrod;
+	   //	    key2cmd = key2cmd_hotrod;
 	}
 
 	let server_db = server_db_generation.db;
@@ -1309,9 +1316,14 @@ function loadImages() {
     loadImage("enemies/munchies/ml1.png");
     loadImage("enemies/munchies/ml2.png");
 
+    [...Array(7).keys()].forEach(n => {
+        loadImage("enemies/kamikaze/kamikaze${n+1}.png");
+    });
+
     [...Array(4).keys()].forEach(n => {
 	loadImage(`enemies/pods/sprite_${n}.png`);
     });
+
     [...Array(8).keys()].forEach(n => {
 	loadImage(`enemies/swarmers/sprite_2${n}.png`);
     });
