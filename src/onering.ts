@@ -1317,7 +1317,7 @@ function loadImages() {
     loadImage("enemies/munchies/ml2.png");
 
     [...Array(7).keys()].forEach(n => {
-        loadImage("enemies/kamikaze/kamikaze${n+1}.png");
+        loadImage(`enemies/kamikaze/kamikaze${n+1}.png`);
     });
 
     [...Array(4).keys()].forEach(n => {
