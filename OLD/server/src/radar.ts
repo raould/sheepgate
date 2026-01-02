@@ -18,6 +18,7 @@ export function step(db: GDB.GameDB) {
             render_enemies(db, center);
             render_indestructibles(db, center);
             render_munchies(db, center);
+            render_kamikaze(db, center);
             render_gems(db, center);
             render_base(db, db.shared.items.base, center);
             render_people(db, center);
@@ -245,6 +246,22 @@ function render_munchies(db: GDB.GameDB, center: G.V2D) {
                 is_filled: true,
                 rect: r,
                 comment: `r-munchie-${sprite.dbid}`
+            })
+        );
+    });
+}
+
+function render_kamikaze(db: GDB.GameDB, center: G.V2D) {
+    Object.values(db.shared.items.kamikaze).forEach(sprite => {
+        const rs = world2radars(db, sprite, center);
+        rs.forEach(r =>
+            db.shared.hud_drawing.rects.push({
+                wrap: false,
+                line_width: 0,
+                color: K.BAD_COLOR,
+                is_filled: true,
+                rect: r,
+                comment: `r-kamikaze-${sprite.dbid}`
             })
         );
     });
