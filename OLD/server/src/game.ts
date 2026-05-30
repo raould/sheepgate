@@ -364,15 +364,17 @@ class GameLevels implements Gs.Stepper {
     stepper: Gs.Stepper;
     paused: U.O<Gs.Stepper>;
     debug_completed: boolean;
+    demo_completed: boolean;
     
     constructor(private readonly high_score: Hs.HighScore) {
         this.index = 0; // hard to grep find this when you don't know.
         this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, 0, K.PLAYER_LIVES, this.high_score);
 	this.debug_completed = false;
+	this.demo_completed = false;
     }
 
     get_state(): Gs.StepperState {
-        return this.stepper.get_state();
+        return this.demo_completed ? Gs.StepperState.completed : this.stepper.get_state();
     }
 
     get_score(): number {
@@ -420,11 +422,16 @@ class GameLevels implements Gs.Stepper {
 	    }
 	}
 	if (advance) {
-            // todo: maybe pull the score fully out so internally levels always start at score=0.
-            // it would mean the rendering for the score would have to also be changed.
-            const score = (this.stepper as Lis.LevelInScreens).level.get_scoring().score;
-	    const lives = (this.stepper as Lis.LevelInScreens).level.get_lives();
-            this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, score, lives, this.high_score);
+	    if (K.ARCADE_MODE && this.index == 1) {
+		D.log("ending game in arcade demo mode to prevent game-hogs.");
+		this.demo_completed = true;
+	    } else {
+		// todo: maybe pull the score fully out so internally levels always start at score=0.
+		// it would mean the rendering for the score would have to also be changed.
+		const score = (this.stepper as Lis.LevelInScreens).level.get_scoring().score;
+		const lives = (this.stepper as Lis.LevelInScreens).level.get_lives();
+		this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, score, lives, this.high_score);
+	    }
         }
     }
 

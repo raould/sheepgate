@@ -15,7 +15,7 @@ export function level_scale_down(level: number, max: number, min: number, round?
     const t = U.t10(1, K.LEVEL_TEMPLATE_COUNT+1, level);
     const v = min + (max-min) * t;
     const r = round ? round(v) : v;
-    D.log(level, max, min, t, v, r, round != undefined);
+    //D.log(level, max, min, t, v, r, round != undefined);
     return r;
 }
 
@@ -25,7 +25,7 @@ export function level_scale_up(level: number, min: number, max: number, round?: 
     const t = U.t01(1, K.LEVEL_TEMPLATE_COUNT+1, level);
     const v = min + (max-min) * t;
     const r = round ? round(v) : v;
-    D.log(level, min, max, t, v, r, round != undefined);
+    //D.log(level, min, max, t, v, r, round != undefined);
     return r;
 }
 
