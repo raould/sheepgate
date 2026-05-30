@@ -8,7 +8,7 @@ import { RGBA } from './color';
 // + show the attract mode.
 // + stop game after all levels played once.
 // note: keep this committed as false.
-export const ARCADE_MODE = true;
+export const ARCADE_MODE = false;
 
 // !!!!!!!!!! be careful with these
 // super local testing hacks! beware!

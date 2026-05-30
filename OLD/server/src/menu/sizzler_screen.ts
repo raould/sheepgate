@@ -16,7 +16,7 @@ import { RGBA, HCycle } from '../color';
 export const MESSAGE_MESC = 500;
 
 export interface SizzlerScreenSpec {
-    sizzle?: boolean, // default is true.
+    sizzle?: boolean, // default is true. hilarious that this exists.
     title?: string,
     skip_text?: string,
     user_skip_after_msec?: number, // default is 0.
