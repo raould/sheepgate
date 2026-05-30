@@ -434,7 +434,7 @@ class GameLevels implements Gs.Stepper {
     paused: U.O<Gs.Stepper>;
     debug_completed: boolean;
     demo_completed: boolean;
-    
+
     constructor(private readonly high_score: Hs.HighScore) {
         this.index = 0; // hard to grep find this when you don't know.
         this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, 0, K.PLAYER_LIVES, this.high_score);
