@@ -354,7 +354,7 @@ export const SCORE_POS = vd2si(G.v2d_mk(100, 20)); // K
 
 export const TELEPORT_ANIM_FRAME_MSEC = 100; // K
 
-export const WARPIN_TOTAL_MSEC = 500; // K
+export const WARPIN_TOTAL_MSEC = 1000; // K
 
 // note/todo: not much time yet spent on real game balance for these (or any) values.
 
