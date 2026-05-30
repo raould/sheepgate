@@ -42,6 +42,19 @@ const WARNING_INSTRUCTIONS = [
     "certain light patterns or flashing lights.",
 ];
 
+
+// the leading blank lines are a hack, yes :-(
+const DEMO_OVER_INSTRUCTIONS = [
+    " ",
+    " ",
+    "========= YOU ARE A WINNER =========",
+    "Congratulations on completing all levels.",
+    " ",
+    "Now, allow others to play.",
+    "Thanks for your support!",
+    " ",
+];
+
 // the leading blank lines are a hack, yes :-(
 const MAIN_INSTRUCTIONS = [
     "DEFEAT ALL ENEMIES.",
@@ -113,13 +126,28 @@ export function game_mk(high_scores: Hs.HighScores): Game {
             }
             else if (this.stepper instanceof GameLevels && this.stepper.get_state() != Gs.StepperState.running) {
                 const score = (this.stepper as GameLevels).get_score();
+		if (K.ARCADE_MODE && this.stepper.get_state() == Gs.StepperState.completed) {
+		    this.stepper = new GameDemoOver(score);
+		} else {
+		    // duped with GameDemoOver.
+                    if (high_scores.is_high_score(score)) {
+			this.stepper = new GameHighScoreEntry(score, high_scores);
+                    }
+                    else {
+			this.stepper = new GameHighScoreTable(high_scores, false);
+                    }
+		}
+            }
+	    else if (this.stepper instanceof GameDemoOver && this.stepper.get_state() != Gs.StepperState.running) {
+                const score = (this.stepper as GameDemoOver).get_score();
+		// duped with GameLevels.
                 if (high_scores.is_high_score(score)) {
-                    this.stepper = new GameHighScoreEntry(score, high_scores);
+		    this.stepper = new GameHighScoreEntry(score, high_scores);
                 }
                 else {
-                    this.stepper = new GameHighScoreTable(high_scores, false);
+		    this.stepper = new GameHighScoreTable(high_scores, false);
                 }
-            }
+	    }
             else if (this.stepper instanceof GameHighScoreEntry && this.stepper.get_state() != Gs.StepperState.running) {
                 this.stepper = new GameHighScoreTable(high_scores, true);
             }
@@ -299,6 +327,47 @@ class GameInstructions implements Gs.Stepper {
     }
 }
 
+class GameDemoOver implements Gs.Stepper {
+    stepper: Is.InstructionsScreen;
+
+    constructor(private score: number) {
+        this.stepper = new Is.InstructionsScreen({
+	    title: "DEMO COMPLETE",
+	    instructions: DEMO_OVER_INSTRUCTIONS,
+	    size: K.d2si(35),
+	    animated: true,
+	    bg_color: RGBA.DARK_MAGENTA,
+	    top_offset_y: K.d2si(25),
+	    user_skip_after_msec: K.user_wait_msec(1000),
+	    timeout: 15 * 1000,
+	});
+    }
+
+    get_score(): number {
+	return this.score;
+    }
+
+    get_state(): Gs.StepperState {
+        return this.stepper.get_state();
+    }
+
+    merge_client_db(cnew: Cdb.ClientDB) {
+        this.stepper.merge_client_db(cnew);
+    }
+
+    step() {
+        this.stepper.step();
+    }
+
+    get_db(): Db.DB<Db.World> {
+	return this.stepper.get_db();
+    }
+
+    stringify(): string {
+        return this.stepper.stringify();
+    }
+}
+
 class GameHighScoreEntry implements Gs.Stepper {
     stepper: Gs.Stepper;
 
@@ -364,15 +433,17 @@ class GameLevels implements Gs.Stepper {
     stepper: Gs.Stepper;
     paused: U.O<Gs.Stepper>;
     debug_completed: boolean;
+    demo_completed: boolean;
     
     constructor(private readonly high_score: Hs.HighScore) {
         this.index = 0; // hard to grep find this when you don't know.
         this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, 0, K.PLAYER_LIVES, this.high_score);
 	this.debug_completed = false;
+	this.demo_completed = false;
     }
 
     get_state(): Gs.StepperState {
-        return this.stepper.get_state();
+        return this.demo_completed ? Gs.StepperState.completed : this.stepper.get_state();
     }
 
     get_score(): number {
@@ -420,11 +491,16 @@ class GameLevels implements Gs.Stepper {
 	    }
 	}
 	if (advance) {
-            // todo: maybe pull the score fully out so internally levels always start at score=0.
-            // it would mean the rendering for the score would have to also be changed.
-            const score = (this.stepper as Lis.LevelInScreens).level.get_scoring().score;
-	    const lives = (this.stepper as Lis.LevelInScreens).level.get_lives();
-            this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, score, lives, this.high_score);
+	    if (K.ARCADE_MODE && this.index == 1) {
+		D.log("ending game in arcade demo mode to prevent game-hogs.");
+		this.demo_completed = true;
+	    } else {
+		// todo: maybe pull the score fully out so internally levels always start at score=0.
+		// it would mean the rendering for the score would have to also be changed.
+		const score = (this.stepper as Lis.LevelInScreens).level.get_scoring().score;
+		const lives = (this.stepper as Lis.LevelInScreens).level.get_lives();
+		this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, score, lives, this.high_score);
+	    }
         }
     }
 

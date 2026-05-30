@@ -4,7 +4,10 @@ import * as Uf from './util/util_feq';
 import * as G from './geom';
 import { RGBA } from './color';
 
-// true: show the attract mode. keep this committed as false.
+// true: demo arcade mode.
+// + show the attract mode.
+// + stop game after all levels played once.
+// note: keep this committed as false.
 export const ARCADE_MODE = false;
 
 // !!!!!!!!!! be careful with these

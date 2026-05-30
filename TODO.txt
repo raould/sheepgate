@@ -114,6 +114,9 @@ next-feature-short-list, in no order:
 * i love how inconsistent i am with things like capitalization.
 
 * the menu screens code has become a big ball of bad mud.
+  too many variations on the themes.
+  the attempt at delegation/reuse kind of failed.
+  note the "ignore input for 100 msec" hack too.
 
 NOTE:
 * do try to avoid relying on pure red or green, out of some basic accessibility respect.

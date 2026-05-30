@@ -600,6 +600,8 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    [Sc.Event.small_defeat, 150],
 	    [Sc.Event.mega_defeat, 250],
 	    [Sc.Event.hypermega_defeat, 400],
+	    [Sc.Event.got_gem, 10],
+	    [Sc.Event.took_damage, -5],
 	]);
 	const local: GDB.DBLocal = {
 	    // client_db is temporary until the client sends us a real db, duh.

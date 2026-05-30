@@ -30,6 +30,8 @@ export enum Event {
     small_defeat,
     mega_defeat,
     hypermega_defeat,
+    got_gem,
+    took_damage,
     // remember to update this, duh.
     // (enums are an unsolved problem.)
     LAST = hypermega_defeat,
@@ -59,8 +61,9 @@ export function scoring_mk(score: number, e2s: Map<Event,number>): Scoring {
         e2s: e2s,
         on_event(event: Event) {
             const delta = this.event2score(event);
-            D.log("score", this.score, delta);
+            D.log("score", Event[event], this.score, delta);
             this.score += delta;
+	    this.score = Math.max(0, this.score); // stay non-negative.
         },
         event2score(event: Event): number {
             const score: U.O<number> = this.e2s.get(event);
