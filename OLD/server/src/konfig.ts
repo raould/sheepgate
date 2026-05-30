@@ -439,7 +439,6 @@ export const SHOT1_SFX = "sounds/shot1.ogg";
 export const SHOT2_SFX = "sounds/shot2.ogg";
 export const SMARTBOMB_SFX = "sounds/smartbomb.ogg";
 export const SWARMER_SFX = "sounds/swarmer.ogg";
-export const DEFFX_SFX = "sounds/deffx.ogg";
 
 // match: game.ts
 // used to scale things across levels.

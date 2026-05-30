@@ -57,7 +57,7 @@ function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: Enemy
     const lt = Eu.safe_lt(db, spec.rank, size, Rnd.singleton, spec.lt);
     const rect = G.rect_mk(lt, size);
     spec.lt = lt;
-    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.25 });
+    db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.75 });
     return A.warpin_mk(
         db,
         {
