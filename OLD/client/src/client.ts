@@ -649,7 +649,7 @@ function renderGround(gdb: any) {
 	    cx2d.fillText((g as any).comment, wr.lt.x, wr.lt.y+30);
 	}
     }
-    renderSprite(gdb, gdb.items.base);
+    renderSprite(gdb, gdb.items.base, gdb.xyround);
 }
 
 function renderSky(gdb: any) {
