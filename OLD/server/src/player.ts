@@ -17,6 +17,7 @@ import * as Sc from './scoring';
 import * as So from './sound';
 import * as Rnd from './random';
 import * as Dr from './drawing';
+import * as D from './debug';
 import { RGBA } from './color';
 
 const BOUNCE_MSEC = 250;
@@ -543,7 +544,8 @@ export function add_shield(db: GDB.GameDB, player: S.Player) {
         // C.CMask.people & C.CMask.base are to allow for teleporting.
         from_cmask: C.CMask.enemy | C.CMask.enemy_bounce | C.CMask.enemyShot | C.CMask.gem | C.CMask.people | C.CMask.base,
         on_collide(thiz: S.Shield<S.Player>, db: GDB.GameDB, c: S.CollidableSprite, reaction: C.Reaction) {
-	    if (c.hp > 0) {
+	    if (c.hp > 0 && U.has_bits(c.type_flags, Tf.TF.enemy)) {
+		D.log(c.comment);
 		db.local.scoring.on_event(Sc.Event.took_damage);
 	    }
             if (U.has_bits_eq(c.type_flags, Tf.TF.gem)) {

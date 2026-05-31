@@ -337,7 +337,7 @@ class GameDemoOver implements Gs.Stepper {
 	    size: K.d2si(35),
 	    animated: true,
 	    bg_color: RGBA.DARK_MAGENTA,
-	    top_offset_y: K.d2si(25),
+	    top_offset_y: K.d2si(20),
 	    user_skip_after_msec: K.user_wait_msec(1000),
 	    timeout: 15 * 1000,
 	});
@@ -491,7 +491,7 @@ class GameLevels implements Gs.Stepper {
 	    }
 	}
 	if (advance) {
-	    if (K.ARCADE_MODE && this.index == 1) {
+	    if (K.ARCADE_MODE && this.index == level_mks.length) {
 		D.log("ending game in arcade demo mode to prevent game-hogs.");
 		this.demo_completed = true;
 	    } else {
