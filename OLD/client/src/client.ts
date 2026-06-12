@@ -1773,6 +1773,8 @@ function init() {
     canvasScreen = document.getElementById("canvas");
     cx2dScreen = canvasScreen.getContext("2d");
     canvasBacking = document.createElement("canvas");
+    canvasBacking.width = canvasScreen.width;
+    canvasBacking.height = canvasScreen.height;
     cx2d = canvasBacking.getContext("2d");
     if (INVERT_COLORS) {
 	// web apis are so utterly terrible.

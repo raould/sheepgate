@@ -4,6 +4,10 @@ set -euo pipefail
 
 # ----------------------------------------
 
+# in theory this is not / should not be required
+# since it is the verison of the client for the
+# websocket version. at least building this
+# out of paranoia. :-)
 echo "++++++++++++++++++++ BUILDING CLIENT..."
 (cd OLD/client/src && npm i)
 echo "-------------------- DONE BUILDING CLIENT"
