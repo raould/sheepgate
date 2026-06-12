@@ -685,8 +685,8 @@ function renderDebug(gdb: any) {
         cx2d.fillText(`client fps ${F2D(game_fps)}`, 300, 70);
         cx2d.fillText(`client fps ${TARGET_FPS} ${game_fps >= TARGET_FPS} ${F2D(Math.abs(game_fps-TARGET_FPS))}`, 300, 90);
 
-        renderLine(4, "#00FF0055", 0, 0, h5canvas.width, h5canvas.height);
-        renderLine(4, "#00FF0055", 0, h5canvas.height, h5canvas.width, 0);
+        renderLine(4, "#00FF0055", 0, 0, canvasScreen.width, canvasScreen.height);
+        renderLine(4, "#00FF0055", 0, canvasScreen.height, canvasScreen.width, 0);
     }
 }
 
