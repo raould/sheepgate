@@ -62,7 +62,9 @@ let inputs: {commands: {[k:string]:boolean}, keys: {[k:string]:boolean}} = {
 let debugging_state: any = { is_drawing: false, is_stepping: false, is_annotating: false };
 let particles: {[k:string]:AbstractParticleGenerator} = {};
 let socket_ws: any;
-let h5canvas: any;
+let canvasScreen: any;
+let cx2dScreen: any;
+let canvasBacking: any;
 let cx2d: any;
 let cxAudio: any;
 let images: any = {};
@@ -683,8 +685,8 @@ function renderDebug(gdb: any) {
         cx2d.fillText(`client fps ${F2D(game_fps)}`, 300, 70);
         cx2d.fillText(`client fps ${TARGET_FPS} ${game_fps >= TARGET_FPS} ${F2D(Math.abs(game_fps-TARGET_FPS))}`, 300, 90);
 
-        renderLine(4, "#00FF0055", 0, 0, h5canvas.width, h5canvas.height);
-        renderLine(4, "#00FF0055", 0, h5canvas.height, h5canvas.width, 0);
+        renderLine(4, "#00FF0055", 0, 0, canvasScreen.width, canvasScreen.height);
+        renderLine(4, "#00FF0055", 0, canvasScreen.height, canvasScreen.width, 0);
     }
 }
 
@@ -908,7 +910,7 @@ function renderParticles(gdb: any) {
     for (const kv of Object.entries(particles)) {
         const [pid, pgen]:[string,any] = kv;
 	if (pgen != null) {
-            pgen.render(gdb, h5canvas);
+            pgen.render(gdb, canvasBacking);
             if (pgen.age_t(gdb) > 1) {
 		delete particles[pid];
             }
@@ -922,7 +924,7 @@ function renderParticles(gdb: any) {
 function render(db: any) {
     if (db != null) {    
         cx2d.fillStyle = db.bg_color ?? BG_COLOR;
-        cx2d.fillRect(0, 0, h5canvas.width, h5canvas.height);
+        cx2d.fillRect(0, 0, canvasBacking.width, canvasBacking.height);
 	// painter's algorith, menus should render on top.
 	// note: bifurcating on the type of db here.
 	if (db.kind === "Game") {
@@ -934,6 +936,8 @@ function render(db: any) {
 	else {
 	    assert(false, `unsupported db kind '${db.kind}'`);
 	}
+	cx2dScreen.clearRect( 0, 0, canvasScreen.width, canvasScreen.height );
+	cx2dScreen.drawImage( canvasBacking, 0, 0 );
     }
 }
 
@@ -1766,22 +1770,27 @@ function gamepadHandler(event: any, connecting: boolean) {
 }
 
 function init() {
-    h5canvas = document.getElementById("canvas");
+    canvasScreen = document.getElementById("canvas");
+    cx2dScreen = canvasScreen.getContext("2d");
+    canvasBacking = document.createElement("canvas");
+    canvasBacking.width = canvasScreen.width;
+    canvasBacking.height = canvasScreen.height;
+    cx2d = canvasBacking.getContext("2d");
+    if (INVERT_COLORS) {
+	// web apis are so utterly terrible.
+	cx2d.filter = 'invert(1)';
+
+    }
+    loadImages();
 
     // @ts-ignore
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     try { cxAudio = new AudioContext(); } catch(e) { console.error(e); }
-    cx2d = h5canvas.getContext("2d");
-    if (INVERT_COLORS) {
-	// web apis are so utterly terrible.
-	cx2d.filter = 'invert(1)';
-    }
     loadSounds();
-    loadImages();
 
     window.addEventListener("keydown", onKeyDown, true);
     window.addEventListener("keyup", onKeyUp, true);
-    h5canvas.addEventListener("click", onClick, true);
+    canvasScreen.addEventListener("click", onClick, true);
 
     Gamepads.start();
     Gamepads.addEventListener("connect", (e:any)=> gamepadHandler(e, true));

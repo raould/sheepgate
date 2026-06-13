@@ -337,7 +337,7 @@ class GameDemoOver implements Gs.Stepper {
 	    size: K.d2si(35),
 	    animated: true,
 	    bg_color: RGBA.DARK_MAGENTA,
-	    top_offset_y: K.d2si(20),
+	    top_offset_y: K.d2si(25),
 	    user_skip_after_msec: K.user_wait_msec(1000),
 	    timeout: 15 * 1000,
 	});
