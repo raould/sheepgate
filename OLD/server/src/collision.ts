@@ -15,8 +15,7 @@ export enum CMask {
     base = 1 << 3,
     enemy = 1 << 4,
     // so big the player bounces off of it.
-    // otherwise it would immeidately kill them
-    // which sucks in a game with no extra lives.
+    // otherwise it would immeidately kill them, which would suck.
     enemy_bounce = 1 << 5,
     gem = 1 << 6,
     // unlike shields which just use 'player' or 'enemy' or 'base',

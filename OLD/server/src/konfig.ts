@@ -10,14 +10,15 @@ import { RGBA } from './color';
 // note: keep this committed as false.
 export const ARCADE_MODE = false;
 
-// !!!!!!!!!! be careful with these
+// +++ !!!!!!!!!! be careful with these below
 // super local testing hacks! beware!
 // they should be git-committed only as false!
 export const DEBUG_NO_USER_WAIT = false;
 export function user_wait_msec(msec: number): number {
     return DEBUG_NO_USER_WAIT ? 0 : msec;
 }
-export const DEBUG_HACK_ONLY_HYPERMEGA = false;
+export const DEBUG_HACK_ONLY_HYPERMEGA = true;
+// --- !!!!!!!!!! be careful with these above
 
 // todo: what would be better is to have types for the different
 // kinds of values, and to have all this in a dict, and then
@@ -404,8 +405,8 @@ export const ENEMY_MUNCHIE_DAMAGE = PLAYER_HP/2; // L
 export const ENEMY_MUNCHIE_GEM_COUNT = 0; // L
 // really try to force the end of level if munchies aren't enough.
 export const MUNCHIE_DESTROYED_COUNT_TRIGGER = 10; // L.
-export const KAMIKAZES_MAX = 3; // L
-export const ENEMY_KAMIKAZE_HP = PLAYER_SHOT_DAMAGE * 6; // L
+export const KAMIKAZES_MAX = 10; // L
+export const ENEMY_KAMIKAZE_HP = PLAYER_SHOT_DAMAGE * 10; // L
 export const ENEMY_KAMIKAZE_DAMAGE = PLAYER_HP; // L
 export const ENEMY_KAMIKAZE_GEM_COUNT = 0; // L
 

@@ -544,16 +544,17 @@ export function add_shield(db: GDB.GameDB, player: S.Player) {
         // C.CMask.people & C.CMask.base are to allow for teleporting.
         from_cmask: C.CMask.enemy | C.CMask.enemy_bounce | C.CMask.enemyShot | C.CMask.gem | C.CMask.people | C.CMask.base,
         on_collide(thiz: S.Shield<S.Player>, db: GDB.GameDB, c: S.CollidableSprite, reaction: C.Reaction) {
-	    if (c.hp > 0) {
+	    // getting shot reduces score.
+	    if (c.hp > 0 && U.has_bits_eq(c.type_flags, Tf.TF.enemyShot)) {
 		db.local.scoring.on_event(Sc.Event.took_damage);
 	    }
+	    // collected gem.
             if (U.has_bits_eq(c.type_flags, Tf.TF.gem)) {
-		// note: gem does not pass the hp bonus as negative damage.
                 thiz.hp = Math.min(thiz.hp_init, thiz.hp + K.GEM_HP_BONUS);
                 db.shared.sfx.push({ sfx_id: K.GEM_COLLECT_SFX });
 		db.local.scoring.on_event(Sc.Event.got_gem);
             }
-	    // note: the player has an extra hard-coded ability to crash through enemies somewhat.
+	    // note: player can crash through enemies.
 	    if (reaction === C.Reaction.hp && U.has_bits_eq(c.type_flags, Tf.TF.enemyShield)) {
                 c.hp -= c.hp;
 	    }

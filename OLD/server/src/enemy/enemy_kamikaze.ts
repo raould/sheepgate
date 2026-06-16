@@ -24,7 +24,7 @@ const Kamikaze: Lemk.EnemyMk = {
 	// todo: fix up all this weapon stuff, everywhere, just shoot me.
 	// hack: trying to make the kamikazes more violent by having more weapons.
 	const [ews1] = Ebw.scale_specs(db.shared.level_index1, S.Rank.small, true);
-	const [ews2] = Ebw.scale_specs(db.shared.level_index1, S.Rank.mega, true);
+	const [ews2] = Ebw.scale_specs(db.shared.level_index1, S.Rank.kamikaze, true);
 	const weapons = {
             'w1': Ebw.weapon_mk(ews1),
             'w2': Ebw.weapon_mk(ews2),

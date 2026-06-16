@@ -326,6 +326,7 @@ export abstract class AbstractLevel implements Level {
             next.shared.items.people,
             next.shared.items.gems,
         ];
+	// put this in your big-oh and smoke it.
         collections.forEach(
             (c: U.Dict<S.Sprite & S.CollidableSprite>) => {
                 Object.values(c).forEach(

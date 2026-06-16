@@ -491,7 +491,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    // extra harassment if the player fights the munchies.
 	    if (next.local.munchie_destroyed_count >= K.MUNCHIE_DESTROYED_COUNT_TRIGGER &&
 		U.count_dict(next.shared.items.kamikaze) < K.KAMIKAZES_MAX) {
-		if (Rnd.singleton.boolean(0.01)) {
+		if (Rnd.singleton.boolean(0.1)) {
 		    const damageScale = next.local.munchie_destroyed_count / 10 + 1;
 		    D.log(`kamikaze damageScale ${damageScale}`);
 		    const k = Ek.warpin_mk(next, damageScale);
