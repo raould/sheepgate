@@ -409,6 +409,9 @@ export const ENEMY_KAMIKAZE_HP = PLAYER_SHOT_DAMAGE * 6; // L
 export const ENEMY_KAMIKAZE_DAMAGE = PLAYER_HP; // L
 export const ENEMY_KAMIKAZE_GEM_COUNT = 0; // L
 
+export const ROID_HP = PLAYER_SHOT_DAMAGE * 10; // L
+export const ROID_DAMAGE = PLAYER_HP / 2; // L
+
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L
 export const ENEMY_RETURN_FIRE_MIN_MSEC = 100; // L
 

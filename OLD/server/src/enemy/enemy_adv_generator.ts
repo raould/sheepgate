@@ -114,6 +114,7 @@ function add_generator(
                         incrfn(state);
                         return e;
                     }
+		    return undefined;
                 }
             })
     );

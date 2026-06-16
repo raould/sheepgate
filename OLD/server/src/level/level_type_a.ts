@@ -499,7 +499,9 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	    if (next.local.munchie_destroyed_count >= K.MUNCHIE_DESTROYED_COUNT_TRIGGER &&
 		U.count_dict(next.shared.items.kamikaze) < K.KAMIKAZES_MAX) {
 		if (Rnd.singleton.boolean(0.01)) {
-		    const k = Ek.warpin_mk(next);
+		    const damageScale = next.local.munchie_destroyed_count / 10 + 1;
+		    D.log(`kamikaze damageScale ${damageScale}`);
+		    const k = Ek.warpin_mk(next, damageScale);
 		    if (U.exists(k)) {
 			GDB.add_item(next.shared.items.warpin, k);
 		    }

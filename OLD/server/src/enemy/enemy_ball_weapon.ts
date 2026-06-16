@@ -158,6 +158,8 @@ export function scale_spec(level: number, rank: S.Rank, directions: F.Facing, sw
         return enemy_mega_spec(level, directions, swivel);
     case S.Rank.hypermega:
         return enemy_hypermega_spec(level, directions, swivel);
+    case S.Rank.kamikaze:
+        return enemy_kamikaze_spec(level, directions, swivel);	
     case S.Rank.player:
         // todo: argues for splitting enemy vs. player ranks, duh.
         D.assert_fail("scale_spec(): only supports enemy ranks.");
@@ -216,6 +218,17 @@ const HYPERMEGA_SPEC = {
 };
 D.assert(HYPERMEGA_SPEC.ENEMY_SHOT_DAMAGE >= 0.1);
 
+const KAMIKAZE_SPEC = {
+    ENEMY_SHOT_DAMAGE: K.PLAYER_HP / 2, // L, W
+    ENEMY_SHOT_SPEED: K.d2s(0.3), // L, W
+    ENEMY_SHOT_SIZE: K.BALL_SHOT_SIZE,
+    ENEMY_SHOT_LIFE_MSEC: 4*1000, // L, W
+    ENEMY_WEAPON_CLIP_COOLDOWN_MSEC: 1*1000, // L, W
+    ENEMY_WEAPON_SHOT_COOLDOWN_MSEC: 250, // L, W
+    ENEMY_WEAPON_SHOT_COUNT: 4, // L, W
+};
+D.assert(KAMIKAZE_SPEC.ENEMY_SHOT_DAMAGE >= 0.1);
+
 // todo: meta-build these boilerplate-hell functions? sheesh.
 
 function enemy_from_spec(level: number, direction: F.Facing, swivel: boolean, spec: any): EnemyWeaponSpec {
@@ -269,4 +282,8 @@ function enemy_mega_spec(level: number, direction: F.Facing, swivel: boolean): E
 
 function enemy_hypermega_spec(level: number, direction: F.Facing, swivel: boolean): EnemyWeaponSpec {
     return enemy_from_spec(level, direction, swivel, HYPERMEGA_SPEC);
+}
+
+function enemy_kamikaze_spec(level: number, direction: F.Facing, swivel: boolean): EnemyWeaponSpec {
+    return enemy_from_spec(level, direction, swivel, KAMIKAZE_SPEC);
 }

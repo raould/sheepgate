@@ -6,6 +6,7 @@
     "scripts": {
 	"test": "echo \"Error: no test specified\" && exit 1",
 	"clean": "rm -f out/*",
+	"build": "node --stack-size=4000 ./node_modules/typescript/lib/tsc.js",
 	"watch": "node --stack-size=4000 ./node_modules/typescript/lib/tsc.js -w"
     },
     "author": "",

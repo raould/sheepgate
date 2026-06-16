@@ -121,6 +121,7 @@ export enum Rank {
     player,
     mega,
     hypermega,
+    kamikaze,
 };
 
 // values.length must be >= 5, one per rank.
