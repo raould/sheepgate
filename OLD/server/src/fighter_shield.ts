@@ -146,9 +146,8 @@ export function add_fighter_shield(db: GDB.GameDB, spec: ShieldWrappingSpec) {
                 },
                 on_collide(db: GDB.GameDB, sprite: S.CollidableSprite) {
                     const reaction = C.ignores_test(this, sprite);
-                    // note: the player has an extra hard-coded ability to crash through enemies somewhat.
-                    U.if_let(spec.on_collide, c => c(this, db, sprite, reaction));
-                    U.if_let(this.get_wrapped(db), w => w.on_collide(db, sprite));
+                    U.if_let(spec.on_collide, c => c(this, db, sprite, reaction)); // run any custom shield behavior.
+                    U.if_let(this.get_wrapped(db), w => w.on_collide(db, sprite)); // update the shielded fighter.
                     switch (reaction) {
                     case C.Reaction.ignore: {
                         break;

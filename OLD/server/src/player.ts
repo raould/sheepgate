@@ -545,7 +545,7 @@ export function add_shield(db: GDB.GameDB, player: S.Player) {
         from_cmask: C.CMask.enemy | C.CMask.enemy_bounce | C.CMask.enemyShot | C.CMask.gem | C.CMask.people | C.CMask.base,
         on_collide(thiz: S.Shield<S.Player>, db: GDB.GameDB, c: S.CollidableSprite, reaction: C.Reaction) {
 	    // getting shot reduces score.
-	    if (c.hp > 0 && U.has_bits_eq(c.type_flags, Tf.TF.enemyShot)) {
+	    if (c.damage > 0 && U.has_bits_eq(c.type_flags, Tf.TF.enemyShot)) {
 		db.local.scoring.on_event(Sc.Event.took_damage);
 	    }
 	    // collected gem.
@@ -556,7 +556,7 @@ export function add_shield(db: GDB.GameDB, player: S.Player) {
             }
 	    // note: player can crash through enemies.
 	    if (reaction === C.Reaction.hp && U.has_bits_eq(c.type_flags, Tf.TF.enemyShield)) {
-                c.hp -= c.hp;
+                c.hp = 0;
 	    }
         }            
     });
