@@ -30,7 +30,7 @@ const Kamikaze: Lemk.EnemyMk = {
             'w2': Ebw.weapon_mk(ews2),
 	};
 	const acc = G.v2d_mk(
-	    Eu.level_scale_up(db.shared.level_index1, 0.001, 0.001),
+	    Eu.level_scale_up(db.shared.level_index1, 0.0005, 0.001),
 	    Eu.level_scale_up(db.shared.level_index1, 0.0005, 0.001),
 	);
 	const flight_pattern = new Fp.BuzzPlayer(db, acc, true);
