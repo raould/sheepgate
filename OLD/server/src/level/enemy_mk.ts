@@ -4,7 +4,7 @@ import * as S from '../sprite';
 import * as G from '../geom';
 import * as U from '../util/util';
 
-export type Warpin_Mk = (db: GDB.GameDB, params:any?=undefind) => U.O<S.Warpin>;
+export type Warpin_Mk = (db: GDB.GameDB, params?: any) => U.O<S.Warpin>;
 
 export interface EnemyMk {
     warpin_mk: Warpin_Mk;

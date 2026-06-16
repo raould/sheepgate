@@ -296,13 +296,6 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		alpha: alpha
 	    }
 	}
-	case Gr.GroundKind.zx: {
-	    return {
-		resource_name: "bg/ma_zx.png",
-		type: Gr.BgFarType.mountain,
-		alpha: alpha
-	    }
-	}
 	}
     }
 

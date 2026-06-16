@@ -304,7 +304,7 @@ function weapons_mk(player_kind: S.PlayerKind): { [k: string]: S.Weapon } {
 	    return K.PLAYER_SHOT_SIZE;
 	}
 	case S.PlayerKind.cbm: {
-	    G.v2d_scale_y(K.PLAYER_SHOT_SIZE, 2);
+	    return G.v2d_scale_y(K.PLAYER_SHOT_SIZE, 2);
 	}
 	case S.PlayerKind.zx: {
 	    return G.v2d_scale_y(K.PLAYER_SHOT_SIZE, 2);
