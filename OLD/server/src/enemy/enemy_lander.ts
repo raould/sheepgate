@@ -25,15 +25,7 @@ const Lander: Lemk.EnemyMk = {
 	    Eu.level_scale_up(db.shared.level_index1, 0.0002, 0.0002),
 	    Eu.level_scale_up(db.shared.level_index1, 0.0005, 0.001),
 	);
-	// todo: seek victims.
-	const flight_pattern = Rnd.singleton.boolean(0.65) ?
-	      new Fp.BuzzPlayer(db, acc, true) :
-	      new Fp.DescendAndGoSine(
-		  db,
-		  G.v2d_scale_y(SIZE, 8),
-		  acc,
-		  { period_factor: { mid: K.d2s(250), range: K.d2s(125) } }
-	      );
+	const flight_pattern = new LanderAttackPattern();
 	const spec: Emk.EnemySpec = {
 	    fighter_kind: "lander",
             anim: anim,
@@ -82,10 +74,17 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
                         ...images.lookup_range_n(n => `enemies/lander/lander${n}.png`, 0, 3)
 		    ],
 		    starting_mode: A.MultiImageStartingMode.hold,
-		    ending_mode: A.MultiImageEndingMode.bounce,
+		    ending_mode: A.MultiImageEndingMode.loop,
                 }
 	    )
         });
     });
     return table;
+}
+
+// todo: seek victims. make sure no more than 1 lander per victim.
+class LanderAttackPattern implements Fp.FlightPattern {
+    step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
+      	return G.v2d_mk_0();
+    }
 }
