@@ -396,6 +396,10 @@ export const ENEMY_POD_SWARMER_COUNT = 3; // L
 export const ENEMY_SWARMER_HP = PLAYER_SHOT_DAMAGE; // L
 export const ENEMY_SWARMER_DAMAGE = Math.ceil(PLAYER_HP/6); // L
 
+export const ENEMY_LANDER_HP = PLAYER_SHOT_DAMAGE * 6; // L
+export const ENEMY_LANDER_DAMAGE = PLAYER_HP/4; // L
+export const ENEMY_LANDER_GEM_COUNT = 0; // L
+
 // harass the player when all enemies are gone but there are still people to rescue.
 export const MUNCHIES_MAX = 4; // L, is adjusted per level.
 export const MUNCHIE_MORE_MSEC = 1000 * 20; // L? msec.
@@ -411,6 +415,8 @@ export const ENEMY_KAMIKAZE_GEM_COUNT = 0; // L
 
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L
 export const ENEMY_RETURN_FIRE_MIN_MSEC = 100; // L
+
+export const ROID_HP = PLAYER_SHOT_DAMAGE * 20; // L
 
 export const WORM_CHANCE = 0.0005; // L
 
