@@ -48,6 +48,7 @@ export interface LevelEnemyKonfig {
 export interface LevelKonfig {
     player_kind: S.PlayerKind;
     player_disable_beaming?: boolean; // default falsy.
+    El?: LevelEnemyKonfig,
     Eb1?: LevelEnemyKonfig,
     Eb2?: LevelEnemyKonfig,
     Eb3?: LevelEnemyKonfig,
@@ -375,6 +376,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	const basics: U.O<Ebg.EnemyGeneratorSpec>[] = [];
 	// @ts-ignore-error eyeroll
 	if (K.DEBUG_HACK_ONLY_HYPERMEGA !== true) {
+	    basics.push(this.init_basic_from_konfig(this.konfig.El, "lander"));
 	    basics.push(this.init_basic_from_konfig(this.konfig.Eb1, "basic1"));
 	    basics.push(this.init_basic_from_konfig(this.konfig.Eb2, "basic2"));
 	    basics.push(this.init_basic_from_konfig(this.konfig.Eb3, "basic3"));

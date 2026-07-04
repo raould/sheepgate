@@ -1374,6 +1374,10 @@ function loadImages() {
 	loadImage(`enemies/swarmers/sprite_2${n}.png`);
     });
     
+    [0,1,2,3].forEach(anim => {
+	loadImage(`enemies/lander/lander${anim}.png`);
+    });
+
     [1,2,3].forEach(anim => {
 	loadImage(`enemies/basic1/sph${anim}.png`);
     });

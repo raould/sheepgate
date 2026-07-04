@@ -5,6 +5,7 @@ import * as S from '../../sprite';
 import * as Lta from '../level_type_a';
 import * as Lis from '../level_in_screens';
 import * as Gr from '../../ground';
+import El from '../../enemy/enemy_lander';
 import Eb2 from '../../enemy/enemy_basic2';
 import Es from './enemy_small2';
 import Em from './enemy_mega2';
@@ -18,6 +19,7 @@ const LKfn = (level_index: number): Lta.LevelKonfig => {
     return {
 	player_kind: S.PlayerKind.cow,
 	ground_kind: Gr.GroundKind.pyramid,
+	El: { mk: El.warpin_mk, count: 3 + buf, limit: 5 + buf, delay_msec: 3000, tick_msec: 4*1000 },
 	Eb2: { mk: Eb2.warpin_mk, count: 8 + buf, limit: 6 + buf, delay_msec: 1000, tick_msec: 3*1000 },
 	Es: { mk: Es.warpin_mk, count: 4 + buf, limit: 1 + buf, delay_msec: 10*1000, tick_msec: 3*1000 },
 	Em: { mk: Em.warpin_mk, count: 3 + buf, limit: 2 + buf, delay_msec: 3*1000, tick_msec: 3*1000 },
