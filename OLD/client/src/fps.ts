@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 export type OnStatsFn = (fps: number) => void;
 
 export class FPS {
