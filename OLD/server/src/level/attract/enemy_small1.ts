@@ -31,12 +31,12 @@ const Small: Lemk.EnemyMk = {
 	);
 	const spec: Emk.EnemySpec = {
             fighter_kind: "small",
-	anim: anim,
+	anim,
             rank: S.Rank.small,
             hp_init: K.ENEMY_SMALL_HP,
             damage: K.ENEMY_SMALL_DAMAGE,
-            weapons: weapons,
-            flight_pattern: flight_pattern,
+            weapons,
+            flight_pattern,
             gem_count: K.ENEMY_SMALL_GEM_COUNT
 	};
 	return Emk.warpin_mk_enemy(

@@ -426,7 +426,7 @@ function bg_make_layer<T, S extends Spec<T>>(
                     size: size,
                     alpha: spec.alpha,
                     z_ids: z_ids,
-                    anim: anim,
+                    anim,
                     step(db: GDB.GameDB) {
                         this.z_ids = this.anim.z_ids(db);
                         U.if_let(

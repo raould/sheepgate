@@ -12,13 +12,13 @@ import * as Emk from './enemy_mk';
 import * as Lemk from '../level/enemy_mk';
 import * as Rnd from '../random';
 import * as K from '../konfig';
-    
-    /*
-      (1) pick a free victim.
-      (*) flight pattern.
-      (6) if reaching the top, mutate.
-      (*) enemy must de-register if destroyed.
-      */
+
+/*
+  (1) pick a free victim.
+  (*) flight pattern.
+  (6) if reaching the top, mutate.
+  (*) enemy must de-register if destroyed.
+*/
 
 // match: sprite animation.
 const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(16, 16), 2));
@@ -38,16 +38,22 @@ const Lander: Lemk.EnemyMk = {
 	    Eu.level_scale_up(db.shared.level_index1, 0.0002, 0.0002),
 	    Eu.level_scale_up(db.shared.level_index1, 0.0005, 0.001),
 	);
-	const flight_pattern = new LanderPattern(db, undefined); // todo: pick victim!
+	const vid = GDB.pick_victim(db);
+	const flight_pattern = new LanderPattern(db, vid);
 	const spec: Emk.EnemySpec = {
 	    fighter_kind: "lander",
-            anim: anim,
+            anim,
             rank: S.Rank.small,
             hp_init: K.ENEMY_LANDER_HP,
             damage: K.ENEMY_LANDER_DAMAGE,
-            weapons: weapons,
-            flight_pattern: flight_pattern,
+            weapons,
+            flight_pattern,
             gem_count: K.ENEMY_LANDER_GEM_COUNT,
+	    on_death: (db: GDB.GameDB) => {
+		if (U.exists(vid)) {
+		    db.shared.items.victims.deleteB(vid);
+		}
+	    },
 	};
 	return Emk.warpin_mk_enemy(
             db,
@@ -97,7 +103,7 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
 
 class LanderPattern implements Fp.FlightPattern {
     private pattern: Fp.FlightPattern;
-    constructor(db: GDB.GameDB, private victim: U.O<GDB.DBID>) {
+    constructor(db: GDB.GameDB, private vid: U.O<GDB.DBID>) {
 	this.pattern = this.patrol_pattern_mk(db);
     }
 

@@ -47,12 +47,12 @@ const Munchie: Lemk.EnemyMk = {
 	      );
 	const spec: Emk.EnemySpec = {
 	    fighter_kind: "munchie",
-            anim: anim,
+            anim,
             rank: S.Rank.small,
             hp_init: K.ENEMY_MUNCHIE_HP,
             damage: K.ENEMY_MUNCHIE_DAMAGE,
-            weapons: weapons,
-            flight_pattern: flight_pattern,
+            weapons,
+            flight_pattern,
             gem_count: K.ENEMY_MUNCHIE_GEM_COUNT,
 	    on_death: (db: GDB.GameDB) => {
 		db.local.munchie_destroyed_count++;

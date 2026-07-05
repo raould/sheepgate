@@ -23,12 +23,12 @@ export function smartbomb_mk(db: GDB.GameDB, lt: G.V2D): U.O<S.Enemy> {
     const spec = {
 	fighter_kind: "smartbomb",
         lt: lt,
-        anim: anim,
+        anim,
         rank: S.Rank.small,
         hp_init: 1,
         damage: K.PLAYER_HP / 2,
         weapons: {},
-        flight_pattern: flight_pattern,
+        flight_pattern,
         gem_count: 0,
         shield_alpha: Number.EPSILON, // can't use 0 here, that's "hidden".
 	flying_sfx: FLYING_SFX,

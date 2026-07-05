@@ -38,12 +38,12 @@ const Basic7: Lemk.EnemyMk = {
 	);
 	const spec: Emk.EnemySpec = {
 	    fighter_kind: "basic7",
-            anim: anim,
+            anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_BASIC_HP,
             damage: K.ENEMY_BASIC_DAMAGE,
-            weapons: weapons,
-            flight_pattern: flight_pattern,
+            weapons,
+            flight_pattern,
             gem_count: K.ENEMY_BASIC_GEM_COUNT,
 	};
 	return Emk.warpin_mk_enemy(
