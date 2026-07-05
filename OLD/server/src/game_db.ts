@@ -51,7 +51,10 @@ export function EmptyCallback(db: GameDB) { };
 // but that cannot be round-tripped through hash keys and
 // no type aliases can be round-tripped through hash keys :(
 // so i kinda hate (at least my understanding of) typescript?)
+
+// really just for debugging because what if we have more than 1 use of this?
 export const MISSING_ID = "<missing_id>";
+
 export interface Identity {
     dbid: DBID;
 }
@@ -403,7 +406,7 @@ export function get_enemy(db: GameDB, eid: U.O<DBID>): U.O<S.Enemy> {
     return U.exists(eid) ? db.shared.items.enemies[eid] : undefined;
 }
 
-export function get_victim(db: GameDB, eid: U.O<DBID>): U.O<S.Person> {
+export function get_enemy_victim(db: GameDB, eid: U.O<DBID>): U.O<S.Person> {
     if (U.exists(eid)) {
 	const vid = db.shared.items.victims.getB(eid);
 	if (U.exists(vid)) {
@@ -591,9 +594,10 @@ export function pick_victim(db: GameDB): U.O<DBID> {
 	db.shared.items.people,
 	(p: S.Person) => {
 	    if (U.isU(picked)) {
+		// if no enemy is already targeting, then pick it.
 		const eid = db.shared.items.victims.getA(p.dbid);
-		if (U.exists(eid)) {
-		    picked = eid;
+		if (U.isU(eid)) {
+		    picked = p.dbid
 		}
 	    }
 	}

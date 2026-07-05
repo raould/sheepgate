@@ -62,7 +62,7 @@ export function player_weapon_mk(spec: PlayerWeaponSpec): S.Weapon {
 		);
 		const lt = Rnd.singleton.v2d_around(
 		    lt_middle,
-		    G.v2d_mk_0y(5)
+		    G.v2d_mk_y(5)
 		)
 		return lt;
 	    })();

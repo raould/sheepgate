@@ -39,6 +39,7 @@ const Lander: Lemk.EnemyMk = {
 	    Eu.level_scale_up(db.shared.level_index1, 0.0005, 0.001),
 	);
 	const vid = GDB.pick_victim(db);
+	// todo: register it with the dbid that this enemy eventually gets. :-(
 	const flight_pattern = new LanderPattern(db, vid);
 	const spec: Emk.EnemySpec = {
 	    fighter_kind: "lander",
@@ -121,21 +122,24 @@ class LanderPattern implements Fp.FlightPattern {
       (2) descend y to just above them.
       (3) pick them up.
       (4) ascend with them in y.
+      // good thing the People can't move around.
     */
     update_pattern(db: GDB.GameDB, src: S.Enemy) {
-	const v: U.O<S.Person> = GDB.get_victim(db, this.vid);
-	if (U.isU(v)) {
+	if (U.isU(this.vid) || (!(this.vid in db.shared.items.people))) {
 	    if (!(this.pattern instanceof PatrolPattern)) {
 		this.pattern = new PatrolPattern(db);
 	    }
-	} else {
-	    // todo: seek victim.
+	}
+	else {
+	    if (this.pattern instanceof PatrolPattern) {
+		this.pattern = new HorizontalPattern(this.vid);
+	    }
 	}
     }
 }
 
 class PatrolPattern implements Fp.FlightPatternDone {
-    isDone: boolean = false;
+    is_done: boolean = false;
     flight_pattern: Fp.DescendAndGoSine;
 
     constructor(db: GDB.GameDB) {
@@ -156,28 +160,47 @@ class PatrolPattern implements Fp.FlightPatternDone {
 }
 
 class HorizontalPattern implements Fp.FlightPatternDone {
-    isDone: boolean = false;
+    is_done: boolean = false;
+    acc_mag: G.V2D = G.v2d_mk_x(0.001);
+
+    constructor(private vid: U.O<GDB.DBID>) {}
+
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
-	return G.v2d_mk_0();
+	const v = GDB.get_person(db, this.vid);
+	if (U.exists(v)) {
+            const delta_acc = Fp.calculate_acc(
+		G.rect_mid(src),
+		G.rect_mid(Fp.rect_in_bounds_y(db, v)),
+		this.acc_mag,
+		db.local.frame_dt
+	    );
+	    return G.v2d_x0(delta_acc);
+	}
+	else {
+	    return G.v2d_mk_0();
+	}
     }
 }
 
 class DownPattern implements Fp.FlightPatternDone {
-    isDone: boolean = false;
+    is_done: boolean = false;
+    constructor(private vid: U.O<GDB.DBID>) {}
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
 	return G.v2d_mk_0();
     }
 }
 
 class CapturingPattern implements Fp.FlightPatternDone {
-    isDone: boolean = false;
+    is_done: boolean = false;
+    constructor(private vid: U.O<GDB.DBID>) {}
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
 	return G.v2d_mk_0();
     }
 }
 
 class UpPattern implements Fp.FlightPatternDone {
-    isDone: boolean = false;
+    is_done: boolean = false;
+    constructor(private vid: U.O<GDB.DBID>) {}
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
 	return G.v2d_mk_0();
     }

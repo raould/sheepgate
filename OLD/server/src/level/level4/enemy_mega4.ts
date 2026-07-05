@@ -51,13 +51,13 @@ const Mega: Lemk.EnemyMk = {
 		hardpoint_left: (r: G.Rect): G.V2D => {
                     return G.v2d_add(
 			G.rect_lm(r),
-			G.v2d_mk_0y(3)
+			G.v2d_mk_y(3)
                     );
 		},
 		hardpoint_right: (r: G.Rect): G.V2D => {
                     return G.v2d_add(
 			G.rect_rm(r),
-			G.v2d_mk_0y(3)
+			G.v2d_mk_y(3)
                     );
 		},
             }

@@ -51,7 +51,7 @@ export class InstructionsScreen extends Sz.SizzlerScreen {
             const v_offset = this.line_height * index;
             this.step_text(
                 line,
-                G.v2d_add(this.top, G.v2d_mk_0y(v_offset)),
+                G.v2d_add(this.top, G.v2d_mk_y(v_offset)),
                 this.size,
                 hcycle
             );
