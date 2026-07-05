@@ -102,21 +102,10 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
 }
 
 class LanderPattern implements Fp.FlightPattern {
-    private pattern: Fp.FlightPattern;
-    constructor(db: GDB.GameDB, private vid: U.O<GDB.DBID>) {
-	this.pattern = this.patrol_pattern_mk(db);
-    }
+    private pattern: Fp.FlightPatternDone;
 
-    private patrol_pattern_mk(db: GDB.GameDB) {
-	return new Fp.DescendAndGoSine(
-	    db,
-	    SIZE,
-	    Rnd.singleton.v2d_around(
-		G.v2d_mk_nn(Eu.level_scale_up(db.shared.level_index1, 0.0008, 0.001)),
-		G.v2d_mk_nn(Eu.level_scale_up(db.shared.level_index1, 0.0001, 0.0005))
-	    ),
-	    { y: db.shared.world.gameport.world_bounds.size.y * 0.3 }
-	);
+    constructor(db: GDB.GameDB, private vid: U.O<GDB.DBID>) {
+	this.pattern = new PatrolPattern(db);
     }
 
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
@@ -134,28 +123,61 @@ class LanderPattern implements Fp.FlightPattern {
       (4) ascend with them in y.
     */
     update_pattern(db: GDB.GameDB, src: S.Enemy) {
+	const v: U.O<S.Person> = GDB.get_victim(db, this.vid);
+	if (U.isU(v)) {
+	    if (!(this.pattern instanceof PatrolPattern)) {
+		this.pattern = new PatrolPattern(db);
+	    }
+	} else {
+	    // todo: seek victim.
+	}
     }
 }
 
-class HorizontalPattern implements Fp.FlightPattern {
+class PatrolPattern implements Fp.FlightPatternDone {
+    isDone: boolean = false;
+    flight_pattern: Fp.DescendAndGoSine;
+
+    constructor(db: GDB.GameDB) {
+	this.flight_pattern = new Fp.DescendAndGoSine(
+	    db,
+	    SIZE,
+	    Rnd.singleton.v2d_around(
+		G.v2d_mk_nn(Eu.level_scale_up(db.shared.level_index1, 0.0008, 0.001)),
+		G.v2d_mk_nn(Eu.level_scale_up(db.shared.level_index1, 0.0001, 0.0005))
+	    ),
+	    { y: db.shared.world.gameport.world_bounds.size.y * 0.3 }
+	);
+    }
+
+    step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
+	return this.flight_pattern.step_delta_acc(db, src);
+    }
+}
+
+class HorizontalPattern implements Fp.FlightPatternDone {
+    isDone: boolean = false;
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
 	return G.v2d_mk_0();
     }
 }
 
-class DownPattern implements Fp.FlightPattern {
+class DownPattern implements Fp.FlightPatternDone {
+    isDone: boolean = false;
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
 	return G.v2d_mk_0();
     }
 }
 
-class CapturingPattern implements Fp.FlightPattern {
+class CapturingPattern implements Fp.FlightPatternDone {
+    isDone: boolean = false;
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
 	return G.v2d_mk_0();
     }
 }
 
-class UpPattern implements Fp.FlightPattern {
+class UpPattern implements Fp.FlightPatternDone {
+    isDone: boolean = false;
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
 	return G.v2d_mk_0();
     }
