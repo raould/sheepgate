@@ -5,12 +5,20 @@ import * as G from '../geom';
 import * as A from '../animation';
 import * as U from '../util/util';
 import * as F from '../facing';
+import * as Ebw from './enemy_ball_weapon';
 import * as Eu from './enemy_util';
 import * as Fp from './flight_patterns';
 import * as Emk from './enemy_mk';
 import * as Lemk from '../level/enemy_mk';
 import * as Rnd from '../random';
 import * as K from '../konfig';
+    
+    /*
+      (1) pick a free victim.
+      (*) flight pattern.
+      (6) if reaching the top, mutate.
+      (*) enemy must de-register if destroyed.
+      */
 
 // match: sprite animation.
 const SIZE = K.vd2s(G.v2d_scale_i(G.v2d_mk(16, 16), 2));
@@ -20,12 +28,17 @@ const Lander: Lemk.EnemyMk = {
     WARPIN_RESOURCE_ID,
     warpin_mk: (db: GDB.GameDB): U.O<S.Warpin> => {
 	const anim = new A.AnimatorDimensions(anims_spec_mk(db));
-	const weapons = {};
+	// todo: fix up all this weapon stuff, everywhere, just shoot me.
+	// 1 weapon that swivels so there's only one clip to avoid too many shots. :-(
+	const [ews] = Ebw.scale_specs(db.shared.level_index1, S.Rank.basic, true);
+	const weapons = {
+            'w': Ebw.weapon_mk(ews),
+	};
 	const acc = G.v2d_mk(
 	    Eu.level_scale_up(db.shared.level_index1, 0.0002, 0.0002),
 	    Eu.level_scale_up(db.shared.level_index1, 0.0005, 0.001),
 	);
-	const flight_pattern = new LanderAttackPattern();
+	const flight_pattern = new LanderPattern(db, undefined); // todo: pick victim!
 	const spec: Emk.EnemySpec = {
 	    fighter_kind: "lander",
             anim: anim,
@@ -82,9 +95,62 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
     return table;
 }
 
-// todo: seek victims. make sure no more than 1 lander per victim.
-class LanderAttackPattern implements Fp.FlightPattern {
+class LanderPattern implements Fp.FlightPattern {
+    private pattern: Fp.FlightPattern;
+    constructor(db: GDB.GameDB, private victim: U.O<GDB.DBID>) {
+	this.pattern = this.patrol_pattern_mk(db);
+    }
+
+    private patrol_pattern_mk(db: GDB.GameDB) {
+	return new Fp.DescendAndGoSine(
+	    db,
+	    SIZE,
+	    Rnd.singleton.v2d_around(
+		G.v2d_mk_nn(Eu.level_scale_up(db.shared.level_index1, 0.0008, 0.001)),
+		G.v2d_mk_nn(Eu.level_scale_up(db.shared.level_index1, 0.0001, 0.0005))
+	    ),
+	    { y: db.shared.world.gameport.world_bounds.size.y * 0.3 }
+	);
+    }
+
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
-      	return G.v2d_mk_0();
+	this.update_pattern(db, src);
+	return this.pattern.step_delta_acc(db, src);
+    }
+
+    /*
+      (0) if no victim, just some standard patrol.
+      - if the victim was rescued.
+      - if the victim was destroyed.
+      (1) move horizontally to their x position.
+      (2) descend y to just above them.
+      (3) pick them up.
+      (4) ascend with them in y.
+    */
+    update_pattern(db: GDB.GameDB, src: S.Enemy) {
+    }
+}
+
+class HorizontalPattern implements Fp.FlightPattern {
+    step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
+	return G.v2d_mk_0();
+    }
+}
+
+class DownPattern implements Fp.FlightPattern {
+    step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
+	return G.v2d_mk_0();
+    }
+}
+
+class CapturingPattern implements Fp.FlightPattern {
+    step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
+	return G.v2d_mk_0();
+    }
+}
+
+class UpPattern implements Fp.FlightPattern {
+    step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
+	return G.v2d_mk_0();
     }
 }

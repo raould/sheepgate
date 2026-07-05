@@ -1,4 +1,6 @@
 /* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+import { DBID } from './dbid';
+export type { DBID };
 import * as Db from './db';
 import * as Cdb from './client_db';
 import * as C from './collision';
@@ -50,7 +52,6 @@ export function EmptyCallback(db: GameDB) { };
 // no type aliases can be round-tripped through hash keys :(
 // so i kinda hate (at least my understanding of) typescript?)
 export const MISSING_ID = "<missing_id>";
-export type DBID = string;
 export interface Identity {
     dbid: DBID;
 }
@@ -278,6 +279,9 @@ export interface DBSharedItems {
     // todo: deconflate the fact that in several ways
     // this is an unholy conflation of model & view.
     enemies: U.Dict<S.Enemy>;
+    // todo: i wish DBID were further subdivided into
+    // per-entity-id-types, if you know what i mean.
+    victims: U.Bi<DBID, DBID>; // enemy : person.
     indestructibles: U.Dict<S.Enemy>;
     munchies: U.Dict<S.Enemy>;
     kamikaze: U.Dict<S.Enemy>;
@@ -291,7 +295,7 @@ export interface DBSharedItems {
     // array so we can O(1) index for y limiting.
     ground: Array<Gr.Ground>;
     base: S.Base;
-    people: U.Dict<S.Person>;
+    people: U.Dict<S.Person>; // sheeple, too.
     gems: U.Dict<S.Gem>;
     fx: U.Dict<S.Sprite>;
     particles: U.Dict<Pr.ParticleGenerator>;
@@ -307,6 +311,7 @@ export function debug_dump_items(db: GameDB, msg?: string) {
         `#player_explosions=${U.count_dict(db.shared.items.player_explosions)}`,
         `#warpin=${U.count_dict(db.shared.items.warpin)}`,
         `#enemies=${U.count_dict(db.shared.items.enemies)}`,
+	`#victims=${db.shared.items.victims.size}`,
         `#indestructibles=${U.count_dict(db.shared.items.indestructibles)}`,
         `#munchies=${U.count_dict(db.shared.items.munchies)}`,
         `#kamikaze=${U.count_dict(db.shared.items.kamikaze)}`,
@@ -338,6 +343,7 @@ export function assert_dbitems(db: GameDB) {
     D.assert(items.player_explosions != null, () => "missing player_explosions");
     D.assert(items.warpin != null, () => "missing warpin");
     D.assert(items.enemies != null, () => "missing enemies");
+    D.assert(items.victims != null, () => "missing victims");
     D.assert(items.indestructibles != null, () => "missing indestructibles");
     D.assert(items.munchies != null, () => "missing munchies");
     D.assert(items.kamikaze != null, () => "missing kamikaze");
@@ -395,6 +401,26 @@ export function get_warpin(db: GameDB, wid: U.O<DBID>): U.O<S.Sprite> {
 
 export function get_enemy(db: GameDB, eid: U.O<DBID>): U.O<S.Enemy> {
     return U.exists(eid) ? db.shared.items.enemies[eid] : undefined;
+}
+
+export function get_victim(db: GameDB, eid: U.O<DBID>): U.O<S.Person> {
+    if (U.exists(eid)) {
+	const vid = db.shared.items.victims.getB(eid);
+	if (U.exists(vid)) {
+	    return get_person_waiting(db, vid);
+	}
+    }
+    return undefined;
+}
+
+export function get_victim_enemy(db: GameDB, vid: U.O<DBID>): U.O<S.Enemy> {
+    if (U.exists(vid)) {
+	const eid = db.shared.items.victims.getA(vid);
+	if (U.exists(eid)) {
+	    return get_enemy(db, eid);
+	}
+    }
+    return undefined;
 }
 
 export function get_munchie(db: GameDB, eid: U.O<DBID>): U.O<S.Enemy> {

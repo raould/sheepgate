@@ -245,7 +245,7 @@ export enum BeamingState {
     beaming_down
 };
 
-export interface Person extends CollidableSprite {
+export interface Person extends CollidableSprite { // sheeple, too.
     beaming_state: BeamingState;
     beam_up(db: GDB.GameDB): void;
     beam_down(db: GDB.GameDB, down_rect: G.Rect, on_end: (db: GDB.GameDB) => void): void;
