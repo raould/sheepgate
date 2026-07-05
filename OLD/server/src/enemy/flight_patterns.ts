@@ -17,7 +17,8 @@ import { DebugGraphics } from '../debug_graphics';
 
 // todo: these should be sure not to make the
 // sprites go off screen or anything else silly. :-(
-// fix the logic, it is all kinda incorrect crap, unfortunately.
+// todo: fix the logic, it is all kinda incorrect crap, unfortunately.
+// especially for the hyper-megas. :-(
 // all the random padding hacks are because i haven't set up
 // a good way to iteratively visually debug wtf this all is doing
 // vs. what i really want it to do, apologies, so sad, indictment.
@@ -29,6 +30,20 @@ export interface FlightPattern {
     // otherwise they will be out of sync and the changes to the
     // src will be broken on the next simulation step.
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D;
+}
+
+export interface FlightPatternDone extends FlightPattern {
+    isDone: boolean;
+}
+
+export class FlightPatternContinuous implements FlightPatternDone {
+    isDone: boolean;
+    constructor(private flight_pattern: FlightPattern) {
+	this.isDone = false;
+    }
+    step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
+	return this.flight_pattern.step_delta_acc(db, src);
+    }
 }
 
 function rect_in_bounds_y(db: GDB.GameDB, r: G.Rect, top_pad: number, bottom_pad: number): G.Rect {
