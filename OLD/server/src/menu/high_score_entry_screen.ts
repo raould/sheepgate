@@ -205,7 +205,7 @@ export class HighScoreEntryScreen extends Is.InstructionsScreen {
         const measure = Tx.measure_text(this.letters, CALLSIGN_SIZE);
         const h_offset = measure.x / 2;
         const t: Dr.DrawText = {
-            lb: G.v2d_sub(center, G.v2d_mk_x0(h_offset)),
+            lb: G.v2d_sub(center, G.v2d_mk_x(h_offset)),
             text: this.letters,
             font: `${CALLSIGN_SIZE}px ${K.MENU_FONT}`, // match: offset (hack).
             fillStyle: this.callsign_cycle.current(),

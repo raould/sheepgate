@@ -99,7 +99,7 @@ export class SizzlerScreen implements M.Menu {
         const measure = Tx.measure_text(sub, size);
         const h_offset = -1 * measure.x/2;
         const t: Dr.DrawText = {
-            lb: G.v2d_add(center, G.v2d_mk_x0(h_offset)),
+            lb: G.v2d_add(center, G.v2d_mk_x(h_offset)),
             text: sub,
             font: `${size}px ${K.MENU_FONT}`, // match: offset (hack).
             fillStyle: hcycle.current(),

@@ -23,11 +23,11 @@ export function is_zero(n: number): boolean {
 // don't fully grok it. ok, ok, actually i don't wish that, what
 // i wish is that javascript's design and DX didn't suck like that!
 export type O<T> = T | undefined;
-// wtf tsc? this is not actually 'guarding'.
-export function isU(a: any): boolean {
-    return a == undefined;
+// note: also! this is broken bad since typescript can't see through it.
+export function isU(val: any): val is undefined {
+    return val == undefined;
 }
-// wtf tsc? this is not actually 'guarding'.
+// wtf tsc? this was empirically not actually 'guarding' for me sometimes?
 export function exists<T>(val: T | undefined | null): val is T {
     return val !== undefined && val !== null;
 }
@@ -124,6 +124,8 @@ export function for_each_dict<E>(d: Dict<E>, fn: (e:E, k:string, self:Dict<E>) =
     }
 }
 
+//------------------------------
+
 export interface FilteredDict<E> {
     kept: Dict<E>;
     removed: Dict<E>;
@@ -140,6 +142,16 @@ export function filter_dict<E>(dict: Dict<E>, fn: (_: DBID, __: E) => boolean): 
         }
     }
     return f;
+}
+
+//------------------------------
+
+export type ValueMkType<T> = () => Set<T>;
+export function get_or_mk_map<K, T>(dict: Map<K, Set<T>>, key: K, value_mk_fn: ValueMkType<T>): Set<T> {
+    if (dict.get(key) == null) {
+        dict.set(key, value_mk_fn());
+    }
+    return dict.get(key)!;
 }
 
 //------------------------------
@@ -204,15 +216,7 @@ export class Bi<A,B> {
     }
 }
 
-//------------------------------
-
-export type ValueMkType<T> = () => Set<T>;
-export function get_or_mk_map<K, T>(dict: Map<K, Set<T>>, key: K, value_mk_fn: ValueMkType<T>): Set<T> {
-    if (dict.get(key) == null) {
-        dict.set(key, value_mk_fn());
-    }
-    return dict.get(key)!;
-}
+// ----------------------------------------
 
 // todo: I want to use ValueMkType<T> here but dunno how. :-(
 export function set_mk<T>() {

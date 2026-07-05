@@ -57,10 +57,10 @@ export function v2d_mk(x: number, y: number): V2D {
 export function v2d_mk_nn(n: number): V2D {
     return { x: n, y: n };
 }
-export function v2d_mk_x0(x: number): V2D {
+export function v2d_mk_x(x: number): V2D {
     return v2d_mk(x, 0);
 }
-export function v2d_mk_0y(y: number): V2D {
+export function v2d_mk_y(y: number): V2D {
     return v2d_mk(0, y);
 }
 export function v2d_mk_0(): V2D {
@@ -497,8 +497,8 @@ export function rects_are_overlapping_wrapH(src: Rect, dst: Rect, bounds0: V2D):
 }
 export function rect_siblingsH(src: Rect, bounds: Rect): [Rect, Rect] {
     return [
-        rect_move(src, v2d_mk_x0(rect_w(bounds))),
-        rect_move(src, v2d_mk_x0(-rect_w(bounds)))
+        rect_move(src, v2d_mk_x(rect_w(bounds))),
+        rect_move(src, v2d_mk_x(-rect_w(bounds)))
     ];
 }
 export function rect_rhs(r: Rect): Rect { // "right hand side", right half.
