@@ -9,18 +9,21 @@ set -euo pipefail
 # websocket version. at least building this
 # out of paranoia. :-)
 echo "++++++++++++++++++++ BUILDING CLIENT..."
+# not actually building code, for standalone
+# the client is src/onering.ts.
 (cd OLD/client/src && npm i)
 echo "-------------------- DONE BUILDING CLIENT"
 
 # ----------------------------------------
 
 echo "++++++++++++++++++++ BUILDING SERVER..."
-(cd OLD/server/src && npm i)
+(cd OLD/server/src && npm i && npx tsc)
 echo "-------------------- DONE BUILDING SERVER"
 
 # ----------------------------------------
 
 echo "++++++++++++++++++++ BUILDING ONERING..."
+# the actual client for standalone.
 (npm i && npm run build)
 echo "-------------------- DONE BUILDING ONERING"
 

@@ -645,6 +645,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		player_explosions: {},
 		warpin: {},
 		enemies: {},
+		victims: new U.Bi<GDB.DBID,GDB.DBID>(),
 		indestructibles: {},
 		munchies: {},
 		kamikaze: {},

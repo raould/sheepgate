@@ -1,5 +1,6 @@
 /* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as D from '../debug';
+import { DBID } from '../dbid';
 
 // todo: uh, tests?
 // todo: share this with client, probably.
@@ -93,6 +94,7 @@ export function filter_array<E>(array: Array<E>, fn: (_: E) => boolean): Filtere
     return f;
 }
 
+//------------------------------
 // todo: this is an over simplification in that
 // the only thing we use are Objects
 // and you'd have to use things like
@@ -102,6 +104,7 @@ export function filter_array<E>(array: Array<E>, fn: (_: E) => boolean): Filtere
 // so i had to make my own for use in e.g. methods below.
 // it all sucks, apologies.
 // note: this is (unfortunately?) not used for an ES6 Map, just a regular JS {}.
+// note: i want this to be like type = { [key: DBID]: E } but couldn't get it working retroactively.
 export interface Dict<E> {
     [key: string]: E;
 }
@@ -123,7 +126,7 @@ export interface FilteredDict<E> {
     removed: Dict<E>;
 }
 
-export function filter_dict<E>(dict: Dict<E>, fn: (_: string, __: E) => boolean): FilteredDict<E> {
+export function filter_dict<E>(dict: Dict<E>, fn: (_: DBID, __: E) => boolean): FilteredDict<E> {
     const f: FilteredDict<E> = { kept: {}, removed: {} };
     for (const [k, v] of Object.entries(dict)) {
         if (fn(k, v)) {
@@ -136,13 +139,54 @@ export function filter_dict<E>(dict: Dict<E>, fn: (_: string, __: E) => boolean)
     return f;
 }
 
-export type ValueMkType<T> = () => Set<T>;
-export function get_or_mk_dict<T>(dict: { [k: string]: Set<T> }, key: string, value_mk_fn: ValueMkType<T>): Set<T> {
-    if (dict[key] == null) {
-        dict[key] = value_mk_fn();
+//------------------------------
+
+export class Bi<A,B> {
+    private a2b: Map<A,B>;
+    private b2a: Map<B,A>;
+    constructor() {
+	this.a2b = new Map<A,B>();
+	this.b2a = new Map<B,A>();
+	D.assert(this.a2b.size == this.b2a.size);
     }
-    return dict[key];
+    public get size() {
+	D.assert(this.a2b.size == this.b2a.size);
+	return this.a2b.size;
+    }
+    public add(a:A, b:B) {
+	this.a2b.set(a, b);
+	this.b2a.set(b, a);
+	D.assert(this.a2b.size == this.b2a.size);
+    }
+    public getB(a: A): B|undefined {
+	D.assert(this.a2b.size == this.b2a.size);
+	return this.a2b.get(a);
+    }
+    public getA(b: B): A|undefined {
+	D.assert(this.a2b.size == this.b2a.size);
+	return this.b2a.get(b);
+    }
+    public removeA(a:A) {
+	const b = this.a2b.get(a);
+	this.a2b.delete(a);
+	if (b != null) {
+	    this.b2a.delete(b);
+	}
+	D.assert(this.a2b.size == this.b2a.size);
+    }
+    public removeB(b:B) {
+	const a = this.b2a.get(b);
+	this.b2a.delete(b);
+	if (a != null) {
+	    this.a2b.delete(a);
+	}
+	D.assert(this.a2b.size == this.b2a.size);
+    }
 }
+
+//------------------------------
+
+export type ValueMkType<T> = () => Set<T>;
 export function get_or_mk_map<K, T>(dict: Map<K, Set<T>>, key: K, value_mk_fn: ValueMkType<T>): Set<T> {
     if (dict.get(key) == null) {
         dict.set(key, value_mk_fn());
