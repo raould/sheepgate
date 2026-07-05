@@ -41,13 +41,13 @@ const Hypermega: Lemk.EnemyMk = {
 		fighter_kind: "hypermega",
 		in_cmask: C.CMask.enemy_bounce,
 		explosion_kind: S.ExplosionKind.cbm,
-		anim: anim,
+		anim,
 		rank: S.Rank.hypermega,
 		hp_init: K.ENEMY_HYPERMEGA_HP,
 		damage: K.ENEMY_HYPERMEGA_DAMAGE,
-		weapons: weapons,
+		weapons,
 		shield_scale: G.v2d_mk_nn(1.3),
-		flight_pattern: flight_pattern,
+		flight_pattern,
 		gem_count: K.ENEMY_HYPERMEGA_GEM_COUNT
             }
 	);

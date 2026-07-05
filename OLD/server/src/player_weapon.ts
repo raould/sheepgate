@@ -113,7 +113,7 @@ export function player_weapon_mk(spec: PlayerWeaponSpec): S.Weapon {
 		damage: spec.shot_damage,
 		in_cmask: spec.in_cmask,
 		from_cmask: spec.from_cmask,
-		anim: anim,
+		anim,
 		step(db: GDB.GameDB, dbid: GDB.DBID) {
 		    U.if_let(
 			GDB.get_shot(db, dbid),

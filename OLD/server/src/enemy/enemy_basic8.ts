@@ -38,12 +38,12 @@ const Basic8: Lemk.EnemyMk = {
 	const flight_pattern = new Fp.BuzzPlayer(db, acc);
 	const spec: Emk.EnemySpec = {
 	    fighter_kind: "basic8",
-            anim: anim,
+            anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_BASIC_HP,
             damage: K.ENEMY_BASIC_DAMAGE,
-            weapons: weapons,
-            flight_pattern: flight_pattern,
+            weapons,
+            flight_pattern,
             gem_count: K.ENEMY_BASIC_GEM_COUNT,
 	};
 	return Emk.warpin_mk_enemy(

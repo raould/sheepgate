@@ -23,12 +23,12 @@ const Pod: Lemk.EnemyMk = {
 	const flight_pattern = new Fp.BuzzPlayer(db, G.v2d_mk(0.0001, 0.0001));
 	const spec: Emk.EnemySpec = {
 	    fighter_kind: "pod",
-            anim: anim,
+            anim,
             rank: S.Rank.basic,
             hp_init: K.ENEMY_POD_HP,
             damage: K.ENEMY_POD_DAMAGE,
             weapons: {},
-            flight_pattern: flight_pattern,
+            flight_pattern,
             gem_count: 0,
 	    on_death: (db: GDB.GameDB, self: S.Enemy) => {
 		const spawn_count = K.ENEMY_POD_SWARMER_COUNT;

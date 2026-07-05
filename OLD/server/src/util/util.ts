@@ -95,23 +95,20 @@ export function filter_array<E>(array: Array<E>, fn: (_: E) => boolean): Filtere
 }
 
 //------------------------------
-// todo: this is an over simplification in that
-// the only thing we use are Objects
-// and you'd have to use things like
-// Object.keys() on your dict.
-// but i couldn't find a type like this in typescript
-// that had a genetic parameter,
-// so i had to make my own for use in e.g. methods below.
-// it all sucks, apologies.
-// note: this is (unfortunately?) not used for an ES6 Map, just a regular JS {}.
+// note: this is a failed attempt, it sucks in many ways.
+// note: this cannot be used with ES6 Map, only JS {}.
+// todo: this is an over simplification in that the only thing we use
+// are Objects and you'd have to use things like Object.keys() on your
+// dict.  but i couldn't find a type like this in typescript that had
+// a genetic parameter, so i had to make my own for use in
+// e.g. methods below.
+// omfexpletiveg i so utterly effing hate javascript.
+// i really wish i was using Maps instead of {}jects.
+// but then Maps kind of suck in their own ways, too.
 // note: i want this to be like type = { [key: DBID]: E } but couldn't get it working retroactively.
 export interface Dict<E> {
     [key: string]: E;
 }
-
-// omfexpletiveg i so utterly effing hate javascript.
-// i really wish i was using Maps instead of {}jects.
-// but then Maps kind of suck in their own ways, too.
 
 export function count_dict(d: O<Dict<any>>): number {
     return d == null ? 0 : Object.keys(d).length;
@@ -119,6 +116,12 @@ export function count_dict(d: O<Dict<any>>): number {
 
 export function add_self_dict(d: Dict<any>, kv: any) {
     d[kv] = kv;
+}
+
+export function for_each_dict<E>(d: Dict<E>, fn: (e:E, k:string, self:Dict<E>) => void): void {
+    for (const [k, v] of Object.entries(d)) {
+	fn(v, k, d);
+    }
 }
 
 export interface FilteredDict<E> {
@@ -144,29 +147,45 @@ export function filter_dict<E>(dict: Dict<E>, fn: (_: DBID, __: E) => boolean): 
 export class Bi<A,B> {
     private a2b: Map<A,B>;
     private b2a: Map<B,A>;
+
     constructor() {
 	this.a2b = new Map<A,B>();
 	this.b2a = new Map<B,A>();
 	D.assert(this.a2b.size == this.b2a.size);
     }
+
+    public forEachA(fn: (value:B, key:A, self: Bi<A,B>) => void): void {
+	this.a2b.forEach((v,k,m) => fn(v,k,this));
+	D.assert(this.a2b.size == this.b2a.size);
+    }
+
+    public forEachB(fn: (value:A, key:B, self: Bi<A,B>) => void): void {
+	this.b2a.forEach((v,k,m) => fn(v,k,this));
+	D.assert(this.a2b.size == this.b2a.size);
+    }
+
     public get size() {
 	D.assert(this.a2b.size == this.b2a.size);
 	return this.a2b.size;
     }
+
     public add(a:A, b:B) {
 	this.a2b.set(a, b);
 	this.b2a.set(b, a);
 	D.assert(this.a2b.size == this.b2a.size);
     }
+
     public getB(a: A): B|undefined {
 	D.assert(this.a2b.size == this.b2a.size);
 	return this.a2b.get(a);
     }
+
     public getA(b: B): A|undefined {
 	D.assert(this.a2b.size == this.b2a.size);
 	return this.b2a.get(b);
     }
-    public removeA(a:A) {
+
+    public deleteA(a:A) {
 	const b = this.a2b.get(a);
 	this.a2b.delete(a);
 	if (b != null) {
@@ -174,7 +193,8 @@ export class Bi<A,B> {
 	}
 	D.assert(this.a2b.size == this.b2a.size);
     }
-    public removeB(b:B) {
+
+    public deleteB(b:B) {
 	const a = this.b2a.get(b);
 	this.b2a.delete(b);
 	if (a != null) {

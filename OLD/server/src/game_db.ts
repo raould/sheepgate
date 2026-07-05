@@ -583,3 +583,20 @@ function reap_named<T extends S.Sprite>(db: GameDB, parent: object, name: string
 function reap_sprites<T extends S.Sprite>(db: GameDB, collection: U.Dict<T>): U.FilteredDict<T> {
     return U.filter_dict<T>(collection, (dbid, e) => keep_fn(db, dbid, e));
 }
+
+export function pick_victim(db: GameDB): U.O<DBID> {
+    // todo: so much misisng nuance, like picking a victim on the opposite side of the world.
+    let picked: U.O<DBID> = undefined;
+    U.for_each_dict(
+	db.shared.items.people,
+	(p: S.Person) => {
+	    if (U.isU(picked)) {
+		const eid = db.shared.items.victims.getA(p.dbid);
+		if (U.exists(eid)) {
+		    picked = eid;
+		}
+	    }
+	}
+    );
+    return picked;
+}

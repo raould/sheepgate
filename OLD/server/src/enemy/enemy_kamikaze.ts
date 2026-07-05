@@ -36,12 +36,12 @@ const Kamikaze: Lemk.EnemyMk = {
 	const flight_pattern = new Fp.BuzzPlayer(db, acc, true);
 	const spec: Emk.EnemySpec = {
 	    fighter_kind: "kamikaze",
-            anim: anim,
+            anim,
             rank: S.Rank.small,
             hp_init: K.ENEMY_KAMIKAZE_HP,
             damage: K.ENEMY_KAMIKAZE_DAMAGE,
-            weapons: weapons,
-            flight_pattern: flight_pattern,
+            weapons,
+            flight_pattern,
             gem_count: K.ENEMY_KAMIKAZE_GEM_COUNT,
 	};
 	return Emk.warpin_mk_kamikaze(

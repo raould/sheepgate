@@ -40,12 +40,12 @@ const Mega: Lemk.EnemyMk = {
     	    WARPIN_RESOURCE_ID,
             {
 		fighter_kind: "mega",
-		anim: anim,
+		anim,
 		rank: S.Rank.mega,
 		hp_init: K.ENEMY_MEGA_HP,
 		damage: K.ENEMY_MEGA_DAMAGE,
-		weapons: weapons,
-		flight_pattern: flight_pattern,
+		weapons,
+		flight_pattern,
 		gem_count: K.ENEMY_MEGA_GEM_COUNT,
 		// todo: these should really come from magic pixels in the image resources.
 		hardpoint_left: (r: G.Rect): G.V2D => {
