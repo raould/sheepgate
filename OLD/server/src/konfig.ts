@@ -67,7 +67,7 @@ export const MAX_HIGH_SCORE_COUNT = 8;
 export const WS_PORT = 6969; // K, and client has to match, natch.
 export const INVALID_CLIENT_ID = Number.NEGATIVE_INFINITY;  // K
 
-export const FPS = 60; // K
+export const FPS = 30; // K
 export const FRAME_MSEC_DT = 1000 / FPS; // K
 
 // todo: match: the size of the game world is runtime
