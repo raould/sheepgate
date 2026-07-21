@@ -125,6 +125,7 @@ DO THESE NOW/NEXT: (maybe?)
 
 + hud proximity warning markers for the hypermega.
 + enemy shots already can intersect people, so make people killable? :(
++ enemy landers that steal people and mutate.
 
 -1000) need to tell the player why they died. and prevent roids from being too low.
 -999) the inter-level data is not designed well.
