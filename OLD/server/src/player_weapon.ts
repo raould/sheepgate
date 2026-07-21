@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as GDB from './game_db';
 import * as G from './geom';
 import * as S from './sprite';
@@ -62,7 +62,7 @@ export function player_weapon_mk(spec: PlayerWeaponSpec): S.Weapon {
 		);
 		const lt = Rnd.singleton.v2d_around(
 		    lt_middle,
-		    G.v2d_mk_0y(5)
+		    G.v2d_mk_y(5)
 		)
 		return lt;
 	    })();
@@ -113,7 +113,7 @@ export function player_weapon_mk(spec: PlayerWeaponSpec): S.Weapon {
 		damage: spec.shot_damage,
 		in_cmask: spec.in_cmask,
 		from_cmask: spec.from_cmask,
-		anim: anim,
+		anim,
 		step(db: GDB.GameDB, dbid: GDB.DBID) {
 		    U.if_let(
 			GDB.get_shot(db, dbid),

@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as K from '../konfig';
 import * as Sz from './sizzler_screen';
 import * as G from '../geom';
@@ -51,7 +51,7 @@ export class InstructionsScreen extends Sz.SizzlerScreen {
             const v_offset = this.line_height * index;
             this.step_text(
                 line,
-                G.v2d_add(this.top, G.v2d_mk_0y(v_offset)),
+                G.v2d_add(this.top, G.v2d_mk_y(v_offset)),
                 this.size,
                 hcycle
             );

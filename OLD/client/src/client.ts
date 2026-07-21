@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 // todo: figure out the living hell that is 
 // packaging for the browser, so that this
 // can be split up & also share code w/ the server.
@@ -1374,6 +1374,10 @@ function loadImages() {
 	loadImage(`enemies/swarmers/sprite_2${n}.png`);
     });
     
+    [0,1,2,3].forEach(anim => {
+	loadImage(`enemies/lander/lander${anim}.png`);
+    });
+
     [1,2,3].forEach(anim => {
 	loadImage(`enemies/basic1/sph${anim}.png`);
     });

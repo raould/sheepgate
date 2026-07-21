@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as Lv from './level';
 import * as Lemk from './enemy_mk';
 import * as Gs from '../game_stepper';
@@ -48,6 +48,7 @@ export interface LevelEnemyKonfig {
 export interface LevelKonfig {
     player_kind: S.PlayerKind;
     player_disable_beaming?: boolean; // default falsy.
+    El?: LevelEnemyKonfig,
     Eb1?: LevelEnemyKonfig,
     Eb2?: LevelEnemyKonfig,
     Eb3?: LevelEnemyKonfig,
@@ -375,6 +376,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 	const basics: U.O<Ebg.EnemyGeneratorSpec>[] = [];
 	// @ts-ignore-error eyeroll
 	if (K.DEBUG_HACK_ONLY_HYPERMEGA !== true) {
+	    basics.push(this.init_basic_from_konfig(this.konfig.El, "lander"));
 	    basics.push(this.init_basic_from_konfig(this.konfig.Eb1, "basic1"));
 	    basics.push(this.init_basic_from_konfig(this.konfig.Eb2, "basic2"));
 	    basics.push(this.init_basic_from_konfig(this.konfig.Eb3, "basic3"));
@@ -643,6 +645,7 @@ export abstract class AbstractLevelTypeA extends Lv.AbstractLevel {
 		player_explosions: {},
 		warpin: {},
 		enemies: {},
+		victims: new U.Bi<GDB.DBID,GDB.DBID>(),
 		indestructibles: {},
 		munchies: {},
 		kamikaze: {},

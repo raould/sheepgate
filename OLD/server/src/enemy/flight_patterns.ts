@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as GDB from '../game_db';
 import * as K from '../konfig';
 import * as G from '../geom';
@@ -17,7 +17,8 @@ import { DebugGraphics } from '../debug_graphics';
 
 // todo: these should be sure not to make the
 // sprites go off screen or anything else silly. :-(
-// fix the logic, it is all kinda incorrect crap, unfortunately.
+// todo: fix the logic, it is all kinda incorrect crap, unfortunately.
+// especially for the hyper-megas. :-(
 // all the random padding hacks are because i haven't set up
 // a good way to iteratively visually debug wtf this all is doing
 // vs. what i really want it to do, apologies, so sad, indictment.
@@ -31,21 +32,35 @@ export interface FlightPattern {
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D;
 }
 
-function rect_in_bounds_y(db: GDB.GameDB, r: G.Rect, top_pad: number, bottom_pad: number): G.Rect {
+export interface FlightPatternDone extends FlightPattern {
+    is_done: boolean;
+}
+
+export class FlightPatternContinuous implements FlightPatternDone {
+    is_done: boolean;
+    constructor(private flight_pattern: FlightPattern) {
+	this.is_done = false;
+    }
+    step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {
+	return this.flight_pattern.step_delta_acc(db, src);
+    }
+}
+
+export function rect_in_bounds_y(db: GDB.GameDB, r: G.Rect): G.Rect {
     // have to make sure the (1) enemy, (2) shield, (3) hp bar are visible.
     // todo: this is all a hack, is not really accurate.
     const lt = G.rect_lt(r);
     const rv = G.rect_h(r);
     const sv = rv * K.SHIELD_SCALE.y;
     // try to avoid overlapping the top of the screen.
-    const min_y = K.SHIELD_BAR_HEIGHT + K.SHIELD_BAR_OFFSET_Y + sv/2 + top_pad;
+    const min_y = K.SHIELD_BAR_HEIGHT + K.SHIELD_BAR_OFFSET_Y + sv/2 + TOP_PAD;
     // try to avoid overlapping the ground, also try to avoid overlapping the base.
-    const max_y = db.shared.world.ground_y - (K.BASE_SIZE.y * K.BASE_SHIELD_SCALE.y) - sv - bottom_pad;
+    const max_y = db.shared.world.ground_y - (K.BASE_SIZE.y * K.BASE_SHIELD_SCALE.y) - sv - BOTTOM_PAD;
     const y = Math.max(min_y, Math.min(max_y, lt.y));
     return G.rect_set_lt(r, G.v2d_set_y(lt, y));
 }
 
-function calculate_acc(src: G.V2D, dst: G.V2D, acc_mag: G.V2D, dt: number): G.V2D {
+export function calculate_acc(src: G.V2D, dst: G.V2D, acc_mag: G.V2D, dt: number): G.V2D {
     const delta_acc = G.v2d_scale_v2d(
         G.v2d_norm(
             G.v2d_sub(dst, src)
@@ -123,7 +138,7 @@ export class BuzzPlayer implements FlightPattern {
                 // todo: ugh this can still overshoot y.
                 const safe_player = this.full_range ?
 		      player :
-		      rect_in_bounds_y(db, player, TOP_PAD, BOTTOM_PAD);
+		      rect_in_bounds_y(db, player);
                 const target_y = G.rect_mid(safe_player).y;
                 const diff = target_y - G.rect_mid(src).y;
                 const sign = U.sign(diff);
@@ -135,6 +150,7 @@ export class BuzzPlayer implements FlightPattern {
     }
 }
 
+// more hunter-seeker-reactive than BuzzPlayer. i guess.
 export class TargetPlayer implements FlightPattern {
     target: G.V2D;
     private ticker: Tkg.TickingGenerator<G.V2D>;
@@ -145,11 +161,11 @@ export class TargetPlayer implements FlightPattern {
             db,
             GDB.id_mk(),
             {
-                tick_msec: tick_msec,
+                tick_msec,
                 generate: (db: GDB.GameDB): U.O<G.V2D> => {
                     return U.if_let(
                         GDB.get_player(db),
-                        p => G.rect_mid(rect_in_bounds_y(db, p, TOP_PAD, BOTTOM_PAD))
+                        p => G.rect_mid(rect_in_bounds_y(db, p))
                     )
                 }
             }
@@ -251,7 +267,7 @@ export class DescendAndGoStraight implements FlightPattern {
 	    G.rect_b(K.GAMEPORT_RECT) - BOTTOM_PAD - size.y,
 	);
         this.dst_y = y ?? rnd_y;
-        this.normal = G.v2d_mk_x0(Rnd.singleton.sign() * 100);
+        this.normal = G.v2d_mk_x(Rnd.singleton.sign() * 100);
     }
 
     step_delta_acc(db: GDB.GameDB, src: S.Enemy): G.V2D {

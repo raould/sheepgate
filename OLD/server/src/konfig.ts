@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as D from './debug';
 import * as Uf from './util/util_feq';
 import * as G from './geom';
@@ -126,7 +126,7 @@ export const HUD_MESSAGE_FONT = `${d2si(14)}px ${GAME_FONT}`;
 // **** TODO: this is a buggy broken poor man's attempt at layout.
 const HUD_HEIGHT = d2si(75);
 export const HUDPORT_RECT = G.rect_mk(
-    G.v2d_sub(G.rect_lb(SCREEN_RECT), G.v2d_mk_0y(HUD_HEIGHT)),
+    G.v2d_sub(G.rect_lb(SCREEN_RECT), G.v2d_mk_y(HUD_HEIGHT)),
     G.v2d_mk(G.rect_w(SCREEN_RECT), HUD_HEIGHT)
 );
 export const HUD_OUTLINE_WIDTH = d2si(2);
@@ -137,20 +137,20 @@ export const HUD_VISIBLE_RECT = G.rect_inset(
 );
 
 // radar is centered in the HUD and has to leave room for other hud information on the sides.
-const RADAR_HUD_INSET = vd2si(G.v2d_mk_x0(175));
+const RADAR_HUD_INSET = vd2si(G.v2d_mk_x(175));
 export const RADAR_RECT = G.rect_inset(HUD_VISIBLE_RECT, RADAR_HUD_INSET);
 D.assert_fn(G.rect_w(RADAR_RECT), G.rect_w(HUD_VISIBLE_RECT), (a,b)=>a<=b, "radar1");
 D.assert_fn(G.rect_b(RADAR_RECT),G.rect_b(HUD_VISIBLE_RECT), (a,b)=>a==b, "radar2");
 export const RADAR_MID = G.rect_mid(RADAR_RECT);
 // hacky fudge arbitrary inset so the blips don't go under the border vertically, so much.
-export const RADAR_SAFE_RECT = G.rect_inset(RADAR_RECT, G.v2d_mk_0y(d2si(10)));
+export const RADAR_SAFE_RECT = G.rect_inset(RADAR_RECT, G.v2d_mk_y(d2si(10)));
 export const RADAR_GAMEPORT_NOTCH_LENGTH = d2si(5);
 export const RADAR_GAMEPORT_NOTCH_WIDTH = d2si(3);
 
 const HUD_SIDE_SIZE = G.v2d_scale_v2d(
     G.v2d_sub(
         HUD_VISIBLE_RECT.size,
-        G.v2d_mk_x0(G.rect_w(RADAR_RECT))
+        G.v2d_mk_x(G.rect_w(RADAR_RECT))
     ),
     G.v2d_mk(0.5, 1)
 );
@@ -161,7 +161,7 @@ export const HUD_LEFT_RECT = G.rect_mk(
 D.assert_fn(G.rect_rt(HUD_LEFT_RECT), G.rect_lt(RADAR_RECT), (a,b)=>G.v2d_eq(a,b), "left");
 export const HUD_RIGHT_RECT = G.rect_move(
     G.rect_mk(G.rect_rt(HUD_VISIBLE_RECT), HUD_SIDE_SIZE),
-    G.v2d_mk_x0(-HUD_SIDE_SIZE.x)
+    G.v2d_mk_x(-HUD_SIDE_SIZE.x)
 );
 D.assert_fn(G.rect_rt(HUD_RIGHT_RECT), G.rect_rt(HUD_VISIBLE_RECT), (a,b)=>G.v2d_eq(a,b), "right");
 
@@ -184,7 +184,7 @@ export const ENEMY_FIRING_RECT = G.rect_inset(
 );
 
 export const GAMEPORT_PLAYER_ZONE_MIN_WIDTH = d2si(80); // match: approx player sprite sizes.
-export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x0(d2si(80) * 3); // match: approx player sprite sizes.
+export const GAMEPORT_PLAYER_ZONE_INSET = G.v2d_mk_x(d2si(80) * 3); // match: approx player sprite sizes.
 // match: if PLAYER_DELTA_*_ACC changes then these will likely need adjustment.
 // note: the x value is more tricky as it is used in more than one way during GAMEPORT update.
 // that is because when the player ship transitions from being outside the default zone
@@ -396,6 +396,10 @@ export const ENEMY_POD_SWARMER_COUNT = 3; // L
 export const ENEMY_SWARMER_HP = PLAYER_SHOT_DAMAGE; // L
 export const ENEMY_SWARMER_DAMAGE = Math.ceil(PLAYER_HP/6); // L
 
+export const ENEMY_LANDER_HP = PLAYER_SHOT_DAMAGE * 6; // L
+export const ENEMY_LANDER_DAMAGE = PLAYER_HP/4; // L
+export const ENEMY_LANDER_GEM_COUNT = 0; // L
+
 // harass the player when all enemies are gone but there are still people to rescue.
 export const MUNCHIES_MAX = 4; // L, is adjusted per level.
 export const MUNCHIE_MORE_MSEC = 1000 * 20; // L? msec.
@@ -411,6 +415,8 @@ export const ENEMY_KAMIKAZE_GEM_COUNT = 0; // L
 
 export const ENEMY_RETURN_FIRE_MAX_MSEC = 250; // L
 export const ENEMY_RETURN_FIRE_MIN_MSEC = 100; // L
+
+export const ROID_HP = PLAYER_SHOT_DAMAGE * 20; // L
 
 export const WORM_CHANCE = 0.0005; // L
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as Is from './instructions_screen';
 import * as Hs from '../high_scores';
 import * as Cdb from '../client_db';
@@ -205,7 +205,7 @@ export class HighScoreEntryScreen extends Is.InstructionsScreen {
         const measure = Tx.measure_text(this.letters, CALLSIGN_SIZE);
         const h_offset = measure.x / 2;
         const t: Dr.DrawText = {
-            lb: G.v2d_sub(center, G.v2d_mk_x0(h_offset)),
+            lb: G.v2d_sub(center, G.v2d_mk_x(h_offset)),
             text: this.letters,
             font: `${CALLSIGN_SIZE}px ${K.MENU_FONT}`, // match: offset (hack).
             fillStyle: this.callsign_cycle.current(),

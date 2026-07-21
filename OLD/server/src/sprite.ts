@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as GDB from './game_db';
 import * as G from './geom';
 import * as C from './collision';
@@ -245,7 +245,7 @@ export enum BeamingState {
     beaming_down
 };
 
-export interface Person extends CollidableSprite {
+export interface Person extends CollidableSprite { // sheeple, too.
     beaming_state: BeamingState;
     beam_up(db: GDB.GameDB): void;
     beam_down(db: GDB.GameDB, down_rect: G.Rect, on_end: (db: GDB.GameDB) => void): void;

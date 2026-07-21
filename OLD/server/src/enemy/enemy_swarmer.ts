@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as GDB from '../game_db';
 import * as S from '../sprite';
 import * as G from '../geom';
@@ -24,13 +24,13 @@ export function spec_mk(db: GDB.GameDB): Emk.EnemySpec {
     const flight_pattern = new Fp.TargetPlayer(db, 500, acc);
     return {
 	fighter_kind: "swarmer",
-        anim: anim,
+        anim,
         rank: S.Rank.basic,
         hp_init: K.ENEMY_SWARMER_HP,
 	spawn_strong: true,
         damage: K.ENEMY_SWARMER_DAMAGE,
         weapons: {},
-        flight_pattern: flight_pattern,
+        flight_pattern,
         gem_count: 0,
 	flying_sfx: FLYING_SFX,
     };

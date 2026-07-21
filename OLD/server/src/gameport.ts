@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as GDB from './game_db';
 import * as G from './geom';
 import * as F from './facing';
@@ -83,7 +83,7 @@ function facing_to_zone_target(db: GDB.GameDB, facing: F.Facing): G.V2D {
 
 function facing_to_zone_leading(db: GDB.GameDB, facing: F.Facing, target?: G.V2D): G.V2D {
     const vp = db.shared.world.gameport.world_bounds;
-    const delta = G.v2d_mk_x0(
+    const delta = G.v2d_mk_x(
         F.on_facing(
 	    facing,
             -db.local.player_zone_width,
@@ -116,7 +116,7 @@ function wrap(db: GDB.GameDB, p0: S.Player, p1: S.Player) {
         // smells like the player has world-wrapped, so must the gameport.
         // an issue is figuring out how much to wrap the gameport. wrapping by
         // the diff_px is empirically not smooth, dunno why.
-        const warp = G.v2d_mk_x0(U.sign(diff_px) * db.shared.world.bounds0.x);
+        const warp = G.v2d_mk_x(U.sign(diff_px) * db.shared.world.bounds0.x);
         G.rect_move_mut(
             db.shared.world.gameport.world_bounds,
             warp
@@ -145,6 +145,6 @@ function step_x(db: GDB.GameDB, player: S.Player) {
         const dt = G.smallest_diff_wrapped(pm.x, target.x, db.shared.world.bounds0.x);
         const dl = G.smallest_diff_wrapped(pm.x, leading.x, db.shared.world.bounds0.x);
         const jump = pm.x - ((dt < dl) ? target.x : leading.x);
-        G.rect_move_mut(db.shared.world.gameport.world_bounds, G.v2d_mk_x0(jump));
+        G.rect_move_mut(db.shared.world.gameport.world_bounds, G.v2d_mk_x(jump));
     }    
 }

@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as GDB from '../../game_db';
 import * as S from '../../sprite';
 import * as G from '../../geom';
@@ -40,24 +40,24 @@ const Mega: Lemk.EnemyMk = {
     	    WARPIN_RESOURCE_ID,
             {
 		fighter_kind: "mega",
-	anim: anim,
+	anim,
 		rank: S.Rank.mega,
 		hp_init: K.ENEMY_MEGA_HP,
 		damage: K.ENEMY_MEGA_DAMAGE,
-		weapons: weapons,
-		flight_pattern: flight_pattern,
+		weapons,
+		flight_pattern,
 		gem_count: K.ENEMY_MEGA_GEM_COUNT,
 		// todo: these should really come from magic pixels in the image resources.
 		hardpoint_left: (r: G.Rect): G.V2D => {
                     return G.v2d_add(
 			G.rect_lm(r),
-			G.v2d_mk_0y(3)
+			G.v2d_mk_y(3)
                     );
 		},
 		hardpoint_right: (r: G.Rect): G.V2D => {
                     return G.v2d_add(
 			G.rect_rm(r),
-			G.v2d_mk_0y(3)
+			G.v2d_mk_y(3)
                     );
 		},
             }

@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as GDB from '../game_db';
 import * as S from '../sprite';
 import * as G from '../geom';
@@ -30,7 +30,7 @@ const RoidA: Lemk.EnemyMk = {
 	    fighter_kind: "roidA",
             anim,
             rank: S.Rank.basic,
-            hp_init: K.HP_INDESTRUCTIBLE,
+            hp_init: K.ROID_HP,
             damage: K.PLAYER_HP / 2,
             weapons: {},
             flight_pattern,

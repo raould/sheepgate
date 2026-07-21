@@ -1,5 +1,6 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as D from '../debug';
+import { DBID } from '../dbid';
 
 // todo: uh, tests?
 // todo: share this with client, probably.
@@ -22,11 +23,11 @@ export function is_zero(n: number): boolean {
 // don't fully grok it. ok, ok, actually i don't wish that, what
 // i wish is that javascript's design and DX didn't suck like that!
 export type O<T> = T | undefined;
-// wtf tsc? this is not actually 'guarding'.
-export function isU(a: any): boolean {
-    return a == undefined;
+// note: also! this is broken bad since typescript can't see through it.
+export function isU(val: any): val is undefined {
+    return val == undefined;
 }
-// wtf tsc? this is not actually 'guarding'.
+// wtf tsc? this was empirically not actually 'guarding' for me sometimes?
 export function exists<T>(val: T | undefined | null): val is T {
     return val !== undefined && val !== null;
 }
@@ -93,22 +94,21 @@ export function filter_array<E>(array: Array<E>, fn: (_: E) => boolean): Filtere
     return f;
 }
 
-// todo: this is an over simplification in that
-// the only thing we use are Objects
-// and you'd have to use things like
-// Object.keys() on your dict.
-// but i couldn't find a type like this in typescript
-// that had a genetic parameter,
-// so i had to make my own for use in e.g. methods below.
-// it all sucks, apologies.
-// note: this is (unfortunately?) not used for an ES6 Map, just a regular JS {}.
-export interface Dict<E> {
-    [key: string]: E;
-}
-
+//------------------------------
+// note: this is a failed attempt, it sucks in many ways.
+// note: this cannot be used with ES6 Map, only JS {}.
+// todo: this is an over simplification in that the only thing we use
+// are Objects and you'd have to use things like Object.keys() on your
+// dict.  but i couldn't find a type like this in typescript that had
+// a genetic parameter, so i had to make my own for use in
+// e.g. methods below.
 // omfexpletiveg i so utterly effing hate javascript.
 // i really wish i was using Maps instead of {}jects.
 // but then Maps kind of suck in their own ways, too.
+// note: i want this to be like type = { [key: DBID]: E } but couldn't get it working retroactively.
+export interface Dict<E> {
+    [key: string]: E;
+}
 
 export function count_dict(d: O<Dict<any>>): number {
     return d == null ? 0 : Object.keys(d).length;
@@ -118,12 +118,20 @@ export function add_self_dict(d: Dict<any>, kv: any) {
     d[kv] = kv;
 }
 
+export function for_each_dict<E>(d: Dict<E>, fn: (e:E, k:string, self:Dict<E>) => void): void {
+    for (const [k, v] of Object.entries(d)) {
+	fn(v, k, d);
+    }
+}
+
+//------------------------------
+
 export interface FilteredDict<E> {
     kept: Dict<E>;
     removed: Dict<E>;
 }
 
-export function filter_dict<E>(dict: Dict<E>, fn: (_: string, __: E) => boolean): FilteredDict<E> {
+export function filter_dict<E>(dict: Dict<E>, fn: (_: DBID, __: E) => boolean): FilteredDict<E> {
     const f: FilteredDict<E> = { kept: {}, removed: {} };
     for (const [k, v] of Object.entries(dict)) {
         if (fn(k, v)) {
@@ -136,19 +144,79 @@ export function filter_dict<E>(dict: Dict<E>, fn: (_: string, __: E) => boolean)
     return f;
 }
 
+//------------------------------
+
 export type ValueMkType<T> = () => Set<T>;
-export function get_or_mk_dict<T>(dict: { [k: string]: Set<T> }, key: string, value_mk_fn: ValueMkType<T>): Set<T> {
-    if (dict[key] == null) {
-        dict[key] = value_mk_fn();
-    }
-    return dict[key];
-}
 export function get_or_mk_map<K, T>(dict: Map<K, Set<T>>, key: K, value_mk_fn: ValueMkType<T>): Set<T> {
     if (dict.get(key) == null) {
         dict.set(key, value_mk_fn());
     }
     return dict.get(key)!;
 }
+
+//------------------------------
+
+export class Bi<A,B> {
+    private a2b: Map<A,B>;
+    private b2a: Map<B,A>;
+
+    constructor() {
+	this.a2b = new Map<A,B>();
+	this.b2a = new Map<B,A>();
+	D.assert(this.a2b.size == this.b2a.size);
+    }
+
+    public forEachA(fn: (value:B, key:A, self: Bi<A,B>) => void): void {
+	this.a2b.forEach((v,k,m) => fn(v,k,this));
+	D.assert(this.a2b.size == this.b2a.size);
+    }
+
+    public forEachB(fn: (value:A, key:B, self: Bi<A,B>) => void): void {
+	this.b2a.forEach((v,k,m) => fn(v,k,this));
+	D.assert(this.a2b.size == this.b2a.size);
+    }
+
+    public get size() {
+	D.assert(this.a2b.size == this.b2a.size);
+	return this.a2b.size;
+    }
+
+    public add(a:A, b:B) {
+	this.a2b.set(a, b);
+	this.b2a.set(b, a);
+	D.assert(this.a2b.size == this.b2a.size);
+    }
+
+    public getB(a: A): B|undefined {
+	D.assert(this.a2b.size == this.b2a.size);
+	return this.a2b.get(a);
+    }
+
+    public getA(b: B): A|undefined {
+	D.assert(this.a2b.size == this.b2a.size);
+	return this.b2a.get(b);
+    }
+
+    public deleteA(a:A) {
+	const b = this.a2b.get(a);
+	this.a2b.delete(a);
+	if (b != null) {
+	    this.b2a.delete(b);
+	}
+	D.assert(this.a2b.size == this.b2a.size);
+    }
+
+    public deleteB(b:B) {
+	const a = this.b2a.get(b);
+	this.b2a.delete(b);
+	if (a != null) {
+	    this.a2b.delete(a);
+	}
+	D.assert(this.a2b.size == this.b2a.size);
+    }
+}
+
+// ----------------------------------------
 
 // todo: I want to use ValueMkType<T> here but dunno how. :-(
 export function set_mk<T>() {

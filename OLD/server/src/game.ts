@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as Is from './menu/instructions_screen';
 import * as Ps from './menu/plain_screen';
 import * as Hse from './menu/high_score_entry_screen';
@@ -434,7 +434,7 @@ class GameLevels implements Gs.Stepper {
     paused: U.O<Gs.Stepper>;
     debug_completed: boolean;
     demo_completed: boolean;
-    
+
     constructor(private readonly high_score: Hs.HighScore) {
         this.index = 0; // hard to grep find this when you don't know.
         this.stepper = U.element_looped(level_mks, this.index)!(this.index+1, 0, K.PLAYER_LIVES, this.high_score);

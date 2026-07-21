@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as GDB from '../../game_db';
 import * as S from '../../sprite';
 import * as G from '../../geom';
@@ -40,13 +40,13 @@ const Hypermega: Lemk.EnemyMk = {
             {
 		fighter_kind: "hypermega",
 		in_cmask: C.CMask.enemy_bounce,
-	anim: anim,
+	anim,
 		rank: S.Rank.hypermega,
 		hp_init: K.ENEMY_HYPERMEGA_HP,
 		damage: K.ENEMY_HYPERMEGA_DAMAGE,
-		weapons: weapons,
+		weapons,
 		shield_scale: G.v2d_mk_nn(1.2),
-		flight_pattern: flight_pattern,
+		flight_pattern,
 		gem_count: K.ENEMY_HYPERMEGA_GEM_COUNT
             }
 	);

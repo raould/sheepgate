@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as GDB from './game_db';
 import * as S from './sprite';
 import * as G from './geom';
@@ -16,7 +16,9 @@ import * as T from './toast';
 // note: K.PEOPLE_MAX_COUNT is enforced below (hopefully)
 // so the scaling up across level progression doesn't too crazy.
 
-/* make some clusters of people around the world,
+// note: currently the groups are 1 person + 1 sheep.
+
+/* make some clusters of people/sheeple around the world,
    on safe ground, that then have to be able to 
    be picked up by the player, and then have
    to be able to be deposited at a home base

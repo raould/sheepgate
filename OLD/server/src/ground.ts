@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as GDB from './game_db';
 import * as S from './sprite';
 import * as G from './geom';
@@ -426,7 +426,7 @@ function bg_make_layer<T, S extends Spec<T>>(
                     size: size,
                     alpha: spec.alpha,
                     z_ids: z_ids,
-                    anim: anim,
+                    anim,
                     step(db: GDB.GameDB) {
                         this.z_ids = this.anim.z_ids(db);
                         U.if_let(

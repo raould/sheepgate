@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as GDB from './game_db';
 import * as G from './geom';
 import * as S from './sprite';
@@ -68,7 +68,7 @@ export function gem_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Gem {
         type_flags: Tf.TF.gem,
         in_cmask: C.CMask.gem,
         from_cmask: C.CMask.player, // note: really for player shield. todo: ugh so confusing.
-        anim: anim,
+        anim,
         z_ids: anim.z_ids(db),
         alpha: 1,
         lifecycle_state: GDB.Lifecycle.alive,

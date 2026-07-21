@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as M from './menu';
 import * as MDB from './menu_db';
 import * as Cdb from '../client_db';
@@ -55,7 +55,7 @@ export class PlainScreen implements M.Menu {
             this.add_text(
                 text,
 		spec.fg_color,
-                G.v2d_add(center, G.v2d_mk_0y(v_offset)),
+                G.v2d_add(center, G.v2d_mk_y(v_offset)),
                 spec.instructions_size,
             );
         });
@@ -66,7 +66,7 @@ export class PlainScreen implements M.Menu {
         const measure = Tx.measure_text(text, size);
         const h_offset = -1 * measure.x/2;
         const t: Dr.DrawText = {
-            lb: G.v2d_add(center, G.v2d_mk_x0(h_offset)),
+            lb: G.v2d_add(center, G.v2d_mk_x(h_offset)),
             text,
             font: `${size}px ${K.MENU_FONT}`, // match: offset (hack).
             fillStyle: color,

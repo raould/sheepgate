@@ -1,4 +1,4 @@
-/* Copyright (C) 2024-2025 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+/* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
 import * as S from './sprite';
 import * as G from './geom';
 import * as F from './facing';
@@ -140,7 +140,7 @@ export function player_mk(db: GDB.GameDB, dbid: GDB.DBID, spec: PlayerSpec): S.P
 
             // 1) regular physics movement for x, hacky heuristic for y.
             // x should match: phys
-            G.v2d_add_mut(this.acc, G.v2d_mk_x0(delta_acc_x));
+            G.v2d_add_mut(this.acc, G.v2d_mk_x(delta_acc_x));
             if (U.sign(delta_vel_y) != 0) { this.vel.y = delta_vel_y; }
             G.v2d_add_mut(this.acc, Ph.drag(this));
             Ph.p2d_step_mut(this,  db.local.frame_dt);
