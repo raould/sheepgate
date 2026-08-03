@@ -96,14 +96,14 @@ function arrow_mk(db: GDB.GameDB, base: S.Base) {
     const images = db.uncloned.images;
     const anim = new A.MultiImageAnimator(
         db.shared.sim_now,
-        {
+        A.defaultAlphasSpec({
             frame_msec: 120,
             resource_ids: [
                 ...images.lookup_range_n((n) => `ground/arrow${n}.png`, 0, 3)
             ],
             starting_mode: A.MultiImageStartingMode.hold,
             ending_mode: A.MultiImageEndingMode.loop,
-        }
+        })
     );
     const size = K.vd2si(G.v2d_scale_i(G.v2d_mk(8, 8), 3));
     GDB.add_sprite_dict_id_mut(
@@ -155,14 +155,14 @@ function animator_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): A.ResourceAnim
     const images = db.uncloned.images;
     return new A.MultiImageAnimator(
         db.shared.sim_now,
-        {
+        A.defaultAlphasSpec({
             starting_mode: A.MultiImageStartingMode.hold,
             ending_mode: A.MultiImageEndingMode.loop,
             frame_msec: 100,
             resource_ids: [
                 ...images.lookup_range_n((n) => templater(n), 1, 4)
             ]
-        }
+        })
     );
 }
 

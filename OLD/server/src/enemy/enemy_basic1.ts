@@ -78,14 +78,14 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
 	    t: t,
 	    animator: A.animator_mk(
                 db.shared.sim_now,
-                {
+                A.defaultAlphasSpec({
 		    frame_msec: 80,
 		    resource_ids: [
                         ...images.lookup_range_n(n => `enemies/basic1/sph${n}.png`, 1, 3)
 		    ],
 		    starting_mode: A.MultiImageStartingMode.hold,
 		    ending_mode: A.MultiImageEndingMode.bounce
-                }
+                })
 	    )
         });
     });

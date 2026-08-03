@@ -59,8 +59,11 @@ export function anim2sprite(dbid: GDB.DBID, anim: ResourceAnimator, rect: G.Rect
         ...rect,
         acc: G.v2d_mk_0(),
         vel: G.v2d_mk_0(),
-        alpha: 1,
+	// no db available here to make starting alpha or z_ids.
+	alpha: K.INVISIBLE_ALPHA,
+	z_ids: undefined,
         step(db: GDB.GameDB) {
+	    this.alpha = anim.alpha(db);
             this.z_ids = anim.z_ids(db);
         },
         get_lifecycle(db: GDB.GameDB) {
@@ -88,14 +91,17 @@ export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
 	...images.lookup_range_a((n) => `warpin/warpin_${n}.png`, ['a','b','c','d']),
 	...images.lookup_range_n((n) => `warpin/warpin${n}.png`, 1, 5)
     ];
+    const alphas = defaultAlphas(resource_ids); // todo: fade in.
+    D.assert_eqeq(resource_ids.length, alphas.length);
     const animE = new ResourceAnimatorEvents(
 	animator_mk(
             db.shared.sim_now,
             {
 		resource_ids,
+		alphas,
 		frame_msec: spec.duration_msec / resource_ids.length,
 		starting_mode: MultiImageStartingMode.hide,
-		ending_mode: MultiImageEndingMode.hold        
+		ending_mode: MultiImageEndingMode.hold
             }
 	),
 	// todo: dunno if the on_end behaviour could work via on_death instead, but maybe not.
@@ -111,10 +117,11 @@ export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
         rank: spec.rank,
         acc: G.v2d_mk_0(),
         vel: G.v2d_mk_0(),
-        alpha: 1,
+        alpha: animE.alpha(db),
+	z_ids: animE.z_ids(db),
         step(db: GDB.GameDB) {
+	    this.alpha = animE.alpha(db);
             const top = animE.z_ids(db) || K.MISSING_IMAGE_RESOURCE_ID;
-	    // note: removing the underlying enemy sprite for now to see how that looks.
             this.z_ids = [...top];
         },
         get_lifecycle(db: GDB.GameDB) {
@@ -202,14 +209,14 @@ export class AnimatorDimensions {
 
 export interface ResourceAnimator {
     is_alive(db: GDB.GameDB): boolean;
+    alpha(db: GDB.GameDB): number;
     z_ids(db: GDB.GameDB): U.O<string[]>;
-    // todo: alpha?
 }
 
 export interface FacingResourceAnimator {
     is_alive(db: GDB.GameDB): boolean;
+    alpha(db: GDB.GameDB): number;
     z_ids(db: GDB.GameDB, facing: F.Facing): U.O<string[]>;
-    // todo: alpha?
 }
 
 export interface HasAnim {
@@ -239,11 +246,23 @@ export enum MultiImageEndingMode {
 
 export interface MultiImageSpec {
     frame_msec: number;
+    // resource_ids.length must === alpha.length
+    // currently we only support fixed, not computed, alphas.
     resource_ids: Array<string>;
+    alphas: Array<number>;
     starting_mode: MultiImageStartingMode;
     ending_mode: MultiImageEndingMode;
     // er, i assume to delay for warp anim?
     offset_msec?: number;
+}
+export function defaultAlphas(resource_ids: Array<string>): Array<number> {
+    return Array.from({length:resource_ids.length}, () => 1);
+}
+export function defaultAlphasSpec(spec: Omit<MultiImageSpec, 'alphas'>): MultiImageSpec {
+    return {
+	...spec,
+	alphas: defaultAlphas(spec.resource_ids)
+    };
 }
 export interface SingleImageSpec {
     resource_id: string;
@@ -302,23 +321,29 @@ export class ResourceAnimatorEvents implements ResourceAnimator {
         return is_alive;
     }
 
+    alpha(db: GDB.GameDB): number {
+	return this.animator.alpha(db);
+    }
+    
     z_ids(db: GDB.GameDB): U.O<string[]> {
         return this.animator.z_ids(db);
     }
 }
 
-// this is meant to be used in should-not-ever-happen parts of the code vs. TheVoidImageAnimator.
+// this is meant to be used in assert-should-not-ever-happen parts of the code (vs. TheVoidImageAnimator).
+// the missing.png is a bight rectangle to try to make it obvious during testing.
+// todo: figure out how to have a debug vs. release build so that
+// missing vs. void animators are used, respectively.
 export const TheMissingAnimator = new class implements ResourceAnimator {
     is_alive(db: GDB.GameDB) { return true; }
-    // the missing.png is a bight rectangle to try to make it obvious during testing.
-    // todo: figure out how to have a debug vs. release build so that
-    // missing vs. void animators are used, respectively.
     z_ids(db: GDB.GameDB) { return [K.MISSING_IMAGE_RESOURCE_ID]; }
+    alpha(db: GDB.GameDB) { return 1; }
 }();
 
-// this is meant to be used in we-know-it-could-be-blank parts of the code vs. TheMissingImageAnimator.
+// this is meant to be used in we-know-it-could-be-blank parts of the code (vs. TheMissingImageAnimator).
 export const TheVoidImageAnimator = new class implements ResourceAnimator {
     is_alive(db: GDB.GameDB) { return true; }
+    alpha(db: GDB.GameDB) { return K.INVISIBLE_ALPHA; }
     z_ids(db: GDB.GameDB) { return undefined; }
 }();
 
@@ -333,6 +358,10 @@ export class SingleImageAnimator implements ResourceAnimator {
 
     is_alive(db: GDB.GameDB): boolean {
         return true;
+    }
+
+    alpha(db: GDB.GameDB): number {
+	return 1;
     }
 
     z_ids(db: GDB.GameDB): U.O<string[]> {
@@ -367,60 +396,80 @@ export class MultiImageAnimator implements ResourceAnimator {
         return is;
     }
 
-    z_ids(db: GDB.GameDB): U.O<string[]> {
+    alpha(db: GDB.GameDB): number {
         const now = db.shared.sim_now;
-        let id;
+        let index;
         if (now < this.start_msec) {
-            id = this.get_starting_resource_id(db);
+	    index = MultiImageAnimatorIndexer.get_starting_index(db, this.spec);
         }
         else if (now >= this.end_msec) {
-            id = this.get_ending_resource_id(db);
+            index = MultiImageAnimatorIndexer.get_ending_index(db, this.spec, this.start_msec);
+	    if (index === -1) { index =this.spec.alphas.length-1; }
         }
         else {
-            id = this.get_running_resource_id(db);
+            index = MultiImageAnimatorIndexer.get_running_index(db, this.spec, this.start_msec);
         }
+	return U.isU(index) ? K.INVISIBLE_ALPHA : this.spec.alphas[index];
+    }
+
+    z_ids(db: GDB.GameDB): U.O<string[]> {
+        const now = db.shared.sim_now;
+        let index;
+        if (now < this.start_msec) {
+	    index = MultiImageAnimatorIndexer.get_starting_index(db, this.spec);
+        }
+        else if (now >= this.end_msec) {
+            index = MultiImageAnimatorIndexer.get_ending_index(db, this.spec, this.start_msec);
+	    if (index === -1) { index =this.spec.resource_ids.length-1; }
+        }
+        else {
+            index = MultiImageAnimatorIndexer.get_running_index(db, this.spec, this.start_msec);
+        }
+	const id = U.isU(index) ? undefined :this.spec.resource_ids[index];
         return id != null ? [id] : undefined;
     }
-     
-    private get_starting_resource_id(db: GDB.GameDB): U.O<string> {
-        switch (this.spec.starting_mode) {
-            case MultiImageStartingMode.hide:
-                return undefined;
-            case MultiImageStartingMode.hold:
-                return this.spec.resource_ids[0];
-        }
-    }
-
-    private get_running_resource_id(db: GDB.GameDB): U.O<string> {
-        const now = db.shared.sim_now;
-        const elapsed = now - this.start_msec;
-        const index = Math.floor(elapsed / this.spec.frame_msec);
-        return this.spec.resource_ids[index];
-    }
-
-    private get_ending_resource_id(db: GDB.GameDB): U.O<string> {
-        switch (this.spec.ending_mode) {
-            case MultiImageEndingMode.hide:
-                return undefined;
-            case MultiImageEndingMode.hold:
-                return this.spec.resource_ids[this.spec.resource_ids.length-1];
-            case MultiImageEndingMode.loop: {
-                const now = db.shared.sim_now;
-                const elapsed = now - this.start_msec;
-                const index = Math.floor(elapsed / this.spec.frame_msec) % this.spec.resource_ids.length;
-                return this.spec.resource_ids[index];
-            }
-            case MultiImageEndingMode.bounce: {
-                const now = db.shared.sim_now;
-                const elapsed = now - this.start_msec;
-		const length = this.spec.resource_ids.length;
-                const long_index = Math.floor(elapsed / this.spec.frame_msec) % (length * 2);
-		const index = long_index < length ? long_index : length-(long_index-length)-1;
-                return this.spec.resource_ids[index];
-            }
-        }
-    }
 }
+
+const MultiImageAnimatorIndexer = {
+    get_starting_index(db: GDB.GameDB, spec: MultiImageSpec): U.O<number> {
+        switch (spec.starting_mode) {
+        case MultiImageStartingMode.hide:
+	    return undefined;
+        case MultiImageStartingMode.hold:
+            return 0;
+	default:
+	    D.assert_fail(spec.starting_mode);
+	    break;
+        }
+    },
+
+    get_running_index(db: GDB.GameDB, spec: MultiImageSpec, start_msec: number): U.O<number> {
+        const now = db.shared.sim_now;
+        const elapsed = now - start_msec;
+        return Math.floor(elapsed / spec.frame_msec);
+    },
+
+    get_ending_index(db: GDB.GameDB, spec: MultiImageSpec, start_msec: number): U.O<number> {
+        switch (spec.ending_mode) {
+        case MultiImageEndingMode.hide:
+            return undefined;
+        case MultiImageEndingMode.hold:
+            return -1; // like python arr[-1]
+        case MultiImageEndingMode.loop: {
+            const now = db.shared.sim_now;
+            const elapsed = now - start_msec;
+            return Math.floor(elapsed / spec.frame_msec) % spec.resource_ids.length;
+        }
+        case MultiImageEndingMode.bounce: {
+            const now = db.shared.sim_now;
+            const elapsed = now - start_msec;
+	    const length = spec.resource_ids.length;
+            const long_index = Math.floor(elapsed / spec.frame_msec) % (length * 2);
+	    return long_index < length ? long_index : length-(long_index-length)-1;
+        }
+        }
+    },
+};
 
 class FacingResourceAnimatorPrivate implements FacingResourceAnimator {
     left: ResourceAnimator;
@@ -439,6 +488,10 @@ class FacingResourceAnimatorPrivate implements FacingResourceAnimator {
         return this.left.is_alive(db) && this.right.is_alive(db);
     }
 
+    alpha(db: GDB.GameDB): number {
+	return 1;
+    }
+
     z_ids(db: GDB.GameDB, facing: F.Facing): U.O<string[]> {
         return this.get_animator(facing).z_ids(db);
     }
@@ -450,9 +503,10 @@ export function anim_sprite_mk(db: GDB.GameDB, rect: G.Rect, anim: ResourceAnima
         comment: 'anim-sprite',
         vel: G.v2d_mk_0(),
         acc: G.v2d_mk_0(),
-        alpha: 1,
+        alpha: anim.alpha(db),
         z_ids: anim.z_ids(db),
         step(db: GDB.GameDB) {
+	    this.alpha = anim.alpha(db);
             this.z_ids = anim.z_ids(db);
         },
         get_lifecycle(db: GDB.GameDB) {

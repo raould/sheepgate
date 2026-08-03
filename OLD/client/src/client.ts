@@ -485,17 +485,15 @@ function renderSpriteImage(gdb: any, s: any, xyround?: number) {
 function renderSpriteImageLayer(gdb: any, s: any, resource_id: string, xyround?: number) {
     const gameport = gdb.world.gameport;
     const world_bounds = gdb.world.bounds0;
-    if (resource_id != null && s.alpha > 0) {
+    if (resource_id != null && s.alpha > 0) { // match: server K.HIDDEN_ALPHA.
         const ss = gdb.screen_shake ?? {x:0, y:0};
 	// allow the rendering position to be different than the physics position.
 	if (s.draw_lt != undefined) { s.lt = s.draw_lt; }
         const wr = v2sr_wrapped(s, gameport, world_bounds, true);
         // todo: skip if the wr is not on the screen at all.
         try {
-            if (s.alpha != 1) {
-                cx2d.save();
-                cx2d.globalAlpha = s.alpha;
-            }
+	    let ga = cx2d.globalAlpha;
+            if (s.alpha != 1) { cx2d.globalAlpha = s.alpha; }
             const img: any = images[resource_id];
             if (img != null) {
 		let x = Math.floor(wr.lt.x + ss.x);
@@ -514,9 +512,7 @@ function renderSpriteImageLayer(gdb: any, s: any, resource_id: string, xyround?:
 	    else {
 		//console.error(`no image for ${resource_id}`);
 	    }
-            if (s.alpha != 1) {
-                cx2d.restore();
-            }
+	    cx2d.globalAlpha = ga;
         }
         catch (err) {
             console.error(err);
@@ -525,7 +521,7 @@ function renderSpriteImageLayer(gdb: any, s: any, resource_id: string, xyround?:
 }
 
 function renderSprite(gdb: any, s: any, xyround?: number) {
-    if (s.alpha > Number.MIN_VALUE) { // match: server
+    if (s.alpha != 0) { // match: server K.HIDDEN_ALPHA
 	renderSpriteImage(gdb, s, xyround);
 	// match: i do want the drawing on top ie for player's shield_bar.
 	renderDrawing(gdb, s.drawing); // todo: xyround. ugh.

@@ -1,4 +1,5 @@
 /* Copyright (C) 2024-2026 raould@gmail.com License: GPLv2 / GNU General. Public License, version 2. https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html */
+import * as K from './konfig';
 import * as S from './sprite';
 import * as GDB from './game_db';
 import * as G from './geom';
@@ -10,7 +11,7 @@ export const EmptySprite: S.Sprite = {
     size: G.v2d_mk_0(),
     vel: G.v2d_mk_0(),
     acc: G.v2d_mk_0(),
-    alpha: 0,
+    alpha: K.INVISIBLE_ALPHA,
     get_lifecycle(db: GDB.GameDB) { return GDB.Lifecycle.alive; },
     on_death(db: GDB.GameDB) {},
     step(db: GDB.GameDB) {},

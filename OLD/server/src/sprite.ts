@@ -45,7 +45,7 @@ export interface ImageLocated {
 }
 
 export interface ImageResource {
-    // note: zero alpha means the sprite is hidden from the world.
+    // note: K.HIDDEN_ALPHA means the sprite is hidden from the world.
     alpha: number;
     // you can use any or all of these simultaneously. most sprites just use
     // the resource_id. a few have more than one layer of raster

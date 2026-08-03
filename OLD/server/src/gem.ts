@@ -48,12 +48,12 @@ export function gem_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Gem {
     const rids = images.lookup_range_n((n) => `gem/gem${n}.png`, 1, 10); // todo: sheesh!
     const anim: A.ResourceAnimator = A.animator_mk(
         db.shared.sim_now,
-        {
+        A.defaultAlphasSpec({
             frame_msec: Rnd.singleton.int_around(70, 40),
             resource_ids: rids,
             starting_mode: A.MultiImageStartingMode.hold,
             ending_mode: A.MultiImageEndingMode.loop,
-        }
+        })
     );
     const g: GemPrivate = {
         dbid: dbid,
@@ -70,7 +70,7 @@ export function gem_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Gem {
         from_cmask: C.CMask.player, // note: really for player shield. todo: ugh so confusing.
         anim,
         z_ids: anim.z_ids(db),
-        alpha: 1,
+        alpha: anim.alpha(db),
         lifecycle_state: GDB.Lifecycle.alive,
         step(db: GDB.GameDB) {
             this.z_ids = this.anim.z_ids(db);

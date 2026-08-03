@@ -67,6 +67,7 @@ export const MAX_HIGH_SCORE_COUNT = 8;
 export const WS_PORT = 6969; // K, and client has to match, natch.
 export const INVALID_CLIENT_ID = Number.NEGATIVE_INFINITY;  // K
 
+// got problems at any higher fps unfortunately.
 export const FPS = 30; // K
 export const FRAME_MSEC_DT = 1000 / FPS; // K
 
@@ -225,6 +226,10 @@ export const DANGER_IMAGE_LOCATED = { // K
 	),
     }
 };
+
+// match: client.
+export const HIDDEN_ALPHA = 0;
+export const INVISIBLE_ALPHA = Number.MIN_VALUE;
 
 export const CLOUD_SIZE = vd2si(G.v2d_mk(80, 20)); // L
 export const CLOUD_ALPHA = 0.05; // L
