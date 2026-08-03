@@ -92,8 +92,8 @@ export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
 	...images.lookup_range_n((n) => `warpin/warpin${n}.png`, 1, 5)
     ];
     const alphas = Array.from(
-	{length:resource_ids.length},
-	(_,i) => U.clip01(0.2 + i/resource_ids.length)
+	{length: resource_ids.length},
+	(_,i) => U.clip01(0.05 + i/resource_ids.length)
     );
     D.assert_eqeq(resource_ids.length, alphas.length);
     const animE = new ResourceAnimatorEvents(
@@ -259,11 +259,14 @@ export type MultiImageSpec = {
     offset_msec?: number;
 }
 export type MultiImageSpec1Alphas = Omit<MultiImageSpec, 'alphas'>;
-export function spec1Alphas(spec: MultiImageSpec1Alphas): MultiImageSpec {
+export function spec1Alphas(spec: MultiImageSpec1Alphas | MultiImageSpec): MultiImageSpec {
+    if ((spec as any).alphas != null) {
+	return spec as MultiImageSpec;
+    }
     return {
 	...spec,
 	alphas: Array.from({length:spec.resource_ids.length}, () => 1)
-    };
+    } as MultiImageSpec;
 }
 export interface SingleImageSpec {
     resource_id: string;

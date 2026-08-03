@@ -54,9 +54,10 @@ export function add_enemy(db: GDB.GameDB, spec: EnemySpec, rect: G.Rect, get_con
 }
 
 function warpin_mk(db: GDB.GameDB, size: G.V2D, resource_id: string, spec: EnemySpec, get_container: (db: GDB.GameDB) => U.Dict<S.Enemy>): U.O<S.Warpin> {
+    //const lt = G.v2d_set_y(db.shared.items.player!.lt, 50);
     const lt = Eu.safe_lt(db, spec.rank, size, Rnd.singleton, spec.lt);
-    const rect = G.rect_mk(lt, size);
-    spec.lt = lt;
+    const rect = G.rect_scale_mid(G.rect_mk(lt, size), 1.2);
+    spec.lt = rect.lt;
     db.shared.sfx.push({ sfx_id: K.WARPIN_SFX, gain: 0.75 });
     return A.warpin_mk(
         db,
