@@ -521,7 +521,7 @@ function renderSpriteImageLayer(gdb: any, s: any, resource_id: string, xyround?:
 }
 
 function renderSprite(gdb: any, s: any, xyround?: number) {
-    if (s.alpha != 0) { // match: server K.HIDDEN_ALPHA
+    if (s.alpha > 0) { // match: server
 	renderSpriteImage(gdb, s, xyround);
 	// match: i do want the drawing on top ie for player's shield_bar.
 	renderDrawing(gdb, s.drawing); // todo: xyround. ugh.

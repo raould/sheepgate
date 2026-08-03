@@ -91,7 +91,10 @@ export function warpin_mk(db: GDB.GameDB, spec: WarpinSpec): S.Warpin {
 	...images.lookup_range_a((n) => `warpin/warpin_${n}.png`, ['a','b','c','d']),
 	...images.lookup_range_n((n) => `warpin/warpin${n}.png`, 1, 5)
     ];
-    const alphas = defaultAlphas(resource_ids); // todo: fade in.
+    const alphas = Array.from(
+	{length:resource_ids.length},
+	(_,i) => U.clip01(0.2 + i/resource_ids.length)
+    );
     D.assert_eqeq(resource_ids.length, alphas.length);
     const animE = new ResourceAnimatorEvents(
 	animator_mk(
@@ -244,7 +247,7 @@ export enum MultiImageEndingMode {
     bounce,
 }
 
-export interface MultiImageSpec {
+export type MultiImageSpec = {
     frame_msec: number;
     // resource_ids.length must === alpha.length
     // currently we only support fixed, not computed, alphas.
@@ -255,13 +258,11 @@ export interface MultiImageSpec {
     // er, i assume to delay for warp anim?
     offset_msec?: number;
 }
-export function defaultAlphas(resource_ids: Array<string>): Array<number> {
-    return Array.from({length:resource_ids.length}, () => 1);
-}
-export function defaultAlphasSpec(spec: Omit<MultiImageSpec, 'alphas'>): MultiImageSpec {
+export type MultiImageSpec1Alphas = Omit<MultiImageSpec, 'alphas'>;
+export function spec1Alphas(spec: MultiImageSpec1Alphas): MultiImageSpec {
     return {
 	...spec,
-	alphas: defaultAlphas(spec.resource_ids)
+	alphas: Array.from({length:spec.resource_ids.length}, () => 1)
     };
 }
 export interface SingleImageSpec {
@@ -270,14 +271,14 @@ export interface SingleImageSpec {
     offset_msec?: number; 
 }
 // i really dislike that ts doesn't support nominal typing well.
-export type ImagesSpec = MultiImageSpec | SingleImageSpec;
+export type ImagesSpec = MultiImageSpec1Alphas | MultiImageSpec | SingleImageSpec;
 
 export function animator_mk(now: number, spec: ImagesSpec): ResourceAnimator {
     if ((spec as any).frame_msec == null) { // structural typing can be wugly.
         return new SingleImageAnimator(now, spec as SingleImageSpec);
     }
     else {
-        return new MultiImageAnimator(now, spec as MultiImageSpec);
+        return new MultiImageAnimator(now, spec1Alphas(spec as MultiImageSpec));
     }
 }
 

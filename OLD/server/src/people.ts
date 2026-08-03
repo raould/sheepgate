@@ -264,16 +264,16 @@ function person_waving_anim_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): A.Re
 	case Gr.GroundKind.regular:
 	case Gr.GroundKind.pyramid:
 	case Gr.GroundKind.cbm: {
-	    return {
+	    return A.spec1Alphas({
 		starting_mode: A.MultiImageStartingMode.hold,
 		ending_mode: A.MultiImageEndingMode.loop,
 		offset_msec: Rnd.singleton.float_range(0, 250),
 		frame_msec: Rnd.singleton.float_around(125, 25),
 		resource_ids: images.lookup_range_n((n) => `people/waving${n}.png`, 1, 2)
-	    };
+	    });
 	}
 	case Gr.GroundKind.zx: {
-	    return {
+	    return A.spec1Alphas({
 		starting_mode: A.MultiImageStartingMode.hold,
 		ending_mode: A.MultiImageEndingMode.loop,
 		offset_msec: Rnd.singleton.float_range(0, 250),
@@ -282,7 +282,7 @@ function person_waving_anim_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): A.Re
 		    "mw0", "mw1a", "mw2", "mw1a",
 		    "mw0", "mw1b", "mw2", "mw1b"
 		].map(n => images.lookup(`people/${n}.png`)),
-	    };
+	    });
 	}
 	}
     })();
@@ -300,13 +300,13 @@ function sheep_standing_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
 
 function sheep_waving_anim_mk(db: GDB.GameDB): A.ResourceAnimator {
     const images = db.uncloned.images;
-    const spec: A.MultiImageSpec = {
+    const spec: A.MultiImageSpec = A.spec1Alphas({
         starting_mode: A.MultiImageStartingMode.hold,
         ending_mode: A.MultiImageEndingMode.loop,
         offset_msec: Rnd.singleton.float_range(0, 250),
         frame_msec: Rnd.singleton.float_around(100, 25),
         resource_ids: images.lookup_range_n((n) => `people/sheep${n}.png`, 1, 4)
-    };
+    });
     const anim = new A.MultiImageAnimator(db.shared.sim_now, spec);
     return anim;
 }
@@ -320,23 +320,23 @@ function person_beam_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_kind: Gr.
 	case Gr.GroundKind.pyramid:
 	case Gr.GroundKind.cbm: {
 	    const resources = images.lookup_range_n((n) => `people/tp${n}.png`, 0, 5);
-	    return {
+	    return A.spec1Alphas({
 		offset_msec: Rnd.singleton.float_range(0, 250),
 		starting_mode: A.MultiImageStartingMode.hold,
 		ending_mode: A.MultiImageEndingMode.hide,
 		frame_msec: K.TELEPORT_ANIM_FRAME_MSEC,
 		resource_ids: resources
-	    };
+	    });
 	}
 	case Gr.GroundKind.zx: {
 	    const resources = images.lookup_range_n((n) => `people/mwt${n}.png`, 1, 6);
-	    return {
+	    return A.spec1Alphas({
 		offset_msec: Rnd.singleton.float_range(0, 250),
 		starting_mode: A.MultiImageStartingMode.hold,
 		ending_mode: A.MultiImageEndingMode.hide,
 		frame_msec: K.TELEPORT_ANIM_FRAME_MSEC,
 		resource_ids: resources
-	    };
+	    });
 	}	    
 	}
     })();
@@ -357,24 +357,24 @@ export function person_beam_down_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_
 	case Gr.GroundKind.pyramid:
 	case Gr.GroundKind.cbm: {
 	    const resources = images.lookup_range_n((n) => `people/tp${n}.png`, 5, 0);
-	    return {
+	    return A.spec1Alphas({
 		offset_msec: Rnd.singleton.float_range(0, 250),
 		starting_mode: A.MultiImageStartingMode.hold,
 		ending_mode: A.MultiImageEndingMode.hide,
 		frame_msec: K.TELEPORT_ANIM_FRAME_MSEC,
 		resource_ids: resources
-	    };
+	    });
 	}
 	case Gr.GroundKind.zx: {
 	    const resources = images.lookup_range_n((n) => `people/mwt${n}.png`, 6, 1);
 	    resources.push(images.lookup("people/mw2.png"));
-	    return {
+	    return A.spec1Alphas({
 		offset_msec: Rnd.singleton.float_range(0, 250),
 		starting_mode: A.MultiImageStartingMode.hold,
 		ending_mode: A.MultiImageEndingMode.hide,
 		frame_msec: K.TELEPORT_ANIM_FRAME_MSEC,
 		resource_ids: resources
-	    };
+	    });
 	}	    
 	}
     })();
@@ -392,13 +392,13 @@ function sheep_beam_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_kind: Gr.G
     // there's a lot of hard-coded twiddling of values in here to make it look less bad, sorry.
     const images = db.uncloned.images;
     const resources = images.lookup_range_n((n) => `people/sheepT${n}.png`, 1, 10);
-    const spec: A.MultiImageSpec = {
+    const spec: A.MultiImageSpec = A.spec1Alphas({
         offset_msec: Rnd.singleton.float_range(0, 250),
         starting_mode: A.MultiImageStartingMode.hold,
         ending_mode: A.MultiImageEndingMode.hide,
         frame_msec: K.TELEPORT_ANIM_FRAME_MSEC,
         resource_ids: resources
-    };
+    });
     const anim = new A.MultiImageAnimator(db.shared.sim_now, spec);
     const sprite = A.anim_sprite_mk(db, src, anim);
     return {
@@ -411,12 +411,12 @@ function sheep_beam_up_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_kind: Gr.G
 export function sheep_beam_down_anim_mk(db: GDB.GameDB, dbid: GDB.DBID, ground_kind: Gr.GroundKind, rect: G.Rect, on_end: GDB.Callback): S.Sprite {
     const images = db.uncloned.images;
     const resources = images.lookup_range_n((n) => `people/sheepT${n}.png`, 5, 1);
-    const spec: A.MultiImageSpec = {
+    const spec: A.MultiImageSpec = A.spec1Alphas({
         starting_mode: A.MultiImageStartingMode.hold,
         ending_mode: A.MultiImageEndingMode.hide,
         frame_msec: K.TELEPORT_ANIM_FRAME_MSEC,
         resource_ids: resources
-    };
+    });
     const anim = new A.MultiImageAnimator(db.shared.sim_now, spec);
     const events = new A.ResourceAnimatorEvents(anim, {on_end: on_end});
     const sprite = A.anim_sprite_mk(db, rect, events);

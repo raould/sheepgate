@@ -96,7 +96,7 @@ function arrow_mk(db: GDB.GameDB, base: S.Base) {
     const images = db.uncloned.images;
     const anim = new A.MultiImageAnimator(
         db.shared.sim_now,
-        A.defaultAlphasSpec({
+        A.spec1Alphas({
             frame_msec: 120,
             resource_ids: [
                 ...images.lookup_range_n((n) => `ground/arrow${n}.png`, 0, 3)
@@ -155,7 +155,7 @@ function animator_mk(db: GDB.GameDB, ground_kind: Gr.GroundKind): A.ResourceAnim
     const images = db.uncloned.images;
     return new A.MultiImageAnimator(
         db.shared.sim_now,
-        A.defaultAlphasSpec({
+        A.spec1Alphas({
             starting_mode: A.MultiImageStartingMode.hold,
             ending_mode: A.MultiImageEndingMode.loop,
             frame_msec: 100,

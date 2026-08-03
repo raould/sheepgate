@@ -85,7 +85,7 @@ export function weapon_mk(spec: EnemyWeaponSpec): S.Weapon {
 				    comment: `enemy-ball-${src.dbid}-${dbid}`,
 				    anim: A.same_facing_animator_mk(
 					db.shared.sim_now,
-					A.defaultAlphasSpec({
+					A.spec1Alphas({
 					    frame_msec: 100,
 					    resource_ids: [
 						db.uncloned.images.lookup("shots/ball_shot8a.png"),

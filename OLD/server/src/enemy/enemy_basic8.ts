@@ -83,7 +83,7 @@ function t2a_thrusting_facing_mk(db: GDB.GameDB, facing: F.Facing): A.Dimensions
             t,
 	    animator: A.animator_mk(
                 db.shared.sim_now,
-                A.defaultAlphasSpec({
+                A.spec1Alphas({
 		    frame_msec: 40,
 		    resource_ids: [
                         ...images.lookup_range_n(n => `enemies/basic8/def${fstr}t${n}.png`, 1, 2)

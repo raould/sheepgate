@@ -66,7 +66,7 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
             t: t,
             animator: A.animator_mk(
                 db.shared.sim_now,
-                A.defaultAlphasSpec({
+                A.spec1Alphas({
                     frame_msec: 60,
                     resource_ids: [...fronts, back, back, back],
                     starting_mode: A.MultiImageStartingMode.hold,

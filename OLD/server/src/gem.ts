@@ -48,7 +48,7 @@ export function gem_mk(db: GDB.GameDB, dbid: GDB.DBID, lt: G.V2D): S.Gem {
     const rids = images.lookup_range_n((n) => `gem/gem${n}.png`, 1, 10); // todo: sheesh!
     const anim: A.ResourceAnimator = A.animator_mk(
         db.shared.sim_now,
-        A.defaultAlphasSpec({
+        A.spec1Alphas({
             frame_msec: Rnd.singleton.int_around(70, 40),
             resource_ids: rids,
             starting_mode: A.MultiImageStartingMode.hold,

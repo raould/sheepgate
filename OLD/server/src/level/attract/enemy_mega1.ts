@@ -70,7 +70,7 @@ function t2a_facing_mk(db: GDB.GameDB, thrusting: boolean, facing: F.Facing): A.
             t,
             animator: A.animator_mk(
                 db.shared.sim_now,
-                A.defaultAlphasSpec({
+                A.spec1Alphas({
                     frame_msec: 60,
                     resource_ids: [
                         ...images.lookup_range_n(n => `enemies/e10m/e10_m${n}.png`, 1, 8)
