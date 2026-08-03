@@ -490,8 +490,8 @@ function renderSpriteImageLayer(gdb: any, s: any, resource_id: string, xyround?:
         const wr = v2sr_wrapped(s, gameport, world_bounds, true);
         // todo: skip if the wr is not on the screen at all.
         try {
+	    const ga = cx2d.globalAlpha;
             if (s.alpha != 1) {
-                cx2d.save();
                 cx2d.globalAlpha = s.alpha;
             }
             const img: any = images[resource_id];
@@ -512,9 +512,7 @@ function renderSpriteImageLayer(gdb: any, s: any, resource_id: string, xyround?:
 	    else {
 		//console.error(`no image for ${resource_id}`);
 	    }
-            if (s.alpha != 1) {
-                cx2d.restore();
-            }
+	    cx2d.globalAlpha = ga;
         }
         catch (err) {
             console.error(err);
