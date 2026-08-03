@@ -34,7 +34,7 @@ const TRACK1_SFX = { sfx_id: K.TRACK1_SFX, gain: 0.3, singleton: true };
 // the leading blank lines are a hack, yes :-(
 const WARNING_INSTRUCTIONS = [
     "This game does not support touch input.",
-    "A keyboard is required.",
+    "A gamepad or keyboard is required.",
     " ",
     "========= THIS GAME HAS FLASHING EFFECTS =========",
     "Photosensitivity - epilepsy - seizures: a very small",
