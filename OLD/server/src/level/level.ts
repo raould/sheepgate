@@ -330,8 +330,7 @@ export abstract class AbstractLevel implements Level {
             (c: U.Dict<S.Sprite & S.CollidableSprite>) => {
                 Object.values(c).forEach(
                     (s: S.Sprite & S.CollidableSprite) => {
-                        // alpha == 0 means the item is hidden from the world.
-                        if (s.alpha > 0) {
+                        if (s.alpha != K.HIDDEN_ALPHA) {
                             next.uncloned.collision.add(s)
                         }
                     }
